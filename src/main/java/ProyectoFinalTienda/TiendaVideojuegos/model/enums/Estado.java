@@ -1,4 +1,4 @@
-package com.localvideojuegos.ProyectoFinal.model.enums;
+package ProyectoFinalTienda.TiendaVideojuegos.model.enums;
 
 public enum Estado {
     ACTIVO,

@@ -1,25 +1,72 @@
-package com.localvideojuegos.ProyectoFinal.model.entities;
-import com.localvideojuegos.ProyectoFinal.model.enums.Generos;
-import com.localvideojuegos.ProyectoFinal.model.enums.Plataformas;
+package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Year;
+import java.util.List;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
+@Table(
+        name = "videojuego"
+)
 
 public class VideojuegoEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(
+            name = "videojuego_id",
+            nullable = false
+    )
     private int videojuegoID;
+
+    @OneToMany(
+            mappedBy = "videojuego",
+            cascade = CascadeType.ALL
+    )
+    private List<InventarioEntity> inventario;
+
+    @Column(
+            nullable = false
+    )
     private String titulo;
+
+    @Column(
+            name = "desarrollador",
+            nullable = false
+    )
     private String desarrollador;
+
+    @Enumerated(EnumType.STRING)
+    @Column(
+            name = "genero",
+            nullable = false
+    )
     private Generos genero;
-    private Plataformas plataforma;
+
+    @Column(
+            name = "lanzamiento",
+            nullable = false
+    )
     private Year lanzamiento;
-    private int coste_alquiler;
+
+    @Column(
+            name = "descripcion",
+            nullable = false
+    )
+    private String descripcion;
+
+    @Column(
+            name = "multijugador",
+            nullable = false
+    )
+    private boolean multijugador;
 
 
 }

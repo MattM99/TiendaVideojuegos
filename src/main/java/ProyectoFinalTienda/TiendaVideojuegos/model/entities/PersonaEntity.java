@@ -1,7 +1,9 @@
-package com.localvideojuegos.ProyectoFinal.model.entities;
+package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -10,11 +12,35 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @ToString
+@Table(
+        name = "persona"
+)
 
 public class PersonaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int persona_id;
+    @Column(
+            name = "persona_id"
+    )
+    private int personaId;
+
+    @OneToOne(
+            mappedBy = "persona",
+            cascade = CascadeType.ALL
+    )
+    private CuentaEntity cuenta;
+
+    @OneToMany(
+            mappedBy = "persona",
+            cascade = CascadeType.ALL
+    )
+    private List<BlacklistEntity> blacklist;
+
+    @OneToMany(
+            mappedBy = "persona",
+            cascade = CascadeType.ALL
+    )
+    private List<AlquilerEntity> alquiler;
 
     @Column(
             nullable = false

@@ -1,4 +1,7 @@
-package com.localvideojuegos.ProyectoFinal.model.enums;
+package ProyectoFinalTienda.TiendaVideojuegos.model.enums;
+
+import jakarta.persistence.Entity;
+
 
 public enum Generos {
     ACCION,
