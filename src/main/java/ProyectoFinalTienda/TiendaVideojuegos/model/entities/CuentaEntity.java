@@ -33,7 +33,8 @@ public class CuentaEntity {
     @Column(
             name = "nickname",
             nullable = false,
-            unique = true
+            unique = true,
+            length = 50
     )
     private String nickname;
 
@@ -62,4 +63,5 @@ public class CuentaEntity {
             nullable = false
     )
     private boolean alta;
+
 }

@@ -1,7 +1,9 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.context.annotation.Role;
 
 import java.util.List;
 
