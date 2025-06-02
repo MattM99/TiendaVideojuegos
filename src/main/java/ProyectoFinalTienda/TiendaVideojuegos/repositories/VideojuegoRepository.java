@@ -9,14 +9,14 @@ import java.util.List;
 
 public interface VideojuegoRepository extends JpaRepository<VideojuegoEntity, Integer> {
 
-    public List<VideojuegoEntity> findByTituloContaining(String titulo);
+    List<VideojuegoEntity> findByTituloContaining(String titulo);
 
-    public List<VideojuegoEntity> findByDesarrolladorContaining(String desarrollador);
+    List<VideojuegoEntity> findByDesarrolladorContaining(String desarrollador);
 
-    public List<VideojuegoEntity> findByGenero(Generos genero);
+    List<VideojuegoEntity> findByGenero(Generos genero);
 
-    public List<VideojuegoEntity> findByMultijugadorTrue();
+    List<VideojuegoEntity> findByMultijugadorTrue();
 
-    public List<VideojuegoEntity> findByLanzamiento(Year lanzamiento);
+    List<VideojuegoEntity> findByLanzamiento(Year lanzamiento);
 
 }
