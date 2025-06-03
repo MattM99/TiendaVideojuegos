@@ -4,7 +4,11 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.context.annotation.Role;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -18,7 +22,7 @@ import java.util.List;
         name = "persona"
 )
 
-public class PersonaEntity {
+public class PersonaEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
@@ -70,4 +74,40 @@ public class PersonaEntity {
             nullable = false
     )
     private String telefono;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new
+                SimpleGrantedAuthority((cuenta.getRol().name())));
+    }
+
+    @Override
+    public String getPassword() {
+        return "";
+    }
+
+    @Override
+    public String getUsername() {
+        return "";
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; //va a ser en funcion de la caducidad del token JWT, se usan comprueba en el service
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
+    }
 }

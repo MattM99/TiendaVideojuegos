@@ -1,6 +1,7 @@
-package ProyectoFinalTienda.TiendaVideojuegos.model.services;
+package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +16,8 @@ public class CuentaService {
     public CuentaService(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
+
+    @Bean
     public UserDetailsService crearCuentas() {
         // Crear una cuenta de administrador
         UserDetails admin = User.withUsername("admin")
