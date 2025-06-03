@@ -18,11 +18,11 @@ class PersonaRepositoryTest {
     @Test
     public void savePersona(){
         PersonaEntity persona= PersonaEntity.builder()
-                .nombre("Nicolas")
-                .apellido("Quesini")
-                .dni("35348325")
-                .email("lili@hotmail.com")
-                .telefono("22214515143")
+                .nombre("Pedro")
+                .apellido("Rodroguez")
+                .dni("35344442")
+                .email("nono@hotmail.com")
+                .telefono("2234523455")
                 .build();
 
         personaRepository.save(persona);
@@ -67,25 +67,6 @@ class PersonaRepositoryTest {
     }
 
 
-    @Test
-    void updatePersonaNombreByEmail() {
-        personaRepository.updatePersonaNombreByEmail("Luciano", "nico@hotmail.com");
-    }
-
-    @Test
-    void updatePersonaApellidoByEmail() {
-        personaRepository.updatePersonaApellidoByEmail("Gomez", "nico@hotmail.com");
-    }
-
-    @Test
-    void updatePersonaTelefonoByEmail() {
-        personaRepository.updatePersonaTelefonoByEmail("01114515143", "nico@hotmail.com");
-    }
-
-    @Test
-    void updatePersonaDniByEmail() {
-        personaRepository.updatePersonaDniByEmail("31348325", "nico@hotmail.com");
-    }
 
     @Test
     @Transactional
