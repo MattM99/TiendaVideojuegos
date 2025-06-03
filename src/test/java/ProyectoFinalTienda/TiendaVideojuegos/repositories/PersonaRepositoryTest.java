@@ -18,10 +18,10 @@ class PersonaRepositoryTest {
     @Test
     public void savePersona(){
         PersonaEntity persona= PersonaEntity.builder()
-                .nombre("Pedro")
+                .nombre("Nicolas")
                 .apellido("Quesini")
-                .dni("39348325")
-                .email("pedrito@hotmail.com")
+                .dni("35348325")
+                .email("lili@hotmail.com")
                 .telefono("22214515143")
                 .build();
 
@@ -62,7 +62,7 @@ class PersonaRepositoryTest {
     @Test
     @Transactional
     void getPersonaByEmail() {
-        PersonaEntity persona = personaRepository.getPersonaByEmail("nico@hotmail.com");
+        PersonaEntity persona = personaRepository.getPersonaByEmail("nico@hotmail.com").orElseThrow(() -> new RuntimeException("Usuario no encontrado con el email proporcionado"));
         System.out.println("Persona = " + persona);
     }
 
