@@ -21,28 +21,8 @@ public interface PersonaRepository extends JpaRepository<PersonaEntity, Integer>
 
 
     @Query("SELECT p FROM PersonaEntity p WHERE p.email = ?1")
-    PersonaEntity getPersonaByEmail(String email);
+    Optional<PersonaEntity> getPersonaByEmail(String email);
 
-
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE persona SET nombre = ?1 WHERE email = ?2", nativeQuery = true)
-    void updatePersonaNombreByEmail(String nombre, String email);
-
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE persona SET apellido = ?1 WHERE email = ?2", nativeQuery = true)
-    void updatePersonaApellidoByEmail(String apellido, String email);
-
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE persona SET telefono = ?1 WHERE email = ?2", nativeQuery = true)
-    void updatePersonaTelefonoByEmail(String telefono, String email);
-
-    @Transactional
-    @Modifying
-    @Query(value = "UPDATE persona SET dni = ?1 WHERE email = ?2", nativeQuery = true)
-    void updatePersonaDniByEmail(String dni, String email);
 
     @Transactional
     void deleteByDni(String dni);
