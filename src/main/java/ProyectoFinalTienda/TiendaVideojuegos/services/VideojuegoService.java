@@ -52,4 +52,28 @@ public class VideojuegoService {
         return videojuegoRepository.findByLanzamiento(lanzamiento);
     }
 
+    public void modificarTitulo(int id, String nuevoTitulo) {
+        videojuegoRepository.updateTitulo(id, nuevoTitulo);
+    }
+
+    public void modificarDesarrollador(int id, String nuevoDesarrollador) {
+        videojuegoRepository.updateDesarrollador(id, nuevoDesarrollador);
+    }
+
+    public void modificarGenero(int id, Generos nuevoGenero) {
+        videojuegoRepository.updateGenero(id, nuevoGenero);
+    }
+
+    public void modificarLanzamiento(int id, Year nuevoLanzamiento) {
+        videojuegoRepository.updateLanzamiento(id, nuevoLanzamiento);
+    }
+
+    public void modificarDescripcion(int id, String nuevaDescripcion) {
+        videojuegoRepository.updateDescripcion(id, nuevaDescripcion);
+    }
+
+    public void modificarMultijugador(int id, boolean nuevoValor) {
+        videojuegoRepository.updateMultijugador(id, nuevoValor);
+    }
+
 }
