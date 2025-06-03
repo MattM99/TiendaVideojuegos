@@ -1,4 +1,4 @@
-package ProyectoFinalTienda.TiendaVideojuegos.model.services;
+package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 
 import org.springframework.security.core.userdetails.User;
