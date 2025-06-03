@@ -32,7 +32,7 @@ public class InventarioService {
     }
 
     public List<InventarioEntity> buscarPorPlataforma(Plataformas plataforma){
-        return inventarioRepository.findByPlatform(plataforma);
+        return inventarioRepository.findByPlataforma(plataforma);
     }
 
     public List<InventarioEntity> buscarMasBaratosQue(double valor){
@@ -58,4 +58,25 @@ public class InventarioService {
     public Integer obtenerStockDescartado(int inventarioId) {
         return inventarioRepository.findStockDescartadoByInventarioId(inventarioId);
     }
+
+    public void modificarPrecioUnitario(int id, double precio){
+        inventarioRepository.updatePrecioUnitario(id, precio);
+    }
+
+    public void modificarStockTotal(int inventarioId, int nuevoStock) {
+        inventarioRepository.updateStockTotal(inventarioId, nuevoStock);
+    }
+
+    public void modificarStockDisponible(int inventarioId, int nuevoStock) {
+        inventarioRepository.updateStockDisponible(inventarioId, nuevoStock);
+    }
+
+    public void modificarStockAlquilado(int inventarioId, int nuevoStock) {
+        inventarioRepository.updateStockAlquilado(inventarioId, nuevoStock);
+    }
+
+    public void modificarStockDescartado(int inventarioId, int nuevoStock) {
+        inventarioRepository.updateStockDescartado(inventarioId, nuevoStock);
+    }
+
 }
