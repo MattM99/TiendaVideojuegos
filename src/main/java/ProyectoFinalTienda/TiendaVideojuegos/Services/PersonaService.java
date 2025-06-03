@@ -1,4 +1,4 @@
-package ProyectoFinalTienda.TiendaVideojuegos.Services;
+package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.Exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
@@ -45,7 +45,7 @@ public class PersonaService {
     }
 
     public PersonaEntity actualizar(String email, PersonaEntity personaActualizada) {
-        PersonaEntity persona =personaRepository.getPersonaByEmail(email).orElseThrow();
+        PersonaEntity persona =personaRepository.getPersonaByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
         persona.setNombre(personaActualizada.getNombre());
         if(personaActualizada.getApellido() != null) {
             persona.setApellido(personaActualizada.getApellido());
@@ -65,7 +65,7 @@ public class PersonaService {
 
 
     public void eliminarPorDni(String dni) {
-        personaRepository.deleteByDni(dni);
+        personaRepository.deleteByDni(dni).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con DNI: " + dni));
     }
 
 }
