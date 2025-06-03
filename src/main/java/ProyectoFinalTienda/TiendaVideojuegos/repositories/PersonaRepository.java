@@ -25,7 +25,7 @@ public interface PersonaRepository extends JpaRepository<PersonaEntity, Integer>
 
 
     @Transactional
-    void deleteByDni(String dni);
+    Optional<PersonaEntity> deleteByDni(String dni);
 
 
 }
