@@ -4,6 +4,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Estado;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Getter
@@ -63,5 +64,7 @@ public class CuentaEntity {
             nullable = false
     )
     private boolean alta;
+
+
 
 }
