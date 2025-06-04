@@ -93,7 +93,7 @@ public class VideojuegoService {
     public VideojuegoEntity actualizarCompleto(int id, VideojuegoCreateOrReplaceRequest datosNuevos) {
         VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
                 .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id " + id + " no encontrado."));
-        // Sobrescribes todo, porque el DTO tiene todo obligatorio
+        // Sobrescribís todo, porque el DTO tiene todo obligatorio
         videojuegoExistente.setTitulo(datosNuevos.getTitulo());
         videojuegoExistente.setDesarrollador(datosNuevos.getDesarrollador());
         videojuegoExistente.setGenero(datosNuevos.getGenero());

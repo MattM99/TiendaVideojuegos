@@ -1,7 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.services.VideojuegoService;
 import jakarta.transaction.Transactional;
@@ -10,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
-import java.time.Year;
+
 import java.util.List;
 
 @SpringBootTest
