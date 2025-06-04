@@ -17,12 +17,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { //OncePerReq
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         final String token = getTokenFromRequest(request);
-
+/*
         if (token==null){
             filterChain.doFilter(request, response);
             return; // Si no hay token, continúa con la cadena de filtros sin hacer nada más (Porque si no hay token, es que no se ha iniciado sesión)
         }
-
+*/
         // Continuar con la cadena de filtros
         filterChain.doFilter(request, response);
 
@@ -35,5 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { //OncePerReq
             return authorizationHeader.substring(7); // Extrae el token sin el prefijo "Bearer "
     }
         return null; // Si no hay token, retorna null
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/auth/"); // No aplicar el filtro a rutas públicas
     }
 }
