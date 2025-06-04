@@ -8,22 +8,34 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    public AuthResponse login(LoginRequest request) {
-
-        return null;
-    }
     private final PersonaRepository PersonaRepository;
     private final CuentaRepository CuentaRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthResponse register(RegisterRequest request) { //A modo de prueba, posiblemente este metodo no se use
+    public AuthResponse login(LoginRequest request) {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        UserDetails user = CuentaRepository.findByNickname(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        String token = jwtService.getToken(user);
+        return AuthResponse.builder()
+                .token(token)
+                .build();
+    }
+
+
+    public AuthResponse register(RegisterRequest request) {
         PersonaEntity persona = PersonaEntity.builder()
                 .nombre(request.getNombre())
                 .apellido(request.getApellido())
@@ -37,7 +49,7 @@ public class AuthService {
         CuentaEntity cuenta = CuentaEntity.builder()
                 .nickname(request.getNickname())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .rol(Roles.EMPLEADO)
+                .rol(Roles.valueOf(request.getRol()))
                 .estado(Estado.ACTIVO)
                 .persona(persona)
                 .build();
