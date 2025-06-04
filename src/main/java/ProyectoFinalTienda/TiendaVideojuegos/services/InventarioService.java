@@ -59,24 +59,4 @@ public class InventarioService {
         return inventarioRepository.findStockDescartadoByInventarioId(inventarioId);
     }
 
-    public void modificarPrecioUnitario(int id, double precio){
-        inventarioRepository.updatePrecioUnitario(id, precio);
-    }
-
-    public void modificarStockTotal(int inventarioId, int nuevoStock) {
-        inventarioRepository.updateStockTotal(inventarioId, nuevoStock);
-    }
-
-    public void modificarStockDisponible(int inventarioId, int nuevoStock) {
-        inventarioRepository.updateStockDisponible(inventarioId, nuevoStock);
-    }
-
-    public void modificarStockAlquilado(int inventarioId, int nuevoStock) {
-        inventarioRepository.updateStockAlquilado(inventarioId, nuevoStock);
-    }
-
-    public void modificarStockDescartado(int inventarioId, int nuevoStock) {
-        inventarioRepository.updateStockDescartado(inventarioId, nuevoStock);
-    }
-
 }

@@ -19,13 +19,10 @@ public interface PersonaRepository extends JpaRepository<PersonaEntity, Integer>
 
     Optional<PersonaEntity> findByDni(String dni);
 
-
     @Query("SELECT p FROM PersonaEntity p WHERE p.email = ?1")
     Optional<PersonaEntity> getPersonaByEmail(String email);
 
-
     @Transactional
     Optional<PersonaEntity> deleteByDni(String dni);
-
 
 }

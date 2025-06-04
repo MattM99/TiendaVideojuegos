@@ -1,4 +1,4 @@
-package ProyectoFinalTienda.TiendaVideojuegos.Exception;
+package ProyectoFinalTienda.TiendaVideojuegos.exception;
 
 import java.util.NoSuchElementException;
 

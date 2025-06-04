@@ -2,11 +2,8 @@ package ProyectoFinalTienda.TiendaVideojuegos.repositories;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,30 +28,5 @@ public interface InventarioRepository extends JpaRepository<InventarioEntity, In
 
     @Query("SELECT i.stockDescartado FROM InventarioEntity i WHERE i.inventario_id = ?1")
     Integer findStockDescartadoByInventarioId(int inventarioId);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE InventarioEntity i SET i.precioUnitarioDiario = ?2 WHERE i.inventario_id = ?1")
-    void updatePrecioUnitario(int inventarioId, double precio);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE InventarioEntity i SET i.stockTotal = ?2 WHERE i.inventario_id = ?1")
-    void updateStockTotal(int inventarioId, int stockTotal);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE InventarioEntity i SET i.stockDisponible = ?2 WHERE i.inventario_id = ?1")
-    void updateStockDisponible(int inventarioId, int stockDisponible);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE InventarioEntity i SET i.stockAlquilado = ?2 WHERE i.inventario_id = ?1")
-    void updateStockAlquilado(int inventarioId, int stockAlquilado);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE InventarioEntity i SET i.stockDescartado = ?2 WHERE i.inventario_id = ?1")
-    void updateStockDescartado(int inventarioId, int stockDescartado);
 
 }

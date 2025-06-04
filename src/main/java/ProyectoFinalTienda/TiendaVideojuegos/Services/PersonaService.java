@@ -1,13 +1,12 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
-import ProyectoFinalTienda.TiendaVideojuegos.Exception.UsuarioNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PersonaService {
@@ -45,7 +44,7 @@ public class PersonaService {
     }
 
     public PersonaEntity actualizar(String email, PersonaEntity personaActualizada) {
-        PersonaEntity persona =personaRepository.getPersonaByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
+        PersonaEntity persona = personaRepository.getPersonaByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
         persona.setNombre(personaActualizada.getNombre());
         if(personaActualizada.getApellido() != null) {
             persona.setApellido(personaActualizada.getApellido());

@@ -1,10 +1,9 @@
-package ProyectoFinalTienda.TiendaVideojuegos.Exception;
+package ProyectoFinalTienda.TiendaVideojuegos.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -47,4 +46,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> manejarUsuarioNoEncontrado(UsuarioNoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    @ExceptionHandler(VideojuegoNoEncontradoException.class)
+    public ResponseEntity<String> manejarVideojuegoNoEncontrado(VideojuegoNoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
 }
