@@ -73,4 +73,16 @@ public class InventarioEntity {
     )
     private int stockDescartado;
 
+    /// ---- Validaciones de stock ----- ///
+
+    public boolean esStockValido() {
+        return (stockDisponible + stockAlquilado + stockDescartado) <= stockTotal;
+    }
+
+    public void validarStock() {
+        if (!esStockValido()) {
+            throw new IllegalStateException("La suma de los stocks excede el stock total.");
+        }
+    }
+
 }

@@ -1,6 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoCreateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
@@ -85,12 +85,12 @@ public class VideojuegoService {
     public VideojuegoEntity actualizarPorCampo(int id, VideojuegoUpdateRequest datosActualizados) {
         VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
                 .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id " + id + " no encontrado."));
-        datosActualizados.actualizarEntidad(videojuegoExistente);
+        datosActualizados.actualizarVideojuego(videojuegoExistente);
         return videojuegoRepository.save(videojuegoExistente);
     }
 
     // Método para actualización completa (PUT)
-    public VideojuegoEntity actualizarCompleto(int id, VideojuegoCreateRequest datosNuevos) {
+    public VideojuegoEntity actualizarCompleto(int id, VideojuegoCreateOrReplaceRequest datosNuevos) {
         VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
                 .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id " + id + " no encontrado."));
         // Sobrescribes todo, porque el DTO tiene todo obligatorio

@@ -12,7 +12,7 @@ import java.time.Year;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VideojuegoCreateRequest {
+public class VideojuegoCreateOrReplaceRequest {
 
     @NotBlank(message = "El título no puede estar en blanco")
     private String titulo;

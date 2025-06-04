@@ -20,7 +20,7 @@ public class VideojuegoUpdateRequest {
     private String descripcion;
     private Boolean multijugador;
 
-    public void actualizarEntidad(VideojuegoEntity entity) {
+    public void actualizarVideojuego(VideojuegoEntity entity) {
         if (titulo != null) entity.setTitulo(titulo);
         if (desarrollador != null) entity.setDesarrollador(desarrollador);
         if (genero != null) entity.setGenero(genero);
