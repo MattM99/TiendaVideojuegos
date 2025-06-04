@@ -27,7 +27,7 @@ public class InventarioEntity {
     private int inventario_id;
 
     @ManyToOne
-    @JoinColumn(name = "videojuego_id", nullable = false, unique = true)
+    @JoinColumn(name = "videojuego_id", nullable = false)
     private VideojuegoEntity videojuego;
 
     @OneToMany(
@@ -47,30 +47,42 @@ public class InventarioEntity {
             name = "precio_unitario_diario",
             nullable = false
     )
-    private double precio_unitario_diario;
+    private double precioUnitarioDiario;
 
     @Column(
             name = "stock_total",
             nullable = false
     )
-    private int stock_total;
+    private int stockTotal;
 
     @Column(
             name = "stock_disponible",
             nullable = false
     )
-    private int stock_disponible;
+    private int stockDisponible;
 
     @Column(
             name = "stock_alquilado",
             nullable = false
     )
-    private int stock_alquilado;
+    private int stockAlquilado;
 
     @Column(
             name = "stock_descartado",
             nullable = false
     )
-    private int stock_descartado;
+    private int stockDescartado;
+
+    /// ---- Validaciones de stock ----- ///
+
+    public boolean esStockValido() {
+        return (stockDisponible + stockAlquilado + stockDescartado) <= stockTotal;
+    }
+
+    public void validarStock() {
+        if (!esStockValido()) {
+            throw new IllegalStateException("La suma de los stocks excede el stock total.");
+        }
+    }
 
 }
