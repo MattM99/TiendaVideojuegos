@@ -4,7 +4,6 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Estado;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.catalina.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -79,7 +78,7 @@ public class CuentaEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return nickname;
     }
 
     @Override

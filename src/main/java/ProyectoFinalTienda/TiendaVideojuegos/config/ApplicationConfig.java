@@ -1,6 +1,5 @@
 package ProyectoFinalTienda.TiendaVideojuegos.config;
 
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
