@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.context.annotation.Role;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -40,13 +41,13 @@ public class PersonaEntity {
             mappedBy = "persona",
             cascade = CascadeType.ALL
     )
-    private List<BlacklistEntity> blacklist;
+    private List<BlacklistEntity> blacklist = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "persona",
             cascade = CascadeType.ALL
     )
-    private List<AlquilerEntity> alquiler;
+    private List<AlquilerEntity> alquiler = new ArrayList<>();
 
     @Column(
             nullable = false
@@ -69,7 +70,7 @@ public class PersonaEntity {
             unique = true
     )
     @NotBlank(message = "El DNI no puede estar vacío")
-    @Pattern(regexp = "\\d{7,8}", message = "El DNI debe tener entre 7 y 8 dígitos}")
+    @Pattern(regexp = "\\d{7,8}", message = "El DNI debe tener entre 7 y 8 dígitos")
     private String dni;
 
     @Column(
