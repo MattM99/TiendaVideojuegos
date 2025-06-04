@@ -8,24 +8,19 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpHeaders;
-
-import javax.swing.text.html.Option;
 import java.io.IOException;
 import java.util.Optional;
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class JwtAuthenticationFilter extends OncePerRequestFilter { //OncePerRequestFilter permite hacer filtros personalizados que se aplican una vez por solicitud
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Aquí iría la lógica de autenticación JWT
-        // Por ejemplo, verificar el token JWT en los encabezados de la solicitud
-
 
         final String token = getTokenFromRequest(request);
 
         if (token==null){
             filterChain.doFilter(request, response);
-            return;
+            return; // Si no hay token, continúa con la cadena de filtros sin hacer nada más (Porque si no hay token, es que no se ha iniciado sesión)
         }
 
         // Continuar con la cadena de filtros
@@ -33,12 +28,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-    private Optional<String> getTokenFromRequest(HttpServletRequest request) {
-        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    private String getTokenFromRequest(HttpServletRequest request) {
+        final String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION); // Obtiene el encabezado de autorización de la solicitud HTTP
 
         if(StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Bearer ")) {
-            return Optional.of(authorizationHeader.substring(7)); // Extrae el token sin el prefijo "Bearer "
+            return authorizationHeader.substring(7); // Extrae el token sin el prefijo "Bearer "
     }
-        return Optional.empty(); // Si no hay token, retorna null
+        return null; // Si no hay token, retorna null
     }
 }
