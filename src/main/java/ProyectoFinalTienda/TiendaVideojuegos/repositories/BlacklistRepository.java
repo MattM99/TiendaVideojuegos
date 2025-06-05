@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface BlacklistRepository extends JpaRepository<BlacklistEntity, Integer> {
 
-    @Query("SELECT b FROM BlackListEntity b WHERE b.persona.id = ?1 AND CURRENT_DATE >= b.fechaInicio AND (b.fechaFin IS NULL OR CURRENT_DATE <= b.fechaFin)")
+    @Query("SELECT b FROM BlacklistEntity b WHERE b.persona.personaId = ?1 AND CURRENT_DATE >= b.fecha_inicio AND (b.fecha_fin IS NULL OR CURRENT_DATE <= b.fecha_fin)")
     Optional<BlacklistEntity> findVigenteByPersona(int personaId);
 
-    @Query("SELECT b FROM BlackListEntity b WHERE b.fechaInicio <= CURRENT_DATE AND (b.fechaFin IS NULL OR CURRENT_DATE <= b.fechaFin)")
+    @Query("SELECT b FROM BlacklistEntity b WHERE b.fecha_inicio <= CURRENT_DATE AND (b.fecha_fin IS NULL OR CURRENT_DATE <= b.fecha_fin)")
     List<BlacklistEntity> findPersonasEnListaNegraVigente();
 }
