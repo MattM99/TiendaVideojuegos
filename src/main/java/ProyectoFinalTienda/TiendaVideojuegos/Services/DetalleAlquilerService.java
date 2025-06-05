@@ -43,7 +43,7 @@ public class DetalleAlquilerService {
 
         DetalleAlquilerEntity detalle = request.toEntity(alquiler, inventario);
 
-        // Este método puede lanzar IllegalArgumentException si las fechas son inválidas
+        // Este métod puede lanzar IllegalArgumentException si las fechas son inválidas
         detalle.calcularSubtotal();
 
         return detalleAlquilerRepository.save(detalle);
