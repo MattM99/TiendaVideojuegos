@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,5 +54,13 @@ public class AlquilerEntity {
             nullable = false
     )
     private LocalDate fecha_devolucion; // fecha en la que DEBERIA devolver el juego
+
+    public long calcularDiasAlquiler() {
+       long dias = ChronoUnit.DAYS.between(this.getFecha_retiro(), this.getFecha_devolucion());
+        if (dias <= 0) {
+            throw new IllegalArgumentException("La fecha de entrega debe ser posterior a la de retiro");
+        }
+        return dias;
+    }
 
 }
