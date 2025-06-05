@@ -23,7 +23,6 @@ import java.util.List;
 )
 
 public class CuentaEntity implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
