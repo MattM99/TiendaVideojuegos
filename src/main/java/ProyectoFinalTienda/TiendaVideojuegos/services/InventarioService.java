@@ -20,11 +20,10 @@ public class InventarioService {
     @Autowired
     private InventarioRepository inventarioRepository;
     @Autowired
-    private VideojuegoRepository videojuegoRepository;
+    private VideojuegoService videojuegoService;
 
     public InventarioEntity guardar(InventarioCreateOrReplaceRequest request) {
-        VideojuegoEntity videojuego = videojuegoRepository.findById(request.getVideojuegoId())
-                .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego no encontrado"));
+        VideojuegoEntity videojuego = videojuegoService.buscarPorId(request.getVideojuegoId());
 
         InventarioEntity entity = request.toEntity(videojuego);
         entity.validarStock();

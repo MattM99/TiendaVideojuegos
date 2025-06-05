@@ -18,6 +18,10 @@ public class PersonaService {
         return personaRepository.save(persona);
     }
 
+    public PersonaEntity buscarPorId(int id){
+        return personaRepository.findById(id).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con id: " + id));
+    }
+
     public List<PersonaEntity> buscarPorNombre(String nombre) {
         List<PersonaEntity> personas = personaRepository.findByNombre(nombre);
         if (personas.isEmpty()) {
@@ -35,11 +39,11 @@ public class PersonaService {
     }
 
 
-    public PersonaEntity buscarPorDni(String dni) throws UsuarioNoEncontradoException {
+    public PersonaEntity buscarPorDni(String dni){
         return personaRepository.findByDni(dni).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con DNI: " + dni));
     }
 
-    public PersonaEntity buscarPorEmail(String email) throws UsuarioNoEncontradoException {
+    public PersonaEntity buscarPorEmail(String email){
         return personaRepository.getPersonaByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
     }
 
