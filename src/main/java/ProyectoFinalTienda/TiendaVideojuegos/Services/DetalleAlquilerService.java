@@ -20,17 +20,14 @@ public class DetalleAlquilerService {
     @Autowired
     private DetalleAlquilerRepository detalleAlquilerRepository;
     @Autowired
-    private AlquilerRepository alquilerRepository;
+    private AlquilerService alquilerService;
     @Autowired
-    private InventarioRepository inventarioRepository;
+    private InventarioService inventarioService;
 
     public DetalleAlquilerEntity crearDetalle(DetalleAlquilerCreateOrReplaceRequest request) {
-        AlquilerEntity alquiler = alquilerRepository.findById(request.getAlquiler_id())
-                .orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler no encontrado"));
+        AlquilerEntity alquiler = alquilerService.buscarPorId(request.getAlquiler_id());
 
-        InventarioEntity inventario = inventarioRepository.findById(request.getInventario_id())
-                .orElseThrow(() -> new InventarioNoEncontradoException("Inventario no encontrado"));
-
+        InventarioEntity inventario = inventarioService.buscarPorId(request.getInventario_id());
 
         // Validar stock disponible
         if (inventario.getStockDisponible() <= 0) {

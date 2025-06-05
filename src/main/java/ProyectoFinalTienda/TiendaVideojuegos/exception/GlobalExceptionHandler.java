@@ -67,4 +67,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    @ExceptionHandler(BanNoEncontradoException.class)
+    public ResponseEntity<String> manejarBanNoEncontrado(BanNoEncontradoException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
 }
