@@ -27,7 +27,7 @@ public class DetalleAlquilerEntity {
     private AlquilerEntity alquiler;
 
     @ManyToOne
-    @JoinColumn(name = "inventario_id", nullable = false, unique = true)
+    @JoinColumn(name = "inventario_id", nullable = false)
     private InventarioEntity inventario;
 
     @Column(
