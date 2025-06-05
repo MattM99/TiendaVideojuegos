@@ -2,6 +2,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -35,4 +36,11 @@ public class DetalleAlquilerEntity {
             nullable = false
     )
     private double subtotal;
+
+    public void calcularSubtotal() {
+        if (alquiler == null || inventario == null) {
+            throw new IllegalStateException("Faltan datos para calcular el subtotal");
+        }
+        this.subtotal = inventario.getPrecioUnitarioDiario() * alquiler.calcularDiasAlquiler();
+    }
 }
