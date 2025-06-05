@@ -42,6 +42,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR); // 500
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> manejarIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
     @ExceptionHandler(UsuarioNoEncontradoException.class)
     public ResponseEntity<String> manejarUsuarioNoEncontrado(UsuarioNoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
@@ -55,6 +60,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InventarioNoEncontradoException.class)
     public ResponseEntity<String> manejarInventarioNoEncontrado(InventarioNoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(EstadoInvalidoException.class)
+    public ResponseEntity<String> handleEstadoInvalido(EstadoInvalidoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(RolInvalidoException.class)
+    public ResponseEntity<String> handleRolInvalido(RolInvalidoException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
 }
