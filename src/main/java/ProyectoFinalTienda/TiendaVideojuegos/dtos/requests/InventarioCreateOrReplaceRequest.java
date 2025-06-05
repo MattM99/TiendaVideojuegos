@@ -31,15 +31,15 @@ public class InventarioCreateOrReplaceRequest {
 
     @NotNull(message = "El stock disponible es obligatorio")
     @Min(value = 0, message = "El stock disponible no puede ser negativo")
-    private int stockDisponible;
+    private Integer stockDisponible;
 
     @NotNull(message = "El stock alquilado es obligatorio")
     @Min(value = 0, message = "El stock alquilado no puede ser negativo")
-    private int stockAlquilado;
+    private Integer stockAlquilado;
 
     @NotNull(message = "El stock descartado es obligatorio")
     @Min(value = 0, message = "El stock descartado no puede ser negativo")
-    private int stockDescartado;
+    private Integer stockDescartado;
 
     public InventarioEntity toEntity(VideojuegoEntity videojuego) {
         return InventarioEntity.builder()

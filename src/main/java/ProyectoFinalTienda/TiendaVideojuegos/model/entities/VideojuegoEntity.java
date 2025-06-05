@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -30,7 +31,7 @@ public class VideojuegoEntity {
             mappedBy = "videojuego",
             cascade = CascadeType.ALL
     )
-    private List<InventarioEntity> inventario;
+    private List<InventarioEntity> inventario = new ArrayList<>();
 
     @Column(
             nullable = false

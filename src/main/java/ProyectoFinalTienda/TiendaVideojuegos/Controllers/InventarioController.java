@@ -49,6 +49,12 @@ public class InventarioController {
         return  ResponseEntity.ok(inventario);
     }
 
+    // Buscar por videojuego
+    @GetMapping("/videojuego/{videojuegoId}")
+    public ResponseEntity<List<InventarioEntity>> buscarPorVideojuego(@PathVariable int videojuegoId) {
+        return ResponseEntity.ok(inventarioService.buscarPorVideojuego(videojuegoId));
+    }
+
     // Buscar por plataforma
     @GetMapping("/plataforma")
     public ResponseEntity<List<InventarioEntity>> buscarPorPlataforma(@RequestParam Plataformas plataforma) {

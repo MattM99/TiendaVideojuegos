@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
@@ -23,7 +24,7 @@ public class InventarioService {
 
     public InventarioEntity guardar(InventarioCreateOrReplaceRequest request) {
         VideojuegoEntity videojuego = videojuegoRepository.findById(request.getVideojuegoId())
-                .orElseThrow(() -> new RuntimeException("Videojuego no encontrado"));
+                .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego no encontrado"));
 
         InventarioEntity entity = request.toEntity(videojuego);
         entity.validarStock();
@@ -51,6 +52,15 @@ public class InventarioService {
     public InventarioEntity buscarPorId(int id){
         return inventarioRepository.findById(id)
                 .orElseThrow(() -> new InventarioNoEncontradoException("Inventario con id: " + id + " no encontrado."));
+    }
+
+    // Buscar por videojuego con excepción si lista vacía
+    public List<InventarioEntity> buscarPorVideojuego(int videojuegoId) {
+        List<InventarioEntity> inventarios = inventarioRepository.findByVideojuegoId(videojuegoId);
+        if (inventarios.isEmpty()) {
+            throw new InventarioNoEncontradoException("No se encontró ningún inventario con la id del videojuego: " + videojuegoId);
+        }
+        return inventarios;
     }
 
     // Buscar por plataforma con excepción si lista vacía

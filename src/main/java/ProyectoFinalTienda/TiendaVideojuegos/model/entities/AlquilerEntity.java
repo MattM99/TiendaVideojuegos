@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,13 +34,13 @@ public class AlquilerEntity {
             mappedBy = "alquiler",
             cascade = CascadeType.ALL
     )
-    private List<FacturaEntity> facturas;
+    private List<FacturaEntity> facturas = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "alquiler",
             cascade = CascadeType.ALL
     )
-    private List<DetalleAlquilerEntity> detalles;
+    private List<DetalleAlquilerEntity> detalles = new ArrayList<>();
 
     @Column(
             name = "fecha_retiro",

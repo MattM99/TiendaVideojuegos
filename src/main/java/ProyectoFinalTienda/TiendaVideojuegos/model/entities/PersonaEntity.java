@@ -42,13 +42,13 @@ public class PersonaEntity implements UserDetails {
             mappedBy = "persona",
             cascade = CascadeType.ALL
     )
-    private List<BlacklistEntity> blacklist;
+    private List<BlacklistEntity> blacklist = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "persona",
             cascade = CascadeType.ALL
     )
-    private List<AlquilerEntity> alquiler;
+    private List<AlquilerEntity> alquiler = new ArrayList<>();
 
     @Column(
             nullable = false
