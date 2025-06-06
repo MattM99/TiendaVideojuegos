@@ -28,15 +28,16 @@ public class AlquilerService {
     private BlackListService blackListService;
 
     public AlquilerEntity guardar(AlquilerCreateOrReplaceRequest request) {
-        PersonaEntity persona = personaService.buscarPorId(request.getPersonaID());
-
-        // Verificar si la persona está en lista negra, si está lanza excepción.
-        blackListService.verificarNoEstaEnListaNegra(request.getPersonaID());
 
         // Validar fechas
         if (request.getFecha_retiro().isAfter(request.getFecha_devolucion())) {
             throw new BusinessException("La fecha de retiro no puede ser posterior a la fecha de devolución.");
         }
+
+        PersonaEntity persona = personaService.buscarPorId(request.getPersonaID());
+
+        // Verificar si la persona está en lista negra, si está lanza excepción.
+        blackListService.verificarNoEstaEnListaNegra(request.getPersonaID());
 
         AlquilerEntity entity = request.toEntity(persona);
 
