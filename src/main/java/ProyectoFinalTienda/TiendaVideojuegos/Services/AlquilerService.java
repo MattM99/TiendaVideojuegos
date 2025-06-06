@@ -5,17 +5,12 @@ import ProyectoFinalTienda.TiendaVideojuegos.exception.AlquilerNoEncontradoExcep
 import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BlacklistEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
-import ProyectoFinalTienda.TiendaVideojuegos.repositories.BlacklistRepository;
-import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AlquilerService {
@@ -42,6 +37,7 @@ public class AlquilerService {
         AlquilerEntity entity = request.toEntity(persona);
 
         return alquilerRepository.save(entity);
+
     }
 
     public void eliminar(int id){

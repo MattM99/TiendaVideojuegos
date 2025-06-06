@@ -1,16 +1,12 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.AlquilerNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.DetalleAlquilerNoEncontradoException;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.DetalleAlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.DetalleAlquilerRepository;
-import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
