@@ -89,39 +89,39 @@ public class PersonaEntity implements UserDetails {
     @NotBlank(message = "El teléfono no puede estar vacío")
     private String telefono;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new
-                SimpleGrantedAuthority((cuenta.getRol().name())));
-    }
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            return List.of(new
+                    SimpleGrantedAuthority((cuenta.getRol().name())));
+        }
 
-    @Override
-    public String getPassword() {
-        return "";
-    }
+        @Override
+        public String getPassword() {
+            return "";
+        }
 
-    @Override
-    public String getUsername() {
-        return "";
-    }
+        @Override
+        public String getUsername() {
+            return "";
+        }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;  //va a ser en funcion de la caducidad del token JWT, se usan comprueba en el service
-    }
+        @Override
+        public boolean isAccountNonExpired() {
+            return true;  //va a ser en funcion de la caducidad del token JWT, se usan comprueba en el service
+        }
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+        @Override
+        public boolean isAccountNonLocked() {
+            return true;
+        }
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+        @Override
+        public boolean isCredentialsNonExpired() {
+            return true;
+        }
 
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
-    }
+        @Override
+        public boolean isEnabled() {
+            return UserDetails.super.isEnabled();
+        }
 }
