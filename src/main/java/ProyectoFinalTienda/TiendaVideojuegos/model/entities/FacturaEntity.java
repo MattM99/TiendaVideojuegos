@@ -1,6 +1,9 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 @Entity
@@ -24,6 +27,7 @@ public class FacturaEntity {
 
     @ManyToOne
     @JoinColumn(name = "alquiler_id", nullable = false)
+    @NotNull(message = "El alquiler no puede ser nulo")
     private AlquilerEntity alquiler;
 
     @OneToOne(
@@ -37,23 +41,27 @@ public class FacturaEntity {
             name = "fecha_emision",
             nullable = false
     )
+    @NotBlank(message = "La fecha de emisión es obligatoria")
     private String fecha_emision;
 
     @Column(
             name = "monto_alquileres",
             nullable = false
     )
+    @PositiveOrZero(message = "El monto de alquileres no puede ser negativo")
     private double monto_alquileres;
 
     @Column(
             name = "descuento",
             nullable = false
     )
+    @PositiveOrZero(message = "El descuento no puede ser negativo")
     private double descuento;
 
     @Column(
             name = "total",
             nullable = false
     )
+    @PositiveOrZero(message = "El total no puede ser negativo")
     private double total;
 }
