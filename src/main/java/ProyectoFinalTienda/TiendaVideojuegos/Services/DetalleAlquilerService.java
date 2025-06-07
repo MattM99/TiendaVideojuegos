@@ -1,10 +1,10 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.AlquilerNoEncontradoException;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.DetalleAlquilerNoEncontradoException;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.*;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.AlquilerMapper;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.DetalleAlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
@@ -20,14 +20,17 @@ public class DetalleAlquilerService {
     @Autowired
     private DetalleAlquilerRepository detalleAlquilerRepository;
     @Autowired
-    private AlquilerService alquilerService;
+    private AlquilerRepository alquilerRepository;
     @Autowired
-    private InventarioService inventarioService;
+    private InventarioRepository inventarioRepository;
+    @Autowired
+    private DetalleAlquilerMapper detalleAlquilerMapper;
 
-    public DetalleAlquilerEntity crearDetalle(DetalleAlquilerCreateOrReplaceRequest request) {
-        AlquilerEntity alquiler = alquilerService.buscarPorId(request.getAlquiler_id());
 
-        InventarioEntity inventario = inventarioService.buscarPorId(request.getInventario_id());
+    public DetalleAlquilerResponse crearDetalle(DetalleAlquilerCreateOrReplaceRequest request) {
+        AlquilerEntity alquiler = alquilerRepository.findById(request.getAlquiler_id()).orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler con id: " + request.getAlquiler_id() + " no encontrado."));
+
+        InventarioEntity inventario = inventarioRepository.findById(request.getInventario_id()).orElseThrow(() -> new InventarioNoEncontradoException("Inventario con id: " + request.getInventario_id() + " no encontrado."));
 
         // Validar stock disponible
         if (inventario.getStockDisponible() <= 0) {
@@ -38,12 +41,12 @@ public class DetalleAlquilerService {
         inventario.setStockDisponible(inventario.getStockDisponible() - 1);
         inventario.setStockAlquilado(inventario.getStockAlquilado() + 1);
 
-        DetalleAlquilerEntity detalle = request.toEntity(alquiler, inventario);
+        DetalleAlquilerEntity detalle = detalleAlquilerMapper.toEntity(request, alquiler, inventario);
 
         // Este métod puede lanzar IllegalArgumentException si las fechas son inválidas
         detalle.calcularSubtotal();
 
-        return detalleAlquilerRepository.save(detalle);
+        return detalleAlquilerMapper.toResponse(detalleAlquilerRepository.save(detalle));
     }
 
     public void eliminar(int id){

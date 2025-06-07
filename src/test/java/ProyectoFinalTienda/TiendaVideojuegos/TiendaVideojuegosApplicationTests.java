@@ -47,12 +47,12 @@ class TiendaVideojuegosApplicationTests {
 
 
 		//videojuegoService.guardar(v);
-		videojuegoService.eliminar(2);
+		// videojuegoService.eliminar(2);
 		//videojuegoService.guardar(detroit);
 
-		List<VideojuegoEntity> lista = videojuegoService.buscarMultijugadores();
-		System.out.println("Multijugadores encontrados:");
-		lista.forEach(System.out::println);
+//		List<VideojuegoEntity> lista = videojuegoService.buscarMultijugadores();
+//		System.out.println("Multijugadores encontrados:");
+//		lista.forEach(System.out::println);
 	}
 
 }

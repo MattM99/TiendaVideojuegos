@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.AlquilerNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
@@ -23,12 +24,12 @@ public class AlquilerService {
     @Autowired
     private AlquilerRepository alquilerRepository;
     @Autowired
-    private PersonaService personaService;
+    private PersonaRepository personaRepository;
     @Autowired
     private BlackListService blackListService;
 
     public AlquilerEntity guardar(AlquilerCreateOrReplaceRequest request) {
-        PersonaEntity persona = personaService.buscarPorId(request.getPersonaID());
+        PersonaEntity persona = personaRepository.findById(request.getPersonaID()).orElseThrow();
 
         // Verificar si la persona está en lista negra, si está lanza excepción.
         blackListService.verificarNoEstaEnListaNegra(request.getPersonaID());
