@@ -1,4 +1,4 @@
-package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
+package ProyectoFinalTienda.TiendaVideojuegos.dtos.responses;
 
 import lombok.*;
 
