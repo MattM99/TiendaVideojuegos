@@ -11,9 +11,9 @@ public class DetalleAlquilerResponse {
 
     private int detalle_alquiler_id;
 
-    private AlquilerResponse alquilerResponse;
+    private AlquilerResponse alquiler;
 
-    private InventarioResponse inventarioResponse;
+    private InventarioResponse inventario;
 
     private double subtotal;
 

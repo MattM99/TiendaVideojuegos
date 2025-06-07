@@ -18,9 +18,9 @@ public class InventarioMapper {
     @Autowired
     private VideojuegoMapper videojuegoMapper;
 
-    public InventarioEntity toEntity(InventarioCreateOrReplaceRequest dto, VideojuegoResponse videojuegoResponse) {
+    public InventarioEntity toEntity(InventarioCreateOrReplaceRequest dto, VideojuegoEntity videojuego) {
         return InventarioEntity.builder()
-                .videojuego(videojuegoMapper.toEntityFromResponse(videojuegoResponse))
+                .videojuego(videojuego)
                 .plataforma(dto.getPlataforma())
                 .precioUnitarioDiario(dto.getPrecioUnitarioDiario())
                 .stockTotal(dto.getStockTotal())

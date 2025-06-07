@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.DetalleAlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.services.DetalleAlquilerService;
 import jakarta.validation.Valid;
@@ -16,9 +17,9 @@ public class DetalleAlquilerController {
     private DetalleAlquilerService detalleAlquilerService;
 
     @PostMapping
-    public ResponseEntity<DetalleAlquilerEntity> crearDetalle(@Valid @RequestBody DetalleAlquilerCreateOrReplaceRequest request) {
-        DetalleAlquilerEntity creado = detalleAlquilerService.crearDetalle(request);
-        return ResponseEntity.ok(creado);
+    public ResponseEntity<DetalleAlquilerResponse> crearDetalle(@Valid @RequestBody DetalleAlquilerCreateOrReplaceRequest request) {
+        DetalleAlquilerResponse response = detalleAlquilerService.crearDetalle(request);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/eliminar/{id}")

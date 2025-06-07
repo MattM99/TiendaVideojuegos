@@ -33,7 +33,7 @@ public class InventarioService {
         VideojuegoEntity videojuego = videojuegoRepository.findById(request.getVideojuegoId()).
                 orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id: " + request.getVideojuegoId() + " no encontrado."));
 
-        InventarioEntity entity = inventarioMapper.toEntity(request, videojuegoMapper.toResponse(videojuego));
+        InventarioEntity entity = inventarioMapper.toEntity(request, videojuego);
         // Validar que el stock sea correcto antes de guardar
         entity.validarStock();
 
