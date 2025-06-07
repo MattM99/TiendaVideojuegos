@@ -16,7 +16,7 @@ public class InventarioUpdateRequest {
     private Integer stockAlquilado;
     private Integer stockDescartado;
 
-    public void actualizarInventario(InventarioEntity entity) {
+    /*public void actualizarInventario(InventarioEntity entity) {
         if (precioUnitarioDiario != null && precioUnitarioDiario > 0) {
             entity.setPrecioUnitarioDiario(precioUnitarioDiario);
         }
@@ -32,6 +32,6 @@ public class InventarioUpdateRequest {
         if (stockDescartado != null && stockDescartado >= 0) {
             entity.setStockDescartado(stockDescartado);
         }
-    }
+    }*/
 
 }

@@ -1,4 +1,4 @@
-package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
+package ProyectoFinalTienda.TiendaVideojuegos.dtos.responses;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import lombok.*;
@@ -10,13 +10,15 @@ import java.time.Year;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VideojuegoUpdateRequest {
+public class VideojuegoResponse {
 
+    private int videojuegoID;
     private String titulo;
     private String desarrollador;
     private Generos genero;
     private Year lanzamiento;
     private String descripcion;
-    private Boolean multijugador;
+    private boolean multijugador;
 
 }
+
