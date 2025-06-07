@@ -2,7 +2,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CambiarContrasenaRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CambiarRolRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CuentaResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.CuentaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.RolInvalidoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
