@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,6 +51,7 @@ public class CuentaController {
         return ResponseEntity.ok(respuestas);
     }
 
+    //Permite que un admin cambie la contraseña de cualquier usuario
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{nickname}/contrasena")
     public ResponseEntity<CuentaResponse> cambiarContrasena(
@@ -57,6 +59,21 @@ public class CuentaController {
             @RequestBody @Valid CambiarContrasenaRequest request
             ) throws UsuarioNoEncontradoException {
 
+        CuentaEntity cuentaActualizada = cuentaService.cambiarContrasena(nickname, request.getNuevaContrasena());
+        CuentaResponse response = cuentaService.toCuentaResponse(cuentaActualizada);
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Permite que un usuario cambie su propia contraseña
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/mi-cuenta/contrasena")
+    public ResponseEntity<CuentaResponse> cambiarMiContrasena(
+            @RequestBody @Valid CambiarContrasenaRequest request,
+            Authentication authentication
+    ) throws UsuarioNoEncontradoException {
+
+        String nickname = authentication.getName(); // Extrae el usuario autenticado
         CuentaEntity cuentaActualizada = cuentaService.cambiarContrasena(nickname, request.getNuevaContrasena());
         CuentaResponse response = cuentaService.toCuentaResponse(cuentaActualizada);
 

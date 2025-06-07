@@ -24,6 +24,8 @@ public class JwtService {
     }
 
     private String getToken(Map<String, Object> extraClaims, UserDetails cuenta) {
+        extraClaims.put("role", cuenta.getAuthorities().stream().findFirst().get().getAuthority());
+
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(cuenta.getUsername()) // Nombre de usuario del titular de la cuenta
@@ -68,4 +70,9 @@ public class JwtService {
     private Boolean isTokenExpired(String token) {
         return getExpirationDateFromToken(token).before(new Date()); // Verifica si el token ha expirado
     }
+
+    public Claims getAllClaims(String token) {
+        return getClaims(token);
+    }
+
 }
