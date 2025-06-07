@@ -1,9 +1,13 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +32,7 @@ public class AlquilerEntity {
     private int alquiler_id;
     @ManyToOne
     @JoinColumn(name = "persona_id", nullable = false)
+    @NotNull(message = "Debe especificarse una persona para el alquiler")
     private PersonaEntity persona;
 
     @OneToMany(
@@ -46,12 +51,24 @@ public class AlquilerEntity {
             name = "fecha_retiro",
             nullable = false
     )
+    @NotNull(message = "La fecha de retiro no puede ser nula")
+    @PastOrPresent(message = "La fecha de retiro no puede estar en el futuro")
     private LocalDate fecha_retiro;
 
     @Column(
             name = "fecha_devolucion",
             nullable = false
     )
+    @NotNull(message = "La fecha de devolución no puede ser nula")
+    @Future(message = "La fecha de devolución debe estar en el futuro")
     private LocalDate fecha_devolucion; // fecha en la que DEBERIA devolver el juego
+
+    public long calcularDiasAlquiler() {
+       long dias = ChronoUnit.DAYS.between(this.getFecha_retiro(), this.getFecha_devolucion());
+        if (dias <= 0) {
+            throw new IllegalArgumentException("La fecha de entrega debe ser posterior a la de retiro");
+        }
+        return dias;
+    }
 
 }

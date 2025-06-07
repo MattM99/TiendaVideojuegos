@@ -107,7 +107,7 @@ public class PersonaEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; //va a ser en funcion de la caducidad del token JWT, se usan comprueba en el service
+        return true;  //va a ser en funcion de la caducidad del token JWT, se usan comprueba en el service
     }
 
     @Override

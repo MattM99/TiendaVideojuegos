@@ -1,6 +1,8 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.Year;
@@ -36,12 +38,14 @@ public class VideojuegoEntity {
     @Column(
             nullable = false
     )
+    @NotBlank(message = "El título no puede estar vacío")
     private String titulo;
 
     @Column(
             name = "desarrollador",
             nullable = false
     )
+    @NotBlank(message = "El desarrollador no puede estar vacío")
     private String desarrollador;
 
     @Enumerated(EnumType.STRING)
@@ -49,18 +53,21 @@ public class VideojuegoEntity {
             name = "genero",
             nullable = false
     )
+    @NotNull(message = "El género no puede ser nulo")
     private Generos genero;
 
     @Column(
             name = "lanzamiento",
             nullable = false
     )
+    @NotNull(message = "El año de lanzamiento no puede ser nulo")
     private Year lanzamiento;
 
     @Column(
             name = "descripcion",
             nullable = false
     )
+    @NotBlank(message = "La descripción no puede estar vacía")
     private String descripcion;
 
     @Column(

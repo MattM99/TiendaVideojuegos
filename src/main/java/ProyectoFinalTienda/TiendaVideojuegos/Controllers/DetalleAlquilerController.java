@@ -1,0 +1,30 @@
+package ProyectoFinalTienda.TiendaVideojuegos.controllers;
+
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.DetalleAlquilerEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.services.DetalleAlquilerService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/detalles_alquileres")
+public class DetalleAlquilerController {
+
+    @Autowired
+    private DetalleAlquilerService detalleAlquilerService;
+
+    @PostMapping
+    public ResponseEntity<DetalleAlquilerEntity> crearDetalle(@Valid @RequestBody DetalleAlquilerCreateOrReplaceRequest request) {
+        DetalleAlquilerEntity creado = detalleAlquilerService.crearDetalle(request);
+        return ResponseEntity.ok(creado);
+    }
+
+    @DeleteMapping("/eliminar/{id}")
+    public ResponseEntity<Void> eliminarDetalle(@PathVariable int id) {
+        detalleAlquilerService.eliminar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+}

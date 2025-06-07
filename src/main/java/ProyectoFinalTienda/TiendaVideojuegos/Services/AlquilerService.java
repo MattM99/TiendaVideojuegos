@@ -2,15 +2,20 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.AlquilerNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BlacklistEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
+import ProyectoFinalTienda.TiendaVideojuegos.repositories.BlacklistRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlquilerService {
@@ -18,11 +23,20 @@ public class AlquilerService {
     @Autowired
     private AlquilerRepository alquilerRepository;
     @Autowired
-    private PersonaRepository personaRepository;
+    private PersonaService personaService;
+    @Autowired
+    private BlackListService blackListService;
 
     public AlquilerEntity guardar(AlquilerCreateOrReplaceRequest request) {
-        PersonaEntity persona = personaRepository.findById(request.getPersonaID())
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado."));
+        PersonaEntity persona = personaService.buscarPorId(request.getPersonaID());
+
+        // Verificar si la persona está en lista negra, si está lanza excepción.
+        blackListService.verificarNoEstaEnListaNegra(request.getPersonaID());
+
+        // Validar fechas
+        if (request.getFecha_retiro().isAfter(request.getFecha_devolucion())) {
+            throw new BusinessException("La fecha de retiro no puede ser posterior a la fecha de devolución.");
+        }
 
         AlquilerEntity entity = request.toEntity(persona);
 
