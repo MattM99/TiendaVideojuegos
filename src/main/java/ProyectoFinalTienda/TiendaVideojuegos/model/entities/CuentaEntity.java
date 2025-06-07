@@ -73,13 +73,6 @@ public class CuentaEntity implements UserDetails {
     @NotNull(message = "El estado es obligatorio")
     private Estado estado;
 
-    @Column(
-            name = "alta",
-            nullable = false
-    )
-    private boolean alta;
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + getRol().name()));
