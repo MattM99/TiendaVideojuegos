@@ -63,13 +63,6 @@ public class CuentaEntity implements UserDetails {
     )
     private Estado estado;
 
-    @Column(
-            name = "alta",
-            nullable = false
-    )
-    private boolean alta;
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + getRol().name()));
