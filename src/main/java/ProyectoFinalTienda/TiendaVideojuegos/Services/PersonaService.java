@@ -1,6 +1,9 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.PersonaMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,61 +17,70 @@ public class PersonaService {
     @Autowired
     private PersonaRepository personaRepository;
 
-    public PersonaEntity crearPersona(PersonaEntity persona) {
-        return personaRepository.save(persona);
+    @Autowired
+    private PersonaMapper personaMapper;
+
+
+    public PersonaResponse crearPersona(PersonaCreateOrReplaceRequest dto) {
+        PersonaEntity entity = personaMapper.convertirDTOaEntidad(dto);
+        return personaMapper.convertirEntidadADTO(personaRepository.save(entity));
     }
 
-    public PersonaEntity buscarPorId(int id){
-        return personaRepository.findById(id).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con id: " + id));
+
+    public PersonaResponse buscarPorId(int id) {
+        PersonaEntity entity = personaRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con id: " + id));
+        return personaMapper.convertirEntidadADTO(entity);
     }
 
-    public List<PersonaEntity> buscarPorNombre(String nombre) {
+    public List<PersonaResponse> buscarPorNombre(String nombre) {
         List<PersonaEntity> personas = personaRepository.findByNombre(nombre);
         if (personas.isEmpty()) {
             throw new UsuarioNoEncontradoException("No se encontraron usuarios con el nombre: " + nombre);
         }
-        return personas;
+        return personas.stream().map(personaMapper::convertirEntidadADTO).toList();
     }
 
-    public List<PersonaEntity> buscarPorApellido(String apellido) {
+    public List<PersonaResponse> buscarPorApellido(String apellido) {
         List<PersonaEntity> personas = personaRepository.findByApellido(apellido);
         if (personas.isEmpty()) {
             throw new UsuarioNoEncontradoException("No se encontraron usuarios con el apellido: " + apellido);
         }
-        return personas;
+        return personas.stream().map(personaMapper::convertirEntidadADTO).toList();
     }
 
 
-    public PersonaEntity buscarPorDni(String dni){
-        return personaRepository.findByDni(dni).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con DNI: " + dni));
+    public PersonaResponse buscarPorDni(String dni) {
+        PersonaEntity entity = personaRepository.findByDni(dni)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con DNI: " + dni));
+        return personaMapper.convertirEntidadADTO(entity);
     }
 
-    public PersonaEntity buscarPorEmail(String email){
-        return personaRepository.getPersonaByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
+
+    public PersonaResponse buscarPorEmail(String email) {
+        PersonaEntity entity = personaRepository.getPersonaByEmail(email)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
+        return personaMapper.convertirEntidadADTO(entity);
     }
 
-    public PersonaEntity actualizar(String email, PersonaEntity personaActualizada) {
-        PersonaEntity persona = personaRepository.getPersonaByEmail(email).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
-        persona.setNombre(personaActualizada.getNombre());
-        if(personaActualizada.getApellido() != null) {
-            persona.setApellido(personaActualizada.getApellido());
-        }
-        if(personaActualizada.getTelefono() != null) {
-            persona.setTelefono(personaActualizada.getTelefono());
-        }
-        if(personaActualizada.getDni() != null) {
-            persona.setDni(personaActualizada.getDni());
-        }
-        if(personaActualizada.getNombre() != null) {
-            persona.setNombre(personaActualizada.getNombre());
-        }
 
-        return personaRepository.save(persona);
+    public PersonaResponse actualizar(String email, PersonaCreateOrReplaceRequest dto) {
+        PersonaEntity persona = personaRepository.getPersonaByEmail(email)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
+
+        persona.setNombre(dto.getNombre());
+        persona.setApellido(dto.getApellido());
+        persona.setTelefono(dto.getTelefono());
+        persona.setDni(dto.getDni());
+
+        return personaMapper.convertirEntidadADTO(personaRepository.save(persona));
     }
 
 
     public void eliminarPorDni(String dni) {
-        personaRepository.deleteByDni(dni).orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con DNI: " + dni));
+        personaRepository.deleteByDni(dni)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con DNI: " + dni));
     }
+
 
 }
