@@ -9,8 +9,6 @@ import lombok.*;
 @Builder
 public class PersonaResponse {
 
-    private int personaId;
-
     private String nombre;
 
     private String apellido;
