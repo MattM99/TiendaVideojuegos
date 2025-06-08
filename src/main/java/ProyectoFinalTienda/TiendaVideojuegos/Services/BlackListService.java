@@ -5,6 +5,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BlacklistEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.BlacklistRepository;
+import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +20,12 @@ public class BlackListService {
     private BlacklistRepository blacklistRepository;
     @Autowired
     private PersonaService personaService;
+    @Autowired
+    private PersonaRepository personaRepository;
 
     public BlacklistEntity crear(BlackListCreateOrReplaceRequest request) {
         // Buscar la persona relacionada al ID
-        PersonaEntity persona = personaService.buscarPorId(request.getPersonaID());
+        PersonaEntity persona = personaRepository.findById(request.getPersonaID()).orElseThrow();
 
         // Convertir el DTO a entidad
         BlacklistEntity entity = request.toEntity(persona);
