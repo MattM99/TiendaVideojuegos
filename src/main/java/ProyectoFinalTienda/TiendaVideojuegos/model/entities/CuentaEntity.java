@@ -39,11 +39,12 @@ public class CuentaEntity implements UserDetails {
     @NotNull(message = "La cuenta debe estar asociada a una persona")
     private PersonaEntity persona;
 
+
     @Column(
             name = "nickname",
             nullable = false,
             unique = true,
-            length = 50
+            length = 15
     )
     @NotBlank(message = "El nickname es obligatorio")
     @Size(min = 3, max = 50, message = "El nickname debe tener entre 3 y 50 caracteres")

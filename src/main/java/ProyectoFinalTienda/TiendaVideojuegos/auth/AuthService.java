@@ -57,7 +57,8 @@ public class AuthService {
         CuentaRepository.save(cuenta);
 
         return AuthResponse.builder()
-                .token(jwtService.getToken(cuenta))
+                //.token(jwtService.getToken(cuenta))
+                .token("Cuenta registrada exitosamente. Por favor, inicia sesión para obtener tu token.")
                 .build();
     }
 }

@@ -2,13 +2,10 @@ package ProyectoFinalTienda.TiendaVideojuegos.config;
 
 import ProyectoFinalTienda.TiendaVideojuegos.auth.AuthService;
 import ProyectoFinalTienda.TiendaVideojuegos.auth.RegisterRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class AdminInitializer {
@@ -29,9 +26,7 @@ public class AdminInitializer {
                         .build();
 
                 authService.register(adminRequest);
-                System.out.println(">>> Usuario admin creado.");
-            } else {
-                System.out.println(">>> Usuario admin ya existe.");
+                System.out.println(">>> Usuario admin creado. Nickname: " + adminRequest.getNickname() + ", Rol: " + adminRequest.getRol());
             }
         };
     }
