@@ -1,4 +1,4 @@
-package ProyectoFinalTienda.TiendaVideojuegos.dtos.responses;
+package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
 
 import lombok.*;
 
@@ -7,15 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PersonaResponse {
-
+public class PersonaPatchRequest {
     private String nombre;
-
     private String apellido;
-
-    private String dni;
-
-    private String email;
-
     private String telefono;
+    private String dni;
 }
