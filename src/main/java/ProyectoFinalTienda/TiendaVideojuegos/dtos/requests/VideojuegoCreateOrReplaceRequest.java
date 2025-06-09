@@ -20,7 +20,7 @@ public class VideojuegoCreateOrReplaceRequest {
     private String desarrollador;
 
     @NotNull(message = "El género es obligatorio")
-    private Generos genero;
+    private String genero;
 
     @NotNull(message = "El año de lanzamiento es obligatorio")
     private Year lanzamiento;
