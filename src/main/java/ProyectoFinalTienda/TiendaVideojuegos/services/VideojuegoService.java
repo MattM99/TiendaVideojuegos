@@ -78,7 +78,7 @@ public class VideojuegoService {
         return videojuegoMapper.toResponseList(videojuegos);
     }
 
-    public List<VideojuegoEntity> buscarPorGenero(String generoStr) throws NoSuchElementException, VideojuegoNoEncontradoException {
+    public List<VideojuegoResponse> buscarPorGenero(String generoStr) throws NoSuchElementException, VideojuegoNoEncontradoException {
         if (!esGeneroValido(generoStr)){
             throw new NoSuchElementException("No existe el genero: " + generoStr);
         }
@@ -90,7 +90,8 @@ public class VideojuegoService {
         if (juegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontraron juegos del genero: " + generoStr);
         }
-        return juegos;
+
+        return videojuegoMapper.toResponseList(juegos);
     }
 
     public boolean esGeneroValido(String generoStr) {
