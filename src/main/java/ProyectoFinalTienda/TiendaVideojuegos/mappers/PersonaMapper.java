@@ -17,6 +17,15 @@ public class PersonaMapper {
                 .telefono(dto.getTelefono())
                 .build();
     }
+    public PersonaEntity toEntity(PersonaResponse dto) {
+        return PersonaEntity.builder()
+                .nombre(dto.getNombre())
+                .apellido(dto.getApellido())
+                .dni(dto.getDni())
+                .email(dto.getEmail())
+                .telefono(dto.getTelefono())
+                .build();
+    }
 
 
     public PersonaResponse convertirEntidadADTO(PersonaEntity entity) {
@@ -28,5 +37,7 @@ public class PersonaMapper {
                 .telefono(entity.getTelefono())
                 .build();
     }
+
+
 
 }

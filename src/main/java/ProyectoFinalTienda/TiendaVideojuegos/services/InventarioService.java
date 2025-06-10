@@ -42,8 +42,6 @@ public class InventarioService {
         }else{
             throw new IllegalArgumentException("Validaciones fallidas para el inventario.");
         }
-
-
     }
 
     public void eliminar(int id){

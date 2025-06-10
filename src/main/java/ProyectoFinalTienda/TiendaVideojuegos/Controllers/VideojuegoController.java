@@ -72,8 +72,8 @@ public class VideojuegoController {
 
     // Búsquedas por genero
     @GetMapping("/genero/{genero}")
-    public ResponseEntity<List<VideojuegoResponse>> buscarPorGenero(@PathVariable Generos genero){
-        List<VideojuegoResponse> responses = videojuegoService.buscarPorGenero(genero);
+    public ResponseEntity<List<VideojuegoResponse>> buscarPorGenero(@PathVariable String genero){
+        List<VideojuegoResponse> responses = videojuegoService.buscarPorGenero(genero.trim().toUpperCase());
         return ResponseEntity.ok(responses);
     }
 

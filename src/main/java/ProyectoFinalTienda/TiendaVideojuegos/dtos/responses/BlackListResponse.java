@@ -15,9 +15,9 @@ public class BlackListResponse {
 
     private PersonaResponse personaResponse;
 
-    private LocalDate fecha_inicio;
+    private String fecha_inicio;
 
-    private LocalDate fecha_fin;
+    private String fecha_fin;
 
     private String motivo;
 
