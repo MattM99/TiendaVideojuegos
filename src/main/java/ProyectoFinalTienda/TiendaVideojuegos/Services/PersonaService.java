@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaPatchRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.PersonaMapper;
@@ -64,14 +65,14 @@ public class PersonaService {
     }
 
 
-    public PersonaResponse actualizar(String email, PersonaCreateOrReplaceRequest dto) {
+    public PersonaResponse actualizar(String email, PersonaPatchRequest dto) {
         PersonaEntity persona = personaRepository.getPersonaByEmail(email)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
 
-        persona.setNombre(dto.getNombre());
-        persona.setApellido(dto.getApellido());
-        persona.setTelefono(dto.getTelefono());
-        persona.setDni(dto.getDni());
+        if (dto.getNombre() != null) persona.setNombre(dto.getNombre());
+        if (dto.getApellido() != null) persona.setApellido(dto.getApellido());
+        if (dto.getTelefono() != null) persona.setTelefono(dto.getTelefono());
+        if (dto.getDni() != null) persona.setDni(dto.getDni());
 
         return personaMapper.convertirEntidadADTO(personaRepository.save(persona));
     }
