@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.*;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
@@ -12,6 +13,8 @@ import ProyectoFinalTienda.TiendaVideojuegos.repositories.DetalleAlquilerReposit
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class DetalleAlquilerService {
@@ -61,5 +64,20 @@ public class DetalleAlquilerService {
 
         detalleAlquilerRepository.deleteById(id);
     }
+ /*
+    // Buscar por id con excepción si no existe
+    public DetalleAlquilerResponse buscarPorId(int id){
+        DetalleAlquilerEntity entity = detalleAlquilerRepository.findById(id)
+                .orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler con id: " + id + " no encontrado."));
+        return detalleAlquilerMapper.toResponse(entity);
+    }
 
+    public List<DetalleAlquilerResponse> buscarPorId(int personaId){
+        List<DetalleAlquilerResponse> alquileres = detalleAlquilerRepository.findByPersonaId(personaId);
+        if (alquileres.isEmpty()) {
+            throw new UsuarioNoEncontradoException("No se encontró ningún alquiler con el usuario de id: " + personaId);
+        }
+        return detalleAlquilerMapper.toResponse(alquileres);
+    }
+    */
 }

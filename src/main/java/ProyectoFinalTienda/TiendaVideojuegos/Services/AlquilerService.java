@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.AlquilerNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
@@ -11,6 +12,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BlacklistEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.BlacklistRepository;
+import ProyectoFinalTienda.TiendaVideojuegos.repositories.DetalleAlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ public class AlquilerService {
 
     @Autowired
     private AlquilerRepository alquilerRepository;
+    @Autowired
+    private DetalleAlquilerService detalleAlquilerService;
     @Autowired
     private PersonaRepository personaRepository;
     @Autowired
