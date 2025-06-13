@@ -5,6 +5,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.AlquilerNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.AlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BlacklistEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
@@ -27,6 +28,8 @@ public class AlquilerService {
     private PersonaRepository personaRepository;
     @Autowired
     private BlackListService blackListService;
+    @Autowired
+    private AlquilerMapper alquilerMapper;
 
     public AlquilerEntity guardar(AlquilerCreateOrReplaceRequest request) {
         PersonaEntity persona = personaRepository.findById(request.getPersonaID()).orElseThrow();
@@ -39,7 +42,7 @@ public class AlquilerService {
             throw new BusinessException("La fecha de retiro no puede ser posterior a la fecha de devolución.");
         }
 
-        AlquilerEntity entity = request.toEntity(persona);
+        AlquilerEntity entity = alquilerMapper.toEntity(request, persona);
 
         return alquilerRepository.save(entity);
     }
