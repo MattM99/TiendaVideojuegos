@@ -19,11 +19,11 @@ public class DetalleAlquilerCreateOrReplaceRequest {
     @NotNull(message = "El ID del inventario es obligatorio")
     private Integer inventario_id;
 
-    public DetalleAlquilerEntity toEntity(AlquilerEntity alquiler, InventarioEntity inventario) {
-        return DetalleAlquilerEntity.builder()
-                .alquiler(alquiler)
-                .inventario(inventario)
-                .build();
-    }
+//    public DetalleAlquilerEntity toEntity(AlquilerEntity alquiler, InventarioEntity inventario) {
+//        return DetalleAlquilerEntity.builder()
+//                .alquiler(alquiler)
+//                .inventario(inventario)
+//                .build();
+//    }
 
 }
