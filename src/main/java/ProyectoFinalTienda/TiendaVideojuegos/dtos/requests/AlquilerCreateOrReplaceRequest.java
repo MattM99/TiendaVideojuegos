@@ -23,11 +23,7 @@ public class AlquilerCreateOrReplaceRequest {
     @NotNull(message = "La fecha en la que se debe devolver el juego es obligatoria")
     private LocalDate fecha_devolucion;
 
-//    public AlquilerEntity toEntity(PersonaEntity persona) {
-//        return AlquilerEntity.builder()
-//                .persona(persona)
-//                .fecha_retiro(this.fecha_retiro)
-//                .fecha_devolucion(this.fecha_devolucion)
-//                .build();
-//    }
+    @NotNull(message = "El juego a alquilar es obligatorio")
+    private int idJuego;
+
 }
