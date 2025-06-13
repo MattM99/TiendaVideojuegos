@@ -38,11 +38,4 @@ public class DetalleAlquilerMapper {
                 .build();
     }
 
-    public DetalleAlquilerResponse toShallowResponse(DetalleAlquilerEntity entity) {
-        return DetalleAlquilerResponse.builder()
-               .detalle_alquiler_id(entity.getDetalle_alquiler_id())
-                .subtotal(entity.getSubtotal())
-                .build();
-    }
-
 }
