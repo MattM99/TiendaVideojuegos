@@ -4,6 +4,8 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BlackListCreateOrRepl
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BlackListResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BlacklistEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.services.BlackListService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,42 +17,34 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/blacklist")
 @Validated
-//@RequiredArgsConstructor
+@Tag(name = "BlackList", description = "Control de lista negra de usuarios")
 public class BlackListController {
 
     @Autowired
     private BlackListService blackListService;
 
-    /**
-     * Crear un nuevo registro en la lista negra.
-     */
+    @Operation(summary = "Crear un nuevo registro en la lista negra", description = "Permite crear una nueva entrada en la lista negra")
     @PostMapping("/crear")
     public ResponseEntity<BlackListResponse> crear(@RequestBody BlackListCreateOrReplaceRequest request) {
         BlackListResponse creada = blackListService.crear(request);
         return ResponseEntity.ok(creada);
     }
-/*
-    /**
-     * Desbanear a una persona (cerrar su estado vigente en la blacklist).
-     */
+
+    @Operation(summary = "Desbanear a una persona", description = "Permite desbanear a una persona de la lista negra")
     @PutMapping("/desbanear/{personaId}")
     public ResponseEntity<BlackListResponse> desbanear(@PathVariable int personaId) {
         BlackListResponse actualizado = blackListService.desbanear(personaId);
         return ResponseEntity.ok(actualizado);
     }
 
-    /**
-     * Obtener el histórico completo de personas en la lista negra.
-     */
+    @Operation(summary = "Obtener histórico de lista negra", description = "Devuelve el histórico completo de personas en la lista negra")
     @GetMapping("/historico")
     public ResponseEntity<List<BlackListResponse>> obtenerHistorico() {
         List<BlackListResponse> lista = blackListService.obtenerHistorico();
         return ResponseEntity.ok(lista);
     }
 
-    /**
-     * Obtener personas actualmente en lista negra vigente.
-     */
+    @Operation(summary = "Obtener personas en lista negra vigente", description = "Devuelve las personas actualmente en la lista negra")
     @GetMapping("/vigentes")
     public ResponseEntity<List<BlackListResponse>> obtenerVigentes() {
         List<BlackListResponse> listaVigente = blackListService.obtenerPersonasEnListaNegraVigente();

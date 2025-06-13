@@ -6,6 +6,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import ProyectoFinalTienda.TiendaVideojuegos.services.VideojuegoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ public class VideojuegoController {
     private VideojuegoService videojuegoService;
 
     // Creación de un nuevo videojuego
+
     @PostMapping
     public ResponseEntity<VideojuegoResponse> crearVideojuego(
             @Valid @RequestBody VideojuegoCreateOrReplaceRequest request) {
