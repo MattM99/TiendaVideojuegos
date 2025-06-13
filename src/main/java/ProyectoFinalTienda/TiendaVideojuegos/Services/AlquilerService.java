@@ -31,7 +31,7 @@ public class AlquilerService {
     @Autowired
     private AlquilerMapper alquilerMapper;
 
-    public AlquilerEntity guardar(AlquilerCreateOrReplaceRequest request) {
+    public AlquilerResponse guardar(AlquilerCreateOrReplaceRequest request) {
         PersonaEntity persona = personaRepository.findById(request.getPersonaID()).orElseThrow();
 
         // Verificar si la persona está en lista negra, si está lanza excepción.
@@ -44,7 +44,7 @@ public class AlquilerService {
 
         AlquilerEntity entity = alquilerMapper.toEntity(request, persona);
 
-        return alquilerRepository.save(entity);
+        return alquilerMapper.toResponse(alquilerRepository.save(entity));
     }
 
     public void eliminar(int id){
@@ -55,27 +55,28 @@ public class AlquilerService {
     }
 
     // Obtener todos con validación de lista vacía
-    public List<AlquilerEntity> obtenerTodos(){
+    public List<AlquilerResponse> obtenerTodos(){
         List<AlquilerEntity> alquileres = alquilerRepository.findAll();
         if (alquileres.isEmpty()) {
             throw new AlquilerNoEncontradoException("No se encontró ningún alquiler en el sistema.");
         }
-        return alquileres;
+        return alquilerMapper.toResponseList(alquileres);
     }
 
     // Buscar por id con excepción si no existe
-    public AlquilerEntity buscarPorId(int id){
-        return alquilerRepository.findById(id)
+    public AlquilerResponse buscarPorId(int id){
+        AlquilerEntity entity = alquilerRepository.findById(id)
                 .orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler con id: " + id + " no encontrado."));
+        return alquilerMapper.toResponse(entity);
     }
 
     // Buscar por usuario con excepción si lista vacía
-    public List<AlquilerEntity> buscarPorUsuario(int personaId){
+    public List<AlquilerResponse> buscarPorUsuario(int personaId){
         List<AlquilerEntity> alquileres = alquilerRepository.findByPersonaId(personaId);
         if (alquileres.isEmpty()) {
             throw new UsuarioNoEncontradoException("No se encontró ningún alquiler con el usuario de id: " + personaId);
         }
-        return alquileres;
+        return alquilerMapper.toResponseList(alquileres);
     }
 
 }
