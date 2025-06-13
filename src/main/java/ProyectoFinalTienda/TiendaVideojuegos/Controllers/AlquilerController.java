@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.services.AlquilerService;
 import jakarta.validation.Valid;
@@ -20,9 +21,9 @@ public class AlquilerController {
 
     // Crear un nuevo alquiler
     @PostMapping
-    public ResponseEntity<AlquilerEntity> crearAlquiler(@Valid @RequestBody AlquilerCreateOrReplaceRequest request) {
-        AlquilerEntity nuevoAlquiler = alquilerService.guardar(request);
-        return new ResponseEntity<>(nuevoAlquiler, HttpStatus.CREATED);
+    public ResponseEntity<AlquilerResponse> crearAlquiler(@Valid @RequestBody AlquilerCreateOrReplaceRequest request) {
+        AlquilerResponse response = alquilerService.guardar(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // Eliminar un alquiler por ID
@@ -33,23 +34,22 @@ public class AlquilerController {
     }
 
     // Obtener todos los alquileres
-    @GetMapping
-    public ResponseEntity<List<AlquilerEntity>> obtenerTodos() {
-        List<AlquilerEntity> lista = alquilerService.obtenerTodos();
-        return ResponseEntity.ok(lista);
+    @GetMapping("/listar")
+    public ResponseEntity<List<AlquilerResponse>> obtenerTodos() {
+        return ResponseEntity.ok(alquilerService.obtenerTodos());
     }
 
     // Obtener un alquiler por su ID
     @GetMapping("/{id}")
-    public ResponseEntity<AlquilerEntity> obtenerPorId(@PathVariable int id) {
-        AlquilerEntity alquiler = alquilerService.buscarPorId(id);
-        return ResponseEntity.ok(alquiler);
+    public ResponseEntity<AlquilerResponse> obtenerPorId(@PathVariable int id) {
+        AlquilerResponse response = alquilerService.buscarPorId(id);
+        return ResponseEntity.ok(response);
     }
 
     // Obtener alquileres por ID de persona (usuario)
     @GetMapping("/usuario/{personaId}")
-    public ResponseEntity<List<AlquilerEntity>> obtenerPorUsuario(@PathVariable int personaId) {
-        List<AlquilerEntity> alquileres = alquilerService.buscarPorUsuario(personaId);
-        return ResponseEntity.ok(alquileres);
+    public ResponseEntity<List<AlquilerResponse>> obtenerPorUsuario(@PathVariable int personaId) {
+        List<AlquilerResponse> responses = alquilerService.buscarPorUsuario(personaId);
+        return ResponseEntity.ok(responses);
     }
 }

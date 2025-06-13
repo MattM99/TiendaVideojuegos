@@ -9,7 +9,6 @@ import ProyectoFinalTienda.TiendaVideojuegos.mappers.InventarioMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.VideojuegoMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
@@ -69,11 +68,11 @@ public class InventarioService {
 
     // Buscar por videojuego con excepción si lista vacía
     public List<InventarioResponse> buscarPorVideojuego(int videojuegoId) {
-        List<InventarioEntity> responses = inventarioRepository.findByVideojuegoId(videojuegoId);
-        if (responses.isEmpty()) {
+        List<InventarioEntity> inventarios = inventarioRepository.findByVideojuegoId(videojuegoId);
+        if (inventarios.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con la id del videojuego: " + videojuegoId);
         }
-        return inventarioMapper.toResponseList(responses);
+        return inventarioMapper.toResponseList(inventarios);
     }
 
     // Buscar por plataforma con excepción si lista vacía
@@ -82,11 +81,11 @@ public class InventarioService {
             throw new IllegalArgumentException("La plataforma ingresada no es válida: " + plataforma);
         }
 
-        List<InventarioEntity> responses = inventarioRepository.findByPlataforma(Plataformas.valueOf(plataforma.trim().toUpperCase()));
-        if (responses.isEmpty()) {
+        List<InventarioEntity> inventarios = inventarioRepository.findByPlataforma(Plataformas.valueOf(plataforma.trim().toUpperCase()));
+        if (inventarios.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con la plataforma: " + plataforma);
         }
-        return inventarioMapper.toResponseList(responses);
+        return inventarioMapper.toResponseList(inventarios);
     }
 
     // Buscar por precio menor que valor, validando lista vacía
@@ -94,11 +93,11 @@ public class InventarioService {
         if (valor < 0) {
             throw new IllegalArgumentException("El valor debe ser mayor a 0.");
         }
-        List<InventarioEntity> responses = inventarioRepository.findByPrecioUnitarioDiarioLessThan(valor);
-        if (responses.isEmpty()) {
+        List<InventarioEntity> inventarios = inventarioRepository.findByPrecioUnitarioDiarioLessThan(valor);
+        if (inventarios.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con precio menor a: " + valor);
         }
-        return inventarioMapper.toResponseList(responses);
+        return inventarioMapper.toResponseList(inventarios);
     }
 
     // Buscar por plataforma y precio menor que valor, validando lista vacía
@@ -109,11 +108,11 @@ public class InventarioService {
         if (!esPlataformaValida(plataforma)) {
             throw new IllegalArgumentException("La plataforma ingresada no es válida: " + plataforma);
         }
-        List<InventarioEntity> responses = inventarioRepository.findByPlataformaAndPrecioUnitarioDiarioLessThan(Plataformas.valueOf(plataforma.trim().toUpperCase()), valor);
-        if (responses.isEmpty()) {
+        List<InventarioEntity> inventarios = inventarioRepository.findByPlataformaAndPrecioUnitarioDiarioLessThan(Plataformas.valueOf(plataforma.trim().toUpperCase()), valor);
+        if (inventarios.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con plataforma " + plataforma + " y precio menor a " + valor);
         }
-        return inventarioMapper.toResponseList(responses);
+        return inventarioMapper.toResponseList(inventarios);
     }
 
     // Obtener stock total, lanzar excepción si null

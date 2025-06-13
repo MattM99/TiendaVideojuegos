@@ -20,4 +20,6 @@ public class AlquilerResponse {
 
     private LocalDate fecha_devolucion;
 
+    private List<DetalleAlquilerResponse> detalles;
+
 }
