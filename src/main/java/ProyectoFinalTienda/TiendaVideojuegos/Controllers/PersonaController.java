@@ -21,7 +21,7 @@ public class PersonaController {
     @Autowired
     private PersonaService personaService;
 
-    @PostMapping
+    @PostMapping("/crear")
     public ResponseEntity<PersonaResponse> crearPersona(@Valid @RequestBody PersonaCreateOrReplaceRequest dto) {
         PersonaResponse nueva = personaService.crearPersona(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nueva);
