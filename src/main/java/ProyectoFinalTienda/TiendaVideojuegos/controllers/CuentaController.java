@@ -7,6 +7,8 @@ import ProyectoFinalTienda.TiendaVideojuegos.exception.RolInvalidoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.services.CuentaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +24,18 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/cuenta")
 @RequiredArgsConstructor
 @Validated
+@Tag(name = "Cuenta", description = "Operaciones relacionadas con la gestión de cuentas de usuario")
 public class CuentaController {
     private final CuentaService cuentaService;
 
+    @Operation(summary = "Buscar cuenta por nickname", description = "Devuelve los datos de una cuenta específica usando su nickname")
     @GetMapping("/{nickname}")
     public ResponseEntity<CuentaResponse> buscarPorNickname(@PathVariable String nickname) throws UsuarioNoEncontradoException {
         CuentaEntity cuenta = cuentaService.buscarPorNickname(nickname);
         return ResponseEntity.ok(cuentaService.toCuentaResponse(cuenta));
     }
 
+    @Operation(summary = "Buscar cuentas por rol", description = "Devuelve una lista de cuentas que tienen el rol especificado")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/rol/{rol}")
     public ResponseEntity<List<CuentaResponse>> buscarPorRol(@PathVariable String rol) throws NoSuchElementException, UsuarioNoEncontradoException {
@@ -41,6 +46,7 @@ public class CuentaController {
         return ResponseEntity.ok(respuestas);
     }
 
+    @Operation(summary = "Buscar cuentas por estado", description = "Devuelve una lista de cuentas filtradas por estado")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/estado/{estado}")
     public ResponseEntity<List<CuentaResponse>> buscarPorEstado(@PathVariable String estado) throws UsuarioNoEncontradoException, NoSuchElementException {
@@ -51,7 +57,7 @@ public class CuentaController {
         return ResponseEntity.ok(respuestas);
     }
 
-    //Permite que un admin cambie la contraseña de cualquier usuario
+    @Operation(summary = "Cambiar contraseña de una cuenta (admin)", description = "Permite que un administrador cambie la contraseña de cualquier cuenta usando el nickname")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{nickname}/contrasena")
     public ResponseEntity<CuentaResponse> cambiarContrasena(
@@ -65,7 +71,7 @@ public class CuentaController {
         return ResponseEntity.ok(response);
     }
 
-    //Permite que un usuario cambie su propia contraseña
+    @Operation(summary = "Cambiar mi propia contraseña", description = "Permite al usuario autenticado cambiar su propia contraseña")
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/mi-cuenta/contrasena")
     public ResponseEntity<CuentaResponse> cambiarMiContrasena(
@@ -80,6 +86,7 @@ public class CuentaController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Cambiar el rol de una cuenta", description = "Permite a un administrador cambiar el rol de una cuenta especificada")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{nickname}/rol")
     public ResponseEntity<CuentaResponse> cambiarRol(
@@ -93,6 +100,7 @@ public class CuentaController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Dar de baja una cuenta", description = "Permite a un administrador desactivar una cuenta existente")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{nickname}/baja")
     public ResponseEntity<CuentaResponse> darDeBaja(@PathVariable String nickname) throws UsuarioNoEncontradoException {
@@ -101,7 +109,7 @@ public class CuentaController {
 
         return ResponseEntity.ok(response);
     }
-
+    @Operation(summary = "Reactivar una cuenta", description = "Permite a un administrador volver a activar una cuenta previamente dada de baja")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{nickname}/alta")
     public ResponseEntity<CuentaResponse> restablecerCuenta(@PathVariable String nickname) throws UsuarioNoEncontradoException {
