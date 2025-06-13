@@ -41,7 +41,7 @@ public class AlquilerMapper {
     public List<AlquilerResponse> toResponseList(List<AlquilerEntity> entities) {
         return entities.stream()
                 .map(entity -> {
-                    PersonaResponse personaResponse = personaMapper.toResponse(entity.getPersona());
+                    PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
                     return toResponse(entity);
                 })
                 .collect(Collectors.toList());
