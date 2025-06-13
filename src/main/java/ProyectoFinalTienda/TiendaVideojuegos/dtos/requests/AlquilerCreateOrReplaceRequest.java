@@ -30,5 +30,4 @@ public class AlquilerCreateOrReplaceRequest {
                 .fecha_devolucion(this.fecha_devolucion)
                 .build();
     }
-
 }

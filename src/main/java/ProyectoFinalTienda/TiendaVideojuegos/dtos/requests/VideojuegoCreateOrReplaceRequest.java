@@ -1,5 +1,4 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,14 +30,4 @@ public class VideojuegoCreateOrReplaceRequest {
 
     private boolean multijugador;
 
-    public VideojuegoEntity toEntity() {
-        return VideojuegoEntity.builder()
-                .titulo(titulo)
-                .desarrollador(desarrollador)
-                .genero(genero)
-                .lanzamiento(lanzamiento)
-                .descripcion(descripcion)
-                .multijugador(multijugador)
-                .build();
-    }
 }

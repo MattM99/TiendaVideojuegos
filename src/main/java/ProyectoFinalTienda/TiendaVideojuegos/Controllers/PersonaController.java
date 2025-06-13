@@ -1,5 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.services.PersonaService;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import jakarta.validation.Valid;
@@ -20,7 +21,8 @@ public class PersonaController {
     private PersonaService personaService;
 
     @PostMapping
-    public ResponseEntity<PersonaEntity> crearPersona(@Valid @RequestBody PersonaEntity persona) {
+    public ResponseEntity<PersonaEntity> crearPersona(@Valid @RequestBody PersonaCreateOrReplaceRequest dto) {
+        PersonaEntity persona = convertirDTOaEntidad(dto);
         PersonaEntity nueva = personaService.crearPersona(persona);
         return ResponseEntity.status(HttpStatus.CREATED).body(nueva);
     }
@@ -59,6 +61,16 @@ public class PersonaController {
     public ResponseEntity<Void> eliminarPorDni(@PathVariable String dni) {
         personaService.eliminarPorDni(dni);
         return ResponseEntity.noContent().build();
+    }
+
+    private PersonaEntity convertirDTOaEntidad(PersonaCreateOrReplaceRequest dto) {
+        return PersonaEntity.builder()
+                .nombre(dto.getNombre())
+                .apellido(dto.getApellido())
+                .dni(dto.getDni())
+                .email(dto.getEmail())
+                .telefono(dto.getTelefono())
+                .build();
     }
 
 }

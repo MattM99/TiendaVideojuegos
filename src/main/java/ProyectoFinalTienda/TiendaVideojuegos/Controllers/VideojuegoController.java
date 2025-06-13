@@ -2,6 +2,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoUpdateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import ProyectoFinalTienda.TiendaVideojuegos.services.VideojuegoService;
@@ -25,9 +26,14 @@ public class VideojuegoController {
 
     // Creación de un nuevo videojuego
     @PostMapping
-    public ResponseEntity<VideojuegoEntity> crearVideojuego(@Valid @RequestBody VideojuegoCreateOrReplaceRequest request) {
-        VideojuegoEntity nuevo = videojuegoService.guardar(request.toEntity());
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
+    public ResponseEntity<VideojuegoResponse> crearVideojuego(
+            @Valid @RequestBody VideojuegoCreateOrReplaceRequest request) {
+
+        // 1. Guardamos la entidad
+        VideojuegoResponse saved = videojuegoService.guardar(request);
+
+        // 2. La devolvemos con 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     // Eliminación de un videojuego por ID
@@ -39,71 +45,69 @@ public class VideojuegoController {
 
     // Listar todos los videojuegos
     @GetMapping("/listar")
-    public ResponseEntity<List<VideojuegoEntity>> listarTodos(){
+    public ResponseEntity<List<VideojuegoResponse>> listarTodos(){
         return ResponseEntity.ok(videojuegoService.obtenerTodos());
     }
 
     // Búsqueda por id
     @GetMapping("/id/{id}")
-    public ResponseEntity<VideojuegoEntity> buscarPorId(@PathVariable int id){
-        VideojuegoEntity videojuego = videojuegoService.buscarPorId(id);
-        return  ResponseEntity.ok(videojuego);
+    public ResponseEntity<VideojuegoResponse> buscarPorId(@PathVariable int id){
+        VideojuegoResponse response = videojuegoService.buscarPorId(id);
+        return ResponseEntity.ok(response);
     }
 
     // Búsquedas por titulo
     @GetMapping("/titulo/{titulo}")
-    public ResponseEntity<List<VideojuegoEntity>> buscarPorTitulo(@PathVariable String titulo){
-        List<VideojuegoEntity> videojuegos = videojuegoService.buscarPorTitulo(titulo);
-        return ResponseEntity.ok(videojuegos);
+    public ResponseEntity<List<VideojuegoResponse>> buscarPorTitulo(@PathVariable String titulo){
+        List<VideojuegoResponse> responses = videojuegoService.buscarPorTitulo(titulo);
+        return ResponseEntity.ok(responses);
     }
 
     // Búsquedas por desarrollador
     @GetMapping("/desarrollador/{desarrollador}")
-    public ResponseEntity<List<VideojuegoEntity>> buscarPorDesarrollador(@PathVariable String desarrollador){
-        List<VideojuegoEntity> videojuegos = videojuegoService.buscarPorDesarrollador(desarrollador);
-        return ResponseEntity.ok(videojuegos);
+    public ResponseEntity<List<VideojuegoResponse>> buscarPorDesarrollador(@PathVariable String desarrollador){
+        List<VideojuegoResponse> responses = videojuegoService.buscarPorDesarrollador(desarrollador);
+        return ResponseEntity.ok(responses);
     }
 
     // Búsquedas por genero
     @GetMapping("/genero/{genero}")
-    public ResponseEntity<List<VideojuegoEntity>> buscarPorGenero(@PathVariable Generos genero){
-        List<VideojuegoEntity> videojuegos = videojuegoService.buscarPorGenero(genero);
-        return ResponseEntity.ok(videojuegos);
+    public ResponseEntity<List<VideojuegoResponse>> buscarPorGenero(@PathVariable Generos genero){
+        List<VideojuegoResponse> responses = videojuegoService.buscarPorGenero(genero);
+        return ResponseEntity.ok(responses);
     }
 
     // Búsqueda de videojuegos multijugador
     @GetMapping("/multijugador")
-    public ResponseEntity<List<VideojuegoEntity>> buscarMultijugadores(){
-        List<VideojuegoEntity> videojuegos = videojuegoService.buscarMultijugadores();
-        return ResponseEntity.ok(videojuegos);
+    public ResponseEntity<List<VideojuegoResponse>> buscarMultijugadores(){
+        List<VideojuegoResponse> responses = videojuegoService.buscarMultijugadores();
+        return ResponseEntity.ok(responses);
     }
 
     // Búsqueda por año de lanzamiento
     @GetMapping("/lanzamiento/{lanzamiento}")
-    public ResponseEntity<List<VideojuegoEntity>> buscarPorLanzamiento(@PathVariable Year lanzamiento){
-        List<VideojuegoEntity> videojuegos = videojuegoService.buscarPorLanzamiento(lanzamiento);
-        return ResponseEntity.ok(videojuegos);
+    public ResponseEntity<List<VideojuegoResponse>> buscarPorLanzamiento(@PathVariable Year lanzamiento){
+        List<VideojuegoResponse> responses = videojuegoService.buscarPorLanzamiento(lanzamiento);
+        return ResponseEntity.ok(responses);
     }
 
     // Actualización completa
     // No importa que comparta path con el de abajo; spring ya los diferencia por ser put y patch.
     @PutMapping("/{id}")
-    public ResponseEntity<VideojuegoEntity> actualizarVideojuegoCompleto(
+    public ResponseEntity<VideojuegoResponse> actualizarVideojuegoCompleto(
             @PathVariable int id,
             @Valid @RequestBody VideojuegoCreateOrReplaceRequest request) {
-        VideojuegoEntity actualizado = videojuegoService.actualizarCompleto(id, request);
-        return ResponseEntity.ok(actualizado);
+        VideojuegoResponse response = videojuegoService.actualizarCompleto(id, request);
+        return ResponseEntity.ok(response);
     }
 
     // Actualización por campo
     @PatchMapping("/{id}")
-    public ResponseEntity<VideojuegoEntity> actualizarVideojuegoPorCampo(
+    public ResponseEntity<VideojuegoResponse> actualizarVideojuegoPorCampo(
             @PathVariable int id,
             @RequestBody VideojuegoUpdateRequest request) {
-        VideojuegoEntity actualizado = videojuegoService.actualizarPorCampo(id, request);
-        return ResponseEntity.ok(actualizado);
+        VideojuegoResponse response = videojuegoService.actualizarPorCampo(id, request);
+        return ResponseEntity.ok(response);
     }
-
-
 
 }

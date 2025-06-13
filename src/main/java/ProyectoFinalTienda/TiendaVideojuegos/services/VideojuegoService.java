@@ -2,7 +2,9 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoUpdateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.VideojuegoMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
@@ -17,9 +19,16 @@ public class VideojuegoService {
 
     @Autowired
     private VideojuegoRepository videojuegoRepository;
+    @Autowired
+    private VideojuegoMapper videojuegoMapper;
 
-    public VideojuegoEntity guardar(VideojuegoEntity videojuego){
-        return videojuegoRepository.save(videojuego);
+    public VideojuegoResponse guardar(VideojuegoCreateOrReplaceRequest request){
+        // 1. Convertimos el request a entidad.
+        VideojuegoEntity entity = videojuegoMapper.toEntityFromRequest(request);
+
+        // 2. Guardamos la entidad y luego la convertimos en response para devolversela a controller.
+        return videojuegoMapper.toResponse(videojuegoRepository.save(entity));
+
     }
 
     public void eliminar(int id){
@@ -29,78 +38,83 @@ public class VideojuegoService {
         videojuegoRepository.deleteById(id);
     }
 
-    public List<VideojuegoEntity> obtenerTodos(){
+    public List<VideojuegoResponse> obtenerTodos(){
         List<VideojuegoEntity> videojuegos = videojuegoRepository.findAll();
         if (videojuegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego en el sistema.");
         }
-        return videojuegos;
+        return videojuegoMapper.toResponseList(videojuegos);
     }
 
-    public VideojuegoEntity buscarPorId(int id){
-        return videojuegoRepository.findById(id).orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id: " + id + " no encontrado."));
+    public VideojuegoResponse buscarPorId(int id){
+        VideojuegoEntity entity = videojuegoRepository.findById(id).orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id: " + id + " no encontrado."));
+        return videojuegoMapper.toResponse(entity);
     }
 
-    public List<VideojuegoEntity> buscarPorTitulo(String titulo){
+    public List<VideojuegoResponse> buscarPorTitulo(String titulo){
         List<VideojuegoEntity> videojuegos = videojuegoRepository.findByTituloContaining(titulo);
         if (videojuegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego que contenga el título: " + titulo);
         }
-        return videojuegos;
+        return videojuegoMapper.toResponseList(videojuegos);
     }
 
-    public List<VideojuegoEntity> buscarPorDesarrollador(String desarrollador){
+    public List<VideojuegoResponse> buscarPorDesarrollador(String desarrollador){
         List<VideojuegoEntity> videojuegos = videojuegoRepository.findByDesarrolladorContaining(desarrollador);
         if (videojuegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego que contenga el desarrollador: " + desarrollador);
         }
-        return videojuegos;
+        return videojuegoMapper.toResponseList(videojuegos);
     }
 
-    public List<VideojuegoEntity> buscarPorGenero(Generos genero){
+    public List<VideojuegoResponse> buscarPorGenero(Generos genero){
         List<VideojuegoEntity> videojuegos = videojuegoRepository.findByGenero(genero);
         if (videojuegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego del género: " + genero);
         }
-        return videojuegos;
+        return videojuegoMapper.toResponseList(videojuegos);
     }
 
-    public List<VideojuegoEntity> buscarMultijugadores(){
+    public List<VideojuegoResponse> buscarMultijugadores(){
         List<VideojuegoEntity> videojuegos = videojuegoRepository.findByMultijugadorTrue();
         if (videojuegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego multijugador.");
         }
-        return videojuegos;
+        return videojuegoMapper.toResponseList(videojuegos);
     }
 
-    public List<VideojuegoEntity> buscarPorLanzamiento(Year lanzamiento){
+    public List<VideojuegoResponse> buscarPorLanzamiento(Year lanzamiento){
         List<VideojuegoEntity> videojuegos = videojuegoRepository.findByLanzamiento(lanzamiento);
         if (videojuegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego con anio de lanzamiento: " + lanzamiento);
         }
-        return videojuegos;
-    }
-
-    // Método para actualización parcial (PATCH)
-    public VideojuegoEntity actualizarPorCampo(int id, VideojuegoUpdateRequest datosActualizados) {
-        VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
-                .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id " + id + " no encontrado."));
-        datosActualizados.actualizarVideojuego(videojuegoExistente);
-        return videojuegoRepository.save(videojuegoExistente);
+        return videojuegoMapper.toResponseList(videojuegos);
     }
 
     // Método para actualización completa (PUT)
-    public VideojuegoEntity actualizarCompleto(int id, VideojuegoCreateOrReplaceRequest datosNuevos) {
+    public VideojuegoResponse actualizarCompleto(int id, VideojuegoCreateOrReplaceRequest datosNuevos) {
         VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
                 .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id " + id + " no encontrado."));
-        // Sobrescribís todo, porque el DTO tiene todo obligatorio
+
+        // Sobrescribímos todo, porque el DTO tiene todo obligatorio
         videojuegoExistente.setTitulo(datosNuevos.getTitulo());
         videojuegoExistente.setDesarrollador(datosNuevos.getDesarrollador());
         videojuegoExistente.setGenero(datosNuevos.getGenero());
         videojuegoExistente.setLanzamiento(datosNuevos.getLanzamiento());
         videojuegoExistente.setDescripcion(datosNuevos.getDescripcion());
         videojuegoExistente.setMultijugador(datosNuevos.isMultijugador());
-        return videojuegoRepository.save(videojuegoExistente);
+
+        // 2. Guardamos la entidad y luego la convertimos en response para devolversela a controller.
+        return videojuegoMapper.toResponse(videojuegoRepository.save(videojuegoExistente));
+
+    }
+
+    // Método para actualización parcial (PATCH)
+    public VideojuegoResponse actualizarPorCampo(int id, VideojuegoUpdateRequest datosActualizados) {
+        VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
+                .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id " + id + " no encontrado."));
+        videojuegoMapper.actualizarEntity(videojuegoExistente, datosActualizados);
+        return videojuegoMapper.toResponse(videojuegoRepository.save(videojuegoExistente));
     }
 
 }

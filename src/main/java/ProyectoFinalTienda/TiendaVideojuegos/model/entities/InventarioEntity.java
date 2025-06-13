@@ -2,6 +2,9 @@ package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 import java.util.List;
@@ -28,6 +31,7 @@ public class InventarioEntity {
 
     @ManyToOne
     @JoinColumn(name = "videojuego_id", nullable = false)
+    @NotNull(message = "El videojuego no puede ser nulo")
     private VideojuegoEntity videojuego;
 
     @OneToMany(
@@ -41,36 +45,42 @@ public class InventarioEntity {
             name = "plataforma",
             nullable = false
     )
+    @NotNull(message = "La plataforma no puede ser nula")
     private Plataformas plataforma;
 
     @Column(
             name = "precio_unitario_diario",
             nullable = false
     )
+    @PositiveOrZero(message = "El precio unitario diario no puede ser negativo")
     private double precioUnitarioDiario;
 
     @Column(
             name = "stock_total",
             nullable = false
     )
+    @Min(value = 0, message = "El stock total no puede ser negativo")
     private int stockTotal;
 
     @Column(
             name = "stock_disponible",
             nullable = false
     )
+    @Min(value = 0, message = "El stock disponible no puede ser negativo")
     private int stockDisponible;
 
     @Column(
             name = "stock_alquilado",
             nullable = false
     )
+    @Min(value = 0, message = "El stock alquilado no puede ser negativo")
     private int stockAlquilado;
 
     @Column(
             name = "stock_descartado",
             nullable = false
     )
+    @Min(value = 0, message = "El stock descartado no puede ser negativo")
     private int stockDescartado;
 
     /// ---- Validaciones de stock ----- ///

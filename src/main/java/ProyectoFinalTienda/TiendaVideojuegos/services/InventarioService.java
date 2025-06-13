@@ -2,8 +2,11 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioUpdateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.InventarioMapper;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.VideojuegoMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
@@ -21,15 +24,20 @@ public class InventarioService {
     private InventarioRepository inventarioRepository;
     @Autowired
     private VideojuegoRepository videojuegoRepository;
+    @Autowired
+    private InventarioMapper inventarioMapper;
+    @Autowired
+    private VideojuegoMapper videojuegoMapper;
 
-    public InventarioEntity guardar(InventarioCreateOrReplaceRequest request) {
-        VideojuegoEntity videojuego = videojuegoRepository.findById(request.getVideojuegoId())
-                .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego no encontrado"));
+    public InventarioResponse guardar(InventarioCreateOrReplaceRequest request) {
+        VideojuegoEntity videojuego = videojuegoRepository.findById(request.getVideojuegoId()).
+                orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id: " + request.getVideojuegoId() + " no encontrado."));
 
-        InventarioEntity entity = request.toEntity(videojuego);
+        InventarioEntity entity = inventarioMapper.toEntity(request, videojuego);
+        // Validar que el stock sea correcto antes de guardar
         entity.validarStock();
 
-        return inventarioRepository.save(entity);
+        return inventarioMapper.toResponse(inventarioRepository.save(entity), videojuegoMapper.toResponse(videojuego));
     }
 
     public void eliminar(int id){
@@ -40,54 +48,55 @@ public class InventarioService {
     }
 
     // Obtener todos con validación de lista vacía
-    public List<InventarioEntity> obtenerTodos(){
+    public List<InventarioResponse> obtenerTodos(){
         List<InventarioEntity> inventarios = inventarioRepository.findAll();
         if (inventarios.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario en el sistema.");
         }
-        return inventarios;
+        return inventarioMapper.toResponseList(inventarios);
     }
 
     // Buscar por id con excepción si no existe
-    public InventarioEntity buscarPorId(int id){
-        return inventarioRepository.findById(id)
+    public InventarioResponse buscarPorId(int id){
+        InventarioEntity entity = inventarioRepository.findById(id)
                 .orElseThrow(() -> new InventarioNoEncontradoException("Inventario con id: " + id + " no encontrado."));
+        return inventarioMapper.toResponse(entity, videojuegoMapper.toResponse(entity.getVideojuego()));
     }
 
     // Buscar por videojuego con excepción si lista vacía
-    public List<InventarioEntity> buscarPorVideojuego(int videojuegoId) {
-        List<InventarioEntity> inventarios = inventarioRepository.findByVideojuegoId(videojuegoId);
-        if (inventarios.isEmpty()) {
+    public List<InventarioResponse> buscarPorVideojuego(int videojuegoId) {
+        List<InventarioEntity> responses = inventarioRepository.findByVideojuegoId(videojuegoId);
+        if (responses.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con la id del videojuego: " + videojuegoId);
         }
-        return inventarios;
+        return inventarioMapper.toResponseList(responses);
     }
 
     // Buscar por plataforma con excepción si lista vacía
-    public List<InventarioEntity> buscarPorPlataforma(Plataformas plataforma){
-        List<InventarioEntity> inventarios = inventarioRepository.findByPlataforma(plataforma);
-        if (inventarios.isEmpty()) {
+    public List<InventarioResponse> buscarPorPlataforma(Plataformas plataforma){
+        List<InventarioEntity> responses = inventarioRepository.findByPlataforma(plataforma);
+        if (responses.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con la plataforma: " + plataforma);
         }
-        return inventarios;
+        return inventarioMapper.toResponseList(responses);
     }
 
     // Buscar por precio menor que valor, validando lista vacía
-    public List<InventarioEntity> buscarMasBaratosQue(double valor){
-        List<InventarioEntity> inventarios = inventarioRepository.findByPrecioUnitarioDiarioLessThan(valor);
-        if (inventarios.isEmpty()) {
+    public List<InventarioResponse> buscarMasBaratosQue(double valor){
+        List<InventarioEntity> responses = inventarioRepository.findByPrecioUnitarioDiarioLessThan(valor);
+        if (responses.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con precio menor a: " + valor);
         }
-        return inventarios;
+        return inventarioMapper.toResponseList(responses);
     }
 
     // Buscar por plataforma y precio menor que valor, validando lista vacía
-    public List<InventarioEntity> buscarPorPlataformaMasBaratosQue(Plataformas plataforma, double valor){
-        List<InventarioEntity> inventarios = inventarioRepository.findByPlataformaAndPrecioUnitarioDiarioLessThan(plataforma, valor);
-        if (inventarios.isEmpty()) {
+    public List<InventarioResponse> buscarPorPlataformaMasBaratosQue(Plataformas plataforma, double valor){
+        List<InventarioEntity> responses = inventarioRepository.findByPlataformaAndPrecioUnitarioDiarioLessThan(plataforma, valor);
+        if (responses.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con plataforma " + plataforma + " y precio menor a " + valor);
         }
-        return inventarios;
+        return inventarioMapper.toResponseList(responses);
     }
 
     // Obtener stock total, lanzar excepción si null
@@ -126,7 +135,7 @@ public class InventarioService {
         return stockDescartado;
     }
 
-    public InventarioEntity actualizarCompleto(int id, InventarioCreateOrReplaceRequest nuevosDatos) {
+    public InventarioResponse actualizarCompleto(int id, InventarioCreateOrReplaceRequest nuevosDatos) {
         InventarioEntity existente = inventarioRepository.findById(id)
                 .orElseThrow(() -> new InventarioNoEncontradoException("Inventario con id " + id + " no encontrado."));
 
@@ -138,17 +147,17 @@ public class InventarioService {
 
         existente.validarStock();
 
-        return inventarioRepository.save(existente);
+        return inventarioMapper.toResponse(inventarioRepository.save(existente), videojuegoMapper.toResponse(existente.getVideojuego()));
     }
 
-    public InventarioEntity actualizarPorCampo(int id, InventarioUpdateRequest datosActualizados) {
+    public InventarioResponse actualizarPorCampo(int id, InventarioUpdateRequest datosActualizados) {
         InventarioEntity existente = inventarioRepository.findById(id)
                 .orElseThrow(() -> new InventarioNoEncontradoException("Inventario con id: " + id + " no encontrado."));
 
-        datosActualizados.actualizarInventario(existente);
+        inventarioMapper.actualizarEntity(existente, datosActualizados);
         existente.validarStock();
 
-        return inventarioRepository.save(existente);
+        return inventarioMapper.toResponse(inventarioRepository.save(existente), videojuegoMapper.toResponse(existente.getVideojuego()));
     }
 
 }

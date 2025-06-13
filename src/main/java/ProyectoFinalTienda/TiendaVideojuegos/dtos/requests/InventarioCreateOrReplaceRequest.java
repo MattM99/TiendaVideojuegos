@@ -41,7 +41,7 @@ public class InventarioCreateOrReplaceRequest {
     @Min(value = 0, message = "El stock descartado no puede ser negativo")
     private Integer stockDescartado;
 
-    public InventarioEntity toEntity(VideojuegoEntity videojuego) {
+    /*public InventarioEntity toEntity(VideojuegoEntity videojuego) {
         return InventarioEntity.builder()
                 .videojuego(videojuego)
                 .plataforma(this.plataforma)
@@ -51,5 +51,5 @@ public class InventarioCreateOrReplaceRequest {
                 .stockAlquilado(this.stockAlquilado)
                 .stockDescartado(this.stockDescartado)
                 .build();
-    }
+    }*/
 }

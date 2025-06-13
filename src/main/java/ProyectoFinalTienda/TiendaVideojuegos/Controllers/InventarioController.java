@@ -2,6 +2,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioUpdateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import ProyectoFinalTienda.TiendaVideojuegos.services.InventarioService;
@@ -24,9 +25,9 @@ public class InventarioController {
 
     // Creación de un nuevo inventario
     @PostMapping
-    public ResponseEntity<InventarioEntity> crearInventario(@Valid @RequestBody InventarioCreateOrReplaceRequest request) {
-        InventarioEntity creado = inventarioService.guardar(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(creado);
+    public ResponseEntity<InventarioResponse> crearInventario(@Valid @RequestBody InventarioCreateOrReplaceRequest request) {
+        InventarioResponse response = inventarioService.guardar(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     // Eliminar inventario
@@ -38,38 +39,38 @@ public class InventarioController {
 
     // Obtener todos los inventarios
     @GetMapping("/listar")
-    public ResponseEntity<List<InventarioEntity>> listarTodos() {
+    public ResponseEntity<List<InventarioResponse>> listarTodos() {
         return ResponseEntity.ok(inventarioService.obtenerTodos());
     }
 
     // Obtener inventario por ID
     @GetMapping("/{id}")
-    public ResponseEntity<InventarioEntity> obtenerPorId(@PathVariable int id) {
-        InventarioEntity inventario = inventarioService.buscarPorId(id);
-        return  ResponseEntity.ok(inventario);
+    public ResponseEntity<InventarioResponse> obtenerPorId(@PathVariable int id) {
+        InventarioResponse response = inventarioService.buscarPorId(id);
+        return  ResponseEntity.ok(response);
     }
 
     // Buscar por videojuego
     @GetMapping("/videojuego/{videojuegoId}")
-    public ResponseEntity<List<InventarioEntity>> buscarPorVideojuego(@PathVariable int videojuegoId) {
+    public ResponseEntity<List<InventarioResponse>> buscarPorVideojuego(@PathVariable int videojuegoId) {
         return ResponseEntity.ok(inventarioService.buscarPorVideojuego(videojuegoId));
     }
 
     // Buscar por plataforma
     @GetMapping("/plataforma")
-    public ResponseEntity<List<InventarioEntity>> buscarPorPlataforma(@RequestParam Plataformas plataforma) {
+    public ResponseEntity<List<InventarioResponse>> buscarPorPlataforma(@RequestParam Plataformas plataforma) {
         return ResponseEntity.ok(inventarioService.buscarPorPlataforma(plataforma));
     }
 
     // Buscar más baratos que cierto valor
     @GetMapping("/precio/menor-a")
-    public ResponseEntity<List<InventarioEntity>> buscarMasBaratosQue(@RequestParam double valor) {
+    public ResponseEntity<List<InventarioResponse>> buscarMasBaratosQue(@RequestParam double valor) {
         return ResponseEntity.ok(inventarioService.buscarMasBaratosQue(valor));
     }
 
     // Buscar por plataforma y precio menor a cierto valor
     @GetMapping("/plataforma/precio/menor-a")
-    public ResponseEntity<List<InventarioEntity>> buscarPorPlataformaMasBaratosQue(
+    public ResponseEntity<List<InventarioResponse>> buscarPorPlataformaMasBaratosQue(
             @RequestParam Plataformas plataforma,
             @RequestParam double valor) {
         return ResponseEntity.ok(inventarioService.buscarPorPlataformaMasBaratosQue(plataforma, valor));
@@ -101,19 +102,19 @@ public class InventarioController {
 
     // PUT: Actualización completa
     @PutMapping("/{id}")
-    public ResponseEntity<InventarioEntity> actualizarInventarioCompleto(
+    public ResponseEntity<InventarioResponse> actualizarInventarioCompleto(
             @PathVariable int id,
             @Valid @RequestBody InventarioCreateOrReplaceRequest request) {
-        InventarioEntity actualizado = inventarioService.actualizarCompleto(id, request);
-        return ResponseEntity.ok(actualizado);
+        InventarioResponse response = inventarioService.actualizarCompleto(id, request);
+        return ResponseEntity.ok(response);
     }
 
     // PATCH: Actualización parcial
     @PatchMapping("/{id}")
-    public ResponseEntity<InventarioEntity> actualizarInventarioPorCampo(
+    public ResponseEntity<InventarioResponse> actualizarInventarioPorCampo(
             @PathVariable int id,
             @RequestBody InventarioUpdateRequest request) {
-        InventarioEntity actualizado = inventarioService.actualizarPorCampo(id, request);
-        return ResponseEntity.ok(actualizado);
+        InventarioResponse response = inventarioService.actualizarPorCampo(id, request);
+        return ResponseEntity.ok(response);
     }
 }
