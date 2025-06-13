@@ -65,38 +65,38 @@ public class InventarioService {
 
     // Buscar por videojuego con excepción si lista vacía
     public List<InventarioResponse> buscarPorVideojuego(int videojuegoId) {
-        List<InventarioEntity> responses = inventarioRepository.findByVideojuegoId(videojuegoId);
-        if (responses.isEmpty()) {
+        List<InventarioEntity> inventarios = inventarioRepository.findByVideojuegoId(videojuegoId);
+        if (inventarios.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con la id del videojuego: " + videojuegoId);
         }
-        return inventarioMapper.toResponseList(responses);
+        return inventarioMapper.toResponseList(inventarios);
     }
 
     // Buscar por plataforma con excepción si lista vacía
     public List<InventarioResponse> buscarPorPlataforma(Plataformas plataforma){
-        List<InventarioEntity> responses = inventarioRepository.findByPlataforma(plataforma);
-        if (responses.isEmpty()) {
+        List<InventarioEntity> inventarios = inventarioRepository.findByPlataforma(plataforma);
+        if (inventarios.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con la plataforma: " + plataforma);
         }
-        return inventarioMapper.toResponseList(responses);
+        return inventarioMapper.toResponseList(inventarios);
     }
 
     // Buscar por precio menor que valor, validando lista vacía
     public List<InventarioResponse> buscarMasBaratosQue(double valor){
-        List<InventarioEntity> responses = inventarioRepository.findByPrecioUnitarioDiarioLessThan(valor);
-        if (responses.isEmpty()) {
+        List<InventarioEntity> inventarios = inventarioRepository.findByPrecioUnitarioDiarioLessThan(valor);
+        if (inventarios.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con precio menor a: " + valor);
         }
-        return inventarioMapper.toResponseList(responses);
+        return inventarioMapper.toResponseList(inventarios);
     }
 
     // Buscar por plataforma y precio menor que valor, validando lista vacía
     public List<InventarioResponse> buscarPorPlataformaMasBaratosQue(Plataformas plataforma, double valor){
-        List<InventarioEntity> responses = inventarioRepository.findByPlataformaAndPrecioUnitarioDiarioLessThan(plataforma, valor);
-        if (responses.isEmpty()) {
+        List<InventarioEntity> inventarios = inventarioRepository.findByPlataformaAndPrecioUnitarioDiarioLessThan(plataforma, valor);
+        if (inventarios.isEmpty()) {
             throw new InventarioNoEncontradoException("No se encontró ningún inventario con plataforma " + plataforma + " y precio menor a " + valor);
         }
-        return inventarioMapper.toResponseList(responses);
+        return inventarioMapper.toResponseList(inventarios);
     }
 
     // Obtener stock total, lanzar excepción si null
