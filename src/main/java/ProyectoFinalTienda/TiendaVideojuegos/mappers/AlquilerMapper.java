@@ -20,7 +20,7 @@ public class AlquilerMapper {
                 .alquiler_id(entity.getAlquiler_id())
                 .fecha_retiro(entity.getFecha_retiro())
                 .fecha_devolucion(entity.getFecha_devolucion())
-                .personaResponse(personaMapper.toResponse(entity.getPersona()))
+                .personaResponse(personaMapper.convertirEntidadADTO(entity.getPersona()))
                 .build();
     }
 

@@ -7,6 +7,8 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Estado;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -85,11 +87,11 @@ public class CuentaService {
 
 
     public CuentaEntity cambiarContrasena(String nickname, String password) throws UsuarioNoEncontradoException {
-        CuentaEntity cuenta = buscarPorNickname(nickname);
         if (password == null || password.isEmpty()) {
-            throw new IllegalArgumentException("La contraseña no puede ser nula o vacía");
+            throw new IllegalArgumentException("La nueva contraseña no puede ser nula o vacía");
         }
 
+        CuentaEntity cuenta = buscarPorNickname(nickname);
         cuenta.setPassword(passwordEncoder.encode(password));
 
         return cuentaRepository.save(cuenta);
@@ -99,6 +101,11 @@ public class CuentaService {
         if (!esRolValido(rol)) {
             throw new RolInvalidoException("El rol proporcionado no es válido: " + rol);
         }
+
+        if(nickname.equalsIgnoreCase(cuentaRepository.findByNickname("admin").get().getNickname())) {
+            throw new IllegalArgumentException("No se puede cambiar el rol del usuario admin");
+        }
+
 
         CuentaEntity cuenta = buscarPorNickname(nickname);
 

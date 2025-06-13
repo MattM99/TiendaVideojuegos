@@ -4,6 +4,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoCreateOrRep
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,13 +17,14 @@ public class VideojuegoMapper {
         return VideojuegoEntity.builder()
                 .titulo(dto.getTitulo())
                 .desarrollador(dto.getDesarrollador())
-                .genero(dto.getGenero())
+                .genero(Generos.valueOf(dto.getGenero().trim().toUpperCase()))
                 .lanzamiento(dto.getLanzamiento())
                 .descripcion(dto.getDescripcion())
                 .multijugador(dto.isMultijugador())
                 .build();
-    }
 
+    }
+/*
     public VideojuegoEntity toEntityFromResponse(VideojuegoResponse dto) {
         return VideojuegoEntity.builder()
                 .titulo(dto.getTitulo())
@@ -33,7 +35,7 @@ public class VideojuegoMapper {
                 .multijugador(dto.isMultijugador())
                 .build();
     }
-
+*/
     public VideojuegoResponse toResponse(VideojuegoEntity entity) {
         return VideojuegoResponse.builder()
                 .videojuegoID(entity.getVideojuegoID())

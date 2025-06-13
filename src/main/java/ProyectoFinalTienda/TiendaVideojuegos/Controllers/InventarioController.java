@@ -24,7 +24,7 @@ public class InventarioController {
     private InventarioService inventarioService;
 
     // Creación de un nuevo inventario
-    @PostMapping
+    @PostMapping("/inventario/crear")
     public ResponseEntity<InventarioResponse> crearInventario(@Valid @RequestBody InventarioCreateOrReplaceRequest request) {
         InventarioResponse response = inventarioService.guardar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -57,8 +57,8 @@ public class InventarioController {
     }
 
     // Buscar por plataforma
-    @GetMapping("/plataforma")
-    public ResponseEntity<List<InventarioResponse>> buscarPorPlataforma(@RequestParam Plataformas plataforma) {
+    @GetMapping("/plataforma/{plataforma}")
+    public ResponseEntity<List<InventarioResponse>> buscarPorPlataforma(@PathVariable String plataforma) {
         return ResponseEntity.ok(inventarioService.buscarPorPlataforma(plataforma));
     }
 
@@ -69,9 +69,9 @@ public class InventarioController {
     }
 
     // Buscar por plataforma y precio menor a cierto valor
-    @GetMapping("/plataforma/precio/menor-a")
+    @GetMapping("/plataformaPrecio/menor-a")
     public ResponseEntity<List<InventarioResponse>> buscarPorPlataformaMasBaratosQue(
-            @RequestParam Plataformas plataforma,
+            @RequestParam String plataforma,
             @RequestParam double valor) {
         return ResponseEntity.ok(inventarioService.buscarPorPlataformaMasBaratosQue(plataforma, valor));
     }

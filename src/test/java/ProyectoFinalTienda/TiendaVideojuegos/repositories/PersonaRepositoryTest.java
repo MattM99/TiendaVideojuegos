@@ -18,11 +18,11 @@ class PersonaRepositoryTest {
     @Test
     public void savePersona(){
         PersonaEntity persona= PersonaEntity.builder()
-                .nombre("Pepito")
-                .apellido("Claro")
-                .dni("35348344")
-                .email("cara@hotmail.com")
-                .telefono("2234523888")
+                .nombre("Papiro")
+                .apellido("Copo")
+                .dni("35344322")
+                .email("copo@hotmail.com")
+                .telefono("2444423888")
                 .build();
 
         personaRepository.save(persona);

@@ -3,16 +3,20 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.VideojuegoMapper;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class VideojuegoService {
@@ -22,7 +26,14 @@ public class VideojuegoService {
     @Autowired
     private VideojuegoMapper videojuegoMapper;
 
-    public VideojuegoResponse guardar(VideojuegoCreateOrReplaceRequest request){
+    public VideojuegoResponse guardar(VideojuegoCreateOrReplaceRequest request) throws IllegalArgumentException, NoSuchElementException {
+        if(!esGeneroValido(request.getGenero())){
+            throw new NoSuchElementException("El genero ingresado no es valido: " + request.getGenero());
+        }
+        if (request.getLanzamiento() != null && request.getLanzamiento().isAfter(Year.now())) {
+            throw new IllegalArgumentException("El año de lanzamiento no puede ser futuro: " + request.getLanzamiento());
+        }
+
         // 1. Convertimos el request a entidad.
         VideojuegoEntity entity = videojuegoMapper.toEntityFromRequest(request);
 
@@ -67,12 +78,29 @@ public class VideojuegoService {
         return videojuegoMapper.toResponseList(videojuegos);
     }
 
-    public List<VideojuegoResponse> buscarPorGenero(Generos genero){
-        List<VideojuegoEntity> videojuegos = videojuegoRepository.findByGenero(genero);
-        if (videojuegos.isEmpty()) {
-            throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego del género: " + genero);
+    public List<VideojuegoResponse> buscarPorGenero(String generoStr) throws NoSuchElementException, VideojuegoNoEncontradoException {
+        if (!esGeneroValido(generoStr)){
+            throw new NoSuchElementException("No existe el genero: " + generoStr);
         }
-        return videojuegoMapper.toResponseList(videojuegos);
+
+        Generos genero = Generos.valueOf(generoStr.trim().toUpperCase());
+
+        List<VideojuegoEntity> juegos = videojuegoRepository.findByGenero(genero);
+
+        if (juegos.isEmpty()) {
+            throw new VideojuegoNoEncontradoException("No se encontraron juegos del genero: " + generoStr);
+        }
+
+        return videojuegoMapper.toResponseList(juegos);
+    }
+
+    public boolean esGeneroValido(String generoStr) {
+        try {
+            Generos.valueOf(generoStr.trim().toUpperCase());
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 
     public List<VideojuegoResponse> buscarMultijugadores(){
@@ -99,7 +127,7 @@ public class VideojuegoService {
         // Sobrescribímos todo, porque el DTO tiene todo obligatorio
         videojuegoExistente.setTitulo(datosNuevos.getTitulo());
         videojuegoExistente.setDesarrollador(datosNuevos.getDesarrollador());
-        videojuegoExistente.setGenero(datosNuevos.getGenero());
+        videojuegoExistente.setGenero(Generos.valueOf(datosNuevos.getGenero().toUpperCase().trim()));
         videojuegoExistente.setLanzamiento(datosNuevos.getLanzamiento());
         videojuegoExistente.setDescripcion(datosNuevos.getDescripcion());
         videojuegoExistente.setMultijugador(datosNuevos.isMultijugador());

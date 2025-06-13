@@ -83,16 +83,6 @@ public class InventarioEntity {
     @Min(value = 0, message = "El stock descartado no puede ser negativo")
     private int stockDescartado;
 
-    /// ---- Validaciones de stock ----- ///
 
-    public boolean esStockValido() {
-        return (stockDisponible + stockAlquilado + stockDescartado) <= stockTotal;
-    }
-
-    public void validarStock() {
-        if (!esStockValido()) {
-            throw new IllegalStateException("La suma de los stocks excede el stock total.");
-        }
-    }
 
 }
