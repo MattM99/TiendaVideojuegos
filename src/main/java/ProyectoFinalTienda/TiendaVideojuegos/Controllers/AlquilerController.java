@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/alquileres")
-@Tag(name = "Gestión alquileres", description = "Operaciones relacionadas con los alquileres de videojuegos")
+@Tag(name = "Alquileres", description = "Operaciones relacionadas con los alquileres de videojuegos")
 public class AlquilerController {
 
     @Autowired
@@ -55,14 +55,14 @@ public class AlquilerController {
         return ResponseEntity.ok(alquilerService.obtenerTodos());
     }
 
-    // Obtener un alquiler por su ID
+    @Operation(summary = "Obtener un alquiler por ID", description = "Devuelve un alquiler específico por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<AlquilerResponse> obtenerPorId(@PathVariable int id) {
         AlquilerResponse response = alquilerService.buscarPorId(id);
         return ResponseEntity.ok(response);
     }
 
-    // Obtener alquileres por ID de persona (usuario)
+    @Operation(summary = "Obtener alquileres por usuario", description = "Devuelve una lista de alquileres asociados a un usuario específico")
     @GetMapping("/usuario/{personaId}")
     public ResponseEntity<List<AlquilerResponse>> obtenerPorUsuario(@PathVariable int personaId) {
         List<AlquilerResponse> responses = alquilerService.buscarPorUsuario(personaId);
