@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { Admin } from './components/admin/admin';
-import { AuthGuard } from './guards/auth-guard';
+import { AuthGuard } from './auth/guards/auth-guard';
 import { Login } from './auth/login/login';
-import { FrontPage } from './components/front-page/front-page';
+import { FrontPage } from './shared/front-page/front-page';
 import { VIDEOJUEGO_ROUTES } from './videojuego/videojuego.routes';
 
 export const routes: Routes = [
