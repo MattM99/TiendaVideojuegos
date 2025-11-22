@@ -1,4 +1,4 @@
-import { VideojuegoModel } from "./videojuego.model";
+import { VideojuegoModel } from "../videojuego/videojuego.model";
 
 export interface InventarioItemModel {
   id?: number;

@@ -1,12 +1,12 @@
 {
   "cuentas": [
-  {
-    "id": 1,
-    "nombreUsuario": "founder",
-    "contraseña": "1234",
-    "rol": "FOUNDER",
-    "alta": true,
-    "persona": {
+    {
+      "id": "1",
+      "nombreUsuario": "founder",
+      "contraseña": "1234",
+      "rol": "FOUNDER",
+      "alta": true,
+      "persona": {
         "id": 1,
         "dni": "22222222",
         "nombre": "Kevin",
@@ -16,10 +16,9 @@
       }
     }
   ],
-
   "personas": [
     {
-      "id": 1,
+      "id": "1",
       "dni": "22222222",
       "nombre": "Kevin",
       "apellido": "Falcón",
@@ -27,7 +26,7 @@
       "telefono": "1199887766"
     },
     {
-      "id": 2,
+      "id": "2",
       "dni": "11111111",
       "nombre": "Matias",
       "apellido": "Mendoza",
@@ -35,10 +34,9 @@
       "telefono": "1122334455"
     }
   ],
-
   "bloqueos": [
     {
-      "id": 1,
+      "id": "1",
       "persona": {
         "id": 2,
         "dni": "11111111",
@@ -52,10 +50,9 @@
       "motivo": "Tapó el baño"
     }
   ],
-
   "videojuegos": [
     {
-      "id": 1,
+      "id": "1",
       "titulo": "God of War",
       "sinopsis": "Kratos contra los dioses.",
       "genero": "ACCION",
@@ -64,7 +61,7 @@
       "desarrollador": "Santa Monica Studio"
     },
     {
-      "id": 2,
+      "id": "2",
       "titulo": "Zelda Breath of the Wild",
       "sinopsis": "Un mundo abierto en Hyrule.",
       "genero": "AVENTURA",
@@ -73,10 +70,9 @@
       "desarrollador": "Nintendo"
     }
   ],
-
   "inventarioItems": [
     {
-      "id": 1,
+      "id": "1",
       "videojuego": {
         "id": 1,
         "titulo": "God of War",
@@ -92,7 +88,7 @@
       "enLocal": 5
     },
     {
-      "id": 2,
+      "id": "2",
       "videojuego": {
         "id": 2,
         "titulo": "Zelda Breath of the Wild",
@@ -108,10 +104,9 @@
       "enLocal": 4
     }
   ],
-
   "alquileres": [
     {
-      "id": 1,
+      "id": "1",
       "persona": {
         "id": 1,
         "dni": "22222222",
@@ -164,9 +159,8 @@
         }
       }
     },
-
     {
-      "id": 2,
+      "id": "2",
       "persona": {
         "id": 2,
         "dni": "11111111",
