@@ -3,8 +3,8 @@
 
   <nav>
     <ul>
-      <li><a href="#inicio">Inicio</a></li>
-      <li><a routerLink="/events">Eventos</a></li>
+      <li><a routerLink="/home">Inicio</a></li>
+      <li><a routerLink="/videojuegos">Juegos</a></li>
       @if (usuario()) {
       <li><a href="#" (click)="logout($event)">Cerrar Sesión</a></li>
       } @else {

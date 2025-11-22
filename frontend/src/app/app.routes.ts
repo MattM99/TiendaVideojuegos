@@ -9,7 +9,8 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'home', component: FrontPage, canActivate: [AuthGuard] },
   { path: 'admin', component: Admin, canActivate: [AuthGuard] },
+  { path: 'videojuegos', canActivate: [AuthGuard], children: VIDEOJUEGO_ROUTES},
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },
-  { path: 'videojuegos', children: VIDEOJUEGO_ROUTES},
+
 ];
