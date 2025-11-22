@@ -1,0 +1,49 @@
+<h2>
+  @if (isEdit) { Editar Videojuego }
+  @else { Crear Videojuego }
+</h2>
+
+<form (ngSubmit)="save()">
+
+  <label>Título</label>
+  <input
+    [ngModel]="videojuego().titulo"
+    (ngModelChange)="updateTitulo($event)"
+    name="titulo"
+  />
+
+  <label>Sinopsis</label>
+  <textarea
+    [ngModel]="videojuego().sinopsis"
+    (ngModelChange)="updateSinopsis($event)"
+    name="sinopsis"
+  ></textarea>
+
+  <label>Género</label>
+  <input
+    [ngModel]="videojuego().genero"
+    (ngModelChange)="updateGenero($event)"
+    name="genero"
+  />
+
+  <label>Multijugador</label>
+  <input
+    type="checkbox"
+    [checked]="videojuego().multijugador"
+    (change)="updateMultijugador($event.target.checked)"
+  />
+
+  <label>Año de lanzamiento</label>
+  <input
+    type="number"
+    [ngModel]="videojuego().lanzamiento"
+    (ngModelChange)="updateLanzamiento($event)"
+    name="lanzamiento"
+  />
+
+  <button type="submit">Guardar</button>
+
+</form>
+
+
+
