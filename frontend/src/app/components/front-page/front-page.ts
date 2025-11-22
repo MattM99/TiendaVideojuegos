@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-front-page',
@@ -8,5 +9,8 @@ import { Component } from '@angular/core';
   styleUrl: './front-page.css',
 })
 export class FrontPage {
+  usuario = computed(() => this.auth.currentUser());
+
+  constructor(private auth: AuthService) {}
 
 }
