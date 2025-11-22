@@ -7,7 +7,8 @@ import { FormsModule } from '@angular/forms';
   selector: 'app-videojuego-form',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './videojuego-form.component.html'
+  templateUrl: './videojuego-form.component.html',
+  styleUrls: ['./videojuego-form.component.css']
 })
 export class VideojuegoFormComponent {
   service = inject(VideojuegoService);
@@ -62,6 +63,6 @@ export class VideojuegoFormComponent {
       this.service.create(data).subscribe(() => this.router.navigate(['/videojuegos']));
     }
   }
-  
+
 }
 
