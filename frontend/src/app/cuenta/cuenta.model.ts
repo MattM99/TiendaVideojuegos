@@ -1,4 +1,4 @@
-import { PersonaModel } from "./persona.model";
+import { PersonaModel } from "../models/persona.model";
 
 export interface CuentaModel {
     id?: number; //Lo dejo opcional para cuando se cree una nueva cuenta

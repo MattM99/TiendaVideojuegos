@@ -1,11 +1,12 @@
-import { CuentaModel } from './../../models/cuenta.model';
+import { CuentaModel } from '../cuenta.model';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../services/auth';
+import { AuthService } from '../../auth/auth-service/auth';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cuenta-list',
+  standalone: true,
   templateUrl: './cuenta-list.html',
   styleUrls: ['./cuenta-list.css']
 })

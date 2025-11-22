@@ -1,6 +1,6 @@
+import { CuentaModel } from './../../cuenta/cuenta.model';
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CuentaModel } from '../models/cuenta.model';
 
 @Injectable({
   providedIn: 'root',
