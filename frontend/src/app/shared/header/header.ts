@@ -1,8 +1,7 @@
 import { Component, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth';
-import { CuentaModel } from '../../models/cuenta.model';
+import { AuthService } from '../../auth/auth-service/auth';
 
 @Component({
   selector: 'app-header',

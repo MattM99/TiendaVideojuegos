@@ -53,7 +53,7 @@
   "videojuegos": [
     {
       "id": "1",
-      "titulo": "God of War",
+      "titulo": "Gordo War",
       "sinopsis": "Kratos contra los dioses.",
       "genero": "ACCION",
       "multijugador": false,
@@ -68,6 +68,15 @@
       "multijugador": false,
       "lanzamiento": 2017,
       "desarrollador": "Nintendo"
+    },
+    {
+      "id": "2ece",
+      "titulo": "Persona 5",
+      "sinopsis": "Personas personeando",
+      "genero": "RPG",
+      "multijugador": false,
+      "lanzamiento": 2019,
+      "desarrollador": ""
     }
   ],
   "inventarioItems": [
