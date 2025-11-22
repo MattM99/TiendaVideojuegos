@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth';
+import { CuentaModel } from '../../models/cuenta.model';
 
 @Component({
   selector: 'app-header',
@@ -9,13 +12,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.css',
 })
 export class Header {
-  usuario: Cuenta | null = null;
+usuario = computed(() => this.auth.currentUser());
 
   constructor(private auth: AuthService, private router: Router) {}
-
-  ngOnInit() {
-    this.usuario = this.auth.getCurrentUser();
-  }
 
   logout(event: Event) {
     event.preventDefault();
