@@ -1,0 +1,25 @@
+footer {
+  background: #0a0f14;
+  color: #9ca3af;
+  text-align: center;
+  padding: 15px;
+  border-top: 1px solid #1f2937;
+  font-family: 'Montserrat', sans-serif;
+}
+ul, ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+footer a,
+footer a:visited {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+footer a:hover {
+    color: #60a5fa;
+    text-shadow: 0 0 6px #3b82f6;
+}
