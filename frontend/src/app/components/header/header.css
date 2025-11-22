@@ -1,0 +1,41 @@
+header {
+  background: #0a0f14;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1f2937;
+}
+
+header h1 {
+  color: #3b82f6;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+header nav a {
+  color: #e5e7eb;
+  margin-left: 25px;
+  text-decoration: none;
+  transition: 0.25s;
+}
+
+header nav a:hover {
+  color: #3b82f6;
+}
+ul, ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.logo {
+  height: 100px;
+  width: auto;
+}
+
+@media (max-width: 600px) {
+  .logo {
+    height: 70px;
+  }
+}
