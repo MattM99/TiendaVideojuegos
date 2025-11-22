@@ -1,13 +1,20 @@
 <h2>Listado de Videojuegos</h2>
 
-<button routerLink="/videojuegos/new">Crear Videojuego</button>
+<div class="create-button-container">
+  <button routerLink="/videojuegos/new">Crear Videojuego</button>
+</div>
 
 <ul>
   @for (v of videojuegos(); track v.id) {
     <li>
-      <b>{{ v.titulo }}</b> - {{ v.genero }}
-      <button routerLink="/videojuegos/edit/{{ v.id }}">Editar</button>
-      <button (click)="delete(v.id)">Eliminar</button>
+      <span class="title">
+        <b>{{ v.titulo }}</b> - {{ v.genero }}
+      </span>
+
+      <span class="actions">
+        <button routerLink="/videojuegos/edit/{{ v.id }}">Editar</button>
+        <button (click)="delete(v.id)">Eliminar</button>
+      </span>
     </li>
   }
 </ul>
