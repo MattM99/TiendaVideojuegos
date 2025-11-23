@@ -37,4 +37,21 @@ export class AuthService {
   getCurrentUser() {
     return this.currentUserSignal();
   }
+
+   isLoggedIn(): boolean {
+    return this.currentUserSignal() !== null;
+  }
+
+ 
+  hasRole(roles: string[]): boolean {
+    const user = this.currentUserSignal();
+    if (!user) return false;
+
+    if (user.rol === 'FOUNDER') {
+    return true;
+  }
+
+    return roles.includes(user.rol);
+    
+  }
 }

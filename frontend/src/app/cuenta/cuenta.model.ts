@@ -2,7 +2,7 @@ import { PersonaModel } from "../persona/persona.model";
 
 export interface CuentaModel {
     id: string;
-    personaId: string; // <--- asociación
+    personaId: string; 
     nombreUsuario: string;
     password: string;
     rol: string;
