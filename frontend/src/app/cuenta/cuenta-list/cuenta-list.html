@@ -1,8 +1,11 @@
 <h2>Administración de Cuentas</h2>
 
-<div class="create-button-container">
-  <button routerLink="/cuentas/nuevo">Crear nuevo usuario</button>
+@if (usuario()?.rol !== 'EMPLEADO') {
+  <div class="create-button-container">
+  <button (click)="crearEmpleado()">Crear nuevo usuario</button>
 </div>
+}
+
 <ul>
   @for (cuenta of cuentas(); track cuenta.id) {
   <li>
@@ -10,10 +13,12 @@
       <b>{{ cuenta.nombreUsuario }}</b> - {{ cuenta.rol }}
     </span>
 
-@if (cuenta.rol !== 'FOUNDER') {
+@if (cuenta.rol !== 'FOUNDER' && usuario()?.rol !== 'EMPLEADO') {
   <span class="actions">
     <button (click)="editCuenta(cuenta)">Editar</button>
-    <button (click)="deleteCuenta(cuenta)">Eliminar</button>
+    @if (cuenta.id !== usuario()?.id) {
+          <button (click)="deleteCuenta(cuenta)">Eliminar</button>
+    }
   </span>
   }
   </li>

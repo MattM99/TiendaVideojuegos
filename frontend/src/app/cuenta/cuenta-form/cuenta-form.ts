@@ -70,40 +70,6 @@ updateAlta(value: boolean) {
   this.cuenta.update(c => ({ ...c, alta: value }));
 }
 
-updateDni(value: string) {
-  this.cuenta.update(c => ({
-    ...c,
-    persona: { ...c.persona, dni: value }
-  }));
-}
-
-updateNombre(value: string) {
-  this.cuenta.update(c => ({
-    ...c,
-    persona: { ...c.persona, nombre: value }
-  }));
-}
-
-updateApellido(value: string) {
-  this.cuenta.update(c => ({
-    ...c,
-    persona: { ...c.persona, apellido: value }
-  }));
-}
-
-updateEmail(value: string) {
-  this.cuenta.update(c => ({
-    ...c,
-    persona: { ...c.persona, email: value }
-  }));
-}
-
-updateTelefono(value: string) {
-  this.cuenta.update(c => ({
-    ...c,
-    persona: { ...c.persona, telefono: value }
-  }));
-}
 
 
 // Guardar la cuenta (nueva o editada)

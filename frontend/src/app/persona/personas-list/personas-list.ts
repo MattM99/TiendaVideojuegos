@@ -1,18 +1,22 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router, RouterModule } from '@angular/router';
 import { Persona } from '../persona';
 
 @Component({
   selector: 'app-personas-list',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, RouterModule],
   templateUrl: './personas-list.html',
   styleUrl: './personas-list.css',
 })
 export class PersonasList implements OnInit {
 
   private personaService = inject(Persona);
+  constructor(
+    private router: Router
+  ) {}
+
 
   personas = computed(() => this.personaService.personas());
   cargando = computed(() => this.personaService.cargando());
@@ -28,5 +32,9 @@ export class PersonasList implements OnInit {
       next: () => this.personaService.cargarPersonas(),
       error: err => console.error('Error eliminando persona', err),
     });
+  }
+
+  crearCliente() {
+    this.router.navigate(['/persona-form'], { queryParams: { crearCuenta: false } });
   }
 }
