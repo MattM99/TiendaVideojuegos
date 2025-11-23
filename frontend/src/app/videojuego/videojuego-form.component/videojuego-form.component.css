@@ -122,18 +122,30 @@ textarea:focus {
 
 /* Botón Guardar */
 .save-btn {
-    background: #1c2530;
-    color: #e0e6ed;
-    border: 1px solid #2d3945;
-    padding: 10px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s ease;
+  background: #1c2530;
+  color: #e0e6ed;
+  border: 1px solid #2d3945;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .save-btn:hover {
-    background: #2d3945;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  background: #2d3945;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
+
+/* Cuando está deshabilitado */
+.save-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.save-btn.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 
