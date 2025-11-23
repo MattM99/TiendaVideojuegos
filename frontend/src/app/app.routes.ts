@@ -14,4 +14,5 @@ export const routes: Routes = [
   { path: 'cuentas', canActivate: [AuthGuard], children: CUENTA_ROUTES },
   { path: 'videojuegos', canActivate: [AuthGuard], children: VIDEOJUEGO_ROUTES },
   { path: 'personas', canActivate: [AuthGuard], children: PERSONA_ROUTES },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];
