@@ -1,1 +1,44 @@
-<p>videojuego-detail.component works!</p>
+<h2>Detalle del Videojuego</h2>
+
+@if (videojuego() === null) {
+  <p>Cargando...</p>
+} @else {
+
+  <div class="detail-card">
+
+    <h3>{{ videojuego().titulo }}</h3>
+
+    <div class="detail-row">
+      <span class="detail-label">Género</span>
+      <span class="detail-value">{{ videojuego().genero }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Desarrollador</span>
+      <span class="detail-value">{{ videojuego().desarrollador }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Año de Lanzamiento</span>
+      <span class="detail-value">{{ videojuego().lanzamiento }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Multijugador</span>
+      <span class="detail-value">{{ videojuego().multijugador ? 'Sí' : 'No' }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Sinopsis</span>
+      <span class="detail-value">{{ videojuego().sinopsis }}</span>
+    </div>
+
+    <div class="actions detail-actions">
+      <button (click)="volver()">Volver</button>
+      <button (click)="editar()">Editar</button>
+    </div>
+
+  </div>
+}
+
+

@@ -1,7 +1,8 @@
 <h2>Listado de Videojuegos</h2>
 
-<div class="create-button-container">
-  <button routerLink="/videojuegos/new">Crear Videojuego</button>
+<div class="top-actions">
+  <button class="back-btn" routerLink="/home">Volver</button>
+  <button class="new-btn" routerLink="/videojuegos/new">Crear Videojuego</button>
 </div>
 
 <ul>
@@ -12,11 +13,14 @@
       </span>
 
       <span class="actions">
+        <button routerLink="/videojuegos/{{ v.id }}">Ver</button>
         <button routerLink="/videojuegos/edit/{{ v.id }}">Editar</button>
         <button (click)="delete(v.id)">Eliminar</button>
       </span>
     </li>
   }
 </ul>
+
+
 
 
