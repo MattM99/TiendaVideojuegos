@@ -63,10 +63,18 @@
     name="lanzamiento"
   />
 
-  <div class="form-buttons">
-    <button type="button" class="back-btn" (click)="volver()">Volver</button>
-    <button type="submit" class="save-btn">Guardar</button>
-  </div>
+<div class="form-buttons">
+  <button type="button" class="back-btn" (click)="volver()">Volver</button>
+
+  <button
+    type="submit"
+    class="save-btn"
+    [class.disabled]="!canSave()"
+    [disabled]="!canSave()"
+  >
+    Guardar
+  </button>
+</div>
 
 </form>
 

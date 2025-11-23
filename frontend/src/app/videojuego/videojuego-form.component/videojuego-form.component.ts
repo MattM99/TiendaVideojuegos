@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VideojuegoService } from '../videojuego.service';
 import { FormsModule } from '@angular/forms';
@@ -16,7 +16,7 @@ export class VideojuegoFormComponent {
   router = inject(Router);
 
   isEdit = false;
-  id = 0;
+  id: string = '';
 
   videojuego = signal({
     titulo: '',
@@ -27,41 +27,39 @@ export class VideojuegoFormComponent {
     desarrollador: ''
   });
 
+  // Computed signal para habilitar/deshabilitar "Guardar"
+  canSave = computed(() => {
+    const v = this.videojuego();
+    return (
+      v.titulo.trim() !== '' &&
+      v.sinopsis.trim() !== '' &&
+      v.genero.trim() !== '' &&
+      v.desarrollador.trim() !== '' &&
+      v.lanzamiento != null
+    );
+  });
+
   ngOnInit() {
-    this.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.isEdit = !!this.id;
-    if (this.isEdit) {
+    const routeId = this.route.snapshot.paramMap.get('id');
+    if (routeId) {
+      this.id = routeId;
+      this.isEdit = true;
+
       this.service.getById(this.id).subscribe(v => this.videojuego.set(v));
     }
   }
 
-  updateTitulo(value: string) {
-    this.videojuego.update(v => ({ ...v, titulo: value }));
-  }
-
-  updateSinopsis(value: string) {
-    this.videojuego.update(v => ({ ...v, sinopsis: value }));
-  }
-
-  updateGenero(value: string) {
-    this.videojuego.update(v => ({ ...v, genero: value }));
-  }
-
-  updateMultijugador(value: boolean) {
-    this.videojuego.update(v => ({ ...v, multijugador: value }));
-  }
-
-  updateLanzamiento(value: number) {
-    this.videojuego.update(v => ({ ...v, lanzamiento: value }));
-  }
-
-  updateDesarrollador(value: string) {
-    this.videojuego.update(v => ({ ...v, desarrollador: value }));
-  }
-
+  updateTitulo(value: string) { this.videojuego.update(v => ({ ...v, titulo: value })); }
+  updateSinopsis(value: string) { this.videojuego.update(v => ({ ...v, sinopsis: value })); }
+  updateGenero(value: string) { this.videojuego.update(v => ({ ...v, genero: value })); }
+  updateDesarrollador(value: string) { this.videojuego.update(v => ({ ...v, desarrollador: value })); }
+  updateMultijugador(value: boolean) { this.videojuego.update(v => ({ ...v, multijugador: value })); }
+  updateLanzamiento(value: number) { this.videojuego.update(v => ({ ...v, lanzamiento: value })); }
 
   save() {
+    if (!this.canSave()) return; // nunca guardamos si no está completo
     const data = this.videojuego();
+
     if (this.isEdit) {
       this.service.update(this.id, data).subscribe(() => this.router.navigate(['/videojuegos']));
     } else {
@@ -69,9 +67,5 @@ export class VideojuegoFormComponent {
     }
   }
 
-  volver() {
-    history.back();
-  }
-
+  volver() { history.back(); }
 }
-
