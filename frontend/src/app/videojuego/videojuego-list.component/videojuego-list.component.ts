@@ -26,7 +26,6 @@ export class VideojuegoListComponent {
     this.service.getAll().subscribe(data => this.videojuegos.set(data));
   }
 
-  // Cambié el id a string
   delete(id?: string) {
     if (!id) return; // si undefined o vacío → no hacemos nada
 
