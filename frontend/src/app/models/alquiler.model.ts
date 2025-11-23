@@ -3,8 +3,8 @@ import { PenalizacionModel } from "./penalizacion.model";
 import { PersonaModel } from "./persona.model";
 
 export interface AlquilerModel {
-    id?: number;
-    persona: PersonaModel; // <--- asociación
+    id?: string;
+    personaId: string;
     fechaInicio: string;
     fechaFin: string;
     detalles: CarritoModel[]; // <--- composición

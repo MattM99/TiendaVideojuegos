@@ -2,7 +2,7 @@ import { PersonaModel } from "./persona.model";
 
 export interface BloqueoModel {
     id?: number;
-    persona: PersonaModel; // <--- asociación
+    personaId: string;
     motivo: string;
     fechaInicio: Date;
     fechaFin: Date;
