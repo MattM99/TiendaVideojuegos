@@ -70,7 +70,7 @@ textarea:focus {
     border: 1px solid #2d3945;
     background: #1c2530;
     cursor: pointer;
-    transition: 0.2s ease;
+    transition: 0.2s ease; /* transición suave */
 }
 
 /* SIEMPRE verde */
@@ -94,6 +94,8 @@ textarea:focus {
         inset 0 0 8px rgba(0,0,0,0.6);
     border-width: 2px;
 }
+
+
 
 
 /* ===== Contenedor de botones abajo ===== */
@@ -147,5 +149,4 @@ textarea:focus {
   transform: none;
   box-shadow: none;
 }
-
 
