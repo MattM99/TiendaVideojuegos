@@ -1,0 +1,38 @@
+<h2>Personas</h2>
+
+<button routerLink="/personas/nueva">Nueva persona</button>
+
+@if (cargando()) {
+  <p>Cargando personas...</p>
+}
+@else if (personas().length === 0) {
+  <p>No hay personas registradas.</p>
+}
+@else {
+  <table>
+    <thead>
+      <tr>
+        <th>DNI</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (p of personas(); track p.id) {
+        <tr>
+          <td>{{ p.dni }}</td>
+          <td>{{ p.apellido }}, {{ p.nombre }}</td>
+          <td>{{ p.email }}</td>
+          <td>{{ p.telefono }}</td>
+          <td>
+            <button [routerLink]="['/personas', p.id]">Editar</button>
+            <button (click)="eliminar(p.id)">Eliminar</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

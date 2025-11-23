@@ -1,0 +1,21 @@
+<header class="header">
+  <div class="header__logo">
+    <span class="header__icon" aria-hidden="true">🎮</span>
+    <span class="header__title">Tienda Videogame</span>
+  </div>
+
+  <nav class="header__nav">
+    <a
+      routerLink="/"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Inicio
+    </a>
+    <a routerLink="/clientes" routerLinkActive="active">Clientes</a>
+    <a routerLink="/videojuegos" routerLinkActive="active">Videojuegos</a>
+    <a routerLink="/alquileres" routerLinkActive="active">Alquileres</a>
+    <a routerLink="/facturas" routerLinkActive="active">Facturas</a>
+    <a routerLink="/login" routerLinkActive="active">Login</a>
+  </nav>
+</header>
