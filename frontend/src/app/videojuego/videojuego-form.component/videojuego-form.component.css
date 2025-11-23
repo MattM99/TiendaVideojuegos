@@ -28,10 +28,9 @@ label {
     color: #c6d0da;
     font-size: 0.95rem;
     font-weight: 500;
-    margin-bottom: -10px;
 }
 
-/* Inputs generales */
+/* Inputs */
 input,
 textarea {
     background: #1c2530;
@@ -42,7 +41,6 @@ textarea {
     font-size: 1rem;
     transition: 0.2s ease;
     width: 100%;
-    resize: vertical;
 }
 
 input:focus,
@@ -52,11 +50,6 @@ textarea:focus {
     box-shadow: 0 0 8px rgba(74, 99, 122, 0.4);
 }
 
-/* Textarea */
-textarea {
-    min-height: 90px;
-}
-
 /* Checkbox */
 input[type="checkbox"] {
     width: auto;
@@ -64,21 +57,44 @@ input[type="checkbox"] {
     cursor: pointer;
 }
 
-/* Botón Guardar */
-button[type="submit"] {
+/* ===== Contenedor de botones abajo ===== */
+.form-buttons {
     margin-top: 10px;
+    display: flex;
+    justify-content: space-between; /* ← Volver izquierda, Guardar derecha */
+    align-items: center;
+}
+
+/* Botón Volver */
+.back-btn {
+    background: #152028;
+    color: #e0e6ed;
+    border: 1px solid #2d3945;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #22303c;
+    transform: translateY(-2px);
+}
+
+/* Botón Guardar */
+.save-btn {
     background: #1c2530;
     color: #e0e6ed;
     border: 1px solid #2d3945;
     padding: 10px 16px;
     border-radius: 6px;
-    font-size: 1rem;
     cursor: pointer;
     transition: 0.2s ease;
 }
 
-button[type="submit"]:hover {
+.save-btn:hover {
     background: #2d3945;
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
+

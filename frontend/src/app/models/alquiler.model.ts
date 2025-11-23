@@ -1,4 +1,4 @@
-import { DetalleAlquilerModel } from "./detalle-alquiler.model";
+import { CarritoModel } from "./carrito.model";
 import { PenalizacionModel } from "./penalizacion.model";
 import { PersonaModel } from "./persona.model";
 
@@ -7,7 +7,7 @@ export interface AlquilerModel {
     persona: PersonaModel; // <--- asociación
     fechaInicio: string;
     fechaFin: string;
-    detalles: DetalleAlquilerModel[]; // <--- composición
+    detalles: CarritoModel[]; // <--- composición
     montoFijo: number;
     fechaDevolucion?: string; // Opcional, porque será nulo hasta que se devuelva el alquiler
     penalizaciones: PenalizacionModel[]; // <--- composición

@@ -64,5 +64,10 @@ export class VideojuegoFormComponent {
     }
   }
 
+  volver() {
+    history.back();
+  }
+
+
 }
 
