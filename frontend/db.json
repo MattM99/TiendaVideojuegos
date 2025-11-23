@@ -82,7 +82,7 @@
       "fechaFin": "2025-01-05",
       "montoFijo": 600,
       "fechaDevolucion": "2025-01-06",
-      "carrito": [
+      "carritoItems": [
         {
           "id": "1",
           "unidades": 1,
@@ -105,7 +105,7 @@
       "fechaFin": "2025-01-06",
       "montoFijo": 1000,
       "fechaDevolucion": "2025-01-06",
-      "carrito": [
+      "carritoItems": [
         {
           "id": 1,
           "unidades": 1,
