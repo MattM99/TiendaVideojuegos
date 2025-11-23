@@ -55,7 +55,6 @@ export class PersonasForm implements OnInit {
     const value = this.form.value as Omit<PersonaModel, 'id'>;
 
     if (this.personaId) {
-      // Editar
       const personaActualizada: PersonaModel = {
         id: this.personaId,
         ...value
@@ -68,7 +67,6 @@ export class PersonasForm implements OnInit {
         });
 
     } else {
-      // Crear
       this.personaService.crearPersona(value).subscribe({
         next: () => this.router.navigate(['/personas']),
         error: err => console.error('Error creando persona', err)

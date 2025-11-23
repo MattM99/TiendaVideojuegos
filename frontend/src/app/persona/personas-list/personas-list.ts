@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Persona } from '../persona';
 
 @Component({
@@ -13,6 +13,7 @@ import { Persona } from '../persona';
 export class PersonasList implements OnInit {
 
   private personaService = inject(Persona);
+  private router = inject(Router);
 
   personas = computed(() => this.personaService.personas());
   cargando = computed(() => this.personaService.cargando());
@@ -28,5 +29,9 @@ export class PersonasList implements OnInit {
       next: () => this.personaService.cargarPersonas(),
       error: err => console.error('Error eliminando persona', err),
     });
+  }
+
+  editar(id: number): void {                  
+    this.router.navigate(['/personas', id]);  
   }
 }
