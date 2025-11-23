@@ -8,6 +8,41 @@ h2 {
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
+/* Contenedor superior: volver + crear */
+.top-actions {
+    width: 90%;
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Botón VOLVER */
+.back-btn {
+    background: #1c2530;
+    color: #e0e6ed;
+    border: 1px solid #2d3945;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.back-btn:hover {
+    background: #2d3945;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Contenedor botón CREAR */
+.create-button-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
 /* Botones generales */
 button {
     background: #1c2530;
@@ -25,22 +60,8 @@ button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
-/* Contenedor del botón Crear */
-.create-button-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
-}
 
-/* Botón crear */
-button[routerLink="/videojuegos/new"] {
-    margin-bottom: 20px;
-    align-self: start;
-    margin-left: 20px
-}
-
-/* Lista */
+/* LISTA */
 ul {
     list-style: none;
     padding: 0;
@@ -50,7 +71,7 @@ ul {
 }
 
 li {
-  background: rgba(28, 37, 48, 0.65);
+    background: rgba(28, 37, 48, 0.65);
     backdrop-filter: blur(6px);
     margin-bottom: 12px;
     padding: 14px 16px;
@@ -59,24 +80,25 @@ li {
     border: 1px solid rgba(255, 255, 255, 0.05);
 
     display: flex;
-    justify-content: space-between;   /* Deja texto a la izquierda y botones a la derecha */
+    justify-content: space-between;
     align-items: center;
 }
 
+/* Título de cada cuenta */
+.title b {
+    color: #f0f4f8;
+    font-size: 1rem;
+}
+
+/* Zona de botones derecha */
 .actions {
-    min-width: 180px;  /* ← fijá aquí un ancho suficiente para los botones */
+    min-width: 180px;
     display: flex;
     justify-content: flex-end;
     gap: 10px;
 }
 
-/* Texto del listado */
-li b {
-    color: #f0f4f8;
-    font-size: 1rem;
-}
-
-/* Botones dentro del listado */
+/* Botones de la lista */
 li button {
     margin-left: 10px;
     background: #152028;
@@ -86,12 +108,12 @@ li button:hover {
     background: #22303c;
 }
 
-/* Botón eliminar */
-li button:nth-child(3) {
+/* Botón ELIMINAR */
+.actions button:last-child {
     border-color: #8c2c2c;
 }
 
-li button:nth-child(3):hover {
+.actions button:last-child:hover {
     background: #8c2c2c;
     color: white;
 }

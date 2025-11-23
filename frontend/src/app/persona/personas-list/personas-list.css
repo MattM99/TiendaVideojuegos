@@ -1,4 +1,4 @@
-/* Título */
+/* ===== TÍTULO ===== */
 h2 {
     color: #e0e6ed;
     font-family: 'Segoe UI', sans-serif;
@@ -8,48 +8,71 @@ h2 {
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
-/* Contenedor centrado */
-.create-button-container {
-    text-align: center;
-    margin-bottom: 20px;
+/* ===== CONTENEDOR SUPERIOR (Volver + Nueva persona) ===== */
+.top-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 90%;
+    max-width: 900px;
+    margin: 20px auto;
 }
 
-/* Botón "Nueva persona" */
-.create-button {
+/* Botón general */
+button {
     background: #1c2530;
     color: #e0e6ed;
     border: 1px solid #2d3945;
     padding: 10px 18px;
     border-radius: 6px;
-    font-size: 0.95rem;
     cursor: pointer;
     transition: 0.2s ease;
-    display: block;
-    margin: 0 auto 20px auto;
+    font-size: 0.9rem;
 }
 
-.create-button:hover {
+/* Hover general */
+button:hover {
     background: #2d3945;
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
+/* Botón VOLVER */
+.back-btn {
+    background: #1c2530;
+}
 
-/* Estado de carga / sin registros */
+.back-btn:hover {
+    background: #2d3945;
+}
+
+/* Botón NUEVA PERSONA */
+.create-button {
+    background: #1c2530;
+}
+
+.create-button:hover {
+    background: #2d3945;
+}
+
+/* ===== MENSAJES DE ESTADO ===== */
 p {
     color: #d9e1e8;
     text-align: center;
     font-family: 'Segoe UI', sans-serif;
+    font-size: 1rem;
 }
 
-/* Tabla */
+/* ===== TABLA ===== */
 table {
     width: 90%;
     max-width: 900px;
-    margin: 0 auto;
+    margin: 10px auto 40px auto;
     border-collapse: collapse;
-    background: rgba(28, 37, 48, 0.6);
+
+    background: rgba(28, 37, 48, 0.60);
     backdrop-filter: blur(6px);
+
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -85,10 +108,9 @@ tbody td {
     font-size: 0.95rem;
 }
 
-/* Botones de acciones */
+/* ===== BOTONES DE ACCIONES ===== */
 td button {
     background: #152028;
-    color: #e0e6ed;
     border: 1px solid #2d3945;
     padding: 6px 12px;
     border-radius: 6px;
@@ -103,7 +125,7 @@ td button:hover {
     transform: translateY(-2px);
 }
 
-/* Botón eliminar */
+/* Botón ELIMINAR */
 td button:last-child {
     border-color: #8c2c2c;
 }
@@ -112,4 +134,3 @@ td button:last-child:hover {
     background: #8c2c2c;
     color: white;
 }
-
