@@ -1,6 +1,6 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { Persona } from '../persona';
 
 @Component({
@@ -13,10 +13,7 @@ import { Persona } from '../persona';
 export class PersonasList implements OnInit {
 
   private personaService = inject(Persona);
-  constructor(
-    private router: Router
-  ) {}
-
+  private router = inject(Router);
 
   personas = computed(() => this.personaService.personas());
   cargando = computed(() => this.personaService.cargando());
@@ -34,7 +31,12 @@ export class PersonasList implements OnInit {
     });
   }
 
+<<<<<<< HEAD
   crearCliente() {
     this.router.navigate(['/persona-form'], { queryParams: { crearCuenta: false } });
+=======
+  editar(id: number): void {
+    this.router.navigate(['/personas', id]);
+>>>>>>> origin/nico-branch
   }
 }

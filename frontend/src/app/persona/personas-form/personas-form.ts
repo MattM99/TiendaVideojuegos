@@ -54,10 +54,31 @@ export class PersonasForm implements OnInit {
   }
 
   onSubmit(): void {
-  // 1️⃣ Validar el formulario
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const value = this.form.value as Omit<PersonaModel, 'id'>;
+
+    if (this.personaId) {
+      const personaActualizada: PersonaModel = {
+        id: this.personaId,
+        ...value
+      };
+
+      this.personaService.actualizarPersona(this.personaId, personaActualizada)
+        .subscribe({
+          next: () => this.router.navigate(['/personas']),
+          error: err => console.error('Error actualizando persona', err)
+        });
+
+    } else {
+      this.personaService.crearPersona(value).subscribe({
+        next: () => this.router.navigate(['/personas']),
+        error: err => console.error('Error creando persona', err)
+      });
+    }
   }
 
   // 2️⃣ Obtener los datos del formulario (sin el id)
