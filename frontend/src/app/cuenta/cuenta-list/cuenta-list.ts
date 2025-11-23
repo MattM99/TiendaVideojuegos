@@ -43,7 +43,7 @@ usuario = computed(() => this.auth.currentUser());
   }
 
   editCuenta(cuenta: CuentaModel) {
-    this.router.navigate(['/cuentas', cuenta.id]);
+    this.router.navigate(['/cuentas/editar', cuenta.id]);
   }
 
   crearEmpleado() {

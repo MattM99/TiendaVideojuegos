@@ -43,6 +43,13 @@ export class CuentaForm {
     }
   }
 
+  showPassword = false;
+
+togglePassword() {
+  this.showPassword = !this.showPassword;
+}
+
+
   updateNombreUsuario(value: string) {
     this.cuenta.update((c) => ({ ...c, nombreUsuario: value }));
   }

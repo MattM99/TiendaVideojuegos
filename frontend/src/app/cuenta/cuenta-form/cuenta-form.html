@@ -12,12 +12,22 @@
            (input)="updateNombreUsuario($event.target.value)">
   </div>
 
-  <div class="form-group">
-    <label>Contraseña</label>
-    <input type="password"
-           [value]="cuenta().password"
-           (input)="updatepassword($event.target.value)">
+<div class="form-group password-group">
+  <label>Contraseña</label>
+
+  <div class="password-wrapper">
+    <input
+      [type]="showPassword ? 'text' : 'password'"
+      [value]="cuenta().password"
+      (input)="updatepassword($event.target.value)"
+    />
+
+    <button type="button" class="toggle-btn" (click)="togglePassword()">
+      {{ showPassword ? 'Ocultar' : 'Mostrar' }}
+    </button>
   </div>
+</div>
+
 
   <div class="form-group">
     <label>Rol</label>
