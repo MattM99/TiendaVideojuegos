@@ -1,4 +1,4 @@
-import { InventarioItemModel } from "./inventario-item.model";
+import { InventarioItemModel } from "../inventario-item/inventario-item.model";
 
 export interface CarritoModel {
   id?: number;

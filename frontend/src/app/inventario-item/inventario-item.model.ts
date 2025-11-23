@@ -1,7 +1,7 @@
 import { VideojuegoModel } from "../videojuego/videojuego.model";
 
 export interface InventarioItemModel {
-  id?: number;
+  id?: string;
   videojuego: VideojuegoModel; // <--- asociación
   plataforma: string;
   precioDiario: number;
