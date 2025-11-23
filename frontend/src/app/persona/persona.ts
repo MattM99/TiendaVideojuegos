@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { PersonaModel } from '../models/persona.model';
+import { PersonaModel } from '../persona/persona.model';
 
 
 @Injectable({

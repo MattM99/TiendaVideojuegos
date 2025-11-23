@@ -2,8 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Persona } from '../../services/persona';
-import { PersonaModel } from '../../models/persona.model';
+import { Persona } from '../persona';
+import { PersonaModel } from '../persona.model';
 
 @Component({
   selector: 'app-personas-form',

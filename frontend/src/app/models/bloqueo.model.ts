@@ -1,4 +1,4 @@
-import { PersonaModel } from "./persona.model";
+import { PersonaModel } from "../persona/persona.model";
 
 export interface BloqueoModel {
     id?: number;

@@ -1,7 +1,7 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Persona } from '../../services/persona';
+import { Persona } from '../persona';
 
 @Component({
   selector: 'app-personas-list',

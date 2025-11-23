@@ -1,0 +1,93 @@
+/* Título */
+h2 {
+    color: #e0e6ed;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 2rem;
+    margin: 20px 0;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+/* Botón "Nueva persona" */
+button[routerLink="/personas/nueva"] {
+    display: block;
+    margin: 0 auto 20px auto;
+}
+
+/* Estado de carga / sin registros */
+p {
+    color: #d9e1e8;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Tabla */
+table {
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background: rgba(28, 37, 48, 0.6);
+    backdrop-filter: blur(6px);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Encabezado */
+thead {
+    background: rgba(45, 57, 69, 0.5);
+}
+
+thead th {
+    color: #e0e6ed;
+    padding: 12px;
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Filas */
+tbody tr {
+    transition: 0.2s ease;
+}
+
+tbody tr:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Celdas */
+tbody td {
+    color: #d9e1e8;
+    padding: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 0.95rem;
+}
+
+/* Botones de acciones */
+td button {
+    background: #152028;
+    color: #e0e6ed;
+    border: 1px solid #2d3945;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: 0.2s ease;
+    font-size: 0.85rem;
+}
+
+td button:hover {
+    background: #22303c;
+    transform: translateY(-2px);
+}
+
+/* Botón eliminar */
+td button:last-child {
+    border-color: #8c2c2c;
+}
+
+td button:last-child:hover {
+    background: #8c2c2c;
+    color: white;
+}
