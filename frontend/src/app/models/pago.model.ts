@@ -1,12 +1,10 @@
-import { AlquilerModel } from "./alquiler.model";
 import { MetodoPagoUnion } from "./metodo-pago.model";
 
 export interface PagoModel {
-  id: number;
-  alquiler: AlquilerModel;
+  id: string;
+  alquilerId: string; // <--- asociación
   estado: string;
-  metodoPago: MetodoPagoUnion;
-  descuento?: number;
-  penalizacion?: number;
+  descuento: number;
+  metodoPago: MetodoPagoUnion; // <--- composición
   total: number;
 }

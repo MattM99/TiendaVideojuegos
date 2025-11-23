@@ -6,44 +6,7 @@
       "password": "1234",
       "rol": "FOUNDER",
       "alta": true,
-      "persona": {
-        "id": 1,
-        "dni": "22222222",
-        "nombre": "Kevin",
-        "apellido": "Falcón",
-        "email": "kevin@example.com",
-        "telefono": "1199887766"
-      }
-    },
-    {
-      "id": "c4f3",
-      "nombreUsuario": "pedrito",
-      "password": "12345",
-      "rol": "ADMIN",
-      "alta": true,
-      "persona": {
-        "id": 0,
-        "dni": "",
-        "nombre": "",
-        "apellido": "",
-        "email": "",
-        "telefono": ""
-      }
-    },
-    {
-      "id": "0b16",
-      "nombreUsuario": "empleado",
-      "password": "empleado",
-      "rol": "EMPLEADO",
-      "alta": true,
-      "persona": {
-        "id": 0,
-        "dni": "",
-        "nombre": "",
-        "apellido": "",
-        "email": "",
-        "telefono": ""
-      }
+      "personaId": "1"
     }
   ],
   "personas": [
@@ -83,14 +46,7 @@
   "bloqueos": [
     {
       "id": "1",
-      "persona": {
-        "id": 2,
-        "dni": "11111111",
-        "nombre": "Matias",
-        "apellido": "Mendoza",
-        "email": "matias@example.com",
-        "telefono": "1122334455"
-      },
+      "personaId": "2",
       "fechaInicio": "2025-01-10",
       "fechaFin": "2025-02-10",
       "motivo": "Tapó el baño"
@@ -99,7 +55,7 @@
   "videojuegos": [
     {
       "id": "1",
-      "titulo": "Gordo War",
+      "titulo": "God Of War",
       "sinopsis": "Kratos contra los dioses.",
       "genero": "ACCION",
       "multijugador": false,
@@ -114,29 +70,12 @@
       "multijugador": false,
       "lanzamiento": 2017,
       "desarrollador": "Nintendo"
-    },
-    {
-      "id": "2ece",
-      "titulo": "Persona 5",
-      "sinopsis": "Personas personeando",
-      "genero": "RPG",
-      "multijugador": false,
-      "lanzamiento": 2019,
-      "desarrollador": ""
     }
   ],
   "inventarioItems": [
     {
       "id": "1",
-      "videojuego": {
-        "id": 1,
-        "titulo": "God of War",
-        "sinopsis": "Kratos contra los dioses.",
-        "genero": "ACCION",
-        "multijugador": false,
-        "lanzamiento": 2005,
-        "desarrollador": "Santa Monica Studio"
-      },
+      "videojuegoId": "1",
       "plataforma": "PS2",
       "precioDiario": 300,
       "stockTotal": 5,
@@ -144,15 +83,7 @@
     },
     {
       "id": "2",
-      "videojuego": {
-        "id": 2,
-        "titulo": "Zelda Breath of the Wild",
-        "sinopsis": "Un mundo abierto en Hyrule.",
-        "genero": "AVENTURA",
-        "multijugador": false,
-        "lanzamiento": 2017,
-        "desarrollador": "Nintendo"
-      },
+      "videojuegoId": "2",
       "plataforma": "SWITCH",
       "precioDiario": 500,
       "stockTotal": 4,
@@ -162,109 +93,69 @@
   "alquileres": [
     {
       "id": "1",
-      "persona": {
-        "id": 1,
-        "dni": "22222222",
-        "nombre": "Kevin",
-        "apellido": "Falcón",
-        "email": "kevin@example.com",
-        "telefono": "1199887766"
-      },
+      "personaId": "1",
       "fechaInicio": "2025-01-03",
       "fechaFin": "2025-01-05",
       "montoFijo": 600,
       "fechaDevolucion": "2025-01-06",
-      "detalles": [
+      "carrito": [
         {
-          "id": 1,
+          "id": "1",
           "unidades": 1,
           "subtotal": 300,
-          "inventarioItem": {
-            "id": 1,
-            "videojuego": {
-              "id": 1,
-              "titulo": "God of War",
-              "sinopsis": "Kratos contra los dioses.",
-              "genero": "ACCION",
-              "multijugador": false,
-              "lanzamiento": 2005,
-              "desarrollador": "Santa Monica Studio"
-            },
-            "plataforma": "PS2",
-            "precioDiario": 300,
-            "stockTotal": 5,
-            "enLocal": 5
-          }
+          "inventarioItemId": "1"
         }
       ],
       "penalizaciones": [
         {
-          "id": 1,
+          "id": "1",
           "monto": 300,
           "motivo": "Demora en devolución"
         }
-      ],
-      "pago": {
-        "id": 1,
-        "estado": "COMPLETADO",
-        "descuento": 0,
-        "total": 900,
-        "metodoPago": {
-          "tipo": "EFECTIVO"
-        }
-      }
+      ]
     },
     {
       "id": "2",
-      "persona": {
-        "id": 2,
-        "dni": "11111111",
-        "nombre": "Matias",
-        "apellido": "Mendoza",
-        "email": "matias@example.com",
-        "telefono": "1122334455"
-      },
+      "personaId": "2",
       "fechaInicio": "2025-01-04",
       "fechaFin": "2025-01-06",
       "montoFijo": 1000,
       "fechaDevolucion": "2025-01-06",
-      "detalles": [
+      "carrito": [
         {
           "id": 1,
           "unidades": 1,
           "subtotal": 500,
-          "inventarioItem": {
-            "id": 2,
-            "videojuego": {
-              "id": 2,
-              "titulo": "Zelda Breath of the Wild",
-              "sinopsis": "Un mundo abierto en Hyrule.",
-              "genero": "AVENTURA",
-              "multijugador": false,
-              "lanzamiento": 2017,
-              "desarrollador": "Nintendo"
-            },
-            "plataforma": "SWITCH",
-            "precioDiario": 500,
-            "stockTotal": 4,
-            "enLocal": 4
-          }
+          "inventarioItemId": "2"
         }
       ],
-      "penalizaciones": [],
-      "pago": {
-        "id": 2,
+      "penalizaciones": []
+    }
+  ],
+  "pagos": [
+    {
+      "id": 2,
+      "alquilerId": "2",
+      "estado": "COMPLETADO",
+      "descuento": 0,
+      "total": 1000,
+      "metodoPago": {
+        "tipo": "TARJETA",
+        "titular": "Matias Mendoza",
+        "numero": "1111-2222-3333-4444",
+        "cvv": "123",
+        "vencimiento": "12/29"
+      }
+    },
+    {
+        "id": "1",
+        "alquilerId": "1",
         "estado": "COMPLETADO",
         "descuento": 0,
-        "total": 1000,
+        "total": 900,
         "metodoPago": {
-          "tipo": "TARJETA",
-          "titular": "Matias Mendoza",
-          "numero": "1111-2222-3333-4444",
-          "cvv": "123",
-          "vencimiento": "12/29"
+        "tipo": "EFECTIVO"
         }
       }
-    }
   ]
 }

@@ -14,7 +14,7 @@ export class VideojuegoService {
     return this.http.get<VideojuegoModel[]>(this.apiUrl);
   }
 
-  getById(id: number): Observable<VideojuegoModel> {
+  getById(id: string): Observable<VideojuegoModel> {
     return this.http.get<VideojuegoModel>(`${this.apiUrl}/${id}`);
   }
 
@@ -22,12 +22,13 @@ export class VideojuegoService {
     return this.http.post<VideojuegoModel>(this.apiUrl, v);
   }
 
-  update(id: number, v: VideojuegoModel): Observable<VideojuegoModel> {
+  update(id: string, v: VideojuegoModel): Observable<VideojuegoModel> {
     return this.http.put<VideojuegoModel>(`${this.apiUrl}/${id}`, v);
   }
 
-  delete(id: number): Observable<void> {
+  delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
+
 

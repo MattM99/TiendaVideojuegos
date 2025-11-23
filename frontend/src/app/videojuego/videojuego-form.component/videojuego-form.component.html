@@ -12,13 +12,6 @@
     name="titulo"
   />
 
-  <label>Sinopsis</label>
-  <textarea
-    [ngModel]="videojuego().sinopsis"
-    (ngModelChange)="updateSinopsis($event)"
-    name="sinopsis"
-  ></textarea>
-
   <label>Género</label>
   <input
     [ngModel]="videojuego().genero"
@@ -26,11 +19,11 @@
     name="genero"
   />
 
-  <label>Multijugador</label>
+  <label>Desarrollador</label>
   <input
-    type="checkbox"
-    [checked]="videojuego().multijugador"
-    (change)="updateMultijugador($event.target.checked)"
+    [ngModel]="videojuego().desarrollador"
+    (ngModelChange)="updateDesarrollador($event)"
+    name="desarrollador"
   />
 
   <label>Año de lanzamiento</label>
@@ -41,7 +34,46 @@
     name="lanzamiento"
   />
 
-  <button type="submit">Guardar</button>
+  <label>Multijugador</label>
+  <div class="multiplayer-toggle">
+    <button
+      type="button"
+      class="true-btn"
+      [class.active]="videojuego().multijugador"
+      (click)="updateMultijugador(true)"
+    >
+      ✔
+    </button>
+
+    <button
+      type="button"
+      class="false-btn"
+      [class.active]="!videojuego().multijugador"
+      (click)="updateMultijugador(false)"
+    >
+      ✘
+    </button>
+  </div>
+
+  <label>Sinopsis</label>
+  <textarea
+    [ngModel]="videojuego().sinopsis"
+    (ngModelChange)="updateSinopsis($event)"
+    name="sinopsis"
+  ></textarea>
+
+  <div class="form-buttons">
+    <button type="button" class="back-btn" (click)="volver()">Volver</button>
+
+    <button
+      type="submit"
+      class="save-btn"
+      [class.disabled]="!canSave()"
+      [disabled]="!canSave()"
+    >
+      Guardar
+    </button>
+  </div>
 
 </form>
 
