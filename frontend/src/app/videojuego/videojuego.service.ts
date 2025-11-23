@@ -14,7 +14,6 @@ export class VideojuegoService {
     return this.http.get<VideojuegoModel[]>(this.apiUrl);
   }
 
-  // Cambié id a string
   getById(id: string): Observable<VideojuegoModel> {
     return this.http.get<VideojuegoModel>(`${this.apiUrl}/${id}`);
   }
