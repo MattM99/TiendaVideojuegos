@@ -1,1 +1,57 @@
-<p>cuenta-form works!</p>
+<h2>{{ isEdit ? 'Editar cuenta' : 'Nueva cuenta' }}</h2>
+
+<div class="form-container">
+
+  <!-- DATOS DE LA CUENTA -->
+  <h3>Datos de la cuenta</h3>
+
+  <div class="form-group">
+    <label>Usuario</label>
+    <input type="text"
+           [value]="cuenta().nombreUsuario"
+           (input)="updateNombreUsuario($event.target.value)">
+  </div>
+
+  <div class="form-group">
+    <label>Contraseña</label>
+    <input type="password"
+           [value]="cuenta().password"
+           (input)="updatepassword($event.target.value)">
+  </div>
+
+  <div class="form-group">
+    <label>Rol</label>
+    <select [(ngModel)]="cuenta().rol">
+      <option value="">Seleccione…</option>
+      <option value="ADMIN">ADMINISTRADOR</option>
+      <option value="EMPLEADO">EMPLEADO</option>
+    </select>
+  </div>
+
+  <div class="form-group checkbox">
+    <label>
+      <input type="checkbox"
+             [checked]="cuenta().alta"
+             (change)="updateAlta($event.target.checked)">
+      Activo
+    </label>
+  </div>
+
+  <!-- DATOS DE LA PERSONA -->
+  <h3>Datos de la persona</h3>
+  <app-personas-form
+    [persona]="cuenta().persona"
+    (dniChange)="updateDni($event)"
+    (nombreChange)="updateNombre($event)"
+    (apellidoChange)="updateApellido($event)"
+    (emailChange)="updateEmail($event)"
+    (telefonoChange)="updateTelefono($event)">
+  </app-personas-form>
+
+  <!-- BOTONES -->
+  <div class="form-actions">
+    <button class="save" (click)="save()">Guardar</button>
+    <button class="cancel" (click)="router.navigate(['/cuentas'])">Cancelar</button>
+  </div>
+
+</div>

@@ -1,6 +1,8 @@
 <h2>Personas</h2>
 
-<button routerLink="/personas/nueva">Nueva persona</button>
+<div class="create-button-container">
+  <button class="create-button" routerLink="/personas/nueva">Nueva persona</button>
+</div>
 
 @if (cargando()) {
   <p>Cargando personas...</p>

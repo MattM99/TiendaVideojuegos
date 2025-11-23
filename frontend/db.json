@@ -3,7 +3,7 @@
     {
       "id": "1",
       "nombreUsuario": "founder",
-      "contraseña": "1234",
+      "password": "1234",
       "rol": "FOUNDER",
       "alta": true,
       "persona": {
@@ -32,6 +32,22 @@
       "apellido": "Mendoza",
       "email": "matias@example.com",
       "telefono": "1122334455"
+    },
+    {
+      "id": "b103",
+      "nombre": "Pepe",
+      "apellido": "Sanchez",
+      "dni": "123456",
+      "email": "pepe@gmail.com",
+      "telefono": "123456789"
+    },
+    {
+      "id": "d929",
+      "nombre": "Pepe",
+      "apellido": "Jorgito",
+      "dni": "123456",
+      "email": "pepe@gmail.com",
+      "telefono": "1234567"
     }
   ],
   "bloqueos": [

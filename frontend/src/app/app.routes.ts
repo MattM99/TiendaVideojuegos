@@ -11,7 +11,7 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'home', component: FrontPage, canActivate: [AuthGuard] },
   { path: 'admin', component: Admin, canActivate: [AuthGuard] },
-  {path: 'cuentas', canActivate: [AuthGuard], children: CUENTA_ROUTES},
-  {path: 'videojuegos', canActivate: [AuthGuard], children: VIDEOJUEGO_ROUTES},
-  {path: 'personas', canActivate: [AuthGuard], children: PERSONA_ROUTES},
+  { path: 'cuentas', canActivate: [AuthGuard], children: CUENTA_ROUTES },
+  { path: 'videojuegos', canActivate: [AuthGuard], children: VIDEOJUEGO_ROUTES },
+  { path: 'personas', canActivate: [AuthGuard], children: PERSONA_ROUTES },
 ];
