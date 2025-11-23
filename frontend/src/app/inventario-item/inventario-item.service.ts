@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { InventarioItemModel } from './inventario-item.model';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, switchMap, throwError } from 'rxjs';
 import { VideojuegoService } from '../videojuego/videojuego.service';
 
 @Injectable({ 
@@ -34,11 +34,29 @@ export class InventarioItemService {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
-  // NUEVO: obtener título del juego a partir de videojuegoId
+  // Obtener título del juego a partir de videojuegoId
   getTituloJuego(videojuegoId: string): Observable<string> {
     return this.videojuegoService.getById(videojuegoId).pipe(
       map(v => v.titulo)
     );
   }
+
+  // Descuenta 1 del stock (cuando se alquila)
+  descontarStock(id: string): Observable<InventarioItemModel> {
+    const url = `${this.baseUrl}/${id}`;
+    // PATCH enviando solo el cambio
+    return this.http.patch<InventarioItemModel>(url, { decremento: 1 }).pipe(
+      catchError(err => throwError(() => new Error('No se pudo descontar el stock')))
+    );
+  }
+
+  // Incrementa 1 del stock (cuando se devuelve)
+  incrementarStock(id: string): Observable<InventarioItemModel> {
+    const url = `${this.baseUrl}/${id}`;
+    return this.http.patch<InventarioItemModel>(url, { incremento: 1 }).pipe(
+      catchError(err => throwError(() => new Error('No se pudo incrementar el stock')))
+    );
+  }
+
 }
 
