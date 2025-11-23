@@ -1,10 +1,13 @@
 <h2>Administración de Cuentas</h2>
 
-@if (usuario()?.rol !== 'EMPLEADO') {
+<div class="top-actions">
+  <button class="back-btn" routerLink="/home">Volver</button>
+  @if (usuario()?.rol !== 'EMPLEADO') {
   <div class="create-button-container">
   <button (click)="crearEmpleado()">Crear nuevo usuario</button>
 </div>
 }
+</div>
 
 <ul>
   @for (cuenta of cuentas(); track cuenta.id) {
