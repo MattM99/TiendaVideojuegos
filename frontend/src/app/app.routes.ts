@@ -7,6 +7,7 @@ import { VIDEOJUEGO_ROUTES } from './videojuego/videojuego.routes';
 import { CUENTA_ROUTES } from './cuenta/cuenta.routes';
 import { INVENTARIO_ITEM_ROUTES } from './inventario-item/inventario.route';
 import { PERSONA_ROUTES } from './persona/persona.routes';
+import { Wip } from './shared/wip/wip';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -16,7 +17,8 @@ export const routes: Routes = [
   { path: 'videojuegos', canActivate: [AuthGuard], children: VIDEOJUEGO_ROUTES },
   { path: 'personas', canActivate: [AuthGuard], children: PERSONA_ROUTES },
   { path: 'inventario', canActivate: [AuthGuard], children: INVENTARIO_ITEM_ROUTES },
+  { path: 'wip', component: Wip },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: '**', redirectTo: 'login' },
+  { path: '**', redirectTo: 'wip' },
 
 ];
