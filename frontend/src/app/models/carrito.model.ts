@@ -1,8 +1,8 @@
 import { InventarioItemModel } from "../inventario-item/inventario-item.model";
 
 export interface CarritoModel {
-  id?: number;
-  inventarioItem: InventarioItemModel; // <--- asociación
+  id?: string;
+  inventarioItemId: string;
   unidades: number;
   subtotal: number;
 }
