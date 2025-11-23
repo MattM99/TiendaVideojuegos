@@ -1,4 +1,3 @@
-import { AlquilerModel } from "./alquiler.model";
 import { MetodoPagoUnion } from "./metodo-pago.model";
 
 export interface PagoModel {
