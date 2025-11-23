@@ -1,0 +1,57 @@
+<h2>{{ titulo }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div>
+    <label>
+      Nombre
+      <input formControlName="nombre" />
+    </label>
+    @if (form.get('nombre')?.invalid && form.get('nombre')?.touched) {
+      <p>* Campo obligatorio</p>
+    }
+  </div>
+
+  <div>
+    <label>
+      Apellido
+      <input formControlName="apellido" />
+    </label>
+    @if (form.get('apellido')?.invalid && form.get('apellido')?.touched) {
+      <p>* Campo obligatorio</p>
+    }
+  </div>
+
+  <div>
+    <label>
+      DNI
+      <input formControlName="dni" />
+    </label>
+    @if (form.get('dni')?.invalid && form.get('dni')?.touched) {
+      <p>* Campo obligatorio</p>
+    }
+  </div>
+
+  <div>
+    <label>
+      Email
+      <input formControlName="email" />
+    </label>
+    @if (form.get('email')?.invalid && form.get('email')?.touched) {
+      <p>* Email inválido</p>
+    }
+  </div>
+
+  <div>
+    <label>
+      Teléfono
+      <input formControlName="telefono" />
+    </label>
+  </div>
+
+  <button type="submit" [disabled]="form.invalid">
+    Guardar
+  </button>
+  <button type="button" (click)="cancelar()">
+    Cancelar
+  </button>
+</form>
