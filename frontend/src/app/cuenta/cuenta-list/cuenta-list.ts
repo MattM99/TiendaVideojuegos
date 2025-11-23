@@ -1,18 +1,22 @@
 import { CuentaModel } from '../cuenta.model';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../auth/auth-service/auth';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { CuentaService } from '../cuenta.service';
 
 @Component({
   selector: 'app-cuenta-list',
   standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './cuenta-list.html',
   styleUrls: ['./cuenta-list.css']
 })
 export class CuentaListComponent implements OnInit {
-  cuentas: CuentaModel[] = [];
-  loading: boolean = true;
+
+  private service = inject(CuentaService);
+  cuentas = signal<CuentaModel[]>([]);
 
   constructor(
     private http: HttpClient,
@@ -25,17 +29,7 @@ export class CuentaListComponent implements OnInit {
   }
 
   loadCuentas() {
-    this.loading = true;
-    this.http.get<CuentaModel[]>('http://localhost:3000/cuentas').subscribe({
-      next: data => {
-        this.cuentas = data;
-        this.loading = false;
-      },
-      error: err => {
-        console.error(err);
-        this.loading = false;
-      }
-    });
+    this.service.getAll().subscribe(data => this.cuentas.set(data));
   }
 
   deleteCuenta(cuenta: CuentaModel) {
