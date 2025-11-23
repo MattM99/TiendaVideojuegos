@@ -30,6 +30,14 @@ label {
     font-weight: 500;
 }
 
+.multiplayer-toggle {
+    display: flex;
+    width: 100%;
+    gap: 0;
+    margin-bottom: 10px;   /* ← MISMO ESPACIADO QUE UN INPUT */
+}
+
+
 /* Inputs */
 input,
 textarea {
@@ -50,12 +58,43 @@ textarea:focus {
     box-shadow: 0 0 8px rgba(74, 99, 122, 0.4);
 }
 
-/* Checkbox */
-input[type="checkbox"] {
-    width: auto;
-    transform: scale(1.2);
-    cursor: pointer;
+.multiplayer-toggle {
+    display: flex;
+    width: 100%;
+    gap: 0;
 }
+
+.multiplayer-toggle button {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #2d3945;
+    background: #1c2530;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+/* SIEMPRE verde */
+.multiplayer-toggle button.true-btn {
+    background: #1b4d2b !important;
+    border-color: #2e8b57 !important;
+    color: #e0ffe4 !important;
+}
+
+.multiplayer-toggle button.false-btn {
+    background: #552222 !important;
+    border-color: #aa4444 !important;
+    color: #ffe0e0 !important;
+}
+
+/* Se ve presionado/activo */
+.multiplayer-toggle button.active {
+    transform: scale(1.04);
+    box-shadow:
+        0 0 10px rgba(255,255,255,0.25),
+        inset 0 0 8px rgba(0,0,0,0.6);
+    border-width: 2px;
+}
+
 
 /* ===== Contenedor de botones abajo ===== */
 .form-buttons {

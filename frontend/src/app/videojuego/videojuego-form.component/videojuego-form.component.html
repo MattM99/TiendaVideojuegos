@@ -27,11 +27,25 @@
   />
 
   <label>Multijugador</label>
-  <input
-    type="checkbox"
-    [checked]="videojuego().multijugador"
-    (change)="updateMultijugador($event.target.checked)"
-  />
+  <div class="multiplayer-toggle">
+    <button
+      type="button"
+      class="true-btn"
+      [class.active]="videojuego().multijugador"
+      (click)="updateMultijugador(true)"
+    >
+      ✔
+    </button>
+
+    <button
+      type="button"
+      class="false-btn"
+      [class.active]="!videojuego().multijugador"
+      (click)="updateMultijugador(false)"
+    >
+      ✘
+    </button>
+  </div>
 
   <label>Año de lanzamiento</label>
   <input
