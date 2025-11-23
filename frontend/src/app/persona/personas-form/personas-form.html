@@ -1,6 +1,6 @@
 <h2>{{ titulo }}</h2>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
   <div>
     <label>
       Nombre
@@ -47,11 +47,14 @@
       <input formControlName="telefono" />
     </label>
   </div>
-
-  <button type="submit" [disabled]="form.invalid">
+<div class="form-buttons">
+<button type="submit" [disabled]="form.invalid">
     Guardar
   </button>
   <button type="button" (click)="cancelar()">
     Cancelar
   </button>
+
+</div>
+
 </form>
