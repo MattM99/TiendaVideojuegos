@@ -1,5 +1,5 @@
 import { CuentaModel } from '../cuenta.model';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../auth/auth-service/auth';
 import { Router, RouterModule } from '@angular/router';
@@ -14,6 +14,7 @@ import { CuentaService } from '../cuenta.service';
   styleUrls: ['./cuenta-list.css']
 })
 export class CuentaListComponent implements OnInit {
+usuario = computed(() => this.auth.currentUser());
 
   private service = inject(CuentaService);
   cuentas = signal<CuentaModel[]>([]);
@@ -42,7 +43,10 @@ export class CuentaListComponent implements OnInit {
   }
 
   editCuenta(cuenta: CuentaModel) {
-    // Redirige a un formulario de edición, que podés crear si querés
     this.router.navigate(['/cuentas', cuenta.id]);
+  }
+
+  crearEmpleado() {
+    this.router.navigate(['/personas/nueva'], { queryParams: { crearCuenta: true } });
   }
 }

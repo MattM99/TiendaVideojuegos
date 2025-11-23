@@ -37,17 +37,6 @@
     </label>
   </div>
 
-  <!-- DATOS DE LA PERSONA -->
-  <h3>Datos de la persona</h3>
-  <app-personas-form
-    [persona]="cuenta().persona"
-    (dniChange)="updateDni($event)"
-    (nombreChange)="updateNombre($event)"
-    (apellidoChange)="updateApellido($event)"
-    (emailChange)="updateEmail($event)"
-    (telefonoChange)="updateTelefono($event)">
-  </app-personas-form>
-
   <!-- BOTONES -->
   <div class="form-actions">
     <button class="save" (click)="save()">Guardar</button>

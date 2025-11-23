@@ -13,6 +13,9 @@ import { PersonaModel } from '../persona.model';
   styleUrl: './personas-form.css',
 })
 export class PersonasForm implements OnInit {
+  crearCuenta: boolean = false;
+
+
 
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
@@ -31,6 +34,10 @@ export class PersonasForm implements OnInit {
   });
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+    this.crearCuenta = params['crearCuenta'] === 'true';
+  });
+
     const idParam = this.route.snapshot.paramMap.get('id');
 
     if (idParam) {
@@ -47,34 +54,45 @@ export class PersonasForm implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    const value = this.form.value as Omit<PersonaModel, 'id'>;
-
-    if (this.personaId) {
-      // Editar
-      const personaActualizada: PersonaModel = {
-        id: this.personaId,
-        ...value
-      };
-
-      this.personaService.actualizarPersona(this.personaId, personaActualizada)
-        .subscribe({
-          next: () => this.router.navigate(['/personas']),
-          error: err => console.error('Error actualizando persona', err)
-        });
-
-    } else {
-      // Crear
-      this.personaService.crearPersona(value).subscribe({
-        next: () => this.router.navigate(['/personas']),
-        error: err => console.error('Error creando persona', err)
-      });
-    }
+  // 1️⃣ Validar el formulario
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
   }
+
+  // 2️⃣ Obtener los datos del formulario (sin el id)
+  const value = this.form.value as Omit<PersonaModel, 'id'>;
+
+  if (this.personaId) {
+    // 3️⃣ Editar persona existente
+    const personaActualizada: PersonaModel = {
+      id: this.personaId,
+      ...value
+    };
+
+    this.personaService.actualizarPersona(this.personaId, personaActualizada)
+      .subscribe({
+        next: () => this.redirigirDespues(),
+        error: err => console.error('Error actualizando persona', err)
+      });
+
+  } else {
+    // 4️⃣ Crear nueva persona
+    this.personaService.crearPersona(value).subscribe({
+      next: () => this.redirigirDespues(),
+      error: err => console.error('Error creando persona', err)
+    });
+  }
+}
+
+
+  private redirigirDespues() {
+  if (this.crearCuenta) {
+    this.router.navigate(['/cuentas/nuevo']); // ir a creación de cuenta
+  } else {
+    this.router.navigate(['/personas']); // ir a lista de clientes
+  }
+}
 
   cancelar(): void {
     this.router.navigate(['/personas']);
