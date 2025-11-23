@@ -11,23 +11,22 @@ export class CuentaService {
   private apiUrl = 'http://localhost:3000/cuentas';
 
   getAll(): Observable<CuentaModel[]> {
-      return this.http.get<CuentaModel[]>(this.apiUrl);
-    }
+    return this.http.get<CuentaModel[]>(this.apiUrl);
+  }
 
-    getById(id: number): Observable<CuentaModel> {
-      return this.http.get<CuentaModel>(`${this.apiUrl}/${id}`);
-    }
+  getById(id: string): Observable<CuentaModel> {
+    return this.http.get<CuentaModel>(`${this.apiUrl}/${id}`);
+  }
 
-    create(c: CuentaModel): Observable<CuentaModel> {
-      return this.http.post<CuentaModel>(this.apiUrl, c);
-    }
+  create(c: Omit<CuentaModel, 'id'>): Observable<CuentaModel> {
+    return this.http.post<CuentaModel>(this.apiUrl, c);
+  }
 
-    update(id: number, c: CuentaModel): Observable<CuentaModel> {
-      return this.http.put<CuentaModel>(`${this.apiUrl}/${id}`, c);
-    }
+  update(id: string, c: CuentaModel): Observable<CuentaModel> {
+    return this.http.put<CuentaModel>(`${this.apiUrl}/${id}`, c);
+  }
 
-    delete(id: number): Observable<void> {
-      return this.http.delete<void>(`${this.apiUrl}/${id}`);
-    }
-
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
 }
