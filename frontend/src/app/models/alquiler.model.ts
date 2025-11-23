@@ -1,6 +1,6 @@
 import { DetalleAlquilerModel } from "./detalle-alquiler.model";
 import { PenalizacionModel } from "./penalizacion.model";
-import { PersonaModel } from "./persona.model";
+import { PersonaModel } from "../persona/persona.model";
 
 export interface AlquilerModel {
     id?: number;
