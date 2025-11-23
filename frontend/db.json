@@ -7,6 +7,29 @@
       "rol": "FOUNDER",
       "alta": true,
       "personaId": "1"
+    },
+    {
+      "id": "ab17",
+      "nombreUsuario": "pedrito",
+      "password": "12345",
+      "rol": "ADMIN",
+      "alta": true,
+      "persona": {
+        "id": 0,
+        "dni": "",
+        "nombre": "",
+        "apellido": "",
+        "email": "",
+        "telefono": ""
+      }
+    },
+    {
+      "id": "0c82",
+      "personaId": "",
+      "nombreUsuario": "empleado",
+      "password": "empleado",
+      "rol": "EMPLEADO",
+      "alta": true
     }
   ],
   "personas": [
@@ -35,11 +58,27 @@
       "telefono": "85145"
     },
     {
-      "id": "c0db",
+      "id": "eeee",
+      "nombre": "gdsgdfsg",
+      "apellido": "gdfgdf",
+      "dni": "63453",
+      "email": "asfdsdf@das",
+      "telefono": "32965"
+    },
+    {
+      "id": "aeab",
+      "nombre": "sewqeq",
+      "apellido": "eqwe",
+      "dni": "23432",
+      "email": "qwASED@AS",
+      "telefono": "543"
+    },
+    {
+      "id": "2265",
       "nombre": "empleado",
       "apellido": "empleado",
-      "dni": "empleado",
-      "email": "empleado@empleado",
+      "dni": "854",
+      "email": "sasd@fdas",
       "telefono": "empleado"
     }
   ],
@@ -148,14 +187,14 @@
       }
     },
     {
-        "id": "1",
-        "alquilerId": "1",
-        "estado": "COMPLETADO",
-        "descuento": 0,
-        "total": 900,
-        "metodoPago": {
+      "id": "1",
+      "alquilerId": "1",
+      "estado": "COMPLETADO",
+      "descuento": 0,
+      "total": 900,
+      "metodoPago": {
         "tipo": "EFECTIVO"
-        }
       }
+    }
   ]
 }

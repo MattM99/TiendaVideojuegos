@@ -4,9 +4,8 @@ import { PersonasForm } from './personas-form/personas-form';
 
 
 export const PERSONA_ROUTES: Routes = [
-  {path: '', component: PersonasList},
-  { path: 'nueva', component: PersonasForm },
-  { path: ':id', component: PersonasForm },
+  { path: '', component: PersonasList },
+  { path: 'nueva', component: PersonasForm }, // primero la ruta fija
+  { path: ':id', component: PersonasForm },    // después la paramétrica
 ];
-
 

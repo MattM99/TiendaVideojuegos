@@ -6,6 +6,7 @@ import { FrontPage } from './shared/front-page/front-page';
 import { VIDEOJUEGO_ROUTES } from './videojuego/videojuego.routes';
 import { CUENTA_ROUTES } from './cuenta/cuenta.routes';
 import { INVENTARIO_ITEM_ROUTES } from './inventario-item/inventario.route';
+import { PERSONA_ROUTES } from './persona/persona.routes';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
@@ -13,10 +14,9 @@ export const routes: Routes = [
   { path: 'admin', component: Admin, canActivate: [AuthGuard] },
   { path: 'cuentas', canActivate: [AuthGuard], children: CUENTA_ROUTES },
   { path: 'videojuegos', canActivate: [AuthGuard], children: VIDEOJUEGO_ROUTES },
-  //{ path: 'personas', canActivate: [AuthGuard], children: PERSONA_ROUTES },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'personas', canActivate: [AuthGuard], children: PERSONA_ROUTES },
   { path: 'inventario', canActivate: [AuthGuard], children: INVENTARIO_ITEM_ROUTES },
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },
 
 ];

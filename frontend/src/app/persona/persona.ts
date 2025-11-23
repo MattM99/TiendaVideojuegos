@@ -2,12 +2,11 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PersonaModel } from '../persona/persona.model';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class Persona {
-     private http = inject(HttpClient);
+  private http = inject(HttpClient);
   private baseUrl = 'http://localhost:3000/personas';
 
   personas = signal<PersonaModel[]>([]);
@@ -27,7 +26,7 @@ export class Persona {
     });
   }
 
-  obtenerPersona(id: number) {
+  obtenerPersona(id: string) {
     return this.http.get<PersonaModel>(`${this.baseUrl}/${id}`);
   }
 
@@ -35,11 +34,11 @@ export class Persona {
     return this.http.post<PersonaModel>(this.baseUrl, persona);
   }
 
-  actualizarPersona(id: number, persona: PersonaModel) {
+  actualizarPersona(id: string, persona: PersonaModel) {
     return this.http.put<PersonaModel>(`${this.baseUrl}/${id}`, persona);
   }
 
-  eliminarPersona(id: number) {
+  eliminarPersona(id: string) {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }

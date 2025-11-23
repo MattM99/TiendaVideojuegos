@@ -22,7 +22,7 @@ export class PersonasList implements OnInit {
     this.personaService.cargarPersonas();
   }
 
-  eliminar(id: number): void {
+  eliminar(id: string): void {
     if (!confirm('¿Seguro que querés eliminar esta persona?')) return;
 
     this.personaService.eliminarPersona(id).subscribe({
@@ -31,12 +31,7 @@ export class PersonasList implements OnInit {
     });
   }
 
-<<<<<<< HEAD
-  crearCliente() {
-    this.router.navigate(['/persona-form'], { queryParams: { crearCuenta: false } });
-=======
-  editar(id: number): void {
+  editar(id: string): void {
     this.router.navigate(['/personas', id]);
->>>>>>> origin/nico-branch
   }
 }

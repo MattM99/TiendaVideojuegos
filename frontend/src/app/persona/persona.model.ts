@@ -1,5 +1,5 @@
 export interface PersonaModel {
-    id?: string; //Lo dejo opcional para cuando se cree una nueva persona
+    id: string;
     dni: string;
     nombre: string;
     apellido: string;
