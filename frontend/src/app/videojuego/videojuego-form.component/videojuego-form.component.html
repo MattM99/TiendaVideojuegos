@@ -26,6 +26,14 @@
     name="genero"
   />
 
+  <label>Desarrollador</label>
+  <input
+    [ngModel]="videojuego().desarrollador"
+    (ngModelChange)="updateDesarrollador($event)"
+    name="desarrollador"
+  />
+
+
   <label>Multijugador</label>
   <div class="multiplayer-toggle">
     <button

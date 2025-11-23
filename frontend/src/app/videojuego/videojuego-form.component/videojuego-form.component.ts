@@ -55,6 +55,11 @@ export class VideojuegoFormComponent {
     this.videojuego.update(v => ({ ...v, lanzamiento: value }));
   }
 
+  updateDesarrollador(value: string) {
+    this.videojuego.update(v => ({ ...v, desarrollador: value }));
+  }
+
+
   save() {
     const data = this.videojuego();
     if (this.isEdit) {
