@@ -68,6 +68,5 @@ export class VideojuegoFormComponent {
     history.back();
   }
 
-
 }
 
