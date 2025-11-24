@@ -12,6 +12,7 @@ export class Alquiler {
   private baseUrl = 'http://localhost:3000/alquileres';
 
 
+
   alquileres = signal<AlquilerModel[]>([]);
   cargando = signal(false);
 
@@ -44,5 +45,5 @@ export class Alquiler {
   eliminarAlquiler(id: string) {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
-  
+
 }
