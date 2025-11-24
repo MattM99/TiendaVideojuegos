@@ -1,0 +1,102 @@
+<h2>
+  @if (isEdit) { Editar Videojuego }
+  @else { Crear Videojuego }
+</h2>
+
+<form (ngSubmit)="save()">
+
+  <label>Título</label>
+  <input
+    [ngModel]="videojuego().titulo"
+    (ngModelChange)="updateTitulo($event)"
+    (blur)="markTouched('titulo')"
+    name="titulo"
+  />
+  @if (tituloError()) {
+    <p class="error">{{ tituloError() }}</p>
+  }
+
+  <label>Género</label>
+  <input
+    [ngModel]="videojuego().genero"
+    (ngModelChange)="updateGenero($event)"
+    name="genero"
+    (blur)="markTouched('genero')"
+  />
+  @if (generoError()) {
+    <p class="error">{{ generoError() }}</p>
+  }
+
+  <label>Desarrollador</label>
+  <input
+    [ngModel]="videojuego().desarrollador"
+    (ngModelChange)="updateDesarrollador($event)"
+    name="desarrollador"
+    (blur)="markTouched('desarrollador')"
+  />
+  @if (desarrolladorError()) {
+    <p class="error">{{ desarrolladorError() }}</p>
+  }
+
+  <label>Año de lanzamiento</label>
+  <input
+    type="number"
+    [ngModel]="videojuego().lanzamiento"
+    (ngModelChange)="updateLanzamiento($event)"
+    name="lanzamiento"
+    (blur)="markTouched('lanzamiento')"
+  />
+ @if (lanzamientoError()) {
+    <p class="error">{{ lanzamientoError() }}</p>
+  }
+
+  <label>Multijugador</label>
+  <div class="multiplayer-toggle">
+    <button
+      type="button"
+      class="true-btn"
+      [class.active]="videojuego().multijugador"
+      (click)="updateMultijugador(true)"
+    >
+      ✔
+    </button>
+
+    <button
+      type="button"
+      class="false-btn"
+      [class.active]="!videojuego().multijugador"
+      (click)="updateMultijugador(false)"
+    >
+      ✘
+    </button>
+  </div>
+
+  <label>Sinopsis</label>
+  <textarea
+    [ngModel]="videojuego().sinopsis"
+    (ngModelChange)="updateSinopsis($event)"
+    name="sinopsis"
+    (blur)="markTouched('sinopsis')"
+  ></textarea>
+
+  @if (sinopsisError()) {
+    <p class="error">{{ sinopsisError() }}</p>
+  }
+
+  <div class="form-buttons">
+    <button type="button" class="back-btn" (click)="volver()">Volver</button>
+
+    <button
+      type="submit"
+      class="save-btn"
+      [class.disabled]="!canSave()"
+      [disabled]="!canSave()"
+    >
+      Guardar
+    </button>
+  </div>
+
+</form>
+
+
+

@@ -1,0 +1,45 @@
+<h2>Alquileres</h2>
+
+
+<div class="top-actions">
+  <button class="back-btn" routerLink="/home">Volver</button>
+  <button class="create-button" (click)="nuevo()">Nuevo alquiler</button>
+</div>
+
+@if (cargando()) {
+  <p>Cargando alquileres...</p>
+}
+@else if (alquileres().length === 0) {
+  <p>No hay alquileres registrados.</p>
+}
+@else {
+  <table>
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Videojuego</th>
+        <th>Fecha inicio</th>
+        <th>Fecha fin</th>
+        <th>Monto fijo</th>
+        <th>Fecha devolución</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (a of alquileres(); track a.id) {
+        <tr>
+          <td>{{ getNombrePersona(a.personaId) }}</td>
+          <td>{{ getTituloJuego(a.videojuegoId) }}</td>
+          <td>{{ a.fechaInicio }}</td>
+          <td>{{ a.fechaFin }}</td>
+          <td>{{ a.montoFijo }}</td>
+          <td>{{ a.fechaDevolucion || '-' }}</td>
+          <td>
+            <button (click)="editar(a.id)">Editar</button>
+            <button (click)="eliminar(a.id,  a.inventarioId)">Eliminar</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

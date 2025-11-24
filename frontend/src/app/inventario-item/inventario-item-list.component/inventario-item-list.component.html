@@ -1,0 +1,26 @@
+<h2>Listado de Items del Inventario</h2>
+
+<div class="top-actions">
+  <button class="back-btn" routerLink="/home">Volver</button>
+  <button class="new-btn" routerLink="/inventario/new">Crear Inventario</button>
+</div>
+
+<ul>
+  @for (iwt of inventarioItemsWithTitle(); track iwt.item.id) {
+    <li>
+      <span class="title">
+        <p><b>{{ iwt.titulo }} - {{ iwt.item.plataforma }}</b></p>
+        <p>Costo diario: {{ iwt.item.precioDiario }}</p>
+        <p>Stock total: {{ iwt.item.stockTotal }}</p>
+        <p>Unidades actualmente en el local: {{ iwt.item.enLocal }}</p>
+      </span>
+
+      <span class="actions">
+        <button routerLink="/inventario/{{ iwt.item.id }}">Ver</button>
+        <button routerLink="/inventario/edit/{{ iwt.item.id }}">Editar</button>
+        <button (click)="delete(iwt.item.id)">Eliminar</button>
+      </span>
+    </li>
+  }
+</ul>
+

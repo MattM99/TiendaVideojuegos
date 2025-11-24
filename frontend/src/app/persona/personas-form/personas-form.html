@@ -1,0 +1,88 @@
+<h2>{{ titulo }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
+  <div>
+    <label>
+      Nombre
+      <input formControlName="nombre" />
+    </label>
+    @if (form.get('nombre')?.invalid && form.get('nombre')?.touched) {
+    <p>* Campo obligatorio</p>
+    }
+   @if (
+    (form.get('nombre')?.hasError('minlength') || form.get('nombre')?.hasError('maxlength'))
+    && form.get('nombre')?.touched
+  ) {
+    <p>* Entre 3 y 15 caracteres</p>
+  }
+  </div>
+
+  <div>
+    <label>
+      Apellido
+      <input formControlName="apellido" />
+    </label>
+    @if (form.get('apellido')?.invalid && form.get('apellido')?.touched) {
+    <p>* Campo obligatorio</p>
+    }
+    @if (
+    (form.get('apellido')?.hasError('minlength') || form.get('apellido')?.hasError('maxlength'))
+    && form.get('apellido')?.touched
+  ) {
+    <p>* Entre 3 y 15 caracteres</p>
+  }
+  </div>
+
+  <div>
+    <label>
+      DNI
+      <input formControlName="dni" />
+    </label>
+    @if (form.get('dni')?.invalid && form.get('dni')?.touched) {
+    <p>* Campo obligatorio</p>
+    }
+    @if (
+    (form.get('dni')?.hasError('minlength') || form.get('dni')?.hasError('maxlength') || form.get('dni')?.hasError('pattern'))
+    && form.get('dni')?.touched) {
+    <p>* Entre 7 y 10 numeros</p>
+    }
+  </div>
+
+  <div>
+    <label>
+      Email
+      <input formControlName="email" />
+    </label>
+    @if (form.get('email')?.invalid && form.get('email')?.touched) {
+    <p>* Email inválido</p>
+    }
+  </div>
+
+  <div>
+    <label>
+      Teléfono
+      <input formControlName="telefono" />
+    </label>
+    @if( form.get('telefono')?.invalid && form.get('telefono')?.touched) {
+    <p>* Entre 7 y 15 numeros</p>
+    }
+  </div>
+
+  @if (form.errors?.['emailOTelefonoRequerido']
+  && (form.get('email')?.touched || form.get('telefono')?.touched)) {
+  <p class="error">
+    * Debe completar email o teléfono (al menos uno)
+  </p>
+  }
+
+  <div class="form-buttons">
+    <button type="submit" [disabled]="form.invalid">
+      Guardar
+    </button>
+    <button type="button" (click)="cancelar()">
+      Cancelar
+    </button>
+
+  </div>
+
+</form>

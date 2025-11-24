@@ -1,0 +1,241 @@
+{
+  "cuentas": [
+    {
+      "id": "1",
+      "nombreUsuario": "founder",
+      "password": "1234",
+      "rol": "FOUNDER",
+      "alta": true,
+      "personaId": "1"
+    },
+    {
+      "id": "ab17",
+      "nombreUsuario": "pedrito",
+      "password": "12345",
+      "rol": "ADMIN",
+      "alta": true,
+      "persona": {
+        "id": 0,
+        "dni": "",
+        "nombre": "",
+        "apellido": "",
+        "email": "",
+        "telefono": ""
+      }
+    },
+    {
+      "id": "0c82",
+      "personaId": "",
+      "nombreUsuario": "empleado2",
+      "password": "empleado",
+      "rol": "EMPLEADO",
+      "alta": true
+    }
+  ],
+  "personas": [
+    {
+      "id": "1",
+      "dni": "22222222",
+      "nombre": "Kevin",
+      "apellido": "Falcón",
+      "email": "kevin@example.com",
+      "telefono": "1199887766"
+    },
+    {
+      "id": "2",
+      "dni": "11111111",
+      "nombre": "Matias",
+      "apellido": "Mendoza",
+      "email": "matias@example.com",
+      "telefono": "1122334455"
+    },
+    {
+      "id": "3ada",
+      "nombre": "pepe",
+      "apellido": "pepe",
+      "dni": "2345`",
+      "email": "dsaf@852",
+      "telefono": "85145"
+    },
+    {
+      "id": "eeee",
+      "nombre": "gdsgdfsg",
+      "apellido": "gdfgdf",
+      "dni": "63453",
+      "email": "asfdsdf@das",
+      "telefono": "32965"
+    },
+    {
+      "id": "aeab",
+      "nombre": "sewqeq",
+      "apellido": "eqwe",
+      "dni": "23432",
+      "email": "qwASED@AS",
+      "telefono": "543"
+    },
+    {
+      "id": "2265",
+      "nombre": "empleado",
+      "apellido": "empleado",
+      "dni": "854",
+      "email": "sasd@fdas",
+      "telefono": "empleado"
+    }
+  ],
+  "bloqueos": [
+    {
+      "id": "1",
+      "personaId": "2",
+      "fechaInicio": "2025-01-10",
+      "fechaFin": "2025-02-10",
+      "motivo": "Tapó el baño"
+    }
+  ],
+  "videojuegos": [
+    {
+      "id": "1",
+      "titulo": "God Of War",
+      "sinopsis": "Kratos contra los dioses.",
+      "genero": "ACCION",
+      "multijugador": false,
+      "lanzamiento": 2005,
+      "desarrollador": "Santa Monica Studio"
+    },
+    {
+      "id": "2",
+      "titulo": "Zelda Breath of the Wild",
+      "sinopsis": "Un mundo abierto en Hyrule.",
+      "genero": "AVENTURA",
+      "multijugador": false,
+      "lanzamiento": 2017,
+      "desarrollador": "Nintendo"
+    },
+    {
+      "id": "4b18",
+      "titulo": "Persona 5",
+      "sinopsis": "Persona 5 es el sexto juego de la serie Persona. Es un juego de rol desarrollado por Atlus y P-Studio. Persona 5 es un juego de fantasía basada en la realidad que sigue a un grupo de estudiantes de secundaria con problemas: Ren Amamiya y un singular grupo de personas que conoce. Estos adolescentes perturbados y con problemas se dan cuenta gradualmente de que están viviendo en un mundo tóxico y peligroso que se asemeja a una prisión llena de esclavitud, opresión e injusticia, gobernada por adultos corruptos y retorcidos. No pueden vivir con el sistema y no pueden vivir sin él, y simplemente existir significa que están en riesgo de ser condenados y condenados a una vida de esclavitud. ",
+      "genero": "RPG",
+      "multijugador": false,
+      "lanzamiento": 2016,
+      "desarrollador": "Atlus"
+    }
+  ],
+  "inventarioItems": [
+    {
+      "id": "1",
+      "videojuegoId": "1",
+      "plataforma": "PS2",
+      "precioDiario": 300,
+      "stockTotal": 5,
+      "enLocal": 5
+    },
+    {
+      "id": "2",
+      "videojuegoId": "2",
+      "plataforma": "SWITCH",
+      "precioDiario": 500,
+      "stockTotal": 4,
+      "enLocal": 3
+    },
+    {
+      "id": "231a",
+      "videojuegoId": "1",
+      "plataforma": "PC",
+      "precioDiario": 1,
+      "stockTotal": 1,
+      "enLocal": 1,
+      "decremento": 1
+    }
+  ],
+  "alquileres": [
+    {
+      "id": "1",
+      "personaId": "1",
+      "videojuegoId": "1",
+      "fechaInicio": "2025-01-03",
+      "fechaFin": "2025-01-05",
+      "montoFijo": 600,
+      "fechaDevolucion": "2025-01-06",
+      "carritoItems": [
+        {
+          "id": "1",
+          "unidades": 1,
+          "subtotal": 300,
+          "inventarioItemId": "1"
+        }
+      ],
+      "penalizaciones": [
+        {
+          "id": "1",
+          "monto": 300,
+          "motivo": "Demora en devolución"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "personaId": "2",
+      "videojuegoId": "2",
+      "fechaInicio": "2025-01-04",
+      "fechaFin": "2025-01-06",
+      "montoFijo": 1000,
+      "fechaDevolucion": "2025-01-06",
+      "carritoItems": [
+        {
+          "id": 1,
+          "unidades": 1,
+          "subtotal": 500,
+          "inventarioItemId": "2"
+        }
+      ],
+      "detalles": [],
+      "penalizaciones": []
+    },
+    {
+      "id": "db3f",
+      "personaId": "2265",
+      "videojuegoId": "1",
+      "fechaInicio": "2025-11-25",
+      "fechaFin": "2025-11-28",
+      "montoFijo": 5000,
+      "detalles": [],
+      "penalizaciones": []
+    },
+    {
+      "id": "1321",
+      "personaId": "3ada",
+      "videojuegoId": "4b18",
+      "fechaInicio": "2025-11-21",
+      "fechaFin": "2025-11-26",
+      "montoFijo": 550,
+      "detalles": [],
+      "penalizaciones": []
+    }
+  ],
+  "pagos": [
+    {
+      "id": "2",
+      "alquilerId": "2",
+      "estado": "COMPLETADO",
+      "descuento": 0,
+      "total": 1000,
+      "metodoPago": {
+        "tipo": "TARJETA",
+        "titular": "Matias Mendoza",
+        "numero": "1111-2222-3333-4444",
+        "cvv": "123",
+        "vencimiento": "12/29"
+      }
+    },
+    {
+      "id": "1",
+      "alquilerId": "1",
+      "estado": "COMPLETADO",
+      "descuento": 0,
+      "total": 900,
+      "metodoPago": {
+        "tipo": "EFECTIVO"
+      }
+    }
+  ]
+}

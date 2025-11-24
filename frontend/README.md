@@ -1,59 +1,147 @@
-# Frontend
+# Descripción general
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.8.
+Este proyecto es un frontend desarrollado íntegramente en [Angular CLI](https://github.com/angular/angular-cli) 20.3.8, que implementa un sistema interno de gestión para una tienda de alquiler de videojuegos.
 
-## Development server
+Para esta entrega académica, el backend real fue reemplazado por JSON Server para simular una API REST local, permitiendo realizar todas las operaciones CRUD necesarias.
 
-To start a local development server, run:
+El sistema permite administrar clientes, videojuegos, cuentas de usuario, alquileres, devoluciones, penalizaciones y reservas
 
-```bash
-ng serve
-```
+# Tecnologías utilizadas
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Frontend
 
-## Code scaffolding
+  Angular 20
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+  TypeScript
 
-```bash
-ng generate component component-name
-```
+  Angular CLI
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+  HTML5 / CSS3
 
-```bash
-ng generate --help
-```
+## Angular Material (UI)
 
-## Building
+  RxJS
 
-To build the project run:
+  Validaciones con Reactive Forms
 
-```bash
-ng build
-```
+## Backend simulado
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+  JSON Server (simulación de API REST)
 
-## Running unit tests
+  Archivos JSON persistentes para entidades
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+  Endpoints personalizados con rutas REST
 
-```bash
-ng test
-```
+## Herramientas
 
-## Running end-to-end tests
+  Node.js + npm
 
-For end-to-end (e2e) testing, run:
+  GitHub
 
-```bash
-ng e2e
-```
+  VS Code
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+# Estructura del proyecto
+/src
+ ├── app
+ │   ├── core          → servicios globales, guards, interceptors
+ │   ├── shared        → header, footer y frontpage
+ │   ├── auth          → login, roles, guards
+ │   ├── videojuego   → CRUD de videojuegos
+ │   ├── personas      → CRUD de personas (clientes)
+ │   ├── cuentas       → CRUD de cuentas/usuarios del sistema
+ │   ├── alquileres    → registro + devoluciones + penalizaciones
+ │   └── dashboard     → estadísticas con Chart.js
+/db.json               → base de datos JSON Server
 
-## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+# Funcionalidades principales
+CRUD completos
+
+## Videojuegos:
+Crear, editar, eliminar y listar videojuegos, con stock por consola.
+
+## Personas (clientes):
+Alta de clientes, historial y edición de datos.
+
+## Cuentas / Usuarios internos:
+Registro de empleados y administración de roles (empleado / administrador / founder).
+
+# Autenticación y roles
+Implementación del sistema de login completamente en Angular:
+
+  Login con validación de credenciales almacenadas en JSON Server
+
+  Roles:
+
+    Empleado
+
+    Administrador
+
+    Founder (creado manualmente en db.json)
+
+  Persistencia de sesión con LocalStorage
+
+  Guards:
+
+    AuthGuard
+
+    RoleGuard
+
+    GuestGuard
+
+# Diseño y experiencia de usuario
+Completamente responsive y basado en Angular Material:
+
+Side nav adaptable
+
+Tablas con paginación y filtros
+
+Tarjetas (cards) para métricas
+
+Formularios con validaciones reactivas
+
+Íconos Material Icons
+
+# Patrones y buenas prácticas incorporadas
+
+Arquitectura modular (feature modules + lazy loading)
+
+Servicios tipados con interfaces
+
+DTOs y modelos separados
+
+Pipes para formateo de datos
+
+Guards para control de acceso
+
+Interceptor para adjuntar “token” simulado
+
+Manejo de errores con HttpErrorResponse
+
+Observables bien manejados con RxJS
+
+# Configuración de JSON Server
+  ## Instalación
+  npm install -g json-server
+
+  ## Ejecutar backend simulado
+  json-server --watch db.json --port 3000
+  Esto expone endpoints tales como:
+  GET    /videojuegos  
+  POST   /videojuegos  
+  GET    /personas  
+  GET    /cuentas  
+  PATCH  /alquileres/1  
+
+  ## Ejecutar Angular
+  Instalar dependencias:
+    npm install
+  Ejecutar el servidor:
+    ng serve -o
+
+# Conclusión
+Este proyecto demuestra una implementación completa y realista de un sistema de gestión empresarial utilizando Angular como framework principal, con apoyo de JSON Server para simular una API REST.
+
+A pesar de no contar con backend real en esta entrega, el sistema reproduce el flujo real del negocio, respetando principios de arquitectura, usabilidad y mantenibilidad.
+
+
