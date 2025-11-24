@@ -1,5 +1,5 @@
-import { CarritoModel } from "./carrito.model";
-import { PenalizacionModel } from "./penalizacion.model";
+import { CarritoModel } from "../models/carrito.model";
+import { PenalizacionModel } from "../models/penalizacion.model";
 import { PersonaModel } from "../persona/persona.model";
 
 export interface AlquilerModel {
