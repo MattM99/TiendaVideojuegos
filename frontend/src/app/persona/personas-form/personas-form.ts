@@ -1,9 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators, ReactiveFormsModule, MinLengthValidator } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Persona } from '../persona';
 import { PersonaModel } from '../persona.model';
+import { EmailTelefono } from '../../shared/validators/email-telefono/email-telefono';
 
 @Component({
   selector: 'app-personas-form',
@@ -24,12 +25,15 @@ export class PersonasForm implements OnInit {
   personaId?: string;
 
   form = this.fb.group({
-    nombre: ['', Validators.required],
-    apellido: ['', Validators.required],
-    dni: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    telefono: ['']
-  });
+    nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
+    apellido: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(15)]],
+    dni: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(10), Validators.pattern('^[0-9]+$')]],
+    email: ['', [ Validators.email]],
+    telefono: ['', [Validators.minLength(7), Validators.maxLength(15), Validators.pattern('^[0-9]+$')]],
+  },
+  {validators: EmailTelefono}
+
+);
 
   ngOnInit(): void {
     console.log("param bruto:", this.route.snapshot.paramMap.get('id'));

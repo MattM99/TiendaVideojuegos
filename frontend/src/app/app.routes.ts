@@ -1,5 +1,4 @@
 import { Routes, CanActivate } from '@angular/router';
-import { Admin } from './cuenta/admin/admin';
 import { AuthGuard } from './auth/guards/auth-guard';
 import { Login } from './auth/login/login';
 import { FrontPage } from './shared/front-page/front-page';
@@ -19,12 +18,6 @@ export const routes: Routes = [
 
   { path: 'wip', component: Wip },
 
-  {
-    path: 'admin',
-    component: Admin,
-    canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMIN'] },
-  },
   {
     path: 'cuentas',
     canActivate: [AuthGuard, RoleGuard],
@@ -56,7 +49,7 @@ export const routes: Routes = [
   {
   path: 'alquileres',
   canActivate: [AuthGuard, RoleGuard],
-  data: { roles: ['ADMIN', 'EMPLEADO'] },   
+  data: { roles: ['ADMIN', 'EMPLEADO'] },
   children: ALQUILER_ROUTES
 },
 

@@ -75,6 +75,16 @@ togglePassword() {
     const raw = this.cuenta();
     if (!raw) return;
 
+    if (!raw.nombreUsuario || raw.nombreUsuario.trim().length < 3) {
+    alert('El nombre de usuario debe tener al menos 3 caracteres.');
+    return;
+  }
+
+  if (!raw.password || raw.password.trim().length < 4) {
+    alert('La contraseña debe tener al menos 4 caracteres.');
+    return;
+  }
+
     const data = {
       personaId: raw.personaId,
       nombreUsuario: raw.nombreUsuario,

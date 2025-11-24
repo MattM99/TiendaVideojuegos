@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Admin } from './admin';
+import { DateValidator } from './date.validator';
 
-describe('Admin', () => {
-  let component: Admin;
-  let fixture: ComponentFixture<Admin>;
+describe('DateValidator', () => {
+  let component: DateValidator;
+  let fixture: ComponentFixture<DateValidator>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Admin]
+      imports: [DateValidator]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Admin);
+    fixture = TestBed.createComponent(DateValidator);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

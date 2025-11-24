@@ -27,6 +27,58 @@ export class VideojuegoFormComponent {
     desarrollador: ''
   });
 
+  tituloTouched = signal(false);
+generoTouched = signal(false);
+desarrolladorTouched = signal(false);
+lanzamientoTouched = signal(false);
+sinopsisTouched = signal(false);
+
+
+  // ---- VALIDACIONES POR CAMPO ----
+  tituloError = computed(() => {
+      if (!this.tituloTouched()) return null;   // <--- AGREGAR ESTO
+
+    const v = this.videojuego().titulo.trim();
+    if (v === '') return 'El título es obligatorio';
+    if (v.length < 3) return 'El título debe tener al menos 3 caracteres';
+    if (v.length > 40) return 'Máximo 40 caracteres';
+    return null;
+  });
+
+  sinopsisError = computed(() => {
+      if (!this.sinopsisTouched()) return null;
+
+    const v = this.videojuego().sinopsis.trim();
+    if (v === '') return 'La sinopsis es obligatoria';
+    if (v.length < 10) return 'Debe tener mínimo 10 caracteres';
+    return null;
+  });
+
+  generoError = computed(() => {
+      if (!this.generoTouched()) return null;
+
+    const v = this.videojuego().genero.trim();
+    if (v === '') return 'Debe ingresar un género';
+    return null;
+  });
+
+  desarrolladorError = computed(() => {
+      if (!this.desarrolladorTouched()) return null;
+    const v = this.videojuego().desarrollador.trim();
+    if (v === '') return 'El desarrollador es obligatorio';
+    return null;
+  });
+
+  lanzamientoError = computed(() => {
+      if (!this.lanzamientoTouched()) return null;
+
+    const year = this.videojuego().lanzamiento;
+    if (!year) return 'Debe ingresar un año';
+    if (year < 1960) return 'Hay un debate sobre cual es el primer videojuego de la historia, si fue Tennis for Two(1958), OXO(1952) o Spacewar! (1962), entre otros. Pero dudo mucho que estés intentando registrar un videojuego tan antiguo.';
+    if (year > new Date().getFullYear() + 1) return 'Año inválido';
+    return null;
+  });
+
   // Computed signal para habilitar/deshabilitar "Guardar"
   canSave = computed(() => {
     const v = this.videojuego();
@@ -35,9 +87,15 @@ export class VideojuegoFormComponent {
       v.sinopsis.trim() !== '' &&
       v.genero.trim() !== '' &&
       v.desarrollador.trim() !== '' &&
-      v.lanzamiento != null
+      v.lanzamiento != null &&
+      !this.tituloError() &&
+      !this.sinopsisError() &&
+      !this.generoError() &&
+      !this.desarrolladorError() &&
+      !this.lanzamientoError()
     );
   });
+
 
   ngOnInit() {
     const routeId = this.route.snapshot.paramMap.get('id');
@@ -68,4 +126,12 @@ export class VideojuegoFormComponent {
   }
 
   volver() { history.back(); }
+
+  markTouched(field: string) {
+    if (field === 'titulo') this.tituloTouched.set(true);
+    if (field === 'genero') this.generoTouched.set(true);
+    if (field === 'desarrollador') this.desarrolladorTouched.set(true);
+    if (field === 'lanzamiento') this.lanzamientoTouched.set(true);
+    if (field === 'sinopsis') this.sinopsisTouched.set(true);
+  }
 }

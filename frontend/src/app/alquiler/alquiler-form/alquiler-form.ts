@@ -8,6 +8,7 @@ import { Persona } from '../../persona/persona';
 import { VideojuegoService } from '../../videojuego/videojuego.service';
 import { Observable } from 'rxjs';
 import { VideojuegoModel } from '../../videojuego/videojuego.model';
+import { fechaValida, noFechaPasada } from '../../shared/validators/date.validator/date.validator';
 
 @Component({
   selector: 'app-alquiler-form',
@@ -35,8 +36,8 @@ export class AlquilerForm implements OnInit {
   form = this.fb.group({
     personaId: ['', Validators.required],
     videojuegoId: ['', Validators.required],
-    fechaInicio: ['', Validators.required],
-    fechaFin: ['', Validators.required],
+    fechaInicio: ['', Validators.required, noFechaPasada],
+    fechaFin: ['', Validators.required, fechaValida],
     montoFijo: [0, [Validators.required, Validators.min(0)]],
     fechaDevolucion: [''],
   });
