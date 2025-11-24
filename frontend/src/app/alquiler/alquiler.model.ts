@@ -5,6 +5,7 @@ import { PersonaModel } from "../persona/persona.model";
 export interface AlquilerModel {
     id?: string;
     personaId: string;
+    videojuegoId: string;
     fechaInicio: string;
     fechaFin: string;
     detalles: CarritoModel[]; // <--- composición

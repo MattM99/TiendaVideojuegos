@@ -109,6 +109,15 @@
       "multijugador": false,
       "lanzamiento": 2017,
       "desarrollador": "Nintendo"
+    },
+    {
+      "id": "4b18",
+      "titulo": "Persona 5",
+      "sinopsis": "Persona 5 es el sexto juego de la serie Persona. Es un juego de rol desarrollado por Atlus y P-Studio. Persona 5 es un juego de fantasía basada en la realidad que sigue a un grupo de estudiantes de secundaria con problemas: Ren Amamiya y un singular grupo de personas que conoce. Estos adolescentes perturbados y con problemas se dan cuenta gradualmente de que están viviendo en un mundo tóxico y peligroso que se asemeja a una prisión llena de esclavitud, opresión e injusticia, gobernada por adultos corruptos y retorcidos. No pueden vivir con el sistema y no pueden vivir sin él, y simplemente existir significa que están en riesgo de ser condenados y condenados a una vida de esclavitud. ",
+      "genero": "RPG",
+      "multijugador": false,
+      "lanzamiento": 2016,
+      "desarrollador": "Atlus"
     }
   ],
   "inventarioItems": [
@@ -133,47 +142,49 @@
     {
       "id": "1",
       "personaId": "1",
+      "videojuegoId": "1",
       "fechaInicio": "2025-01-03",
       "fechaFin": "2025-01-05",
       "montoFijo": 600,
       "fechaDevolucion": "2025-01-06",
-      "carrito": [
-        {
-          "id": "1",
-          "unidades": 1,
-          "subtotal": 300,
-          "inventarioItemId": "1"
-        }
-      ],
-      "penalizaciones": [
-        {
-          "id": "1",
-          "monto": 300,
-          "motivo": "Demora en devolución"
-        }
-      ]
+      "detalles": [],
+      "penalizaciones": []
     },
     {
       "id": "2",
       "personaId": "2",
+      "videojuegoId": "2",
       "fechaInicio": "2025-01-04",
       "fechaFin": "2025-01-06",
       "montoFijo": 1000,
       "fechaDevolucion": "2025-01-06",
-      "carrito": [
-        {
-          "id": 1,
-          "unidades": 1,
-          "subtotal": 500,
-          "inventarioItemId": "2"
-        }
-      ],
+      "detalles": [],
+      "penalizaciones": []
+    },
+    {
+      "id": "db3f",
+      "personaId": "2265",
+      "videojuegoId": "1",
+      "fechaInicio": "2025-11-25",
+      "fechaFin": "2025-11-28",
+      "montoFijo": 5000,
+      "detalles": [],
+      "penalizaciones": []
+    },
+    {
+      "id": "1321",
+      "personaId": "3ada",
+      "videojuegoId": "4b18",
+      "fechaInicio": "2025-11-21",
+      "fechaFin": "2025-11-26",
+      "montoFijo": 550,
+      "detalles": [],
       "penalizaciones": []
     }
   ],
   "pagos": [
     {
-      "id": 2,
+      "id": "2",
       "alquilerId": "2",
       "estado": "COMPLETADO",
       "descuento": 0,

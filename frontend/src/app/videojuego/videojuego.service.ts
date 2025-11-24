@@ -14,6 +14,10 @@ export class VideojuegoService {
     return this.http.get<VideojuegoModel[]>(this.apiUrl);
   }
 
+  videojuegos(): Observable<VideojuegoModel[]> {
+    return this.getAll();
+  }
+
   getById(id: string): Observable<VideojuegoModel> {
     return this.http.get<VideojuegoModel>(`${this.apiUrl}/${id}`);
   }
