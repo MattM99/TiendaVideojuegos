@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Alquiler } from '../alquiler';
 import { AlquilerModel } from '../alquiler.model';
+import { Persona } from '../../persona/persona';
 
 @Component({
   selector: 'app-alquiler-form',
@@ -18,6 +19,9 @@ export class AlquilerForm implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private alquilerService = inject(Alquiler);
+  private personaService = inject(Persona);
+
+  personas = computed(() => this.personaService.personas());
 
   titulo = 'Nuevo alquiler';
   alquilerId?: string;
@@ -27,10 +31,12 @@ export class AlquilerForm implements OnInit {
     fechaInicio: ['', Validators.required],
     fechaFin: ['', Validators.required],
     montoFijo: [0, [Validators.required, Validators.min(0)]],
-    fechaDevolucion: [''], 
+    fechaDevolucion: [''],
   });
 
   ngOnInit(): void {
+    this.personaService.cargarPersonas();
+
     const idParam = this.route.snapshot.paramMap.get('id');
 
     if (idParam) {
@@ -66,8 +72,8 @@ export class AlquilerForm implements OnInit {
       fechaFin: value.fechaFin!,
       montoFijo: value.montoFijo!,
       fechaDevolucion: value.fechaDevolucion || undefined,
-      detalles: [],        
-      penalizaciones: []   
+      detalles: [],
+      penalizaciones: []
     };
 
     if (this.alquilerId) {

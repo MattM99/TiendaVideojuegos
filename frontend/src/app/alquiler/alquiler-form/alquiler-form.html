@@ -2,51 +2,51 @@
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
+  
   <div>
-    <label>
-      Persona ID
-      <input formControlName="personaId" />
-    </label>
+    <label>DNI</label>
+    <select formControlName="personaId">
+      <option value="">Seleccione un cliente</option>
+
+      @for (p of personas(); track p.id) {
+        <option [value]="p.id">
+          {{ p.dni }} - {{ p.nombre }} {{ p.apellido }}
+        </option>
+      }
+    </select>
+
     @if (form.get('personaId')?.invalid && form.get('personaId')?.touched) {
-      <p>* Campo obligatorio</p>
+      <p class="error">* Debe seleccionar un cliente</p>
     }
   </div>
 
   <div>
-    <label>
-      Fecha inicio
-      <input type="date" formControlName="fechaInicio" />
-    </label>
+    <label>Fecha inicio</label>
+    <input type="date" formControlName="fechaInicio" />
     @if (form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched) {
-      <p>* Campo obligatorio</p>
+      <p class="error">* Campo obligatorio</p>
     }
   </div>
 
   <div>
-    <label>
-      Fecha fin
-      <input type="date" formControlName="fechaFin" />
-    </label>
+    <label>Fecha fin</label>
+    <input type="date" formControlName="fechaFin" />
     @if (form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched) {
-      <p>* Campo obligatorio</p>
+      <p class="error">* Campo obligatorio</p>
     }
   </div>
 
   <div>
-    <label>
-      Monto fijo
-      <input type="number" formControlName="montoFijo" />
-    </label>
+    <label>Monto fijo</label>
+    <input type="number" formControlName="montoFijo" />
     @if (form.get('montoFijo')?.invalid && form.get('montoFijo')?.touched) {
-      <p>* Debe ser un monto válido</p>
+      <p class="error">* Monto inválido</p>
     }
   </div>
 
   <div>
-    <label>
-      Fecha devolución (opcional)
-      <input type="date" formControlName="fechaDevolucion" />
-    </label>
+    <label>Fecha devolución (opcional)</label>
+    <input type="date" formControlName="fechaDevolucion" />
   </div>
 
   <button type="submit" [disabled]="form.invalid">Guardar</button>

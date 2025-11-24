@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AlquilerModel } from './alquiler.model';
+import { Persona } from '../persona/persona';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +10,7 @@ export class Alquiler {
 
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:3000/alquileres';
+
 
   alquileres = signal<AlquilerModel[]>([]);
   cargando = signal(false);
@@ -42,4 +44,5 @@ export class Alquiler {
   eliminarAlquiler(id: string) {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+  
 }
