@@ -1,10 +1,13 @@
-import { Component, OnInit, inject, computed } from '@angular/core';
+import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Alquiler } from '../alquiler';
 import { AlquilerModel } from '../alquiler.model';
 import { Persona } from '../../persona/persona';
+import { VideojuegoService } from '../../videojuego/videojuego.service';
+import { Observable } from 'rxjs';
+import { VideojuegoModel } from '../../videojuego/videojuego.model';
 
 @Component({
   selector: 'app-alquiler-form',
@@ -20,14 +23,18 @@ export class AlquilerForm implements OnInit {
   private router = inject(Router);
   private alquilerService = inject(Alquiler);
   private personaService = inject(Persona);
+  private videojuegoService = inject(VideojuegoService)
 
   personas = computed(() => this.personaService.personas());
+  videojuegos = signal<VideojuegoModel[]>([]);
 
   titulo = 'Nuevo alquiler';
   alquilerId?: string;
 
+
   form = this.fb.group({
     personaId: ['', Validators.required],
+    videojuegoId: ['', Validators.required],
     fechaInicio: ['', Validators.required],
     fechaFin: ['', Validators.required],
     montoFijo: [0, [Validators.required, Validators.min(0)]],
@@ -36,6 +43,11 @@ export class AlquilerForm implements OnInit {
 
   ngOnInit(): void {
     this.personaService.cargarPersonas();
+
+    this.videojuegoService.getAll().subscribe({
+      next: juegos => this.videojuegos.set(juegos),
+      error: err => console.error('Error cargando videojuegos', err)
+    });
 
     const idParam = this.route.snapshot.paramMap.get('id');
 
@@ -68,6 +80,7 @@ export class AlquilerForm implements OnInit {
 
     const base: Omit<AlquilerModel, 'id'> = {
       personaId: value.personaId!,
+        videojuegoId: value.videojuegoId!,
       fechaInicio: value.fechaInicio!,
       fechaFin: value.fechaFin!,
       montoFijo: value.montoFijo!,

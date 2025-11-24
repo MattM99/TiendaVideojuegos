@@ -2,29 +2,40 @@
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-  
+
   <div>
     <label>Cliente</label>
     <select formControlName="personaId">
       <option value="">Seleccione un cliente</option>
 
       @for (p of personas(); track p.id) {
-        <option [value]="p.id">
-          {{ p.dni }} - {{ p.nombre }} {{ p.apellido }}
-        </option>
+      <option [value]="p.id">
+        {{ p.dni }} - {{ p.nombre }} {{ p.apellido }}
+      </option>
       }
     </select>
 
     @if (form.get('personaId')?.invalid && form.get('personaId')?.touched) {
-      <p class="error">* Debe seleccionar un cliente</p>
+    <p class="error">* Debe seleccionar un cliente</p>
     }
   </div>
+
+  <div>
+    <label for="videojuego">Videojuego</label>
+    <select formControlName="videojuegoId">
+      <option value="">Seleccione un juego</option>
+      @for (j of videojuegos(); track j.id) {
+      <option [value]="j.id">{{ j.titulo }}</option>
+      }
+    </select>
+  </div>
+
 
   <div>
     <label>Fecha inicio</label>
     <input type="date" formControlName="fechaInicio" />
     @if (form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched) {
-      <p class="error">* Campo obligatorio</p>
+    <p class="error">* Campo obligatorio</p>
     }
   </div>
 
@@ -32,7 +43,7 @@
     <label>Fecha fin</label>
     <input type="date" formControlName="fechaFin" />
     @if (form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched) {
-      <p class="error">* Campo obligatorio</p>
+    <p class="error">* Campo obligatorio</p>
     }
   </div>
 
@@ -40,7 +51,7 @@
     <label>Monto fijo</label>
     <input type="number" formControlName="montoFijo" />
     @if (form.get('montoFijo')?.invalid && form.get('montoFijo')?.touched) {
-      <p class="error">* Monto inválido</p>
+    <p class="error">* Monto inválido</p>
     }
   </div>
 
@@ -49,6 +60,10 @@
     <input type="date" formControlName="fechaDevolucion" />
   </div>
 
-  <button type="submit" [disabled]="form.invalid">Guardar</button>
-  <button type="button" (click)="cancelar()">Cancelar</button>
+
+  <div class="buttons">
+    <button type="submit" [disabled]="form.invalid">Guardar</button>
+    <button type="button" (click)="cancelar()">Cancelar</button>
+  </div>
+
 </form>
