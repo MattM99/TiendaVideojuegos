@@ -25,12 +25,18 @@ h2 {
     gap: 18px;
 }
 
+.actions {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between; /* Cancelar izquierda, Guardar derecha */
+    align-items: center;
+}
+
 /* ===== Labels ===== */
 label {
-    font-weight: bold;
-    color: #f0f4f8;
-    margin-bottom: 6px;
-    display: block;
+    color: #c6d0da;
+    font-size: 0.95rem;
+    font-weight: 500;
 }
 
 /* ===== Inputs & Select ===== */
@@ -42,7 +48,8 @@ select {
     border: 1px solid #2d3945;
     font-size: 0.95rem;
     color: #e0e6ed;
-    width: 100%;
+    width: 100%;             /* ← HACE QUE TODOS MIDAN LO MISMO */
+    box-sizing: border-box;  /* ← EVITA DESBORDES Y DIFERENCIAS */
     outline: none;
 }
 
@@ -50,49 +57,40 @@ select option {
     background: #1c2530;
     color: #e0e6ed;
 }
-
-/* ===== Inputs focus ===== */
+/* ===== Inputs focus (se mantiene igual) ===== */
 input:focus,
 select:focus {
     border-color: #4a6fa1;
     box-shadow: 0 0 5px rgba(90, 140, 200, 0.4);
 }
 
-/* ===== Botones ===== */
+/* ===== Botones del formulario de inventario ===== */
 button {
-    background: #1c2530;
-    color: #e0e6ed;
-    border: 1px solid #2d3945;
-    padding: 10px 18px;
+    background: #1c2530;                  /* mismo fondo */
+    color: #e0e6ed;                       /* mismo color texto */
+    border: 1px solid #2d3945;            /* mismo borde */
+    padding: 10px 16px;
     border-radius: 6px;
     cursor: pointer;
-    transition: 0.2s ease;
-    font-size: 0.9rem;
+    transition: 0.2s ease;                /* misma transición */
 }
 
-button:hover:not([disabled]) {
-    background: #24303d;
-    border-color: #4a6fa1;
+/* Hover general (como tus botones estándar) */
+button:hover {
+    background: #2d3945;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
 }
 
-button[disabled] {
-    opacity: 0.4;
+/* Deshabilitados tipo tu save-btn.disabled */
+button:disabled,
+button.disabled {
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
-/* ===== Cancelar ===== */
-button.cancel {
-    background: #402828;
-    border-color: #5d3a3a;
-}
-
-button.cancel:hover {
-    background: #4d2f2f;
-}
-
-/* ===== Contenedor de botones ===== */
-.actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+button:disabled:hover,
+button.disabled:hover {
+    transform: none;
+    box-shadow: none;
 }

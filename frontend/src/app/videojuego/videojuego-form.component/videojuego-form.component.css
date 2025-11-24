@@ -48,7 +48,7 @@ textarea {
     color: #e0e6ed;
     font-size: 1rem;
     transition: 0.2s ease;
-    width: 100%;
+    width: 98%;
 }
 
 input:focus,
@@ -94,9 +94,6 @@ textarea:focus {
         inset 0 0 8px rgba(0,0,0,0.6);
     border-width: 2px;
 }
-
-
-
 
 /* ===== Contenedor de botones abajo ===== */
 .form-buttons {
