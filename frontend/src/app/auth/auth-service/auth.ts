@@ -6,7 +6,6 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AuthService {
-
   private currentUserSignal = signal<CuentaModel | null>(null);
 
   constructor(private http: HttpClient) {
@@ -38,20 +37,18 @@ export class AuthService {
     return this.currentUserSignal();
   }
 
-   isLoggedIn(): boolean {
+  isLoggedIn(): boolean {
     return this.currentUserSignal() !== null;
   }
 
- 
   hasRole(roles: string[]): boolean {
     const user = this.currentUserSignal();
     if (!user) return false;
 
     if (user.rol === 'FOUNDER') {
-    return true;
-  }
+      return true;
+    }
 
     return roles.includes(user.rol);
-    
   }
 }

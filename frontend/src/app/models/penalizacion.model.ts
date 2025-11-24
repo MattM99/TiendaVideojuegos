@@ -1,5 +1,5 @@
 export interface PenalizacionModel {
-    id?: string;
-    monto: number;
-    motivo: string;
+  id?: string;
+  monto: number;
+  motivo: string;
 }

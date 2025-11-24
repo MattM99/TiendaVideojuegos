@@ -10,24 +10,22 @@ import { InventarioItemModel } from '../inventario-item.model';
   styleUrl: './inventario-item-detail.component.css',
 })
 export class InventarioItemDetailComponent {
-  
   service = inject(InventarioItemService);
   route = inject(ActivatedRoute);
   router = inject(Router);
 
   // Un solo item + título
-  data = signal<{ item: InventarioItemModel, titulo: string }>({
+  data = signal<{ item: InventarioItemModel; titulo: string }>({
     item: {
       id: '',
       videojuegoId: '',
       plataforma: '',
       precioDiario: 0,
       stockTotal: 0,
-      enLocal: 0
+      enLocal: 0,
     },
-    titulo: ''
+    titulo: '',
   });
-
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -35,18 +33,18 @@ export class InventarioItemDetailComponent {
 
     // Cargar el item
     this.service.getById(id).subscribe({
-      next: item => {
+      next: (item) => {
         if (!item) return;
 
         // Cargar título del juego
-        this.service.getTituloJuego(item.videojuegoId).subscribe(titulo => {
+        this.service.getTituloJuego(item.videojuegoId).subscribe((titulo) => {
           this.data.set({
             item,
-            titulo: titulo || "Desconocido"
+            titulo: titulo || 'Desconocido',
           });
         });
       },
-      error: () => alert("No se pudo cargar el item del inventario")
+      error: () => alert('No se pudo cargar el item del inventario'),
     });
   }
 

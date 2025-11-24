@@ -54,11 +54,11 @@ input:focus,
 select:focus {
   outline: none;
   border-color: #4a90e2;
-  box-shadow: 0 0 6px rgba(74,144,226,0.4);
+  box-shadow: 0 0 6px rgba(74, 144, 226, 0.4);
 }
 
 /* Placeholder gris */
-select option[value=""] {
+select option[value=''] {
   color: #8a8f96;
 }
 
@@ -80,28 +80,27 @@ button {
 }
 
 /* Botón Guardar */
-button[type="submit"] {
+button[type='submit'] {
   background: #1c2530;
   color: #e0e6ed;
 }
 
-button[type="submit"]:hover {
+button[type='submit']:hover {
   background: #2d3945;
   transform: translateY(-2px);
 }
 
 /* Botón Cancelar */
-button[type="button"] {
+button[type='button'] {
   background: #e0e6ed;
   color: #1c2530;
 }
 
-button[type="button"]:hover {
+button[type='button']:hover {
   background: white;
   transform: translateY(-2px);
 }
 
-/* ===== CONTENEDOR DE BOTONES ===== */
 .buttons {
   display: flex;
   justify-content: flex-end;

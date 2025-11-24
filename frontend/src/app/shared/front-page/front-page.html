@@ -1,41 +1,41 @@
 <body>
-   <section class="hero">
-        <h2>Bienvenido a GameHub Rentals, {{ usuario()?.nombreUsuario }}</h2>
-        <p>Tu plataforma para alquilar videojuegos de manera rápida, segura y con el mejor catálogo disponible.</p>
-    </section>
+  <section class="hero">
+    <h2>Bienvenido a GameHub Rentals, {{ usuario()?.nombreUsuario }}</h2>
+    <p>
+      Tu plataforma para alquilar videojuegos de manera rápida, segura y con el mejor catálogo
+      disponible.
+    </p>
+  </section>
 
-    <section class="dashboard-cards">
+  <section class="dashboard-cards">
+    <div class="card" routerLink="/cuentas">
+      <h3>Empleados</h3>
+      <p>Gestión de cuentas en el sistema.</p>
+    </div>
 
-        <div class="card" routerLink="/cuentas">
-            <h3>Empleados</h3>
-            <p>Gestión de cuentas en el sistema.</p>
-        </div>
+    <div class="card" routerLink="/personas">
+      <h3>Clientes</h3>
+      <p>Administración de clientes y sus datos personales.</p>
+    </div>
 
-        <div class="card" routerLink="/personas">
-            <h3>Clientes</h3>
-            <p>Administración de clientes y sus datos personales.</p>
-        </div>
+    <div class="card" routerLink="/videojuegos">
+      <h3>Videojuegos</h3>
+      <p>Catálogo completo de títulos disponibles.</p>
+    </div>
 
-        <div class="card" routerLink="/videojuegos">
-            <h3>Videojuegos</h3>
-            <p>Catálogo completo de títulos disponibles.</p>
-        </div>
+    <div class="card" routerLink="/inventario">
+      <h3>Inventario</h3>
+      <p>Gestión de stock de videojuegos por plataforma y disponibilidad en local.</p>
+    </div>
 
-        <div class="card" routerLink="/inventario">
-            <h3>Inventario</h3>
-            <p>Gestión de stock de videojuegos por plataforma y disponibilidad en local.</p>
-        </div>
+    <div class="card" routerLink="/alquileres">
+      <h3>Alquileres</h3>
+      <p>Control y seguimiento de alquileres activos.</p>
+    </div>
 
-
-        <div class="card" routerLink="/alquileres">
-            <h3>Alquileres</h3>
-            <p>Control y seguimiento de alquileres activos.</p>
-        </div>
-
-        <div class="card" routerLink="/reportes">
-            <h3>Reportes</h3>
-            <p>Informes y estadísticas del sistema.</p>
-        </div>
-
-    </section>
+    <div class="card" routerLink="/reportes">
+      <h3>Reportes</h3>
+      <p>Informes y estadísticas del sistema.</p>
+    </div>
+  </section>
 </body>

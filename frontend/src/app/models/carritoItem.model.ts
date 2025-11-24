@@ -1,5 +1,3 @@
-
-
 export interface CarritoItemModel {
   id?: string;
   inventarioItemId: string;

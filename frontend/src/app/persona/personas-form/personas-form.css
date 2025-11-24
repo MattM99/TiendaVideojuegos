@@ -10,8 +10,8 @@ form {
   border-radius: 12px;
 
   display: flex;
-  flex-direction: column;  /* ← Todo vertical */
-  gap: 22px;               /* ← Separación uniforme entre campos */
+  flex-direction: column;
+  gap: 22px;
 }
 
 /* Título */
@@ -52,7 +52,7 @@ input {
 input:focus {
   outline: none;
   border-color: #4a90e2;
-  box-shadow: 0 0 6px rgba(74,144,226,0.4);
+  box-shadow: 0 0 6px rgba(74, 144, 226, 0.4);
 }
 
 /* Mensajes de error */
@@ -73,23 +73,23 @@ button {
 }
 
 /* Botón Guardar */
-button[type="submit"] {
+button[type='submit'] {
   background: #1c2530;
   color: #e0e6ed;
 }
 
-button[type="submit"]:hover {
+button[type='submit']:hover {
   background: #2d3945;
   transform: translateY(-2px);
 }
 
 /* Botón Cancelar */
-button[type="button"] {
+button[type='button'] {
   background: #e0e6ed;
   color: #1c2530;
 }
 
-button[type="button"]:hover {
+button[type='button']:hover {
   background: white;
   transform: translateY(-2px);
 }

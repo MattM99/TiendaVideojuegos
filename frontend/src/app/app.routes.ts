@@ -47,11 +47,11 @@ export const routes: Routes = [
   },
 
   {
-  path: 'alquileres',
-  canActivate: [AuthGuard, RoleGuard],
-  data: { roles: ['ADMIN', 'EMPLEADO'] },
-  children: ALQUILER_ROUTES
-},
+    path: 'alquileres',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['ADMIN', 'EMPLEADO'] },
+    children: ALQUILER_ROUTES,
+  },
 
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/wip' },

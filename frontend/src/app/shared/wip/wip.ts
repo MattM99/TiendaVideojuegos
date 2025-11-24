@@ -9,9 +9,7 @@ import { Component } from '@angular/core';
 export class Wip {
   videoVisible = false;
 
-playVideo() {
-  this.videoVisible = true;
-}
-
-
+  playVideo() {
+    this.videoVisible = true;
+  }
 }

@@ -7,11 +7,8 @@ import { Persona } from '../persona/persona';
   providedIn: 'root',
 })
 export class Alquiler {
-
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:3000/alquileres';
-
-
 
   alquileres = signal<AlquilerModel[]>([]);
   cargando = signal(false);
@@ -19,14 +16,14 @@ export class Alquiler {
   cargarAlquileres() {
     this.cargando.set(true);
     this.http.get<AlquilerModel[]>(this.baseUrl).subscribe({
-      next: data => {
+      next: (data) => {
         this.alquileres.set(data);
         this.cargando.set(false);
       },
-      error: err => {
+      error: (err) => {
         console.error('Error cargando alquileres', err);
         this.cargando.set(false);
-      }
+      },
     });
   }
 
@@ -45,5 +42,4 @@ export class Alquiler {
   eliminarAlquiler(id: string) {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
-
 }

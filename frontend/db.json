@@ -200,16 +200,6 @@
       "montoFijo": 5000,
       "detalles": [],
       "penalizaciones": []
-    },
-    {
-      "id": "1321",
-      "personaId": "3ada",
-      "videojuegoId": "4b18",
-      "fechaInicio": "2025-11-21",
-      "fechaFin": "2025-11-26",
-      "montoFijo": 550,
-      "detalles": [],
-      "penalizaciones": []
     }
   ],
   "pagos": [
