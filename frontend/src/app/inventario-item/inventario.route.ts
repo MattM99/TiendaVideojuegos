@@ -4,9 +4,9 @@ import { InventarioItemDetailComponent } from './inventario-item-detail.componen
 import { InventarioItemFormComponent } from './inventario-item-form.component/inventario-item-form.component';
 
 export const INVENTARIO_ITEM_ROUTES: Routes = [
-  { path: '', component: InventarioItemListComponent },          // /inventario-items
-  { path: 'new', component: InventarioItemListComponent },       // /inventario-items/new
-  { path: ':id', component: InventarioItemDetailComponent },      // /inventario-items/123
-  { path: 'edit/:id', component: InventarioItemFormComponent }    // /inventario-items/edit/123
+  { path: '', component: InventarioItemListComponent },          // /inventarioItems
+  { path: 'new', component: InventarioItemFormComponent },       // /inventarioItems/new
+  { path: ':id', component: InventarioItemDetailComponent },      // /inventarioItems/123
+  { path: 'edit/:id', component: InventarioItemFormComponent }    // /inventarioItems/edit/123
 ];
 

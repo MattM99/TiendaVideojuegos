@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { InventarioItemModel } from './inventario-item.model';
-import { catchError, map, Observable, switchMap, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { VideojuegoService } from '../videojuego/videojuego.service';
 
 @Injectable({ 
