@@ -10,6 +10,7 @@ import { VideojuegoModel } from '../../videojuego/videojuego.model';
 import { InventarioItemService } from '../../inventario-item/inventario-item.service';
 import { InventarioItemModel } from '../../inventario-item/inventario-item.model';
 import { fechaValida, noFechaPasada } from '../../shared/validators/date.validator/date.validator';
+import { CarritoItemModel } from '../../models/carritoItem.model';
 
 @Component({
   selector: 'app-alquiler-form',
@@ -106,7 +107,7 @@ export class AlquilerForm implements OnInit {
       fechaFin: value.fechaFin!,
       montoFijo: value.montoFijo!,
       fechaDevolucion: value.fechaDevolucion || undefined,
-      detalles: [],
+      detalles: [] as CarritoItemModel[],
       penalizaciones: []
     };
 

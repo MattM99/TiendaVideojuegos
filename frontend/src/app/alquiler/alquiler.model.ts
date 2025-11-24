@@ -5,8 +5,8 @@ import { PenalizacionModel } from "../models/penalizacion.model";
 export interface AlquilerModel {
     id?: string;
     personaId: string;
+    inventarioId: string;   
     videojuegoId: string;
-    inventarioId: string;
     fechaInicio: string;
     fechaFin: string;
     detalles: CarritoItemModel[]; // <--- composición
