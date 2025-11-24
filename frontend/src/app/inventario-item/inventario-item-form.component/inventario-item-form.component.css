@@ -48,8 +48,8 @@ select {
     border: 1px solid #2d3945;
     font-size: 0.95rem;
     color: #e0e6ed;
-    width: 100%;             /* ← HACE QUE TODOS MIDAN LO MISMO */
-    box-sizing: border-box;  /* ← EVITA DESBORDES Y DIFERENCIAS */
+    width: 100%;
+    box-sizing: border-box;
     outline: none;
 }
 
