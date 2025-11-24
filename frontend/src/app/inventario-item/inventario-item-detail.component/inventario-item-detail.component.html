@@ -1,1 +1,37 @@
-<p>inventario-item-detail.component works!</p>
+<h2>Detalle del Inventario</h2>
+
+@if (data() === null) {
+  <p>Cargando...</p>
+} @else {
+
+  <div class="detail-card">
+
+    <h3>{{ data().titulo }}</h3>
+
+    <div class="detail-row">
+      <span class="detail-label">Plataforma</span>
+      <span class="detail-value">{{ data().item.plataforma }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Precio Diario</span>
+      <span class="detail-value">{{ data().item.precioDiario }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">Stock Total</span>
+      <span class="detail-value">{{ data().item.stockTotal }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span class="detail-label">En Local</span>
+      <span class="detail-value">{{ data().item.enLocal }}</span>
+    </div>
+
+    <div class="actions detail-actions">
+      <button (click)="volver()">Volver</button>
+      <button (click)="editar()">Editar</button>
+    </div>
+
+  </div>
+}

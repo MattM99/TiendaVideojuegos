@@ -127,6 +127,14 @@
       "precioDiario": 500,
       "stockTotal": 4,
       "enLocal": 4
+    },
+    {
+      "id": "231a",
+      "videojuegoId": "1",
+      "plataforma": "PC",
+      "precioDiario": 1,
+      "stockTotal": 1,
+      "enLocal": 1
     }
   ],
   "alquileres": [
@@ -173,7 +181,7 @@
   ],
   "pagos": [
     {
-      "id": 2,
+      "id": "2",
       "alquilerId": "2",
       "estado": "COMPLETADO",
       "descuento": 0,
