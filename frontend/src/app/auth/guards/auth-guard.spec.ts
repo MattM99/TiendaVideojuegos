@@ -8,10 +8,7 @@ describe('AuthGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        AuthGuard,
-        { provide: Router, useValue: routerSpy }
-      ]
+      providers: [AuthGuard, { provide: Router, useValue: routerSpy }],
     });
 
     guard = TestBed.inject(AuthGuard);

@@ -15,14 +15,14 @@ export class Persona {
   cargarPersonas() {
     this.cargando.set(true);
     this.http.get<PersonaModel[]>(this.baseUrl).subscribe({
-      next: data => {
+      next: (data) => {
         this.personas.set(data);
         this.cargando.set(false);
       },
-      error: err => {
+      error: (err) => {
         console.error('Error cargando personas', err);
         this.cargando.set(false);
-      }
+      },
     });
   }
 

@@ -9,10 +9,9 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './inventario-item-form.component.html',
-  styleUrls: ['./inventario-item-form.component.css']
+  styleUrls: ['./inventario-item-form.component.css'],
 })
 export class InventarioItemFormComponent {
-
   inventarioService = inject(InventarioItemService);
   videojuegosService = inject(VideojuegoService);
 
@@ -23,7 +22,7 @@ export class InventarioItemFormComponent {
   id: string = '';
 
   // Lista de videojuegos para el <select>
-  videojuegos = signal<{ id: string, titulo: string }[]>([]);
+  videojuegos = signal<{ id: string; titulo: string }[]>([]);
 
   // Modelo del formulario
   item = signal({
@@ -31,9 +30,8 @@ export class InventarioItemFormComponent {
     plataforma: '',
     precioDiario: 0,
     stockTotal: 0,
-    enLocal: 0
+    enLocal: 0,
   });
-
 
   canSave = computed(() => {
     const v = this.item();
@@ -46,17 +44,13 @@ export class InventarioItemFormComponent {
     );
   });
 
-
   ngOnInit() {
-
     // Cargar videojuegos para el dropdown
     this.videojuegosService.getAll().subscribe({
-      next: lista => this.videojuegos.set(
-        lista.map(v => ({ id: v.id ?? '', titulo: v.titulo }))
-      ),
-      error: () => alert("No se pudo cargar la lista de videojuegos")
+      next: (lista) =>
+        this.videojuegos.set(lista.map((v) => ({ id: v.id ?? '', titulo: v.titulo }))),
+      error: () => alert('No se pudo cargar la lista de videojuegos'),
     });
-
 
     // ¿Edit?
     const routeId = this.route.snapshot.paramMap.get('id');
@@ -65,33 +59,32 @@ export class InventarioItemFormComponent {
       this.isEdit = true;
 
       this.inventarioService.getById(routeId).subscribe({
-        next: data => this.item.set(data),
-        error: () => alert("No se pudo cargar el item a editar")
+        next: (data) => this.item.set(data),
+        error: () => alert('No se pudo cargar el item a editar'),
       });
     }
   }
 
   // Métodos de update (igual que en videojuegos)
   updateVideojuego(id: string) {
-    this.item.update(v => ({ ...v, videojuegoId: id }));
+    this.item.update((v) => ({ ...v, videojuegoId: id }));
   }
 
   updatePlataforma(value: string) {
-    this.item.update(v => ({ ...v, plataforma: value }));
+    this.item.update((v) => ({ ...v, plataforma: value }));
   }
 
   updatePrecio(value: number) {
-    this.item.update(v => ({ ...v, precioDiario: Number(value) }));
+    this.item.update((v) => ({ ...v, precioDiario: Number(value) }));
   }
 
   updateStockTotal(value: number) {
-    this.item.update(v => ({ ...v, stockTotal: Number(value) }));
+    this.item.update((v) => ({ ...v, stockTotal: Number(value) }));
   }
 
   updateEnLocal(value: number) {
-    this.item.update(v => ({ ...v, enLocal: Number(value) }));
+    this.item.update((v) => ({ ...v, enLocal: Number(value) }));
   }
-
 
   guardar() {
     if (!this.canSave()) return;
@@ -101,12 +94,12 @@ export class InventarioItemFormComponent {
     if (this.isEdit) {
       this.inventarioService.update(this.id, data).subscribe({
         next: () => this.router.navigate(['/inventario']),
-        error: () => alert("Error al actualizar el item")
+        error: () => alert('Error al actualizar el item'),
       });
     } else {
       this.inventarioService.create(data).subscribe({
         next: () => this.router.navigate(['/inventario']),
-        error: () => alert("Error al crear el item")
+        error: () => alert('Error al crear el item'),
       });
     }
   }
@@ -115,4 +108,3 @@ export class InventarioItemFormComponent {
     this.router.navigate(['/inventario']);
   }
 }
-

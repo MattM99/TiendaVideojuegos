@@ -1,147 +1,88 @@
-# Descripción general
+# GameHub -- Sistema de Gestión de Alquiler de Videojuegos
 
-Este proyecto es un frontend desarrollado íntegramente en [Angular CLI](https://github.com/angular/angular-cli) 20.3.8, que implementa un sistema interno de gestión para una tienda de alquiler de videojuegos.
+GameHub es un sistema interno diseñado para optimizar y digitalizar la
+gestión de alquileres en una tienda de videojuegos. Permite administrar
+clientes, empleados, videojuegos, alquileres y reservas, ofreciendo una
+solución centralizada y eficiente.
 
-Para esta entrega académica, el backend real fue reemplazado por JSON Server para simular una API REST local, permitiendo realizar todas las operaciones CRUD necesarias.
+## Características Principales
 
-El sistema permite administrar clientes, videojuegos, cuentas de usuario, alquileres, devoluciones, penalizaciones y reservas
+### Funcionalidades Implementadas
 
-# Tecnologías utilizadas
+-   Registro y administración de clientes.\
+-   Alta, baja y modificación de empleados.\
+-   Gestión de roles (Founder, Administrador, Empleado).\
+-   Protección de la cuenta Founder.\
+-   Registro de alquileres y videojuegos.\
+-   Control de stock.\
+-   Seguridad por credenciales y validación de acciones.\
+-   Registro básico de eventos para auditoría.
 
-## Frontend
+### Funcionalidades Pendientes
 
-  Angular 20
+-   Registro de devoluciones.\
+-   Penalizaciones por demora o mal estado.\
+-   Historial de alquileres por cliente.\
+-   Facturación e impresión de comprobantes.\
+-   Lista negra y restricciones automáticas.\
+-   Sistema de reservas completo con notificaciones.\
+-   Métodos de pago adicionales.
 
-  TypeScript
+## Arquitectura del Proyecto
 
-  Angular CLI
+### Backend
 
-  HTML5 / CSS3
+-   Java\
+-   Spring Boot (API REST)\
+-   JSON Server (simulación de backend para esta entrega)
 
-## Angular Material (UI)
+### Frontend
 
-  RxJS
+-   Angular\
+-   TypeScript\
+-   HTML5 / CSS3\
+-   Angular CLI
 
-  Validaciones con Reactive Forms
+### Herramientas
 
-## Backend simulado
-
-  JSON Server (simulación de API REST)
-
-  Archivos JSON persistentes para entidades
-
-  Endpoints personalizados con rutas REST
-
-## Herramientas
-
-  Node.js + npm
-
-  GitHub
-
-  VS Code
-
-# Estructura del proyecto
-/src
- ├── app
- │   ├── core          → servicios globales, guards, interceptors
- │   ├── shared        → header, footer y frontpage
- │   ├── auth          → login, roles, guards
- │   ├── videojuego   → CRUD de videojuegos
- │   ├── personas      → CRUD de personas (clientes)
- │   ├── cuentas       → CRUD de cuentas/usuarios del sistema
- │   ├── alquileres    → registro + devoluciones + penalizaciones
- │   └── dashboard     → estadísticas con Chart.js
-/db.json               → base de datos JSON Server
+-   GitHub\
+-   Postman\
+-   IntelliJ IDEA / VS Code
 
 
-# Funcionalidades principales
-CRUD completos
+## 🎯 Objetivo del Sistema
 
-## Videojuegos:
-Crear, editar, eliminar y listar videojuegos, con stock por consola.
+-   Automatización del registro de alquileres.\
+-   Reducción de errores humanos.\
+-   Mejor control del stock.\
+-   Gestión clara de permisos y roles.\
+-   Base sólida para ampliaciones futuras.
 
-## Personas (clientes):
-Alta de clientes, historial y edición de datos.
+## 📁 Estructura del Proyecto
 
-## Cuentas / Usuarios internos:
-Registro de empleados y administración de roles (empleado / administrador / founder).
+/gamehub\
+├── backend/\
+├── frontend/\
+└── README.md
 
-# Autenticación y roles
-Implementación del sistema de login completamente en Angular:
+## 🚀 Cómo Ejecutarlo
 
-  Login con validación de credenciales almacenadas en JSON Server
+### 1. Clonar el repositorio
 
-  Roles:
+git clone https://github.com/MattM99/TiendaVideojuegos.git
+cd frontend
 
-    Empleado
+### 2. Iniciar JSON Server
 
-    Administrador
+json-server --watch db.json --port 3000
 
-    Founder (creado manualmente en db.json)
+### 3. Iniciar el Frontend
 
-  Persistencia de sesión con LocalStorage
+npm install\
+ng serve -o
 
-  Guards:
+## 👥 Autores
 
-    AuthGuard
-
-    RoleGuard
-
-    GuestGuard
-
-# Diseño y experiencia de usuario
-Completamente responsive y basado en Angular Material:
-
-Side nav adaptable
-
-Tablas con paginación y filtros
-
-Tarjetas (cards) para métricas
-
-Formularios con validaciones reactivas
-
-Íconos Material Icons
-
-# Patrones y buenas prácticas incorporadas
-
-Arquitectura modular (feature modules + lazy loading)
-
-Servicios tipados con interfaces
-
-DTOs y modelos separados
-
-Pipes para formateo de datos
-
-Guards para control de acceso
-
-Interceptor para adjuntar “token” simulado
-
-Manejo de errores con HttpErrorResponse
-
-Observables bien manejados con RxJS
-
-# Configuración de JSON Server
-  ## Instalación
-  npm install -g json-server
-
-  ## Ejecutar backend simulado
-  json-server --watch db.json --port 3000
-  Esto expone endpoints tales como:
-  GET    /videojuegos  
-  POST   /videojuegos  
-  GET    /personas  
-  GET    /cuentas  
-  PATCH  /alquileres/1  
-
-  ## Ejecutar Angular
-  Instalar dependencias:
-    npm install
-  Ejecutar el servidor:
-    ng serve -o
-
-# Conclusión
-Este proyecto demuestra una implementación completa y realista de un sistema de gestión empresarial utilizando Angular como framework principal, con apoyo de JSON Server para simular una API REST.
-
-A pesar de no contar con backend real en esta entrega, el sistema reproduce el flujo real del negocio, respetando principios de arquitectura, usabilidad y mantenibilidad.
-
-
+-   Matías Mendoza\
+-   Kevin Pedro Falcón\
+-   Nicolás Pettinelli

@@ -32,8 +32,8 @@ export class AlquilerForm implements OnInit {
   inventario = signal<InventarioItemModel[]>([]);
   videojuegoMap = computed(() => {
     const map: Record<string, string> = {};
-    this.videojuegos().forEach(j => {
-      if (j.id) {       // ✅ solo si existe id
+    this.videojuegos().forEach((j) => {
+      if (j.id) {
         map[j.id] = j.titulo;
       }
     });
@@ -57,14 +57,14 @@ export class AlquilerForm implements OnInit {
 
     // Cargar videojuegos
     this.videojuegoService.getAll().subscribe({
-      next: juegos => this.videojuegos.set(juegos),
-      error: err => console.error(err)
+      next: (juegos) => this.videojuegos.set(juegos),
+      error: (err) => console.error(err),
     });
 
     // Cargar inventario disponible
     this.inventarioService.getAll().subscribe({
-      next: items => this.inventario.set(items.filter(i => i.enLocal > 0)),
-      error: err => console.error(err)
+      next: (items) => this.inventario.set(items.filter((i) => i.enLocal > 0)),
+      error: (err) => console.error(err),
     });
 
     // Editar alquiler si viene ID
@@ -74,17 +74,17 @@ export class AlquilerForm implements OnInit {
       this.alquilerId = idParam;
 
       this.alquilerService.obtenerAlquiler(this.alquilerId).subscribe({
-        next: alquiler => {
+        next: (alquiler) => {
           this.form.patchValue({
             personaId: alquiler.personaId,
             inventarioId: alquiler.inventarioId,
             fechaInicio: alquiler.fechaInicio,
             fechaFin: alquiler.fechaFin,
             montoFijo: alquiler.montoFijo,
-            fechaDevolucion: alquiler.fechaDevolucion ?? ''
+            fechaDevolucion: alquiler.fechaDevolucion ?? '',
           });
         },
-        error: err => console.error(err)
+        error: (err) => console.error(err),
       });
     }
   }
@@ -96,7 +96,7 @@ export class AlquilerForm implements OnInit {
     }
 
     const value = this.form.value;
-    const item = this.inventario().find(i => i.id === value.inventarioId);
+    const item = this.inventario().find((i) => i.id === value.inventarioId);
 
     const base: Omit<AlquilerModel, 'id'> = {
       personaId: value.personaId!,
@@ -107,7 +107,7 @@ export class AlquilerForm implements OnInit {
       montoFijo: value.montoFijo!,
       fechaDevolucion: value.fechaDevolucion || undefined,
       detalles: [],
-      penalizaciones: []
+      penalizaciones: [],
     };
 
     if (this.alquilerId) {
@@ -115,7 +115,7 @@ export class AlquilerForm implements OnInit {
       const actualizado: AlquilerModel = { id: this.alquilerId, ...base };
       this.alquilerService.actualizarAlquiler(this.alquilerId, actualizado).subscribe({
         next: () => this.router.navigate(['/alquileres']),
-        error: err => console.error(err)
+        error: (err) => console.error(err),
       });
     } else {
       // Crear nuevo alquiler
@@ -124,12 +124,12 @@ export class AlquilerForm implements OnInit {
           // Descontar stock al crear
           this.inventarioService.descontarStock(value.inventarioId!).subscribe({
             next: () => console.log('Stock descontado'),
-            error: err => console.error(err)
+            error: (err) => console.error(err),
           });
 
           this.router.navigate(['/alquileres']);
         },
-        error: err => console.error(err)
+        error: (err) => console.error(err),
       });
     }
   }

@@ -1,4 +1,4 @@
-import { MetodoPagoUnion } from "./metodo-pago.model";
+import { MetodoPagoUnion } from './metodo-pago.model';
 
 export interface PagoModel {
   id: string;

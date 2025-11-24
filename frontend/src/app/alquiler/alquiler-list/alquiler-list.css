@@ -1,141 +1,139 @@
 /* ===== TÍTULO ===== */
 h2 {
-    color: #e0e6ed;
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 2rem;
-    margin: 20px 0;
-    text-align: center;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  color: #e0e6ed;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 2rem;
+  margin: 20px 0;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 /* ===== BOTÓN "Nuevo alquiler" ===== */
 button {
-    background: #1c2530;
-    color: #e0e6ed;
-    border: 1px solid #2d3945;
-    padding: 10px 18px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s ease;
-    font-size: 0.9rem;
-    display: block;
-    margin: 0 auto 20px auto;
+  background: #1c2530;
+  color: #e0e6ed;
+  border: 1px solid #2d3945;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 0.9rem;
+  display: block;
+  margin: 0 auto 20px auto;
 }
 
 button:hover {
-    background: #2d3945;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  background: #2d3945;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 /* ===== MENSAJES DE ESTADO ===== */
 p {
-    color: #d9e1e8;
-    text-align: center;
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 1rem;
+  color: #d9e1e8;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1rem;
 }
 
 /* ===== CONTENEDOR SUPERIOR (Volver + Nuevo alquiler) ===== */
 .top-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 90%;
-    max-width: 900px;
-    margin: 20px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  max-width: 900px;
+  margin: 20px auto;
 }
 
 /* Botón VOLVER */
 .back-btn {
-    background: #1c2530;
+  background: #1c2530;
 }
 
 .back-btn:hover {
-    background: #2d3945;
+  background: #2d3945;
 }
 
 /* Botón NUEVO ALQUILER */
 .create-button {
-    background: #1c2530;
+  background: #1c2530;
 }
 
 .create-button:hover {
-    background: #2d3945;
+  background: #2d3945;
 }
-
-
 
 /* ===== TABLA ===== */
 table {
-    width: 95%;
-    max-width: 1100px;
-    margin: 10px auto 40px auto;
-    border-collapse: collapse;
+  width: 95%;
+  max-width: 1100px;
+  margin: 10px auto 40px auto;
+  border-collapse: collapse;
 
-    background: rgba(28, 37, 48, 0.60);
-    backdrop-filter: blur(6px);
+  background: rgba(28, 37, 48, 0.6);
+  backdrop-filter: blur(6px);
 
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Encabezado */
 thead {
-    background: rgba(45, 57, 69, 0.5);
+  background: rgba(45, 57, 69, 0.5);
 }
 
 thead th {
-    color: #e0e6ed;
-    padding: 12px;
-    font-weight: 600;
-    text-align: left;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    font-size: 0.95rem;
+  color: #e0e6ed;
+  padding: 12px;
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.95rem;
 }
 
 /* Filas */
 tbody tr {
-    transition: 0.2s ease;
+  transition: 0.2s ease;
 }
 
 tbody tr:hover {
-    background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 /* Celdas */
 tbody td {
-    color: #d9e1e8;
-    padding: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-    font-size: 0.95rem;
+  color: #d9e1e8;
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  font-size: 0.95rem;
 }
 
 /* ===== BOTONES DE ACCIONES DENTRO DE TABLA ===== */
 td button {
-    background: #152028;
-    border: 1px solid #2d3945;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-right: 8px;
-    transition: 0.2s ease;
-    font-size: 0.85rem;
-    display: inline-block;
+  background: #152028;
+  border: 1px solid #2d3945;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: 0.2s ease;
+  font-size: 0.85rem;
+  display: inline-block;
 }
 
 td button:hover {
-    background: #22303c;
-    transform: translateY(-2px);
+  background: #22303c;
+  transform: translateY(-2px);
 }
 
 /* Botón ELIMINAR */
 td button:last-child {
-    border-color: #8c2c2c;
+  border-color: #8c2c2c;
 }
 
 td button:last-child:hover {
-    background: #8c2c2c;
-    color: white;
+  background: #8c2c2c;
+  color: white;
 }

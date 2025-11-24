@@ -8,25 +8,23 @@ import { AuthService } from '../auth-service/auth';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './login.html',
-  styleUrls: ['./login.css']
+  styleUrls: ['./login.css'],
 })
 export class Login {
   nombreUsuario: string = '';
   contrasena: string = '';
   showPassword = false;
 
-
   constructor(private auth: AuthService, private router: Router) {}
 
   login() {
-  this.auth.login(this.nombreUsuario, this.contrasena).subscribe(cuentas => {
-    if (cuentas.length === 1) {
-      this.auth.setUser(cuentas[0]);
-      this.router.navigate(['/home']);
-    } else {
-      alert('Usuario o contraseña incorrectos');
-    }
-  });
-}
-
+    this.auth.login(this.nombreUsuario, this.contrasena).subscribe((cuentas) => {
+      if (cuentas.length === 1) {
+        this.auth.setUser(cuentas[0]);
+        this.router.navigate(['/home']);
+      } else {
+        alert('Usuario o contraseña incorrectos');
+      }
+    });
+  }
 }

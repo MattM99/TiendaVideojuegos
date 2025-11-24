@@ -4,9 +4,9 @@
   <button class="back-btn" routerLink="/home">Volver</button>
   @if (usuario()?.rol !== 'EMPLEADO') {
   <div class="create-button-container">
-  <button (click)="crearEmpleado()">Crear nuevo usuario</button>
-</div>
-}
+    <button (click)="crearEmpleado()">Crear nuevo usuario</button>
+  </div>
+  }
 </div>
 
 <ul>
@@ -16,14 +16,14 @@
       <b>{{ cuenta.nombreUsuario }}</b> - {{ cuenta.rol }}
     </span>
 
-@if (cuenta.rol !== 'FOUNDER' && usuario()?.rol !== 'EMPLEADO') {
-  <span class="actions">
-    <button (click)="editCuenta(cuenta)">Editar</button>
-    @if (cuenta.id !== usuario()?.id) {
-          <button (click)="deleteCuenta(cuenta)">Eliminar</button>
+    @if (cuenta.rol !== 'FOUNDER' && usuario()?.rol !== 'EMPLEADO') {
+    <span class="actions">
+      <button (click)="editCuenta(cuenta)">Editar</button>
+      @if (cuenta.id !== usuario()?.id) {
+      <button (click)="deleteCuenta(cuenta)">Eliminar</button>
+      }
+    </span>
     }
-  </span>
-  }
   </li>
   }
 </ul>

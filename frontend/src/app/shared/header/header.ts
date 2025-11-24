@@ -11,7 +11,7 @@ import { AuthService } from '../../auth/auth-service/auth';
   styleUrl: './header.css',
 })
 export class Header {
-usuario = computed(() => this.auth.currentUser());
+  usuario = computed(() => this.auth.currentUser());
 
   constructor(private auth: AuthService, private router: Router) {}
 
@@ -20,5 +20,4 @@ usuario = computed(() => this.auth.currentUser());
     this.auth.logout();
     this.router.navigate(['/login']);
   }
-
 }

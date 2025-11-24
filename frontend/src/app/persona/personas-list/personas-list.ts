@@ -11,7 +11,6 @@ import { Persona } from '../persona';
   styleUrl: './personas-list.css',
 })
 export class PersonasList implements OnInit {
-
   private personaService = inject(Persona);
   constructor(
     private router: Router
@@ -30,7 +29,7 @@ export class PersonasList implements OnInit {
 
     this.personaService.eliminarPersona(id).subscribe({
       next: () => this.personaService.cargarPersonas(),
-      error: err => console.error('Error eliminando persona', err),
+      error: (err) => console.error('Error eliminando persona', err),
     });
   }
 

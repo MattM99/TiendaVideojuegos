@@ -15,7 +15,7 @@
   padding: 35px;
 
   width: 100%;
-  max-width: 380px !important;   /* ← MÁXIMO REAL */
+  max-width: 380px !important;
   margin: 0 auto;
 
   border-radius: 12px;
@@ -29,8 +29,8 @@
 
 /* Input general */
 .login-form input {
-  width: 100% !important;         /* ← Asegura que NO excede el formulario */
-  max-width: 100% !important;     /* ← Evita que se estire más allá */
+  width: 100% !important;
+  max-width: 100% !important;
   padding: 14px 16px;
 
   background: rgba(255, 255, 255, 0.14);
@@ -92,7 +92,6 @@
   transform: translateY(-2px);
 }
 
-/* --- RESPONSIVE --- */
 @media (max-width: 480px) {
   .login-form {
     padding: 25px;

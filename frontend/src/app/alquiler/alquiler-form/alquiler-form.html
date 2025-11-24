@@ -1,7 +1,6 @@
 <h2>{{ titulo }}</h2>
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
   <!-- Cliente -->
   <div>
     <label>Cliente</label>
@@ -9,12 +8,12 @@
       <option value="">Seleccione un cliente</option>
 
       @for (p of personas(); track p.id) {
-        <option [value]="p.id">{{ p.dni }} - {{ p.nombre }} {{ p.apellido }}</option>
+      <option [value]="p.id">{{ p.dni }} - {{ p.nombre }} {{ p.apellido }}</option>
       }
     </select>
 
     @if (form.get('personaId')?.invalid && form.get('personaId')?.touched) {
-      <p class="error">* Debe seleccionar un cliente</p>
+    <p class="error">* Debe seleccionar un cliente</p>
     }
   </div>
 
@@ -22,19 +21,17 @@
   <div>
     <label>Juego en inventario</label>
     <select formControlName="inventarioId">
-  <option value="">Seleccione un juego</option>
+      <option value="">Seleccione un juego</option>
 
-  @for (item of inventario(); track item.id){
-    @if (item.enLocal > 0) {
+      @for (item of inventario(); track item.id){ @if (item.enLocal > 0) {
       <option [value]="item.id">
         {{ videojuegoMap()[item.videojuegoId] || 'Desconocido' }} (Stock: {{ item.enLocal }})
       </option>
-    }
-  }
-</select>
+      } }
+    </select>
 
-@if (form.get('inventarioId')?.invalid && form.get('inventarioId')?.touched) {
-  <p class="error">* Debe seleccionar un juego</p>
+    @if (form.get('inventarioId')?.invalid && form.get('inventarioId')?.touched) {
+    <p class="error">* Debe seleccionar un juego</p>
     }
   </div>
 
@@ -43,7 +40,7 @@
     <label>Fecha inicio</label>
     <input type="date" formControlName="fechaInicio" />
     @if (form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched) {
-      <p class="error">* Campo obligatorio o fecha inválida</p>
+    <p class="error">* Campo obligatorio o fecha inválida</p>
     }
   </div>
 
@@ -52,7 +49,7 @@
     <label>Fecha fin</label>
     <input type="date" formControlName="fechaFin" />
     @if (form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched) {
-      <p class="error">* Campo obligatorio o fecha inválida</p>
+    <p class="error">* Campo obligatorio o fecha inválida</p>
     }
   </div>
 
@@ -61,7 +58,7 @@
     <label>Monto fijo</label>
     <input type="number" formControlName="montoFijo" />
     @if (form.get('montoFijo')?.invalid && form.get('montoFijo')?.touched) {
-      <p class="error">* Monto inválido</p>
+    <p class="error">* Monto inválido</p>
     }
   </div>
 
@@ -76,5 +73,4 @@
     <button type="submit" [disabled]="form.invalid">Guardar</button>
     <button type="button" (click)="cancelar()">Cancelar</button>
   </div>
-
 </form>

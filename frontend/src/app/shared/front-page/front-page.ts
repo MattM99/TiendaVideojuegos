@@ -13,5 +13,4 @@ export class FrontPage {
   usuario = computed(() => this.auth.currentUser());
 
   constructor(private auth: AuthService) {}
-
 }
