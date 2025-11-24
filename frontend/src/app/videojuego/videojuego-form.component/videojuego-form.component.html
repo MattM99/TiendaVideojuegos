@@ -9,22 +9,34 @@
   <input
     [ngModel]="videojuego().titulo"
     (ngModelChange)="updateTitulo($event)"
+    (blur)="markTouched('titulo')"
     name="titulo"
   />
+  @if (tituloError()) {
+    <p class="error">{{ tituloError() }}</p>
+  }
 
   <label>Género</label>
   <input
     [ngModel]="videojuego().genero"
     (ngModelChange)="updateGenero($event)"
     name="genero"
+    (blur)="markTouched('genero')"
   />
+  @if (generoError()) {
+    <p class="error">{{ generoError() }}</p>
+  }
 
   <label>Desarrollador</label>
   <input
     [ngModel]="videojuego().desarrollador"
     (ngModelChange)="updateDesarrollador($event)"
     name="desarrollador"
+    (blur)="markTouched('desarrollador')"
   />
+  @if (desarrolladorError()) {
+    <p class="error">{{ desarrolladorError() }}</p>
+  }
 
   <label>Año de lanzamiento</label>
   <input
@@ -32,7 +44,11 @@
     [ngModel]="videojuego().lanzamiento"
     (ngModelChange)="updateLanzamiento($event)"
     name="lanzamiento"
+    (blur)="markTouched('lanzamiento')"
   />
+ @if (lanzamientoError()) {
+    <p class="error">{{ lanzamientoError() }}</p>
+  }
 
   <label>Multijugador</label>
   <div class="multiplayer-toggle">
@@ -60,7 +76,12 @@
     [ngModel]="videojuego().sinopsis"
     (ngModelChange)="updateSinopsis($event)"
     name="sinopsis"
+    (blur)="markTouched('sinopsis')"
   ></textarea>
+
+  @if (sinopsisError()) {
+    <p class="error">{{ sinopsisError() }}</p>
+  }
 
   <div class="form-buttons">
     <button type="button" class="back-btn" (click)="volver()">Volver</button>

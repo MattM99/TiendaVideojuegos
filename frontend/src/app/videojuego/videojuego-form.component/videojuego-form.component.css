@@ -48,7 +48,7 @@ textarea {
     color: #e0e6ed;
     font-size: 1rem;
     transition: 0.2s ease;
-    width: 100%;
+    width: 95%;
 }
 
 input:focus,
@@ -150,3 +150,39 @@ textarea:focus {
   box-shadow: none;
 }
 
+/* Contenedor del campo */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+/* Input con error */
+input.ng-invalid.ng-touched {
+  border-color: #d9534f;
+  background-color: #fff5f5;
+}
+
+/* Mensaje de error */
+.error {
+  color: #d9534f;
+  font-size: 0.85rem;
+  margin-top: 4px;
+  padding-left: 2px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Para centrar mensajes generales */
+.error-general {
+  color: #d9534f;
+  font-size: 0.9rem;
+  margin: 8px 0;
+  font-weight: bold;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+/* Animación suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
