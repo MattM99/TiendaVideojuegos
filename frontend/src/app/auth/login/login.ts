@@ -13,6 +13,8 @@ import { AuthService } from '../auth-service/auth';
 export class Login {
   nombreUsuario: string = '';
   contrasena: string = '';
+  showPassword = false;
+
 
   constructor(private auth: AuthService, private router: Router) {}
 
