@@ -1,10 +1,10 @@
-import { PersonaModel } from "../models/persona.model";
+import { PersonaModel } from "../persona/persona.model";
 
 export interface CuentaModel {
-    id?: string; //Lo dejo opcional para cuando se cree una nueva cuenta
-    personaId: string; // <--- asociación
+    id: string;
+    personaId: string; 
     nombreUsuario: string;
-    contraseña: string;
+    password: string;
     rol: string;
     alta: boolean;
 }

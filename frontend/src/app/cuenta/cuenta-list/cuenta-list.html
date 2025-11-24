@@ -1,32 +1,29 @@
 <h2>Administración de Cuentas</h2>
 
-@if (loading) {
-  <p>Cargando cuentas...</p>
-} @else {
-  <table border="1" cellpadding="5">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre de Usuario</th>
-        <th>Email</th>
-        <th>Rol</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      @for (cuenta of cuentas; track cuenta.id) {
-        <tr>
-          <td>{{ cuenta.id }}</td>
-          <td>{{ cuenta.nombreUsuario }}</td>
-          <td>{{ cuenta.persona.email }}</td>
-          <td>{{ cuenta.rol }}</td>
-          <td>
-            <button (click)="editCuenta(cuenta)">Editar</button>
-            <button (click)="deleteCuenta(cuenta)">Eliminar</button>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+<div class="top-actions">
+  <button class="back-btn" routerLink="/home">Volver</button>
+  @if (usuario()?.rol !== 'EMPLEADO') {
+  <div class="create-button-container">
+  <button (click)="crearEmpleado()">Crear nuevo usuario</button>
+</div>
 }
+</div>
+
+<ul>
+  @for (cuenta of cuentas(); track cuenta.id) {
+  <li>
+    <span class="title">
+      <b>{{ cuenta.nombreUsuario }}</b> - {{ cuenta.rol }}
+    </span>
+
+@if (cuenta.rol !== 'FOUNDER' && usuario()?.rol !== 'EMPLEADO') {
+  <span class="actions">
+    <button (click)="editCuenta(cuenta)">Editar</button>
+    @if (cuenta.id !== usuario()?.id) {
+          <button (click)="deleteCuenta(cuenta)">Eliminar</button>
+    }
+  </span>
+  }
+  </li>
+  }
+</ul>

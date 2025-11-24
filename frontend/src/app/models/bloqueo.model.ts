@@ -1,5 +1,3 @@
-
-
 export interface BloqueoModel {
     id?: number;
     personaId: string;
