@@ -6,6 +6,7 @@ import { AlquilerModel } from '../alquiler.model';
 import { Persona } from '../../persona/persona';
 import { VideojuegoModel } from '../../videojuego/videojuego.model';
 import { VideojuegoService } from '../../videojuego/videojuego.service';
+import { InventarioItemService } from '../../inventario-item/inventario-item.service';
 
 @Component({
   selector: 'app-alquiler-list',
@@ -20,6 +21,7 @@ export class AlquilerList implements OnInit {
   private router = inject(Router);
   private personaService = inject(Persona);
   private VideojuegoService = inject(VideojuegoService);
+  private inventarioService = inject(InventarioItemService);
 
   alquileres = computed(() => this.alquilerService.alquileres());
   cargando = computed(() => this.alquilerService.cargando());
@@ -43,16 +45,27 @@ export class AlquilerList implements OnInit {
     this.router.navigate(['/alquileres', id]);
   }
 
-  eliminar(id: string | undefined) {
-    if (!id) return;
+  eliminar(alquilerId: string | undefined, inventarioId: string | undefined) {
+  if (!alquilerId) return;
 
-    if (!confirm('¿Seguro que querés eliminar este alquiler?')) return;
+  if (!confirm('¿Seguro que querés eliminar este alquiler?')) return;
 
-    this.alquilerService.eliminarAlquiler(id).subscribe({
-      next: () => this.alquilerService.cargarAlquileres(),
-      error: err => console.error('Error eliminando alquiler', err),
-    });
-  }
+  this.alquilerService.eliminarAlquiler(alquilerId).subscribe({
+    next: () => {
+      // Incrementar stock solo si tenemos inventarioId
+      if (inventarioId) {
+        this.inventarioService.incrementarStock(inventarioId).subscribe({
+          next: () => console.log('Stock incrementado'),
+          error: err => console.error('Error incrementando stock', err)
+        });
+      }
+
+      // Recargar lista de alquileres
+      this.alquilerService.cargarAlquileres();
+    },
+    error: err => console.error('Error eliminando alquiler', err),
+  });
+}
 
   getNombrePersona(personaId: string): string {
     const persona = this.personaService.personas().find(p => p.id === personaId);

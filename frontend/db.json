@@ -135,7 +135,7 @@
       "plataforma": "SWITCH",
       "precioDiario": 500,
       "stockTotal": 4,
-      "enLocal": 4
+      "enLocal": 3
     },
     {
       "id": "231a",
@@ -143,7 +143,8 @@
       "plataforma": "PC",
       "precioDiario": 1,
       "stockTotal": 1,
-      "enLocal": 1
+      "enLocal": 1,
+      "decremento": 1
     }
   ],
   "alquileres": [
@@ -170,8 +171,6 @@
           "motivo": "Demora en devolución"
         }
       ]
-      "detalles": [],
-      "penalizaciones": []
     },
     {
       "id": "2",
@@ -215,7 +214,6 @@
   ],
   "pagos": [
     {
-      "id": "2",
       "id": "2",
       "alquilerId": "2",
       "estado": "COMPLETADO",

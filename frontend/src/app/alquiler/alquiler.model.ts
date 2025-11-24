@@ -6,6 +6,7 @@ export interface AlquilerModel {
     id?: string;
     personaId: string;
     videojuegoId: string;
+    inventarioId: string;
     fechaInicio: string;
     fechaFin: string;
     detalles: CarritoItemModel[]; // <--- composición
