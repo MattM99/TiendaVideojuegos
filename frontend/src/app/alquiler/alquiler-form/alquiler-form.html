@@ -1,0 +1,54 @@
+<h2>{{ titulo }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+  <div>
+    <label>
+      Persona ID
+      <input formControlName="personaId" />
+    </label>
+    @if (form.get('personaId')?.invalid && form.get('personaId')?.touched) {
+      <p>* Campo obligatorio</p>
+    }
+  </div>
+
+  <div>
+    <label>
+      Fecha inicio
+      <input type="date" formControlName="fechaInicio" />
+    </label>
+    @if (form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched) {
+      <p>* Campo obligatorio</p>
+    }
+  </div>
+
+  <div>
+    <label>
+      Fecha fin
+      <input type="date" formControlName="fechaFin" />
+    </label>
+    @if (form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched) {
+      <p>* Campo obligatorio</p>
+    }
+  </div>
+
+  <div>
+    <label>
+      Monto fijo
+      <input type="number" formControlName="montoFijo" />
+    </label>
+    @if (form.get('montoFijo')?.invalid && form.get('montoFijo')?.touched) {
+      <p>* Debe ser un monto válido</p>
+    }
+  </div>
+
+  <div>
+    <label>
+      Fecha devolución (opcional)
+      <input type="date" formControlName="fechaDevolucion" />
+    </label>
+  </div>
+
+  <button type="submit" [disabled]="form.invalid">Guardar</button>
+  <button type="button" (click)="cancelar()">Cancelar</button>
+</form>

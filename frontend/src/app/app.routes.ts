@@ -7,6 +7,7 @@ import { VIDEOJUEGO_ROUTES } from './videojuego/videojuego.routes';
 import { CUENTA_ROUTES } from './cuenta/cuenta.routes';
 import { PERSONA_ROUTES } from './persona/persona.routes';
 import { INVENTARIO_ITEM_ROUTES } from './inventario-item/inventario.route';
+import { ALQUILER_ROUTES } from './alquiler/alquiler.routes';
 import { RoleGuard } from './auth/guards/role-guard';
 import { LoginGuard } from './auth/guards/login-guard';
 
@@ -49,6 +50,13 @@ export const routes: Routes = [
     data: { roles: ['ADMIN'] }, 
     children: INVENTARIO_ITEM_ROUTES
   },
+
+  {
+  path: 'alquileres',
+  canActivate: [AuthGuard, RoleGuard],
+  data: { roles: ['ADMIN', 'EMPLEADO'] },   
+  children: ALQUILER_ROUTES
+},
 
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/home' },
