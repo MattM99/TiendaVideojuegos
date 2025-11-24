@@ -32,8 +32,8 @@ solución centralizada y eficiente.
 
 ### Backend
 
--   Java\
--   Spring Boot (API REST)\
+-   Java
+-   Spring Boot (API REST)
 -   JSON Server (simulación de backend para esta entrega)
 
 ### Frontend
@@ -61,8 +61,8 @@ solución centralizada y eficiente.
 ## 📁 Estructura del Proyecto
 
 /gamehub\
-├── backend/
-├── frontend/
+├── backend/\
+├── frontend/\
 └── README.md
 
 ## 🚀 Cómo Ejecutarlo
