@@ -1,7 +1,5 @@
-import { VideojuegoModel } from "../videojuego/videojuego.model";
-
 export interface InventarioItemModel {
-  id: string;
+  id?: string;
   videojuegoId: string;
   plataforma: string;
   precioDiario: number;

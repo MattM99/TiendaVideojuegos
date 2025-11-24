@@ -1,6 +1,6 @@
-import { CarritoModel } from "../models/carrito.model";
+import { CarritoItemModel } from "../models/carritoItem.model";
 import { PenalizacionModel } from "../models/penalizacion.model";
-import { PersonaModel } from "../persona/persona.model";
+
 
 export interface AlquilerModel {
     id?: string;
@@ -8,7 +8,7 @@ export interface AlquilerModel {
     videojuegoId: string;
     fechaInicio: string;
     fechaFin: string;
-    detalles: CarritoModel[]; // <--- composición
+    detalles: CarritoItemModel[]; // <--- composición
     montoFijo: number;
     fechaDevolucion?: string; // Opcional, porque será nulo hasta que se devuelva el alquiler
     penalizaciones: PenalizacionModel[]; // <--- composición

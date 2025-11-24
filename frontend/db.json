@@ -136,6 +136,14 @@
       "precioDiario": 500,
       "stockTotal": 4,
       "enLocal": 4
+    },
+    {
+      "id": "231a",
+      "videojuegoId": "1",
+      "plataforma": "PC",
+      "precioDiario": 1,
+      "stockTotal": 1,
+      "enLocal": 1
     }
   ],
   "alquileres": [
@@ -147,6 +155,21 @@
       "fechaFin": "2025-01-05",
       "montoFijo": 600,
       "fechaDevolucion": "2025-01-06",
+      "carritoItems": [
+        {
+          "id": "1",
+          "unidades": 1,
+          "subtotal": 300,
+          "inventarioItemId": "1"
+        }
+      ],
+      "penalizaciones": [
+        {
+          "id": "1",
+          "monto": 300,
+          "motivo": "Demora en devolución"
+        }
+      ]
       "detalles": [],
       "penalizaciones": []
     },
@@ -158,6 +181,14 @@
       "fechaFin": "2025-01-06",
       "montoFijo": 1000,
       "fechaDevolucion": "2025-01-06",
+      "carritoItems": [
+        {
+          "id": 1,
+          "unidades": 1,
+          "subtotal": 500,
+          "inventarioItemId": "2"
+        }
+      ],
       "detalles": [],
       "penalizaciones": []
     },
@@ -184,6 +215,7 @@
   ],
   "pagos": [
     {
+      "id": "2",
       "id": "2",
       "alquilerId": "2",
       "estado": "COMPLETADO",

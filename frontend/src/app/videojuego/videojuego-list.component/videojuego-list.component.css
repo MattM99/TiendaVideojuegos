@@ -107,11 +107,11 @@ li button:hover {
 }
 
 /* Botón eliminar */
-li button:nth-child(2) {
+li button:nth-child(3) {
     border-color: #8c2c2c;
 }
 
-li button:nth-child(2):hover {
+li button:nth-child(3):hover {
     background: #8c2c2c;
     color: white;
 }
