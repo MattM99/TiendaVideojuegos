@@ -1,5 +1,6 @@
-import { CarritoItemModel } from "./carritoItem.model";
-import { PenalizacionModel } from "./penalizacion.model";
+import { CarritoItemModel } from "../models/carritoItem.model";
+import { PenalizacionModel } from "../models/penalizacion.model";
+
 
 export interface AlquilerModel {
     id?: string;
