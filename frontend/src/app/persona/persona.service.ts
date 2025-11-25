@@ -1,11 +1,11 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { PersonaModel } from '../persona/persona.model';
+import { PersonaModel } from './persona.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class Persona {
+export class PersonaService {
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:3000/personas';
 

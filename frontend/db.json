@@ -7,29 +7,6 @@
       "rol": "FOUNDER",
       "alta": true,
       "personaId": "1"
-    },
-    {
-      "id": "ab17",
-      "nombreUsuario": "pedrito",
-      "password": "12345",
-      "rol": "ADMIN",
-      "alta": true,
-      "persona": {
-        "id": 0,
-        "dni": "",
-        "nombre": "",
-        "apellido": "",
-        "email": "",
-        "telefono": ""
-      }
-    },
-    {
-      "id": "0c82",
-      "personaId": "",
-      "nombreUsuario": "empleado2",
-      "password": "empleado",
-      "rol": "EMPLEADO",
-      "alta": true
     }
   ],
   "personas": [

@@ -1,7 +1,7 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
-import { Persona } from '../persona';
+import { PersonaService } from '../persona.service';
 
 @Component({
   selector: 'app-personas-list',
@@ -12,7 +12,7 @@ import { Persona } from '../persona';
 })
 export class PersonasList implements OnInit {
 
-  private personaService = inject(Persona);
+  private personaService = inject(PersonaService);
   private router = inject(Router);
 
   personas = computed(() => this.personaService.personas());

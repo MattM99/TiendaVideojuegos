@@ -29,4 +29,8 @@ export class CuentaService {
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  buscarPorUsuario(username: string) {
+    return this.http.get<CuentaModel[]>(`${this.apiUrl}?nombreUsuario=${username}`);
+  }
 }

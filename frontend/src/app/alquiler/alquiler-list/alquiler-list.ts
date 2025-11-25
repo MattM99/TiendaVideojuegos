@@ -1,9 +1,8 @@
 import { Component, OnInit, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { Alquiler } from '../alquiler';
-import { AlquilerModel } from '../alquiler.model';
-import { Persona } from '../../persona/persona';
+import { AlquilerService } from '../alquiler.service';
+import { PersonaService } from '../../persona/persona.service';
 
 @Component({
   selector: 'app-alquiler-list',
@@ -14,9 +13,9 @@ import { Persona } from '../../persona/persona';
 })
 export class AlquilerList implements OnInit {
 
-  private alquilerService = inject(Alquiler);
+  private alquilerService = inject(AlquilerService);
   private router = inject(Router);
-  private personaService = inject(Persona);
+  private personaService = inject(PersonaService);
 
   alquileres = computed(() => this.alquilerService.alquileres());
   cargando = computed(() => this.alquilerService.cargando());

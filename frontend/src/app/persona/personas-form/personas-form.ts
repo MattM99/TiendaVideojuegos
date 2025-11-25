@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Persona } from '../persona';
+import { PersonaService } from '../persona.service';
 import { PersonaModel } from '../persona.model';
 
 @Component({
@@ -18,7 +18,7 @@ export class PersonasForm implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private personaService = inject(Persona);
+  private personaService = inject(PersonaService);
 
   titulo = 'Nueva persona';
   personaId?: string;
@@ -32,26 +32,32 @@ export class PersonasForm implements OnInit {
   });
 
   ngOnInit(): void {
-    console.log("param bruto:", this.route.snapshot.paramMap.get('id'));
-
     this.route.queryParams.subscribe(params => {
       this.crearCuenta = params['crearCuenta'] === 'true';
     });
 
     const idParam = this.route.snapshot.paramMap.get('id');
 
+    // Si la ruta es /personas/nuevo → MODO CREAR
+    if (idParam === 'nuevo') {
+      this.titulo = 'Nueva persona';
+      this.personaId = undefined;
+      return;
+    }
+
+    // Si existe id → MODO EDITAR
     if (idParam) {
       this.titulo = 'Editar persona';
       this.personaId = idParam;
 
-      this.personaService.obtenerPersona(this.personaId).subscribe({
-        next: (persona: PersonaModel) => {
-          this.form.patchValue(persona);
-        },
+      this.personaService.obtenerPersona(idParam).subscribe({
+        next: persona => this.form.patchValue(persona),
         error: err => console.error('Error obteniendo persona', err)
       });
     }
+    
   }
+
 
   onSubmit(): void {
     if (this.form.invalid) {
@@ -69,7 +75,7 @@ export class PersonasForm implements OnInit {
 
       this.personaService.actualizarPersona(this.personaId, personaActualizada)
         .subscribe({
-          next: () => this.redirigirDespues(),
+          next: (personaCreada) => this.redirigirDespues(personaCreada.id),
           error: err => console.error('Error actualizando persona', err)
         });
 
@@ -81,13 +87,16 @@ export class PersonasForm implements OnInit {
     }
   }
 
-  private redirigirDespues() {
+  private redirigirDespues(idPersona?: string) {
     if (this.crearCuenta) {
-      this.router.navigate(['/cuentas/nuevo']);
+      this.router.navigate(['/cuentas/nuevo'], {
+        queryParams: { personaId: idPersona }
+      });
     } else {
       this.router.navigate(['/personas']);
     }
   }
+
 
   cancelar(): void {
     this.router.navigate(['/personas']);

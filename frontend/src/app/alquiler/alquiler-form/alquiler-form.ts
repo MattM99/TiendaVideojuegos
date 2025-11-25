@@ -2,9 +2,9 @@ import { Component, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Alquiler } from '../alquiler';
+import { AlquilerService } from '../alquiler.service';
 import { AlquilerModel } from '../alquiler.model';
-import { Persona } from '../../persona/persona';
+import { PersonaService } from '../../persona/persona.service';
 
 @Component({
   selector: 'app-alquiler-form',
@@ -18,8 +18,8 @@ export class AlquilerForm implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private alquilerService = inject(Alquiler);
-  private personaService = inject(Persona);
+  private alquilerService = inject(AlquilerService);
+  private personaService = inject(PersonaService);
 
   personas = computed(() => this.personaService.personas());
 

@@ -47,6 +47,7 @@ usuario = computed(() => this.auth.currentUser());
   }
 
   crearEmpleado() {
-    this.router.navigate(['/personas/nueva'], { queryParams: { crearCuenta: true } });
+    this.router.navigate(['/cuentas/nuevo']);
   }
+
 }

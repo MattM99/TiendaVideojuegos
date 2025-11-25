@@ -2,7 +2,7 @@
 
 <div class="top-actions">
   <button class="back-btn" routerLink="/home">Volver</button>
-  <button class="create-button" routerLink="/personas/nueva">Nueva persona</button>
+  <button class="create-button" routerLink="/personas/nuevo">Nueva persona</button>
 </div>
 
 @if (cargando()) {
@@ -24,18 +24,18 @@
     </thead>
 
     <tbody>
-      @for (p of personas(); track p.id) {
-        <tr>
-          <td>{{ p.dni }}</td>
-          <td>{{ p.apellido }}, {{ p.nombre }}</td>
-          <td>{{ p.email }}</td>
-          <td>{{ p.telefono }}</td>
-          <td>
-            <button [routerLink]="['/personas', p.id]">Editar</button>
-            <button (click)="eliminar(p.id)">Eliminar</button>
-          </td>
-        </tr>
-      }
+    @for (p of personas(); track p.id) {
+      <tr>
+        <td>{{ p.dni }}</td>
+        <td>{{ p.apellido }}, {{ p.nombre }}</td>
+        <td>{{ p.email }}</td>
+        <td>{{ p.telefono }}</td>
+        <td>
+          <button [routerLink]="['/personas', p.id!]">Editar</button>
+          <button (click)="eliminar(p.id!)">Eliminar</button>
+        </td>
+      </tr>
+    }
     </tbody>
   </table>
 }
