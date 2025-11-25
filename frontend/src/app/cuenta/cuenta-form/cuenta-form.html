@@ -3,21 +3,23 @@
 <div class="form-container">
 
   <!-- ================= PERSONA ASOCIADA ================= -->
-  <h3>Persona asociada</h3>
+   @if (!isEdit) {
+    <h3>Persona asociada</h3>
 
-  <label>Seleccione una persona existente</label>
-  <select [ngModel]="cuenta().personaId" (ngModelChange)="updatePersonaId($event)">
-    <option [ngValue]="undefined">-- Seleccione una persona --</option>
-    @for (p of personas(); track p.id) {
-      <option [ngValue]="p.id">
-        {{ p.apellido }}, {{ p.nombre }} ({{ p.dni }})
-      </option>
+    <label>Seleccione una persona existente</label>
+    <select [ngModel]="cuenta().personaId" (ngModelChange)="updatePersonaId($event)">
+      <option [ngValue]="undefined">-- Seleccione una persona --</option>
+      @for (p of personas(); track p.id) {
+        <option [ngValue]="p.id">
+          {{ p.apellido }}, {{ p.nombre }} ({{ p.dni }})
+        </option>
+      }
+    </select>
+
+    <button type="button" (click)="crearNuevaPersona()">
+      Crear persona nueva
+    </button>
     }
-  </select>
-
-  <button type="button" (click)="crearNuevaPersona()">
-    Crear persona nueva
-  </button>
 
 
   <!-- ================= DATOS DE LA CUENTA ================= -->
