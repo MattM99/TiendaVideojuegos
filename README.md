@@ -50,7 +50,7 @@ solución centralizada y eficiente.
 -   IntelliJ IDEA / VS Code
 
 
-## 🎯 Objetivo del Sistema
+## Objetivo del Sistema
 
 -   Automatización del registro de alquileres.
 -   Reducción de errores humanos.
@@ -58,14 +58,14 @@ solución centralizada y eficiente.
 -   Gestión clara de permisos y roles.
 -   Base sólida para ampliaciones futuras.
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 /gamehub\
 ├── backend/\
 ├── frontend/\
 └── README.md
 
-## 🚀 Cómo Ejecutarlo
+## Cómo Ejecutarlo
 
 ### 1. Clonar el repositorio
 
@@ -81,7 +81,7 @@ json-server --watch db.json --port 3000
 npm install\
 ng serve -o
 
-## 👥 Autores
+## Autores
 
 -   Matías Mendoza
 -   Kevin Pedro Falcón
