@@ -8,7 +8,7 @@ import { CuentaModel } from './cuenta.model';
 })
 export class CuentaService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/cuentas';
+  private apiUrl = 'http://localhost:8080/cuentas';
 
   getAll(): Observable<CuentaModel[]> {
     return this.http.get<CuentaModel[]>(this.apiUrl);
@@ -16,6 +16,12 @@ export class CuentaService {
 
   getById(id: string): Observable<CuentaModel> {
     return this.http.get<CuentaModel>(`${this.apiUrl}/${id}`);
+  }
+
+  getByNickname(nickname: string): Observable<CuentaModel> {
+    return this.http.get<CuentaModel>(
+          `http://localhost:8080/api/cuenta/${nickname}`
+    );
   }
 
   create(c: Omit<CuentaModel, 'id'>): Observable<CuentaModel> {

@@ -7,7 +7,7 @@ import { PersonaModel } from '../persona/persona.model';
 })
 export class Persona {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:3000/personas';
+  private baseUrl = 'http://localhost:8080/personas';
 
   personas = signal<PersonaModel[]>([]);
   cargando = signal(false);

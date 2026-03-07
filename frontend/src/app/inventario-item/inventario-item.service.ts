@@ -10,7 +10,7 @@ import { VideojuegoService } from '../videojuego/videojuego.service';
 })
 export class InventarioItemService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:3000/inventarioItems';
+  private baseUrl = 'http://localhost:8080/inventarioItems';
   private videojuegoService = inject(VideojuegoService);
 
   getAll(): Observable<InventarioItemModel[]> {
