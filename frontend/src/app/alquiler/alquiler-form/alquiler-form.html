@@ -13,10 +13,11 @@
     </select>
 
     @if (form.get('personaId')?.invalid && form.get('personaId')?.touched) {
-    <p class="error">* Debe seleccionar un cliente</p>
+      <p class="error">* Debe seleccionar un cliente</p>
     }
   </div>
 
+  <!-- Inventario / Juego -->
   <!-- Inventario / Juego -->
   <div>
     <label>Juego en inventario</label>
@@ -36,6 +37,7 @@
   </div>
 
   <!-- Fecha inicio -->
+  <!-- Fecha inicio -->
   <div>
     <label>Fecha inicio</label>
     <input type="date" formControlName="fechaInicio" />
@@ -44,6 +46,7 @@
     }
   </div>
 
+  <!-- Fecha fin -->
   <!-- Fecha fin -->
   <div>
     <label>Fecha fin</label>
@@ -54,20 +57,23 @@
   </div>
 
   <!-- Monto fijo -->
+  <!-- Monto fijo -->
   <div>
     <label>Monto fijo</label>
     <input type="number" formControlName="montoFijo" />
     @if (form.get('montoFijo')?.invalid && form.get('montoFijo')?.touched) {
-    <p class="error">* Monto inválido</p>
+      <p class="error">* Monto inválido</p>
     }
   </div>
 
+  <!-- Fecha devolución opcional -->
   <!-- Fecha devolución opcional -->
   <div>
     <label>Fecha devolución (opcional)</label>
     <input type="date" formControlName="fechaDevolucion" />
   </div>
 
+  <!-- Botones -->
   <!-- Botones -->
   <div class="buttons">
     <button type="submit" [disabled]="form.invalid">Guardar</button>
