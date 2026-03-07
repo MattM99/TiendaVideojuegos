@@ -9,6 +9,8 @@ import { VideojuegoService } from '../../videojuego/videojuego.service';
 import { VideojuegoModel } from '../../videojuego/videojuego.model';
 import { InventarioItemService } from '../../inventario-item/inventario-item.service';
 import { InventarioItemModel } from '../../inventario-item/inventario-item.model';
+import { InventarioItemService } from '../../inventario-item/inventario-item.service';
+import { InventarioItemModel } from '../../inventario-item/inventario-item.model';
 import { fechaValida, noFechaPasada } from '../../shared/validators/date.validator/date.validator';
 
 @Component({
@@ -24,6 +26,8 @@ export class AlquilerForm implements OnInit {
   private router = inject(Router);
   private alquilerService = inject(Alquiler);
   private personaService = inject(Persona);
+  private videojuegoService = inject(VideojuegoService);
+  private inventarioService = inject(InventarioItemService);
   private videojuegoService = inject(VideojuegoService);
   private inventarioService = inject(InventarioItemService);
 
@@ -48,6 +52,10 @@ export class AlquilerForm implements OnInit {
     inventarioId: ['', [Validators.required]],
     fechaInicio: ['', [Validators.required, noFechaPasada]],
     fechaFin: ['', [Validators.required, fechaValida]],
+    personaId: ['', [Validators.required]],
+    inventarioId: ['', [Validators.required]],
+    fechaInicio: ['', [Validators.required, noFechaPasada]],
+    fechaFin: ['', [Validators.required, fechaValida]],
     montoFijo: [0, [Validators.required, Validators.min(0)]],
     fechaDevolucion: [''],
   });
@@ -55,6 +63,7 @@ export class AlquilerForm implements OnInit {
   ngOnInit(): void {
     this.personaService.cargarPersonas();
 
+    // Cargar videojuegos
     // Cargar videojuegos
     this.videojuegoService.getAll().subscribe({
       next: (juegos) => this.videojuegos.set(juegos),
@@ -77,6 +86,7 @@ export class AlquilerForm implements OnInit {
         next: (alquiler) => {
           this.form.patchValue({
             personaId: alquiler.personaId,
+            inventarioId: alquiler.inventarioId,
             inventarioId: alquiler.inventarioId,
             fechaInicio: alquiler.fechaInicio,
             fechaFin: alquiler.fechaFin,
@@ -102,6 +112,8 @@ export class AlquilerForm implements OnInit {
       personaId: value.personaId!,
       inventarioId: value.inventarioId!,
       videojuegoId: item!.videojuegoId,
+      inventarioId: value.inventarioId!,
+      videojuegoId: item!.videojuegoId,
       fechaInicio: value.fechaInicio!,
       fechaFin: value.fechaFin!,
       montoFijo: value.montoFijo!,
@@ -118,6 +130,7 @@ export class AlquilerForm implements OnInit {
         error: (err) => console.error(err),
       });
     } else {
+      // Crear nuevo alquiler
       // Crear nuevo alquiler
       this.alquilerService.crearAlquiler(base).subscribe({
         next: () => {

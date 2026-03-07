@@ -8,6 +8,7 @@ import { VideojuegoService } from '../videojuego/videojuego.service';
 @Injectable({
   providedIn: 'root',
 })
+})
 export class InventarioItemService {
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:8080/inventarioItems';
@@ -25,9 +26,10 @@ export class InventarioItemService {
     return this.videojuegoService.getById(videojuegoId).pipe(map((v) => v.titulo));
   }
 
-  create(item: InventarioItemModel): Observable<InventarioItemModel> {
+create(item: InventarioItemModel): Observable<InventarioItemModel> {
     return this.http.post<InventarioItemModel>(this.baseUrl, item);
   }
+
 
   update(id: string, item: InventarioItemModel): Observable<InventarioItemModel> {
     return this.http.put<InventarioItemModel>(`${this.baseUrl}/${id}`, item);

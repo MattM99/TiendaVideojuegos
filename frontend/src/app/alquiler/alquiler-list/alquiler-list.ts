@@ -46,7 +46,7 @@ export class AlquilerList implements OnInit {
   eliminar(alquilerId: string | undefined, inventarioId: string | undefined) {
     if (!alquilerId) return;
 
-    if (!confirm('¿Seguro que querés eliminar este alquiler?')) return;
+  if (!confirm('¿Seguro que querés eliminar este alquiler?')) return;
 
     this.alquilerService.eliminarAlquiler(alquilerId).subscribe({
       next: () => {
