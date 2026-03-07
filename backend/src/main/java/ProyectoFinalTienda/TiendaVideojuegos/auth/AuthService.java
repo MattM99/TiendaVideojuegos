@@ -9,6 +9,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,7 +26,14 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()));
+        } catch (BadCredentialsException e){
+            throw new RuntimeException("Usuario o contraseña incorrectos, so sad");
+        }
         UserDetails user = CuentaRepository.findByNickname(request.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
         String token = jwtService.getToken(user);

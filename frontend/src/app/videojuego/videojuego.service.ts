@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class VideojuegoService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:3000/videojuegos';
+  private apiUrl = 'http://localhost:8080/videojuegos';
 
   getAll(): Observable<VideojuegoModel[]> {
     return this.http.get<VideojuegoModel[]>(this.apiUrl);

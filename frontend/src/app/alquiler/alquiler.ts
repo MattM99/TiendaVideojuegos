@@ -8,7 +8,7 @@ import { Persona } from '../persona/persona';
 })
 export class Alquiler {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:3000/alquileres';
+  private baseUrl = 'http://localhost:8080/alquileres';
 
   alquileres = signal<AlquilerModel[]>([]);
   cargando = signal(false);

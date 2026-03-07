@@ -13,7 +13,7 @@
       @if (usuario()) {
       <li><a href="#" (click)="logout($event)">Cerrar Sesión</a></li>
       } @else {
-      <li><a routerLink="/login">Iniciar Sesión</a></li>
+      <li><a routerLink="api/auth/login">Iniciar Sesión</a></li>
       }
     </ul>
   </nav>
