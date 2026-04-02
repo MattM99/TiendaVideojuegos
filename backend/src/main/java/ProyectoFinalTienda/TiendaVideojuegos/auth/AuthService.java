@@ -42,7 +42,6 @@ public class AuthService {
                 .build();
     }
 
-
     public AuthResponse register(RegisterRequest request) {
         PersonaEntity persona = PersonaEntity.builder()
                 .nombre(request.getNombre())

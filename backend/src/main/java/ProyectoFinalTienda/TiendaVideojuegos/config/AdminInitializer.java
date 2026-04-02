@@ -13,20 +13,20 @@ public class AdminInitializer {
     @Bean
     public CommandLineRunner initAdmin(AuthService authService, CuentaRepository cuentaRepository) {
         return args -> {
-            if (cuentaRepository.findByNickname("admin").isEmpty()) {
-                RegisterRequest adminRequest = RegisterRequest.builder()
-                        .nickname("admin")
+            if (cuentaRepository.findByNickname("FOUNDER").isEmpty()) {
+                RegisterRequest founderRequest = RegisterRequest.builder()
+                        .nickname("FOUNDER")
                         .password("admin123")
-                        .nombre("Admin")
-                        .apellido("Root")
+                        .nombre("FOUNDER")
+                        .apellido("FOUNDER")
                         .dni("0000000")
                         .email("admin@admin.com")
                         .telefono("000000000")
-                        .rol("ADMINISTRADOR")
+                        .rol("FOUNDER")
                         .build();
 
-                authService.register(adminRequest);
-                System.out.println(">>> Usuario admin creado. Nickname: " + adminRequest.getNickname() + ", Rol: " + adminRequest.getRol());
+                authService.register(founderRequest);
+                System.out.println(">>> Usuario founder creado. Nickname: " + founderRequest.getNickname() + ", Rol: " + founderRequest.getRol());
             }
         };
     }
