@@ -22,7 +22,7 @@ import java.util.List;
 @EnableMethodSecurity
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class    SecurityConfig {
+public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authProvider;
 
