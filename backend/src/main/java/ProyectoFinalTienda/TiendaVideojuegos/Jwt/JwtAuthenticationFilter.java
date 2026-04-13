@@ -1,11 +1,13 @@
 package ProyectoFinalTienda.TiendaVideojuegos.Jwt;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.http.HttpHeaders;
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -38,9 +41,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { //OncePerReq
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username); // Carga los detalles del usuario
-            if (jwtService.isTokenValid(token, userDetails)) { // Verifica si el token es válido
+            if (jwtService.isTokenValid(token, userDetailsService.loadUserByUsername(username))) {
+                Claims claims = jwtService.getAllClaims(token);
+
+                List<String> roles = claims.get("roles", List.class);
+
+                List<SimpleGrantedAuthority> authorities = roles.stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
+
+                // Verifica si el token es válido
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()); // Crea un objeto de autenticación
+                        username, null, authorities);
+
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); // Establece los detalles de autenticación
                 SecurityContextHolder.getContext().setAuthentication(authToken); // Establece la autenticación en el contexto de seguridad
             }

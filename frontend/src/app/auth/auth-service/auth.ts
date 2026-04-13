@@ -6,7 +6,6 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AuthService {
-
   private currentUserSignal = signal<CuentaModel | null>(null);
 
   constructor(private http: HttpClient) {
@@ -18,10 +17,11 @@ export class AuthService {
 
   currentUser = this.currentUserSignal.asReadonly();
 
-  login(nombreUsuario: string, contraseña: string) {
-    return this.http.get<CuentaModel[]>(
-      `http://localhost:3000/cuentas?nombreUsuario=${nombreUsuario}&contraseña=${contraseña}`
-    );
+  login(user: string, pass: string) {
+    return this.http.post('http://localhost:8080/api/auth/login', {
+      username: user,
+      password: pass
+    })
   }
 
   setUser(user: CuentaModel) {
@@ -34,24 +34,24 @@ export class AuthService {
     localStorage.removeItem('loggedUser');
   }
 
-  getCurrentUser() {
+  /*getCurrentUser() {
     return this.currentUserSignal();
+  }*/
+
+  getCurrentUser(nickname: string) {
+    return this.http.get<CuentaModel>(
+      `http://localhost:8080/api/cuenta/${nickname}`
+    );
   }
 
-   isLoggedIn(): boolean {
+  isLoggedIn(): boolean {
     return this.currentUserSignal() !== null;
   }
 
- 
   hasRole(roles: string[]): boolean {
     const user = this.currentUserSignal();
     if (!user) return false;
 
-    if (user.rol === 'FOUNDER') {
-    return true;
-  }
-
     return roles.includes(user.rol);
-    
   }
 }

@@ -15,7 +15,7 @@ public class PersonaCreateOrReplaceRequest {
 
     @NotBlank(message = "El nombre no puede estar vacío")
     @Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
-    @Pattern(regexp = "^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$", message = "El nombre solo puede contener letras y espacios")
+    @Pattern(regexp = "^[\\p{L} ]+$", message = "Solo letras y espacios")
     private String nombre;
 
     @NotBlank(message = "El apellido no puede estar vacío")
@@ -32,5 +32,6 @@ public class PersonaCreateOrReplaceRequest {
     private String email;
 
     @NotBlank(message = "El teléfono no puede estar vacío")
+    @Pattern(regexp = "^\\d{7,15}$", message = "El teléfono debe contener solo números")
     private String telefono;
 }

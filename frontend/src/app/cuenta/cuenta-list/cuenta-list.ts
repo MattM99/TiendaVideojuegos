@@ -11,26 +11,22 @@ import { CuentaService } from '../cuenta.service';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './cuenta-list.html',
-  styleUrls: ['./cuenta-list.css']
+  styleUrls: ['./cuenta-list.css'],
 })
 export class CuentaListComponent implements OnInit {
-usuario = computed(() => this.auth.currentUser());
+  usuario = computed(() => this.auth.currentUser());
 
   private service = inject(CuentaService);
   cuentas = signal<CuentaModel[]>([]);
 
-  constructor(
-    private http: HttpClient,
-    private auth: AuthService,
-    private router: Router
-  ) {}
+  constructor(private http: HttpClient, private auth: AuthService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadCuentas();
   }
 
   loadCuentas() {
-    this.service.getAll().subscribe(data => this.cuentas.set(data));
+    this.service.getAll().subscribe((data) => this.cuentas.set(data));
   }
 
   deleteCuenta(cuenta: CuentaModel) {
@@ -38,7 +34,7 @@ usuario = computed(() => this.auth.currentUser());
 
     this.http.delete(`http://localhost:3000/cuentas/${cuenta.id}`).subscribe({
       next: () => this.loadCuentas(),
-      error: err => console.error(err)
+      error: (err) => console.error(err),
     });
   }
 

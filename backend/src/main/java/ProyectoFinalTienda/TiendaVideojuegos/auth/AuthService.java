@@ -7,8 +7,10 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Estado;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,7 +27,14 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse login(LoginRequest request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        try{
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()));
+        } catch (BadCredentialsException e){
+            throw new RuntimeException("Usuario o contraseña incorrectos, so sad");
+        }
         UserDetails user = CuentaRepository.findByNickname(request.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
         String token = jwtService.getToken(user);
@@ -33,31 +42,34 @@ public class AuthService {
                 .token(token)
                 .build();
     }
-
-
+@Transactional
     public AuthResponse register(RegisterRequest request) {
-        PersonaEntity persona = PersonaEntity.builder()
-                .nombre(request.getNombre())
-                .apellido(request.getApellido())
-                .dni(request.getDni())
-                .telefono(request.getTelefono())
-                .email(request.getEmail())
-                .build();
+        try{
+            PersonaEntity persona = PersonaEntity.builder()
+                    .nombre(request.getNombre())
+                    .apellido(request.getApellido())
+                    .dni(request.getDni())
+                    .telefono(request.getTelefono())
+                    .email(request.getEmail())
+                    .build();
 
-        PersonaRepository.save(persona);
+            CuentaEntity cuenta = CuentaEntity.builder()
+                    .nickname(request.getNickname())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .rol(Roles.valueOf(request.getRol().toUpperCase()))
+                    .estado(Estado.ACTIVO)
+                    .persona(persona)
+                    .build();
 
-        CuentaEntity cuenta = CuentaEntity.builder()
-                .nickname(request.getNickname())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .rol(Roles.valueOf(request.getRol()))
-                .estado(Estado.ACTIVO)
-                .persona(persona)
-                .build();
+             PersonaRepository.save(persona);
+                CuentaRepository.save(cuenta);
 
-        CuentaRepository.save(cuenta);
+        }catch (IllegalArgumentException e){
+            throw new RuntimeException("Fijate que onda");
+
+        }
 
         return AuthResponse.builder()
-                //.token(jwtService.getToken(cuenta))
                 .token("Cuenta registrada exitosamente. Por favor, inicia sesión para obtener tu token.")
                 .build();
     }

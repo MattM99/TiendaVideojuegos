@@ -11,14 +11,13 @@ import { AuthService } from '../../auth/auth-service/auth';
   styleUrl: './header.css',
 })
 export class Header {
-usuario = computed(() => this.auth.currentUser());
+  usuario = computed(() => this.auth.currentUser());
 
   constructor(private auth: AuthService, private router: Router) {}
 
   logout(event: Event) {
     event.preventDefault();
     this.auth.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate(['api/auth/login']);
   }
-
 }

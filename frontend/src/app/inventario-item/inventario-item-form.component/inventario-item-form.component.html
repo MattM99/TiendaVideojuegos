@@ -1,40 +1,30 @@
 <h2>{{ isEdit ? 'Editar Item de Inventario' : 'Nuevo Item de Inventario' }}</h2>
 
 <div class="form">
-
   <!-- Seleccionar videojuego -->
   <label>Videojuego</label>
   <select [ngModel]="item().videojuegoId" (ngModelChange)="updateVideojuego($event)">
     <option value="">-- Seleccionar --</option>
 
     @for (vg of videojuegos(); track vg.id) {
-      <option [value]="vg.id">{{ vg.titulo }}</option>
+    <option [value]="vg.id">{{ vg.titulo }}</option>
     }
   </select>
 
   <label>Plataforma</label>
-  <input type="text"
-         [ngModel]="item().plataforma"
-         (ngModelChange)="updatePlataforma($event)" />
+  <input type="text" [ngModel]="item().plataforma" (ngModelChange)="updatePlataforma($event)" />
 
   <label>Precio Diario</label>
-  <input type="number"
-         [ngModel]="item().precioDiario"
-         (ngModelChange)="updatePrecio($event)" />
+  <input type="number" [ngModel]="item().precioDiario" (ngModelChange)="updatePrecio($event)" />
 
   <label>Stock Total</label>
-  <input type="number"
-         [ngModel]="item().stockTotal"
-         (ngModelChange)="updateStockTotal($event)" />
+  <input type="number" [ngModel]="item().stockTotal" (ngModelChange)="updateStockTotal($event)" />
 
   <label>En Local</label>
-  <input type="number"
-         [ngModel]="item().enLocal"
-         (ngModelChange)="updateEnLocal($event)" />
+  <input type="number" [ngModel]="item().enLocal" (ngModelChange)="updateEnLocal($event)" />
 
   <div class="actions">
     <button [disabled]="!canSave()" (click)="guardar()">Guardar</button>
     <button class="cancel" (click)="cancelar()">Cancelar</button>
   </div>
 </div>
-

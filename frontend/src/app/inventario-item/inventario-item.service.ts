@@ -8,9 +8,10 @@ import { VideojuegoService } from '../videojuego/videojuego.service';
 @Injectable({
   providedIn: 'root',
 })
+})
 export class InventarioItemService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:3000/inventarioItems';
+  private baseUrl = 'http://localhost:8080/inventarioItems';
   private videojuegoService = inject(VideojuegoService);
 
   getAll(): Observable<InventarioItemModel[]> {
@@ -21,12 +22,9 @@ export class InventarioItemService {
     return this.http.get<InventarioItemModel>(`${this.baseUrl}/${id}`);
   }
 
-  // Esto estaba antes en InventarioItemService
-getTituloJuego(videojuegoId: string): Observable<string> {
-  return this.videojuegoService.getById(videojuegoId).pipe(
-    map(v => v.titulo)
-  );
-}
+  getTituloJuego(videojuegoId: string): Observable<string> {
+    return this.videojuegoService.getById(videojuegoId).pipe(map((v) => v.titulo));
+  }
 
 create(item: InventarioItemModel): Observable<InventarioItemModel> {
     return this.http.post<InventarioItemModel>(this.baseUrl, item);
@@ -41,29 +39,21 @@ create(item: InventarioItemModel): Observable<InventarioItemModel> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  // Descuenta 1 del stock
   descontarStock(id: string): Observable<InventarioItemModel> {
     return this.getById(id).pipe(
-      switchMap(item =>
-        this.http.patch<InventarioItemModel>(
-          `${this.baseUrl}/${id}`,
-          { enLocal: item.enLocal - 1 }
-        )
+      switchMap((item) =>
+        this.http.patch<InventarioItemModel>(`${this.baseUrl}/${id}`, { enLocal: item.enLocal - 1 })
       ),
-      catchError(err => throwError(() => new Error('No se pudo descontar el stock')))
+      catchError((err) => throwError(() => new Error('No se pudo descontar el stock')))
     );
   }
 
-  // Incrementa 1 del stock
   incrementarStock(id: string): Observable<InventarioItemModel> {
     return this.getById(id).pipe(
-      switchMap(item =>
-        this.http.patch<InventarioItemModel>(
-          `${this.baseUrl}/${id}`,
-          { enLocal: item.enLocal + 1 }
-        )
+      switchMap((item) =>
+        this.http.patch<InventarioItemModel>(`${this.baseUrl}/${id}`, { enLocal: item.enLocal + 1 })
       ),
-      catchError(err => throwError(() => new Error('No se pudo incrementar el stock')))
+      catchError((err) => throwError(() => new Error('No se pudo incrementar el stock')))
     );
   }
 }

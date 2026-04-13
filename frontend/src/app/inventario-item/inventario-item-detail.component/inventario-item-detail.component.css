@@ -1,80 +1,80 @@
 /* ===== Título ===== */
 h2 {
-    color: #e0e6ed;
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 2rem;
-    margin: 20px 0;
-    text-align: center;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  color: #e0e6ed;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 2rem;
+  margin: 20px 0;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
 }
 
 /* ===== Tarjeta del detalle ===== */
 .detail-card {
-    background: rgba(28, 37, 48, 0.65);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 24px 28px;
-    border-radius: 10px;
-    color: #d9e1e8;
-    width: 90%;
-    max-width: 600px;
-    margin: 0 auto;
-    margin-top: 20px;
+  background: rgba(28, 37, 48, 0.65);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 24px 28px;
+  border-radius: 10px;
+  color: #d9e1e8;
+  width: 90%;
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: 20px;
 }
 
 /* ===== Título interior ===== */
 .detail-card h3 {
-    color: #f0f4f8;
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    text-align: center;
+  color: #f0f4f8;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 /* ===== Filas ===== */
 .detail-row {
-    margin-bottom: 18px;
+  margin-bottom: 18px;
 }
 
 /* ===== Etiquetas ===== */
 .detail-label {
-    font-weight: bold;
-    color: #f0f4f8;
-    display: block;
-    margin-bottom: 6px;
+  font-weight: bold;
+  color: #f0f4f8;
+  display: block;
+  margin-bottom: 6px;
 }
 
 /* ===== Valores ===== */
 .detail-value {
-    background: #1c2530;
-    padding: 10px 14px;
-    border-radius: 6px;
-    border: 1px solid #2d3945;
-    font-size: 0.95rem;
-    color: #e0e6ed;
-    display: block;
+  background: #1c2530;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #2d3945;
+  font-size: 0.95rem;
+  color: #e0e6ed;
+  display: block;
 }
 
 /* ===== Botones ===== */
 button {
-    background: #1c2530;
-    color: #e0e6ed;
-    border: 1px solid #2d3945;
-    padding: 8px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s ease;
-    font-size: 0.9rem;
+  background: #1c2530;
+  color: #e0e6ed;
+  border: 1px solid #2d3945;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 0.9rem;
 }
 
 button:hover {
-    background: #2d3945;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  background: #2d3945;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
 /* Contenedor de botones */
 .detail-actions {
-    margin-top: 25px;
-    display: flex;
-    justify-content: space-between;
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-between;
 }

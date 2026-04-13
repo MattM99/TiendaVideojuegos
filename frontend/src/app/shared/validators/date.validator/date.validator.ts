@@ -25,7 +25,5 @@ export function rangoFechasValidas(group: AbstractControl): ValidationErrors | n
 
   if (!inicio || !fin) return null;
 
-  return new Date(inicio) <= new Date(fin)
-    ? null
-    : { rangoInvalido: true };
+  return new Date(inicio) <= new Date(fin) ? null : { rangoInvalido: true };
 }
