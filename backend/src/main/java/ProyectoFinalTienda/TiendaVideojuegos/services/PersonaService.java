@@ -5,9 +5,13 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaPatchRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.PersonaMapper;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +24,9 @@ public class PersonaService {
 
     @Autowired
     private PersonaMapper personaMapper;
+
+    @Autowired
+    private CuentaRepository cuentaRepository;
 
 
     public PersonaResponse crearPersona(PersonaCreateOrReplaceRequest dto) {
@@ -69,6 +76,19 @@ public class PersonaService {
         PersonaEntity persona = personaRepository.getPersonaByEmail(email)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
 
+        String usernameActual = SecurityContextHolder.getContext().getAuthentication().getName();
+        CuentaEntity cuentaActual = cuentaRepository.findByNickname(usernameActual)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario autenticado no encontrado"));
+
+
+        if (cuentaActual.getRol().name().equals("EMPLEADO")) {
+            boolean esModificacionPropia = cuentaActual.getPersona().getEmail().equals(email);
+            boolean personaTienesCuenta = persona.getCuenta() != null;
+
+            if (personaTienesCuenta && !esModificacionPropia) {
+                throw new AccessDeniedException("Los empleados solo pueden modificar sus propios datos y datos de clientes, no de otros usuarios");
+            }
+        }
         if (dto.getNombre() != null) persona.setNombre(dto.getNombre());
         if (dto.getApellido() != null) persona.setApellido(dto.getApellido());
         if (dto.getTelefono() != null) persona.setTelefono(dto.getTelefono());
