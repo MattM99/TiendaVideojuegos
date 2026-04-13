@@ -1,5 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -20,7 +21,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @Table(
         name = "persona"
 )
@@ -33,11 +33,16 @@ public class PersonaEntity implements UserDetails {
     )
     private int personaId;
 
+
+
+    @JsonIgnore
     @OneToOne(
             mappedBy = "persona",
             cascade = CascadeType.ALL
     )
     private CuentaEntity cuenta;
+
+
 
     @OneToMany(
             mappedBy = "persona",
@@ -45,11 +50,15 @@ public class PersonaEntity implements UserDetails {
     )
     private List<BlacklistEntity> blacklist = new ArrayList<>();
 
+
+
     @OneToMany(
             mappedBy = "persona",
             cascade = CascadeType.ALL
     )
     private List<AlquilerEntity> alquiler = new ArrayList<>();
+
+
 
     @Column(
             nullable = false
@@ -59,6 +68,8 @@ public class PersonaEntity implements UserDetails {
     @Pattern(regexp = "^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$", message = "El nombre solo puede contener letras y espacios")
     private String nombre;
 
+
+
     @Column(
             nullable = false
     )
@@ -66,6 +77,8 @@ public class PersonaEntity implements UserDetails {
     @Size(min=2, max=50, message = "El apellido debe tener entre 2 y 50 caracteres")
     @Pattern(regexp = "^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$", message = "El apellido solo puede contener letras y espacios")
     private String apellido;
+
+
 
     @Column(
             nullable = false,
@@ -75,6 +88,8 @@ public class PersonaEntity implements UserDetails {
     @Pattern(regexp = "\\d{7,8}", message = "El DNI debe tener entre 7 y 8 dígitos")
     private String dni;
 
+
+
     @Column(
             nullable = false,
             unique = true
@@ -83,11 +98,15 @@ public class PersonaEntity implements UserDetails {
     @Email(message = "El email debe ser válido")
     private String email;
 
+
+
     @Column(
             nullable = false
     )
     @NotBlank(message = "El teléfono no puede estar vacío")
     private String telefono;
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -102,7 +121,7 @@ public class PersonaEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return cuenta.getNickname();
     }
 
     @Override
