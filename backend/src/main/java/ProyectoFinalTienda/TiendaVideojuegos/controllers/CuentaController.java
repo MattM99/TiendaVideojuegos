@@ -63,7 +63,7 @@ public class CuentaController {
     public ResponseEntity<CuentaResponse> cambiarContrasena(
             @PathVariable String nickname,
             @RequestBody @Valid CambiarContrasenaRequest request
-            ) throws UsuarioNoEncontradoException {
+    ) throws UsuarioNoEncontradoException {
 
         CuentaEntity cuentaActualizada = cuentaService.cambiarContrasena(nickname, request.getNuevaContrasena());
         CuentaResponse response = cuentaService.toCuentaResponse(cuentaActualizada);
@@ -92,7 +92,7 @@ public class CuentaController {
     public ResponseEntity<CuentaResponse> cambiarRol(
             @PathVariable String nickname,
             @RequestBody @Valid CambiarRolRequest request
-            ) throws UsuarioNoEncontradoException, RolInvalidoException {
+    ) throws UsuarioNoEncontradoException, RolInvalidoException {
 
         CuentaEntity cuentaActualizada = cuentaService.cambiarRol(nickname, request.getNuevoRol());
         CuentaResponse response = cuentaService.toCuentaResponse(cuentaActualizada);
@@ -103,12 +103,15 @@ public class CuentaController {
     @Operation(summary = "Dar de baja una cuenta", description = "Permite a un administrador desactivar una cuenta existente")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{nickname}/baja")
-    public ResponseEntity<CuentaResponse> darDeBaja(@PathVariable String nickname) throws UsuarioNoEncontradoException {
+    public ResponseEntity<CuentaResponse> darDeBaja(
+            @PathVariable String nickname)
+            throws UsuarioNoEncontradoException {
         CuentaEntity cuentaActualizada = cuentaService.darDeBajaCuenta(nickname);
         CuentaResponse response = cuentaService.toCuentaResponse(cuentaActualizada);
 
         return ResponseEntity.ok(response);
     }
+
     @Operation(summary = "Reactivar una cuenta", description = "Permite a un administrador volver a activar una cuenta previamente dada de baja")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PutMapping("/{nickname}/alta")

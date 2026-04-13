@@ -98,13 +98,23 @@ public class CuentaService {
     }
 
     public CuentaEntity cambiarRol(String nickname, String rol) throws UsuarioNoEncontradoException, RolInvalidoException {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioActivo = auth.getName();
+
+        if(nickname.equalsIgnoreCase(usuarioActivo)){
+            throw new IllegalArgumentException("No es posible modificar el rol propio.");
+        }
+
         if (!esRolValido(rol)) {
             throw new RolInvalidoException("El rol proporcionado no es válido: " + rol);
         }
 
-        if(nickname.equalsIgnoreCase(cuentaRepository.findByNickname("admin").get().getNickname())) {
-            throw new IllegalArgumentException("No se puede cambiar el rol del usuario admin");
-        }
+        cuentaRepository.findByNickname("FOUNDER")
+                        .ifPresent(FOUNDER -> {
+                            if(nickname.equalsIgnoreCase(FOUNDER.getNickname())){
+                                throw new IllegalArgumentException("No se permite modificar el rol del usuario FOUNDER");
+                            }
+                        });
 
 
         CuentaEntity cuenta = buscarPorNickname(nickname);
