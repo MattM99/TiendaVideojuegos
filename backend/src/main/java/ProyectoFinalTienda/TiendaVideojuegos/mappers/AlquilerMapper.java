@@ -35,7 +35,6 @@ public class AlquilerMapper {
                 .fecha_retiro(entity.getFecha_retiro())
                 .fecha_devolucion(entity.getFecha_devolucion())
                 .personaResponse(personaMapper.convertirEntidadADTO(entity.getPersona()))
-                .detalles(detalleAlquilerMapper.toResponseList(entity.getDetalles()))
                 .build();
     }
 
