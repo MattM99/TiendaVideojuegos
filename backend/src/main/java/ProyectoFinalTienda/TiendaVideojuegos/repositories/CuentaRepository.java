@@ -17,3 +17,4 @@ public interface CuentaRepository extends JpaRepository<CuentaEntity, Integer> {
 
     List<CuentaEntity> findByEstado(Estado estado);
 }
+

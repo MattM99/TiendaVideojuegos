@@ -19,7 +19,6 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @Table(
         name = "cuenta"
 )

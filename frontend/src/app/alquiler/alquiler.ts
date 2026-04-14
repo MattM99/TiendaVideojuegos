@@ -1,7 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AlquilerModel } from './alquiler.model';
-import { Persona } from '../persona/persona';
 
 @Injectable({
   providedIn: 'root',
