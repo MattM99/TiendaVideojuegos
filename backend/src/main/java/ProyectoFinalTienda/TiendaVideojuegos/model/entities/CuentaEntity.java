@@ -30,7 +30,7 @@ public class CuentaEntity implements UserDetails {
             name = "cuenta_id",
             nullable = false
     )
-    private int cuenta_id;
+    private int cuentaId;
 
     @OneToOne
     @JoinColumn(name = "persona_id", nullable = false, unique = true)

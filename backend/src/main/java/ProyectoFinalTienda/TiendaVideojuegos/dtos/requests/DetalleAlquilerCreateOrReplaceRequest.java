@@ -11,12 +11,12 @@ import lombok.*;
 public class DetalleAlquilerCreateOrReplaceRequest {
 
     @NotNull(message = "El ID del alquiler es obligatorio")
-    private Integer alquiler_id;
+    private Integer alquilerId;
 
     @NotNull(message = "El ID del inventario es obligatorio")
-    private Integer inventario_id;
+    private Integer inventarioItemId;
 
-//    public DetalleAlquilerEntity toEntity(AlquilerEntity alquiler, InventarioEntity inventario) {
+//    public DetalleAlquilerEntity toEntity(AlquilerEntity alquiler, InventarioItemEntity inventario) {
 //        return DetalleAlquilerEntity.builder()
 //                .alquiler(alquiler)
 //                .inventario(inventario)

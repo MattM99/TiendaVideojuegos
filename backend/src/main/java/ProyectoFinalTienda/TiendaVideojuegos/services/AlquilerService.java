@@ -30,10 +30,10 @@ public class AlquilerService {
     private AlquilerMapper alquilerMapper;
 
     public AlquilerResponse guardar(AlquilerCreateOrReplaceRequest request) {
-        PersonaEntity persona = personaRepository.findById(request.getPersonaID()).orElseThrow();
+        PersonaEntity persona = personaRepository.findById(request.getPersonaId()).orElseThrow();
 
         // Verificar si la persona está en lista negra, si está lanza excepción.
-        bloqueoService.verificarNoEstaEnListaNegra(request.getPersonaID());
+        bloqueoService.verificarNoEstaEnListaNegra(request.getPersonaId());
 
         // Validar fechas
         if (request.getFechaInicio().isAfter(request.getFechaFin())) {

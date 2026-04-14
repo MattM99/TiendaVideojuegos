@@ -19,6 +19,6 @@ public class AlquilerResponse {
 
     private LocalDate fechaFin;
 
-    private DetalleAlquilerResponse detalles;
+    private DetalleAlquilerResponse carrito;
 
 }

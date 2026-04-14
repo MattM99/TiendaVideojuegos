@@ -28,8 +28,8 @@ public class BloqueoCreateOrReplaceRequest {
     public BloqueoEntity toEntity(PersonaEntity persona) {
         return BloqueoEntity.builder()
                 .persona(persona)
-                .fecha_inicio(this.fecha_inicio)
-                .fecha_fin(this.fecha_fin)
+                .fechaInicio(this.fecha_inicio)
+                .fechaFin(this.fecha_fin)
                 .motivo(this.motivo)
                 .build();
     }

@@ -31,11 +31,11 @@ public class AlquilerController {
     public ResponseEntity<AlquilerResponse> crearAlquiler(@Valid @RequestBody AlquilerCreateOrReplaceRequest request) {
         AlquilerResponse response = alquilerService.guardar(request);
         DetalleAlquilerCreateOrReplaceRequest detalleRequest = DetalleAlquilerCreateOrReplaceRequest.builder()
-                .alquiler_id(response.getAlquilerId())
-                .inventario_id(request.getIdJuego())
+                .alquilerId(response.getAlquilerId())
+                .inventarioItemId(request.getIdJuego())
                 .build();
         DetalleAlquilerResponse detalleResponse = detalleAlquilerController.crearDetalle(detalleRequest).getBody();
-        response.setDetalles(detalleResponse);
+        response.setCarrito(detalleResponse);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

@@ -14,7 +14,7 @@ import java.time.Year;
 @Builder
 public class VideojuegoResponse {
 
-    private int videojuegoID;
+    private int videojuegoId;
     private String titulo;
     private String desarrollador;
     private Generos genero;

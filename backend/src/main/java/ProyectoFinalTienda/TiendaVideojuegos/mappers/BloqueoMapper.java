@@ -1,7 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.mappers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BloqueoCreateOrReplaceRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BlacklistUpdateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BloqueoUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BloqueoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BloqueoEntity;
@@ -27,8 +27,8 @@ public class BloqueoMapper {
         public BloqueoEntity toEntity(BloqueoCreateOrReplaceRequest dto) {
             return BloqueoEntity.builder()
                     .persona(personaMapper.toEntity(personaService.buscarPorId(dto.getPersonaID())))
-                    .fecha_inicio(dto.getFecha_inicio())
-                    .fecha_fin(dto.getFecha_fin())
+                    .fechaInicio(dto.getFecha_inicio())
+                    .fechaFin(dto.getFecha_fin())
                     .motivo(dto.getMotivo())
                     .build();
         }
@@ -37,10 +37,10 @@ public class BloqueoMapper {
 
 
             return BloqueoResponse.builder()
-                    .blacklist_id(entity.getBloqueo_id())
+                    .bloqueoId(entity.getBloqueoId())
                     .personaResponse(personaResponse)
-                    .fecha_inicio(entity.getFecha_inicio().format(formatter))
-                    .fecha_fin(fechaFinString(entity.getFecha_fin()))
+                    .fechaInicio(entity.getFechaInicio().format(formatter))
+                    .fechaFin(fechaFinString(entity.getFechaFin()))
                     .motivo(entity.getMotivo())
                     .build();
         }
@@ -61,19 +61,19 @@ public class BloqueoMapper {
                     .collect(Collectors.toList());
         }
 
-        public void actualizarEntity(BloqueoEntity entity, BlacklistUpdateRequest dto) {
+        public void actualizarEntity(BloqueoEntity entity, BloqueoUpdateRequest dto) {
             if (dto.getPersona() != null) entity.setPersona(personaMapper.toEntity(dto.getPersona()));
 
-            if (dto.getFecha_inicio() != null) {
-                LocalDate inicio = LocalDate.parse(dto.getFecha_inicio(), formatter);
+            if (dto.getFechaInicio() != null) {
+                LocalDate inicio = LocalDate.parse(dto.getFechaInicio(), formatter);
                 if (inicio.isBefore(LocalDate.now())) {
-                    entity.setFecha_inicio(inicio);
+                    entity.setFechaInicio(inicio);
                 }
             }
-            if (dto.getFecha_fin() != null) {
-                LocalDate fin = LocalDate.parse(dto.getFecha_fin(), formatter);
+            if (dto.getFechaFin() != null) {
+                LocalDate fin = LocalDate.parse(dto.getFechaFin(), formatter);
                 if (fin.isAfter(LocalDate.now())) {
-                    entity.setFecha_fin(fin);
+                    entity.setFechaFin(fin);
                 }
             }
 

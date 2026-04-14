@@ -27,7 +27,7 @@ public class BloqueoEntity {
     @Column(
             name = "bloqueo_id"
     )
-    private int bloqueo_id;
+    private int bloqueoId;
 
     @ManyToOne
     @JoinColumn(name = "persona_id", nullable = false)
@@ -40,13 +40,13 @@ public class BloqueoEntity {
     )
     @NotNull(message = "La fecha de inicio no puede ser nula")
     @PastOrPresent(message = "La fecha de inicio no puede ser futura")
-    private LocalDate fecha_inicio;
+    private LocalDate fechaInicio;
 
     @Column(
             name = "fecha_fin"
     )
     @FutureOrPresent(message = "La fecha de fin debe ser actual o futura")
-    private LocalDate fecha_fin;
+    private LocalDate fechaFin;
 
     @Column(
             name = "motivo",

@@ -1,6 +1,5 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
 
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
 import lombok.*;
 
 @Getter
@@ -8,15 +7,15 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InventarioUpdateRequest {
+public class InventarioItemUpdateRequest {
 
-    private Double precioUnitarioDiario;
+    private Double precioDiario;
     private Integer stockTotal;
     private Integer stockDisponible;
-    private Integer stockAlquilado;
-    private Integer stockDescartado;
+//    private Integer stockAlquilado;
+//    private Integer stockDescartado;
 
-    /*public void actualizarInventario(InventarioEntity entity) {
+    /*public void actualizarInventario(InventarioItemEntity entity) {
         if (precioUnitarioDiario != null && precioUnitarioDiario > 0) {
             entity.setPrecioUnitarioDiario(precioUnitarioDiario);
         }

@@ -8,15 +8,15 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InventarioResponse {
+public class InventarioItemResponse {
 
     private int inventarioId;
     private VideojuegoResponse videojuego;
     private Plataformas plataforma;
-    private double precioUnitarioDiario;
+    private double precioDiario;
     private int stockTotal;
     private int stockDisponible;
-    private int stockAlquilado;
-    private int stockDescartado;
+//    private int stockAlquilado;
+//    private int stockDescartado;
 
 }

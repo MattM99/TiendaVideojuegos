@@ -30,9 +30,9 @@ public class DetalleAlquilerEntity {
     private AlquilerEntity alquiler;
 
     @ManyToOne
-    @JoinColumn(name = "inventario_id", nullable = false)
+    @JoinColumn(name = "inventario_item_id", nullable = false)
     @NotNull(message = "El inventario no puede ser nulo")
-    private InventarioEntity inventario;
+    private InventarioItemEntity inventarioItem;
 
     @Column(
             name = "subtotal",
@@ -42,9 +42,9 @@ public class DetalleAlquilerEntity {
     private double subtotal;
 
     public void calcularSubtotal() {
-        if (alquiler == null || inventario == null) {
+        if (alquiler == null || inventarioItem == null) {
             throw new IllegalStateException("Faltan datos para calcular el subtotal");
         }
-        this.subtotal = inventario.getPrecioUnitarioDiario() * alquiler.calcularDiasAlquiler();
+        this.subtotal = inventarioItem.getPrecioDiario() * alquiler.calcularDiasAlquiler();
     }
 }

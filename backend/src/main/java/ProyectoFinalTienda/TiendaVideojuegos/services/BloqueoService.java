@@ -1,7 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BloqueoCreateOrReplaceRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BlacklistUpdateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BloqueoUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BloqueoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
@@ -54,7 +54,7 @@ public class BloqueoService {
 
         if (blackList.isPresent()) {
             BloqueoEntity entity = blackList.get();
-            entity.setFecha_fin(LocalDate.now());
+            entity.setFechaFin(LocalDate.now());
 
             PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
             BloqueoEntity updatedEntity = bloqueoRepository.save(entity);
@@ -94,7 +94,7 @@ public class BloqueoService {
         }
     }
 
-    public BloqueoResponse actualizarParcialmente(int id, BlacklistUpdateRequest dto) {
+    public BloqueoResponse actualizarParcialmente(int id, BloqueoUpdateRequest dto) {
         BloqueoEntity entity = bloqueoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No se encontró entrada en lista negra con ID: " + id));
 
