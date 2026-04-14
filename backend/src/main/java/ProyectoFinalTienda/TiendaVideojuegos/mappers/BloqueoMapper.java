@@ -1,10 +1,10 @@
 package ProyectoFinalTienda.TiendaVideojuegos.mappers;
 
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BlackListCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BloqueoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BlacklistUpdateRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BlackListResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BloqueoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BlacklistEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BloqueoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.services.PersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class BlacklistMapper {
+public class BloqueoMapper {
         @Autowired
         private PersonaMapper personaMapper;
         @Autowired
@@ -24,8 +24,8 @@ public class BlacklistMapper {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 
-        public BlacklistEntity toEntity(BlackListCreateOrReplaceRequest dto) {
-            return BlacklistEntity.builder()
+        public BloqueoEntity toEntity(BloqueoCreateOrReplaceRequest dto) {
+            return BloqueoEntity.builder()
                     .persona(personaMapper.toEntity(personaService.buscarPorId(dto.getPersonaID())))
                     .fecha_inicio(dto.getFecha_inicio())
                     .fecha_fin(dto.getFecha_fin())
@@ -33,10 +33,10 @@ public class BlacklistMapper {
                     .build();
         }
 
-        public BlackListResponse toResponse(BlacklistEntity entity, PersonaResponse personaResponse) {
+        public BloqueoResponse toResponse(BloqueoEntity entity, PersonaResponse personaResponse) {
 
 
-            return BlackListResponse.builder()
+            return BloqueoResponse.builder()
                     .blacklist_id(entity.getBlacklist_id())
                     .personaResponse(personaResponse)
                     .fecha_inicio(entity.getFecha_inicio().format(formatter))
@@ -52,7 +52,7 @@ public class BlacklistMapper {
         }
 
 
-        public List<BlackListResponse> toResponseList(List<BlacklistEntity> entities) {
+        public List<BloqueoResponse> toResponseList(List<BloqueoEntity> entities) {
             return entities.stream()
                     .map(entity -> {
                         PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
@@ -61,7 +61,7 @@ public class BlacklistMapper {
                     .collect(Collectors.toList());
         }
 
-        public void actualizarEntity(BlacklistEntity entity, BlacklistUpdateRequest dto) {
+        public void actualizarEntity(BloqueoEntity entity, BlacklistUpdateRequest dto) {
             if (dto.getPersona() != null) entity.setPersona(personaMapper.toEntity(dto.getPersona()));
 
             if (dto.getFecha_inicio() != null) {

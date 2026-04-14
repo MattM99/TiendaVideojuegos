@@ -1,16 +1,16 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BlackListCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BloqueoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BlacklistUpdateRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BlackListResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BloqueoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.PersonaNoEncontradaException;
-import ProyectoFinalTienda.TiendaVideojuegos.mappers.BlacklistMapper;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.BloqueoMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.PersonaMapper;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BlacklistEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BloqueoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.repositories.BlacklistRepository;
+import ProyectoFinalTienda.TiendaVideojuegos.repositories.BloqueoRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,12 +20,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class BlackListService {
+public class BloqueoService {
 
     @Autowired
-    private BlacklistRepository blacklistRepository;
+    private BloqueoRepository bloqueoRepository;
     @Autowired
-    private BlacklistMapper blacklistMapper;
+    private BloqueoMapper bloqueoMapper;
     @Autowired
     private PersonaService personaService;
     @Autowired
@@ -33,8 +33,8 @@ public class BlackListService {
     @Autowired
     private PersonaMapper personaMapper;
 
-    public BlackListResponse crear(BlackListCreateOrReplaceRequest request) {
-        if (blacklistRepository.findVigenteByPersona(request.getPersonaID()).isPresent()) {
+    public BloqueoResponse crear(BloqueoCreateOrReplaceRequest request) {
+        if (bloqueoRepository.findVigenteByPersona(request.getPersonaID()).isPresent()) {
             throw new BusinessException("La persona ya está en la lista negra.");
         }
         // Buscar la persona relacionada al ID
@@ -42,43 +42,43 @@ public class BlackListService {
                         .orElseThrow(() -> new PersonaNoEncontradaException("Persona no encontrada con ID: " + request.getPersonaID()));
 
         // Convertir el DTO a entidad
-        BlacklistEntity entity = request.toEntity(persona);
-        blacklistRepository.save(entity);
+        BloqueoEntity entity = request.toEntity(persona);
+        bloqueoRepository.save(entity);
 
         // Guardar en base de datos
-        return blacklistMapper.toResponse(entity, personaMapper.convertirEntidadADTO(persona));
+        return bloqueoMapper.toResponse(entity, personaMapper.convertirEntidadADTO(persona));
     }
 
-    public BlackListResponse desbanear(int personaId) {
-        Optional<BlacklistEntity> blackList = blacklistRepository.findVigenteByPersona(personaId);
+    public BloqueoResponse desbanear(int personaId) {
+        Optional<BloqueoEntity> blackList = bloqueoRepository.findVigenteByPersona(personaId);
 
         if (blackList.isPresent()) {
-            BlacklistEntity entity = blackList.get();
+            BloqueoEntity entity = blackList.get();
             entity.setFecha_fin(LocalDate.now());
 
             PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
-            BlacklistEntity updatedEntity = blacklistRepository.save(entity);
+            BloqueoEntity updatedEntity = bloqueoRepository.save(entity);
 
-            return blacklistMapper.toResponse(updatedEntity, personaResponse);
+            return bloqueoMapper.toResponse(updatedEntity, personaResponse);
         } else {
             throw new NoSuchElementException("La persona no está en lista negra.");
         }
     }
 
-    public List<BlackListResponse> obtenerHistorico(){
-        List<BlacklistEntity> listaNegra = blacklistRepository.findAll();
+    public List<BloqueoResponse> obtenerHistorico(){
+        List<BloqueoEntity> listaNegra = bloqueoRepository.findAll();
         if (listaNegra.isEmpty()) {
             throw new BusinessException("No se encontró ningún registro en la lista negra.");
         }
-        return blacklistMapper.toResponseList(listaNegra);
+        return bloqueoMapper.toResponseList(listaNegra);
     }
 
-    public List<BlackListResponse> obtenerPersonasEnListaNegraVigente() {
-        List<BlacklistEntity> lista = blacklistRepository.findPersonasEnListaNegraVigente();
+    public List<BloqueoResponse> obtenerPersonasEnListaNegraVigente() {
+        List<BloqueoEntity> lista = bloqueoRepository.findPersonasEnListaNegraVigente();
         if (lista.isEmpty()) {
             throw new BusinessException("No se encontró ningún registro en la lista negra.");
         }
-        return blacklistMapper.toResponseList(lista);
+        return bloqueoMapper.toResponseList(lista);
     }
 
     /**
@@ -86,7 +86,7 @@ public class BlackListService {
      * Lanza BusinessException si está en lista negra.
      */
     public void verificarNoEstaEnListaNegra(int personaId) {
-        Optional<BlacklistEntity> blacklist = blacklistRepository.findVigenteByPersona(personaId);
+        Optional<BloqueoEntity> blacklist = bloqueoRepository.findVigenteByPersona(personaId);
 
         if (blacklist.isPresent()) {
             throw new BusinessException("La persona no puede alquilar porque está en lista negra. Motivo: "
@@ -94,15 +94,15 @@ public class BlackListService {
         }
     }
 
-    public BlackListResponse actualizarParcialmente(int id, BlacklistUpdateRequest dto) {
-        BlacklistEntity entity = blacklistRepository.findById(id)
+    public BloqueoResponse actualizarParcialmente(int id, BlacklistUpdateRequest dto) {
+        BloqueoEntity entity = bloqueoRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No se encontró entrada en lista negra con ID: " + id));
 
-        blacklistMapper.actualizarEntity(entity, dto);
-        blacklistRepository.save(entity);
+        bloqueoMapper.actualizarEntity(entity, dto);
+        bloqueoRepository.save(entity);
 
         PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
-        return blacklistMapper.toResponse(entity, personaResponse);
+        return bloqueoMapper.toResponse(entity, personaResponse);
     }
 
 

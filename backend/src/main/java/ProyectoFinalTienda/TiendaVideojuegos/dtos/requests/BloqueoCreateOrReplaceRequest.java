@@ -1,6 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
 
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BlacklistEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BloqueoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BlackListCreateOrReplaceRequest {
+public class BloqueoCreateOrReplaceRequest {
 
     @NotNull(message = "El ID de la persona es obligatorio")
     private Integer personaID;
@@ -25,8 +25,8 @@ public class BlackListCreateOrReplaceRequest {
     @NotNull(message = "El motivo es obligatorio")
     private String motivo;
 
-    public BlacklistEntity toEntity(PersonaEntity persona) {
-        return BlacklistEntity.builder()
+    public BloqueoEntity toEntity(PersonaEntity persona) {
+        return BloqueoEntity.builder()
                 .persona(persona)
                 .fecha_inicio(this.fecha_inicio)
                 .fecha_fin(this.fecha_fin)

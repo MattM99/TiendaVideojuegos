@@ -20,7 +20,7 @@ import java.time.LocalDate;
         name = "blacklist"
 )
 
-public class BlacklistEntity {
+public class BloqueoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,14 +2,12 @@ package ProyectoFinalTienda.TiendaVideojuegos.dtos.responses;
 
 import lombok.*;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BlackListResponse {
+public class BloqueoResponse {
 
     private int blacklist_id;
 

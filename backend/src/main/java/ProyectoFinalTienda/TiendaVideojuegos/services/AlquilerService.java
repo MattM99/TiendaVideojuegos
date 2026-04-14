@@ -25,7 +25,7 @@ public class AlquilerService {
     @Autowired
     private PersonaRepository personaRepository;
     @Autowired
-    private BlackListService blackListService;
+    private BloqueoService bloqueoService;
     @Autowired
     private AlquilerMapper alquilerMapper;
 
@@ -33,7 +33,7 @@ public class AlquilerService {
         PersonaEntity persona = personaRepository.findById(request.getPersonaID()).orElseThrow();
 
         // Verificar si la persona está en lista negra, si está lanza excepción.
-        blackListService.verificarNoEstaEnListaNegra(request.getPersonaID());
+        bloqueoService.verificarNoEstaEnListaNegra(request.getPersonaID());
 
         // Validar fechas
         if (request.getFecha_retiro().isAfter(request.getFecha_devolucion())) {
