@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class DetalleAlquilerMapper {
 
     @Autowired
-    InventarioMapper inventarioMapper;
+    InventarioItemMapper inventarioItemMapper;
     @Autowired
     VideojuegoMapper videojuegoMapper;
 
@@ -29,7 +29,7 @@ public class DetalleAlquilerMapper {
     }
 
     public DetalleAlquilerResponse toResponse(DetalleAlquilerEntity entity) {
-        InventarioItemResponse inventarioItemResponse = inventarioMapper.toResponse(
+        InventarioItemResponse inventarioItemResponse = inventarioItemMapper.toResponse(
                 entity.getInventarioItem(),
                 videojuegoMapper.toResponse(entity.getInventarioItem().getVideojuego())
         );

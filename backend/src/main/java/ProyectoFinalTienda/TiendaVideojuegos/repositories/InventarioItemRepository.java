@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface InventarioRepository extends JpaRepository<InventarioItemEntity, Integer> {
+public interface InventarioItemRepository extends JpaRepository<InventarioItemEntity, Integer> {
 
     @Query("SELECT i FROM InventarioItemEntity i WHERE i.videojuego.videojuegoId = :id")
     List<InventarioItemEntity> findByVideojuegoId(@Param("id") int id);

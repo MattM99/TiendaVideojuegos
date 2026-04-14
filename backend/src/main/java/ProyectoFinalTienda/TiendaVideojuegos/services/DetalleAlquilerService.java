@@ -9,7 +9,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.entities.DetalleAlquilerEntit
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.DetalleAlquilerRepository;
-import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioRepository;
+import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class DetalleAlquilerService {
     @Autowired
     private AlquilerRepository alquilerRepository;
     @Autowired
-    private InventarioRepository inventarioRepository;
+    private InventarioItemRepository inventarioItemRepository;
     @Autowired
     private DetalleAlquilerMapper detalleAlquilerMapper;
 
@@ -29,7 +29,7 @@ public class DetalleAlquilerService {
     public DetalleAlquilerResponse crearDetalle(DetalleAlquilerCreateOrReplaceRequest request) {
         AlquilerEntity alquiler = alquilerRepository.findById(request.getAlquilerId()).orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler con id: " + request.getAlquilerId() + " no encontrado."));
 
-        InventarioItemEntity inventario = inventarioRepository.findById(request.getInventarioItemId()).orElseThrow(() -> new InventarioNoEncontradoException("Inventario con id: " + request.getInventarioItemId() + " no encontrado."));
+        InventarioItemEntity inventario = inventarioItemRepository.findById(request.getInventarioItemId()).orElseThrow(() -> new InventarioItemNoEncontradoException("Inventario con id: " + request.getInventarioItemId() + " no encontrado."));
 
         // Validar stock disponible
         if (inventario.getStockDisponible() <= 0) {
