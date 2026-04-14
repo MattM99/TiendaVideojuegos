@@ -21,7 +21,7 @@ public class AlquilerService {
     @Autowired
     private AlquilerRepository alquilerRepository;
     @Autowired
-    private CarritoService carritoService;
+    private DetalleAlquilerService detalleAlquilerService;
     @Autowired
     private PersonaRepository personaRepository;
     @Autowired
@@ -36,7 +36,7 @@ public class AlquilerService {
         bloqueoService.verificarNoEstaEnListaNegra(request.getPersonaID());
 
         // Validar fechas
-        if (request.getFecha_retiro().isAfter(request.getFecha_devolucion())) {
+        if (request.getFechaInicio().isAfter(request.getFechaFin())) {
             throw new BusinessException("La fecha de retiro no puede ser posterior a la fecha de devolución.");
         }
 

@@ -1,9 +1,9 @@
 package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CarritoCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.CarritoResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.services.AlquilerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,18 +23,18 @@ public class AlquilerController {
     @Autowired
     private AlquilerService alquilerService;
     @Autowired
-    private CarritoController carritoController;
+    private DetalleAlquilerController detalleAlquilerController;
 
 
     @Operation(summary = "Crear un nuevo alquiler", description = "Permite crear un nuevo alquiler de videojuego")
     @PostMapping
     public ResponseEntity<AlquilerResponse> crearAlquiler(@Valid @RequestBody AlquilerCreateOrReplaceRequest request) {
         AlquilerResponse response = alquilerService.guardar(request);
-        CarritoCreateOrReplaceRequest detalleRequest = CarritoCreateOrReplaceRequest.builder()
-                .alquiler_id(response.getAlquiler_id())
+        DetalleAlquilerCreateOrReplaceRequest detalleRequest = DetalleAlquilerCreateOrReplaceRequest.builder()
+                .alquiler_id(response.getAlquilerId())
                 .inventario_id(request.getIdJuego())
                 .build();
-        CarritoResponse detalleResponse = carritoController.crearDetalle(detalleRequest).getBody();
+        DetalleAlquilerResponse detalleResponse = detalleAlquilerController.crearDetalle(detalleRequest).getBody();
         response.setDetalles(detalleResponse);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

@@ -11,14 +11,14 @@ import java.time.LocalDate;
 @Builder
 public class AlquilerResponse {
 
-    private int alquiler_id;
+    private int alquilerId;
 
     private PersonaResponse personaResponse;
 
-    private LocalDate fecha_retiro;
+    private LocalDate fechaInicio;
 
-    private LocalDate fecha_devolucion;
+    private LocalDate fechaFin;
 
-    private CarritoResponse detalles;
+    private DetalleAlquilerResponse detalles;
 
 }

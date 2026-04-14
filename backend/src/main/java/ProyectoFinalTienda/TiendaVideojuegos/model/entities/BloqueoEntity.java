@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Builder
 @ToString
 @Table(
-        name = "blacklist"
+        name = "bloqueo"
 )
 
 public class BloqueoEntity {
@@ -25,9 +25,9 @@ public class BloqueoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
-            name = "blacklist_id"
+            name = "bloqueo_id"
     )
-    private int blacklist_id;
+    private int bloqueo_id;
 
     @ManyToOne
     @JoinColumn(name = "persona_id", nullable = false)

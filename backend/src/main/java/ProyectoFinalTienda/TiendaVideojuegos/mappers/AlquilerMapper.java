@@ -14,23 +14,23 @@ import java.util.stream.Collectors;
 @Component
 public class AlquilerMapper {
     @Autowired
-    CarritoMapper carritoMapper;
+    DetalleAlquilerMapper detalleAlquilerMapper;
     @Autowired
     PersonaMapper personaMapper;
 
     public AlquilerEntity toEntity(AlquilerCreateOrReplaceRequest request, PersonaEntity persona) {
         return AlquilerEntity.builder()
                 .persona(persona)
-                .fecha_retiro(request.getFecha_retiro())
-                .fecha_devolucion(request.getFecha_devolucion())
+                .fechaInicio(request.getFechaInicio())
+                .fechaFin(request.getFechaFin())
                 .build();
     }
 
     public AlquilerResponse toResponse(AlquilerEntity entity) {
         return AlquilerResponse.builder()
-                .alquiler_id(entity.getAlquiler_id())
-                .fecha_retiro(entity.getFecha_retiro())
-                .fecha_devolucion(entity.getFecha_devolucion())
+                .alquilerId(entity.getAlquilerId())
+                .fechaInicio(entity.getFechaInicio())
+                .fechaFin(entity.getFechaFin())
                 .personaResponse(personaMapper.convertirEntidadADTO(entity.getPersona()))
                 .build();
     }

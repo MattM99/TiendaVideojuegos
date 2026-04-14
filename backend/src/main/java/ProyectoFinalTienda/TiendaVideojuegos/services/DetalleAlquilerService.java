@@ -1,32 +1,32 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CarritoCreateOrReplaceRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.CarritoResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.*;
-import ProyectoFinalTienda.TiendaVideojuegos.mappers.CarritoMapper;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CarritoEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.DetalleAlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
-import ProyectoFinalTienda.TiendaVideojuegos.repositories.CarritoRepository;
+import ProyectoFinalTienda.TiendaVideojuegos.repositories.DetalleAlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CarritoService {
+public class DetalleAlquilerService {
 
     @Autowired
-    private CarritoRepository carritoRepository;
+    private DetalleAlquilerRepository detalleAlquilerRepository;
     @Autowired
     private AlquilerRepository alquilerRepository;
     @Autowired
     private InventarioRepository inventarioRepository;
     @Autowired
-    private CarritoMapper carritoMapper;
+    private DetalleAlquilerMapper detalleAlquilerMapper;
 
 
-    public CarritoResponse crearDetalle(CarritoCreateOrReplaceRequest request) {
+    public DetalleAlquilerResponse crearDetalle(DetalleAlquilerCreateOrReplaceRequest request) {
         AlquilerEntity alquiler = alquilerRepository.findById(request.getAlquiler_id()).orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler con id: " + request.getAlquiler_id() + " no encontrado."));
 
         InventarioEntity inventario = inventarioRepository.findById(request.getInventario_id()).orElseThrow(() -> new InventarioNoEncontradoException("Inventario con id: " + request.getInventario_id() + " no encontrado."));
@@ -40,17 +40,17 @@ public class CarritoService {
         inventario.setStockDisponible(inventario.getStockDisponible() - 1);
         inventario.setStockAlquilado(inventario.getStockAlquilado() + 1);
 
-        CarritoEntity detalle = carritoMapper.toEntity(request, alquiler, inventario);
+        DetalleAlquilerEntity detalle = detalleAlquilerMapper.toEntity(request, alquiler, inventario);
 
         // Este métod puede lanzar IllegalArgumentException si las fechas son inválidas
         detalle.calcularSubtotal();
 
-        return carritoMapper.toResponse(carritoRepository.save(detalle));
+        return detalleAlquilerMapper.toResponse(detalleAlquilerRepository.save(detalle));
     }
 
     public void eliminar(int id){
 
-        CarritoEntity detalle = carritoRepository.findById(id)
+        DetalleAlquilerEntity detalle = detalleAlquilerRepository.findById(id)
                 .orElseThrow(() -> new DetalleAlquilerNoEncontradoException("Detalle de alquiler con id: " + id + " no encontrado."));
 
         InventarioEntity inventario = detalle.getInventario();
@@ -59,22 +59,22 @@ public class CarritoService {
         inventario.setStockDisponible(inventario.getStockDisponible() + 1);
         inventario.setStockAlquilado(inventario.getStockAlquilado() - 1);
 
-        carritoRepository.deleteById(id);
+        detalleAlquilerRepository.deleteById(id);
     }
  /*
     // Buscar por id con excepción si no existe
-    public CarritoResponse buscarPorId(int id){
-        CarritoEntity entity = carritoRepository.findById(id)
+    public DetalleAlquilerResponse buscarPorId(int id){
+        DetalleAlquilerEntity entity = detalleAlquilerRepository.findById(id)
                 .orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler con id: " + id + " no encontrado."));
-        return carritoMapper.toResponse(entity);
+        return detalleAlquilerMapper.toResponse(entity);
     }
 
-    public List<CarritoResponse> buscarPorId(int personaId){
-        List<CarritoResponse> alquileres = carritoRepository.findByPersonaId(personaId);
+    public List<DetalleAlquilerResponse> buscarPorId(int personaId){
+        List<DetalleAlquilerResponse> alquileres = detalleAlquilerRepository.findByPersonaId(personaId);
         if (alquileres.isEmpty()) {
             throw new UsuarioNoEncontradoException("No se encontró ningún alquiler con el usuario de id: " + personaId);
         }
-        return carritoMapper.toResponse(alquileres);
+        return detalleAlquilerMapper.toResponse(alquileres);
     }
     */
 }

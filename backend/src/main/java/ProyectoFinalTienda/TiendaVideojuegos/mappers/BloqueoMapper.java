@@ -37,7 +37,7 @@ public class BloqueoMapper {
 
 
             return BloqueoResponse.builder()
-                    .blacklist_id(entity.getBlacklist_id())
+                    .blacklist_id(entity.getBloqueo_id())
                     .personaResponse(personaResponse)
                     .fecha_inicio(entity.getFecha_inicio().format(formatter))
                     .fecha_fin(fechaFinString(entity.getFecha_fin()))

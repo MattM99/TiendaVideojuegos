@@ -29,7 +29,7 @@ public class AlquilerEntity {
     @Column(
             name = "alquiler_id"
     )
-    private int alquiler_id;
+    private int alquilerId;
     @ManyToOne
     @JoinColumn(name = "persona_id", nullable = false)
     @NotNull(message = "Debe especificarse una persona para el alquiler")
@@ -46,26 +46,26 @@ public class AlquilerEntity {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
-    private List<CarritoEntity> detalles = new ArrayList<>();
+    private List<DetalleAlquilerEntity> carrito = new ArrayList<>();
 
     @Column(
-            name = "fecha_retiro",
+            name = "fecha_inicio",
             nullable = false
     )
     @NotNull(message = "La fecha de retiro no puede ser nula")
     @PastOrPresent(message = "La fecha de retiro no puede estar en el futuro")
-    private LocalDate fecha_retiro;
+    private LocalDate fechaInicio;
 
     @Column(
-            name = "fecha_devolucion",
+            name = "fecha_fin",
             nullable = false
     )
     @NotNull(message = "La fecha de devolución no puede ser nula")
     @Future(message = "La fecha de devolución debe estar en el futuro")
-    private LocalDate fecha_devolucion; // fecha en la que DEBERIA devolver el juego
+    private LocalDate fechaFin; // fecha en la que DEBERIA devolver el juego
 
     public long calcularDiasAlquiler() {
-       long dias = ChronoUnit.DAYS.between(this.getFecha_retiro(), this.getFecha_devolucion());
+       long dias = ChronoUnit.DAYS.between(this.getFechaInicio(), this.getFechaFin());
         if (dias <= 0) {
             throw new IllegalArgumentException("La fecha de entrega debe ser posterior a la de retiro");
         }

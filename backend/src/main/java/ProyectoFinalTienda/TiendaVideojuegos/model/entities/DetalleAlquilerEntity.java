@@ -16,13 +16,13 @@ import lombok.*;
         name = "detalle_alquiler"
 )
 
-public class CarritoEntity {
+public class DetalleAlquilerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
             name = "detalle_alquiler_id"
     )
-    private int detalle_alquiler_id;
+    private int detalleAlquilerId;
 
     @ManyToOne
     @JoinColumn(name = "alquiler_id", nullable = false)

@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CarritoCreateOrReplaceRequest {
+public class DetalleAlquilerCreateOrReplaceRequest {
 
     @NotNull(message = "El ID del alquiler es obligatorio")
     private Integer alquiler_id;
@@ -16,8 +16,8 @@ public class CarritoCreateOrReplaceRequest {
     @NotNull(message = "El ID del inventario es obligatorio")
     private Integer inventario_id;
 
-//    public CarritoEntity toEntity(AlquilerEntity alquiler, InventarioEntity inventario) {
-//        return CarritoEntity.builder()
+//    public DetalleAlquilerEntity toEntity(AlquilerEntity alquiler, InventarioEntity inventario) {
+//        return DetalleAlquilerEntity.builder()
 //                .alquiler(alquiler)
 //                .inventario(inventario)
 //                .build();
