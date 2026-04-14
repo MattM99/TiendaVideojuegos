@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DetalleAlquilerResponse {
+public class CarritoResponse {
 
     private int detalle_alquiler_id;
 

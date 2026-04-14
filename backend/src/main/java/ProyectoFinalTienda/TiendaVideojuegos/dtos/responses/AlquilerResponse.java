@@ -3,8 +3,6 @@ package ProyectoFinalTienda.TiendaVideojuegos.dtos.responses;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -21,6 +19,6 @@ public class AlquilerResponse {
 
     private LocalDate fecha_devolucion;
 
-    private DetalleAlquilerResponse detalles;
+    private CarritoResponse detalles;
 
 }

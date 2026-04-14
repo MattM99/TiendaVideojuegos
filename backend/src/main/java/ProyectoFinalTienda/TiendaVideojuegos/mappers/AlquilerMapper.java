@@ -2,11 +2,8 @@ package ProyectoFinalTienda.TiendaVideojuegos.mappers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,7 +14,7 @@ import java.util.stream.Collectors;
 @Component
 public class AlquilerMapper {
     @Autowired
-    DetalleAlquilerMapper detalleAlquilerMapper;
+    CarritoMapper carritoMapper;
     @Autowired
     PersonaMapper personaMapper;
 

@@ -1,12 +1,10 @@
 package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CarritoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.CarritoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.services.AlquilerService;
-import ProyectoFinalTienda.TiendaVideojuegos.services.DetalleAlquilerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -25,18 +23,18 @@ public class AlquilerController {
     @Autowired
     private AlquilerService alquilerService;
     @Autowired
-    private DetalleAlquilerController detalleAlquilerController;
+    private CarritoController carritoController;
 
 
     @Operation(summary = "Crear un nuevo alquiler", description = "Permite crear un nuevo alquiler de videojuego")
     @PostMapping
     public ResponseEntity<AlquilerResponse> crearAlquiler(@Valid @RequestBody AlquilerCreateOrReplaceRequest request) {
         AlquilerResponse response = alquilerService.guardar(request);
-        DetalleAlquilerCreateOrReplaceRequest detalleRequest = DetalleAlquilerCreateOrReplaceRequest.builder()
+        CarritoCreateOrReplaceRequest detalleRequest = CarritoCreateOrReplaceRequest.builder()
                 .alquiler_id(response.getAlquiler_id())
                 .inventario_id(request.getIdJuego())
                 .build();
-        DetalleAlquilerResponse detalleResponse = detalleAlquilerController.crearDetalle(detalleRequest).getBody();
+        CarritoResponse detalleResponse = carritoController.crearDetalle(detalleRequest).getBody();
         response.setDetalles(detalleResponse);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

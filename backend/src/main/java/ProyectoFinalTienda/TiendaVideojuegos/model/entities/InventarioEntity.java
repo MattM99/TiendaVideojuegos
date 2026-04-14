@@ -38,7 +38,7 @@ public class InventarioEntity {
             mappedBy = "inventario",
             cascade = CascadeType.ALL
     )
-    private List<DetalleAlquilerEntity> detalle_alquileres;
+    private List<CarritoEntity> detalle_alquileres;
 
     @Enumerated(EnumType.STRING)
     @Column(

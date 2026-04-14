@@ -46,7 +46,7 @@ public class AlquilerEntity {
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
-    private List<DetalleAlquilerEntity> detalles = new ArrayList<>();
+    private List<CarritoEntity> detalles = new ArrayList<>();
 
     @Column(
             name = "fecha_retiro",

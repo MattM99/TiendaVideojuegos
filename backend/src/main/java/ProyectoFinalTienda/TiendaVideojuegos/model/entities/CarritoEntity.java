@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -17,7 +16,7 @@ import java.time.temporal.ChronoUnit;
         name = "detalle_alquiler"
 )
 
-public class DetalleAlquilerEntity {
+public class CarritoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
