@@ -26,7 +26,8 @@ public class AdminInitializer {
                         .build();
 
                 authService.register(founderRequest);
-                System.out.println(">>> Usuario founder creado. Nickname: " + founderRequest.getNickname() + ", Rol: " + founderRequest.getRol());
+                System.out.println(">>> Usuario founder creado. Nickname: " + founderRequest.getNickname() +
+                        ", Rol: " + founderRequest.getRol() + ", Contraseña: " + founderRequest.getPassword());
             }
         };
     }
