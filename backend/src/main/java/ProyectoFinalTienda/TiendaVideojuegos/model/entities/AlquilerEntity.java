@@ -43,7 +43,8 @@ public class AlquilerEntity {
 
     @OneToMany(
             mappedBy = "alquiler",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER
     )
     private List<DetalleAlquilerEntity> detalles = new ArrayList<>();
 

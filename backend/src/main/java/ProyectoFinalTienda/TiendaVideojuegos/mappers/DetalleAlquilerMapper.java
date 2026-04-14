@@ -10,6 +10,10 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class DetalleAlquilerMapper {
 
@@ -36,6 +40,13 @@ public class DetalleAlquilerMapper {
                 .inventario(inventarioResponse)
                 .subtotal(entity.getSubtotal())
                 .build();
+    }
+
+    public List<DetalleAlquilerResponse> toResponseList(List<DetalleAlquilerEntity> entities) {
+        if (entities == null) return new ArrayList<>();
+        return entities.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
     }
 
 }
