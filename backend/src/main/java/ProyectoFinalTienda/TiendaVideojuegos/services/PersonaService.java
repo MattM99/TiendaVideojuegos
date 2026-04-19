@@ -7,6 +7,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoExcept
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.PersonaMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,15 +81,33 @@ public class PersonaService {
         CuentaEntity cuentaActual = cuentaRepository.findByNickname(usernameActual)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario autenticado no encontrado"));
 
+        Roles rolActual = cuentaActual.getRol();
 
-        if (cuentaActual.getRol().name().equals("EMPLEADO")) {
-            boolean esModificacionPropia = cuentaActual.getPersona().getEmail().equals(email);
-            boolean personaTienesCuenta = persona.getCuenta() != null;
+        if (!rolActual.equals(Roles.FOUNDER)) {
 
-            if (personaTienesCuenta && !esModificacionPropia) {
-                throw new AccessDeniedException("Los empleados solo pueden modificar sus propios datos y datos de clientes, no de otros usuarios");
+            if (rolActual.equals(Roles.ADMINISTRADOR)) {
+                boolean personaTienesCuenta = persona.getCuenta() != null;
+                
+                if (personaTienesCuenta) {
+                    Roles rolPersonaAModificar = persona.getCuenta().getRol();
+                    if (rolPersonaAModificar.equals(Roles.FOUNDER)) {
+                        throw new AccessDeniedException("Los administradores no pueden modificar los datos del FOUNDER");
+                    }
+                    if (rolPersonaAModificar.equals(Roles.ADMINISTRADOR)) {
+                        throw new AccessDeniedException("Los administradores no pueden modificar los datos de otros administradores");
+                    }
+                }
+            }
+
+            else if (rolActual.equals(Roles.EMPLEADO)) {
+                boolean personaTienesCuenta = persona.getCuenta() != null;
+                
+                if (personaTienesCuenta) {
+                    throw new AccessDeniedException("Los empleados solo pueden modificar datos de clientes, no de usuarios con cuenta");
+                }
             }
         }
+        
         if (dto.getNombre() != null) persona.setNombre(dto.getNombre());
         if (dto.getApellido() != null) persona.setApellido(dto.getApellido());
         if (dto.getTelefono() != null) persona.setTelefono(dto.getTelefono());
