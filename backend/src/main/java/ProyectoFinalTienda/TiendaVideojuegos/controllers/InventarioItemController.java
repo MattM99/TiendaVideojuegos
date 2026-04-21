@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -118,4 +119,25 @@ public class InventarioItemController {
         InventarioItemResponse response = inventarioItemService.actualizarPorCampo(id, request);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "Agregar stock", description = "Incrementa el stock disponible y total de un inventario")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PatchMapping("/{id}/agregar-stock")
+    public ResponseEntity<InventarioResponse> agregarStock(
+            @PathVariable int id,
+            @RequestParam int cantidad) {
+
+        InventarioResponse response = inventarioService.agregarStock(id, cantidad);
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Dar de baja inventario", description = "Da de baja un inventario (stock en 0)")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PatchMapping("/{id}/baja")
+    public ResponseEntity<InventarioResponse> darDeBaja(@PathVariable int id) {
+
+        InventarioResponse response = inventarioService.darDeBaja(id);
+        return ResponseEntity.ok(response);
+    }
+
 }
