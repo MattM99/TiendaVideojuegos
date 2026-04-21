@@ -1,12 +1,11 @@
 package ProyectoFinalTienda.TiendaVideojuegos.mappers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioItemResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.DetalleAlquilerEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,26 +17,26 @@ import java.util.stream.Collectors;
 public class DetalleAlquilerMapper {
 
     @Autowired
-    InventarioMapper inventarioMapper;
+    InventarioItemMapper inventarioItemMapper;
     @Autowired
     VideojuegoMapper videojuegoMapper;
 
-    public DetalleAlquilerEntity toEntity(DetalleAlquilerCreateOrReplaceRequest request, AlquilerEntity alquiler, InventarioEntity inventario) {
+    public DetalleAlquilerEntity toEntity(DetalleAlquilerCreateOrReplaceRequest request, AlquilerEntity alquiler, InventarioItemEntity inventario) {
         return DetalleAlquilerEntity.builder()
                 .alquiler(alquiler)
-                .inventario(inventario)
+                .inventarioItem(inventario)
                 .build();
     }
 
     public DetalleAlquilerResponse toResponse(DetalleAlquilerEntity entity) {
-        InventarioResponse inventarioResponse = inventarioMapper.toResponse(
-                entity.getInventario(),
-                videojuegoMapper.toResponse(entity.getInventario().getVideojuego())
+        InventarioItemResponse inventarioItemResponse = inventarioItemMapper.toResponse(
+                entity.getInventarioItem(),
+                videojuegoMapper.toResponse(entity.getInventarioItem().getVideojuego())
         );
 
         return DetalleAlquilerResponse.builder()
-                .detalle_alquiler_id(entity.getDetalle_alquiler_id())
-                .inventario(inventarioResponse)
+                .detalleAlquilerId(entity.getDetalleAlquilerId())
+                .inventario(inventarioItemResponse)
                 .subtotal(entity.getSubtotal())
                 .build();
     }

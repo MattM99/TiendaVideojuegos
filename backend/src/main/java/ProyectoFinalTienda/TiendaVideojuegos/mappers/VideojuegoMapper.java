@@ -38,7 +38,7 @@ public class VideojuegoMapper {
 */
     public VideojuegoResponse toResponse(VideojuegoEntity entity) {
         return VideojuegoResponse.builder()
-                .videojuegoID(entity.getVideojuegoID())
+                .videojuegoId(entity.getVideojuegoId())
                 .titulo(entity.getTitulo())
                 .desarrollador(entity.getDesarrollador())
                 .genero(entity.getGenero())

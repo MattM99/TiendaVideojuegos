@@ -1,7 +1,5 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
 
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -13,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InventarioCreateOrReplaceRequest {
+public class InventarioItemCreateOrReplaceRequest {
 
     @NotNull(message = "El ID del videojuego es obligatorio")
     private Integer videojuegoId;
@@ -23,7 +21,7 @@ public class InventarioCreateOrReplaceRequest {
 
     @NotNull(message = "El precio unitario diario es obligatorio")
     @DecimalMin(value = "0.01", message = "El precio debe ser mayor a 0")
-    private Double precioUnitarioDiario;
+    private Double precioDiario;
 
     @NotNull(message = "El stock total es obligatorio")
     @Min(value = 0, message = "El stock total no puede ser negativo")
@@ -33,16 +31,16 @@ public class InventarioCreateOrReplaceRequest {
     @Min(value = 0, message = "El stock disponible no puede ser negativo")
     private Integer stockDisponible;
 
-    @NotNull(message = "El stock alquilado es obligatorio")
-    @Min(value = 0, message = "El stock alquilado no puede ser negativo")
-    private Integer stockAlquilado;
+//    @NotNull(message = "El stock alquilado es obligatorio")
+//    @Min(value = 0, message = "El stock alquilado no puede ser negativo")
+//    private Integer stockAlquilado;
+//
+//    @NotNull(message = "El stock descartado es obligatorio")
+//    @Min(value = 0, message = "El stock descartado no puede ser negativo")
+//    private Integer stockDescartado;
 
-    @NotNull(message = "El stock descartado es obligatorio")
-    @Min(value = 0, message = "El stock descartado no puede ser negativo")
-    private Integer stockDescartado;
-
-    /*public InventarioEntity toEntity(VideojuegoEntity videojuego) {
-        return InventarioEntity.builder()
+    /*public InventarioItemEntity toEntity(VideojuegoEntity videojuego) {
+        return InventarioItemEntity.builder()
                 .videojuego(videojuego)
                 .plataforma(this.plataforma)
                 .precioUnitarioDiario(this.precioUnitarioDiario)

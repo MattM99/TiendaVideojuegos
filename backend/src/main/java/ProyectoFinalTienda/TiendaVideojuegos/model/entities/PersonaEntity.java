@@ -48,7 +48,7 @@ public class PersonaEntity implements UserDetails {
             mappedBy = "persona",
             cascade = CascadeType.ALL
     )
-    private List<BlacklistEntity> blacklist = new ArrayList<>();
+    private List<BloqueoEntity> blacklist = new ArrayList<>();
 
 
 

@@ -4,9 +4,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrRepla
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.services.AlquilerService;
-import ProyectoFinalTienda.TiendaVideojuegos.services.DetalleAlquilerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,11 +31,11 @@ public class AlquilerController {
     public ResponseEntity<AlquilerResponse> crearAlquiler(@Valid @RequestBody AlquilerCreateOrReplaceRequest request) {
         AlquilerResponse response = alquilerService.guardar(request);
         DetalleAlquilerCreateOrReplaceRequest detalleRequest = DetalleAlquilerCreateOrReplaceRequest.builder()
-                .alquiler_id(response.getAlquiler_id())
-                .inventario_id(request.getIdJuego())
+                .alquilerId(response.getAlquilerId())
+                .inventarioItemId(request.getIdJuego())
                 .build();
         DetalleAlquilerResponse detalleResponse = detalleAlquilerController.crearDetalle(detalleRequest).getBody();
-        response.setDetalles(detalleResponse);
+        response.setCarrito(detalleResponse);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

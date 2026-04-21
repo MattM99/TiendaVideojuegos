@@ -8,11 +8,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BlacklistUpdateRequest {
-    private int blacklistId;
+public class BloqueoUpdateRequest {
+    private int bloqueoId;
     private PersonaResponse persona;
-    private String fecha_inicio;
-    private String fecha_fin;
+    private String fechaInicio;
+    private String fechaFin;
     private String motivo;
 
 }

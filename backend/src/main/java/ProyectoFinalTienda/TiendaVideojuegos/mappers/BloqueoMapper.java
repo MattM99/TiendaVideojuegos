@@ -1,10 +1,10 @@
 package ProyectoFinalTienda.TiendaVideojuegos.mappers;
 
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BlackListCreateOrReplaceRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BlacklistUpdateRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BlackListResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BloqueoCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BloqueoUpdateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BloqueoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BlacklistEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BloqueoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.services.PersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class BlacklistMapper {
+public class BloqueoMapper {
         @Autowired
         private PersonaMapper personaMapper;
         @Autowired
@@ -24,23 +24,23 @@ public class BlacklistMapper {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 
-        public BlacklistEntity toEntity(BlackListCreateOrReplaceRequest dto) {
-            return BlacklistEntity.builder()
+        public BloqueoEntity toEntity(BloqueoCreateOrReplaceRequest dto) {
+            return BloqueoEntity.builder()
                     .persona(personaMapper.toEntity(personaService.buscarPorId(dto.getPersonaID())))
-                    .fecha_inicio(dto.getFecha_inicio())
-                    .fecha_fin(dto.getFecha_fin())
+                    .fechaInicio(dto.getFecha_inicio())
+                    .fechaFin(dto.getFecha_fin())
                     .motivo(dto.getMotivo())
                     .build();
         }
 
-        public BlackListResponse toResponse(BlacklistEntity entity, PersonaResponse personaResponse) {
+        public BloqueoResponse toResponse(BloqueoEntity entity, PersonaResponse personaResponse) {
 
 
-            return BlackListResponse.builder()
-                    .blacklist_id(entity.getBlacklist_id())
+            return BloqueoResponse.builder()
+                    .bloqueoId(entity.getBloqueoId())
                     .personaResponse(personaResponse)
-                    .fecha_inicio(entity.getFecha_inicio().format(formatter))
-                    .fecha_fin(fechaFinString(entity.getFecha_fin()))
+                    .fechaInicio(entity.getFechaInicio().format(formatter))
+                    .fechaFin(fechaFinString(entity.getFechaFin()))
                     .motivo(entity.getMotivo())
                     .build();
         }
@@ -52,7 +52,7 @@ public class BlacklistMapper {
         }
 
 
-        public List<BlackListResponse> toResponseList(List<BlacklistEntity> entities) {
+        public List<BloqueoResponse> toResponseList(List<BloqueoEntity> entities) {
             return entities.stream()
                     .map(entity -> {
                         PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
@@ -61,19 +61,19 @@ public class BlacklistMapper {
                     .collect(Collectors.toList());
         }
 
-        public void actualizarEntity(BlacklistEntity entity, BlacklistUpdateRequest dto) {
+        public void actualizarEntity(BloqueoEntity entity, BloqueoUpdateRequest dto) {
             if (dto.getPersona() != null) entity.setPersona(personaMapper.toEntity(dto.getPersona()));
 
-            if (dto.getFecha_inicio() != null) {
-                LocalDate inicio = LocalDate.parse(dto.getFecha_inicio(), formatter);
+            if (dto.getFechaInicio() != null) {
+                LocalDate inicio = LocalDate.parse(dto.getFechaInicio(), formatter);
                 if (inicio.isBefore(LocalDate.now())) {
-                    entity.setFecha_inicio(inicio);
+                    entity.setFechaInicio(inicio);
                 }
             }
-            if (dto.getFecha_fin() != null) {
-                LocalDate fin = LocalDate.parse(dto.getFecha_fin(), formatter);
+            if (dto.getFechaFin() != null) {
+                LocalDate fin = LocalDate.parse(dto.getFechaFin(), formatter);
                 if (fin.isAfter(LocalDate.now())) {
-                    entity.setFecha_fin(fin);
+                    entity.setFechaFin(fin);
                 }
             }
 

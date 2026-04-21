@@ -57,8 +57,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
-    @ExceptionHandler(InventarioNoEncontradoException.class)
-    public ResponseEntity<String> manejarInventarioNoEncontrado(InventarioNoEncontradoException ex) {
+    @ExceptionHandler(InventarioItemNoEncontradoException.class)
+    public ResponseEntity<String> manejarInventarioNoEncontrado(InventarioItemNoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
@@ -72,8 +72,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    @ExceptionHandler(BanNoEncontradoException.class)
-    public ResponseEntity<String> manejarBanNoEncontrado(BanNoEncontradoException ex) {
+    @ExceptionHandler(BloqueoNoEncontradoException.class)
+    public ResponseEntity<String> manejarBanNoEncontrado(BloqueoNoEncontradoException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 

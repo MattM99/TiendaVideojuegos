@@ -27,13 +27,13 @@ public class VideojuegoEntity {
             name = "videojuego_id",
             nullable = false
     )
-    private int videojuegoID;
+    private int videojuegoId;
 
     @OneToMany(
             mappedBy = "videojuego",
             cascade = CascadeType.ALL
     )
-    private List<InventarioEntity> inventario = new ArrayList<>();
+    private List<InventarioItemEntity> inventario = new ArrayList<>();
 
     @Column(
             nullable = false

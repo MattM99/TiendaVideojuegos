@@ -9,9 +9,9 @@ import lombok.*;
 @Builder
 public class DetalleAlquilerResponse {
 
-    private int detalle_alquiler_id;
+    private int detalleAlquilerId;
 
-    private InventarioResponse inventario;
+    private InventarioItemResponse inventario;
 
     private double subtotal;
 

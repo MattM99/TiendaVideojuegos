@@ -17,17 +17,17 @@ import java.util.List;
 @Builder
 @ToString
 @Table(
-        name = "inventario"
+        name = "inventario_item"
 )
 
-public class InventarioEntity {
+public class InventarioItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
-            name = "inventario_id",
+            name = "inventario_item_id",
             nullable = false
     )
-    private int inventario_id;
+    private int inventarioItemId;
 
     @ManyToOne
     @JoinColumn(name = "videojuego_id", nullable = false)
@@ -35,10 +35,10 @@ public class InventarioEntity {
     private VideojuegoEntity videojuego;
 
     @OneToMany(
-            mappedBy = "inventario",
+            mappedBy = "inventarioItem",
             cascade = CascadeType.ALL
     )
-    private List<DetalleAlquilerEntity> detalle_alquileres;
+    private List<DetalleAlquilerEntity> detalleAlquileres;
 
     @Enumerated(EnumType.STRING)
     @Column(
@@ -49,11 +49,11 @@ public class InventarioEntity {
     private Plataformas plataforma;
 
     @Column(
-            name = "precio_unitario_diario",
+            name = "precio_diario",
             nullable = false
     )
-    @PositiveOrZero(message = "El precio unitario diario no puede ser negativo")
-    private double precioUnitarioDiario;
+    @PositiveOrZero(message = "El precio diario no puede ser negativo")
+    private double precioDiario;
 
     @Column(
             name = "stock_total",
@@ -68,21 +68,6 @@ public class InventarioEntity {
     )
     @Min(value = 0, message = "El stock disponible no puede ser negativo")
     private int stockDisponible;
-
-    @Column(
-            name = "stock_alquilado",
-            nullable = false
-    )
-    @Min(value = 0, message = "El stock alquilado no puede ser negativo")
-    private int stockAlquilado;
-
-    @Column(
-            name = "stock_descartado",
-            nullable = false
-    )
-    @Min(value = 0, message = "El stock descartado no puede ser negativo")
-    private int stockDescartado;
-
 
 
 }
