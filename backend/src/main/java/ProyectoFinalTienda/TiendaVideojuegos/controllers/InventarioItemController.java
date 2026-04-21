@@ -123,20 +123,20 @@ public class InventarioItemController {
     @Operation(summary = "Agregar stock", description = "Incrementa el stock disponible y total de un inventario")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PatchMapping("/{id}/agregar-stock")
-    public ResponseEntity<InventarioResponse> agregarStock(
+    public ResponseEntity<InventarioItemResponse> agregarStock(
             @PathVariable int id,
             @RequestParam int cantidad) {
 
-        InventarioResponse response = inventarioService.agregarStock(id, cantidad);
+        InventarioItemResponse response = inventarioItemService.agregarStock(id, cantidad);
         return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Dar de baja inventario", description = "Da de baja un inventario (stock en 0)")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PatchMapping("/{id}/baja")
-    public ResponseEntity<InventarioResponse> darDeBaja(@PathVariable int id) {
+    public ResponseEntity<InventarioItemResponse> darDeBaja(@PathVariable int id) {
 
-        InventarioResponse response = inventarioService.darDeBaja(id);
+        InventarioItemResponse response = inventarioItemService.darDeBaja(id);
         return ResponseEntity.ok(response);
     }
 

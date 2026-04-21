@@ -4,6 +4,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemCreateO
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioItemResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioItemNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.StockNoValidoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.InventarioItemMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.VideojuegoMapper;
@@ -213,14 +214,45 @@ public class InventarioItemService {
     }
 
     public boolean esPlataformaValida(String PlataformaStr) {
-        try {
-            Plataformas.valueOf(PlataformaStr.trim().toUpperCase());
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        return false;
     }
 
+    public InventarioItemResponse agregarStock(int id, int cantidad) {
+        InventarioItemEntity existente = obtenerInventarioPorId(id);
+
+        existente.setStockDisponible(existente.getStockDisponible() + cantidad);
+        existente.setStockTotal(existente.getStockTotal() + cantidad);
+
+        validarStock(existente);
+
+        return inventarioItemMapper.toResponse(
+                inventarioItemRepository.save(existente),
+                videojuegoMapper.toResponse(existente.getVideojuego())
+        );
+    }
+
+    public InventarioItemResponse darDeBaja(int id) throws StockNoValidoException {
+        InventarioItemEntity existente = obtenerInventarioPorId(id);
+
+        if (existente.getStockTotal() != existente.getStockDisponible()) {
+            throw new StockNoValidoException("Hay copias alquiladas, por favor complete " +
+                    "los alquileres activos antes de dar de baja el stock");
+        }
+
+        existente.setStockTotal(0);
+        existente.setStockDisponible(0);
+
+        return inventarioItemMapper.toResponse(
+                inventarioItemRepository.save(existente),
+                videojuegoMapper.toResponse(existente.getVideojuego()));
+    }
+
+    private InventarioItemEntity obtenerInventarioPorId(int id) {
+        return inventarioItemRepository.findById(id)
+                .orElseThrow(() -> new InventarioItemNoEncontradoException(
+                        "Inventario con id: " + id + " no encontrado."
+                ));
+    }
 }
 
 
