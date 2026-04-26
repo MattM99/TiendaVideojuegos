@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,7 +23,7 @@ public class InventarioItemCreateOrReplaceRequest {
 
     @NotNull(message = "El precio unitario diario es obligatorio")
     @DecimalMin(value = "0.01", message = "El precio debe ser mayor a 0")
-    private Double precioDiario;
+    private BigDecimal precioDiario;
 
     @NotNull(message = "El stock total es obligatorio")
     @Min(value = 0, message = "El stock total no puede ser negativo")

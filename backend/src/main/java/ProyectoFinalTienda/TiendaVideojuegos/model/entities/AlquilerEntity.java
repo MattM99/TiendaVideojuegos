@@ -1,9 +1,8 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -17,7 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @Table(
         name = "alquiler"
 )
@@ -30,6 +28,7 @@ public class AlquilerEntity {
             name = "alquiler_id"
     )
     private int alquilerId;
+
     @ManyToOne
     @JoinColumn(name = "persona_id", nullable = false)
     @NotNull(message = "Debe especificarse una persona para el alquiler")
@@ -37,16 +36,11 @@ public class AlquilerEntity {
 
     @OneToMany(
             mappedBy = "alquiler",
-            cascade = CascadeType.ALL
-    )
-    private List<FacturaEntity> facturas = new ArrayList<>();
-
-    @OneToMany(
-            mappedBy = "alquiler",
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
-    private List<DetalleAlquilerEntity> carrito = new ArrayList<>();
+    @Builder.Default
+    private List<DetalleAlquilerEntity> items = new ArrayList<>();
 
     @Column(
             name = "fecha_inicio",
@@ -60,16 +54,60 @@ public class AlquilerEntity {
             name = "fecha_fin",
             nullable = false
     )
-    @NotNull(message = "La fecha de devolución no puede ser nula")
-    @Future(message = "La fecha de devolución debe estar en el futuro")
+    @NotNull(message = "La fecha limite no puede ser nula")
+    @Future(message = "La fecha limite debe estar en el futuro")
     private LocalDate fechaFin; // fecha en la que DEBERIA devolver el juego
 
+    @Column(
+            name = "fecha_devolucion"
+    )
+    private LocalDate fechaDevolucion; // fecha en la que se devuelve el juego
+
+    @Column(
+            name = "estado_alquiler",
+            nullable = false
+    )
+    @NotNull(message = "El estado del alquiler no puede ser nulo")
+    @Enumerated(EnumType.STRING) // EN_CURSO, FINALIZADO, ATRASADO
+    private EstadoAlquiler estadoAlquiler;
+
+   /* @Column(
+            name = "monto_diario_alquiler",
+            nullable = false
+    )
+    @NotNull(message = "El monto diario del alquiler no puede ser nulo")
+    @Positive(message = "El monto diario del alquiler debe ser mayor a cero")
+    private BigDecimal montoDiarioAlquiler;*/
+
+    @AssertTrue(message = "La fecha de fin debe ser posterior a la fecha de inicio")
+    public boolean isFechaValida() {
+        if (fechaInicio == null || fechaFin == null) {
+            return true;
+        }
+        return fechaFin.isAfter(fechaInicio);
+    }
+
+    @Transient
+    public boolean isAtrasado() {
+        if (fechaFin == null) return false;
+        return fechaDevolucion == null && LocalDate.now().isAfter(fechaFin);
+    }
+
+
     public long calcularDiasAlquiler() {
-       long dias = ChronoUnit.DAYS.between(this.getFechaInicio(), this.getFechaFin());
+       long dias = ChronoUnit.DAYS.between(this.getFechaInicio(), this.getFechaFin()) + 1; // +1 para incluir el día de inicio
         if (dias <= 0) {
             throw new IllegalArgumentException("La fecha de entrega debe ser posterior a la de retiro");
         }
         return dias;
     }
+
+    public void agregarDetalle(DetalleAlquilerEntity detalle) {
+        items.add(detalle);
+        detalle.setAlquiler(this);
+
+    }
+
+
 
 }
