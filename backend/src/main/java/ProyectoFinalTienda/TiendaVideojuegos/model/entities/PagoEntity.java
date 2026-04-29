@@ -88,7 +88,7 @@ public class PagoEntity {
                 .build();
     }
 
-    public void cerrarPago() {
+    public void acreditar() {
         if (this.estadoPago == EstadoPago.ACREDITADO) {
             throw new IllegalStateException("El pago ya está acreditado");
         }
