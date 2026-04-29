@@ -68,7 +68,6 @@ public class PagoEntity {
     private BigDecimal costoTotal;
 
     public static PagoEntity crear(
-            EstadoPago estadoPago,
             BigDecimal descuento,
             BigDecimal penalizacionTotal,
             BigDecimal precioBase
@@ -81,7 +80,7 @@ public class PagoEntity {
                 .setScale(2, RoundingMode.HALF_UP);
 
         return PagoEntity.builder()
-                .estadoPago(estadoPago)
+                .estadoPago(EstadoPago.PENDIENTE)
                 .descuento(descuento)
                 .penalizacionTotal(penalizacionTotal)
                 .costoTotal(total)
