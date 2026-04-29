@@ -1,6 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.mappers;
 
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioItemResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
@@ -21,7 +21,7 @@ public class DetalleAlquilerMapper {
     @Autowired
     VideojuegoMapper videojuegoMapper;
 
-    public DetalleAlquilerEntity toEntity(DetalleAlquilerCreateOrReplaceRequest request, AlquilerEntity alquiler, InventarioItemEntity inventario) {
+    public DetalleAlquilerEntity toEntity(DetalleAlquilerRequest request, AlquilerEntity alquiler, InventarioItemEntity inventario) {
         return DetalleAlquilerEntity.builder()
                 .alquiler(alquiler)
                 .inventarioItem(inventario)

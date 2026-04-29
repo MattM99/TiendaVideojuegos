@@ -1,6 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.*;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
@@ -10,6 +10,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.DetalleAlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class DetalleAlquilerService {
     private DetalleAlquilerMapper detalleAlquilerMapper;
 
 
-    public DetalleAlquilerResponse crearDetalle(DetalleAlquilerCreateOrReplaceRequest request) {
+    public DetalleAlquilerResponse crearDetalle(@Valid DetalleAlquilerRequest request) {
         AlquilerEntity alquiler = alquilerRepository.findById(request.getAlquilerId()).orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler con id: " + request.getAlquilerId() + " no encontrado."));
 
         InventarioItemEntity inventario = inventarioItemRepository.findById(request.getInventarioItemId()).orElseThrow(() -> new InventarioItemNoEncontradoException("Inventario con id: " + request.getInventarioItemId() + " no encontrado."));
@@ -41,7 +42,6 @@ public class DetalleAlquilerService {
 
         DetalleAlquilerEntity detalle = detalleAlquilerMapper.toEntity(request, alquiler, inventario);
 
-        // Este métod puede lanzar IllegalArgumentException si las fechas son inválidas
         detalle.calcularSubtotal();
 
         return detalleAlquilerMapper.toResponse(detalleAlquilerRepository.save(detalle));

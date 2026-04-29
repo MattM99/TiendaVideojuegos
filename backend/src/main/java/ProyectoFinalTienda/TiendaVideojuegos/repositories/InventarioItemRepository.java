@@ -27,10 +27,4 @@ public interface InventarioItemRepository extends JpaRepository<InventarioItemEn
     @Query("SELECT i.stockDisponible FROM InventarioItemEntity i WHERE i.inventarioItemId = ?1")
     Integer findStockDisponibleByInventarioId(int inventarioItemId);
 
-//    @Query("SELECT i.stockAlquilado FROM InventarioItemEntity i WHERE i.inventario_id = ?1")
-//    Integer findStockAlquiladoByInventarioId(int inventarioId);
-
-//    @Query("SELECT i.stockDescartado FROM InventarioItemEntity i WHERE i.inventario_id = ?1")
-//    Integer findStockDescartadoByInventarioId(int inventarioId);
-
 }

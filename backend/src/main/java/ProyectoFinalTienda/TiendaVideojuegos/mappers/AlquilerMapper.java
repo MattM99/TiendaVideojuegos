@@ -7,7 +7,6 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +16,7 @@ public class AlquilerMapper {
     DetalleAlquilerMapper detalleAlquilerMapper;
     @Autowired
     PersonaMapper personaMapper;
+
 
     public AlquilerEntity toEntity(AlquilerCreateOrReplaceRequest request, PersonaEntity persona) {
         return AlquilerEntity.builder()

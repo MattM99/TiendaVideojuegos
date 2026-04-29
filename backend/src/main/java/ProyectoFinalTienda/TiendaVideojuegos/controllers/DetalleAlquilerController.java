@@ -1,6 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.services.DetalleAlquilerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +20,7 @@ public class DetalleAlquilerController {
 
     @Operation(summary = "Crear un detalle de alquiler", description = "Crea una nueva entrada de detalle de alquiler")
     @PostMapping("/crear")
-    public ResponseEntity<DetalleAlquilerResponse> crearDetalle(@Valid @RequestBody DetalleAlquilerCreateOrReplaceRequest request) {
+    public ResponseEntity<DetalleAlquilerResponse> crearDetalle(@Valid @RequestBody DetalleAlquilerRequest request) {
         DetalleAlquilerResponse response = detalleAlquilerService.crearDetalle(request);
         return ResponseEntity.ok(response);
     }
