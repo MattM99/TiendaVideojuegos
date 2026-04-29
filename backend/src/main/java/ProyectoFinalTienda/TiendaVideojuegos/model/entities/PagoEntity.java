@@ -45,6 +45,7 @@ public class PagoEntity {
             nullable = false
     )
     @NotNull(message = "El estado actual del pago es obligatorio")
+    @Setter(AccessLevel.NONE)
     private EstadoPago estadoPago;
 
     @NotNull
@@ -85,6 +86,14 @@ public class PagoEntity {
                 .penalizacionTotal(penalizacionTotal)
                 .costoTotal(total)
                 .build();
+    }
+
+    public void cerrarPago() {
+        if (this.estadoPago == EstadoPago.ACREDITADO) {
+            throw new IllegalStateException("El pago ya está acreditado");
+        }
+
+        this.estadoPago = EstadoPago.ACREDITADO;
     }
 
 }
