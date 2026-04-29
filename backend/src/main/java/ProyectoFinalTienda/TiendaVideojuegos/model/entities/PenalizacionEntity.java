@@ -26,11 +26,6 @@ public class PenalizacionEntity {
     @Column
     private int idPenalizacion;
 
-    @OneToOne
-    @JoinColumn(name = "factura_id", nullable = false, unique = true)
-    @NotNull(message = "La factura asociada no puede ser nula")
-    private FacturaEntity factura;
-
     @Column(
             name = "fecha_emision_penalizacion",
             nullable = false
