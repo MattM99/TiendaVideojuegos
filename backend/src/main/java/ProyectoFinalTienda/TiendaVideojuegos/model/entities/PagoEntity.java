@@ -58,7 +58,7 @@ public class PagoEntity {
     @DecimalMin("0.0")
     @Digits(integer = 10, fraction = 2)
     @Column(nullable = false, precision = 12, scale = 2)
-    private BigDecimal penalizacionTotal;
+    private BigDecimal penalizacionTotal; /// Pendiente: metodo de calcular penalizacion total
 
     @NotNull
     @DecimalMin("0.01")
