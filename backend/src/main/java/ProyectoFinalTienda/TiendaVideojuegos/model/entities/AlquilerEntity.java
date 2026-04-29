@@ -42,6 +42,12 @@ public class AlquilerEntity {
     @Builder.Default
     private List<DetalleAlquilerEntity> items = new ArrayList<>();
 
+    @OneToOne(
+            mappedBy = "alquiler",
+            cascade = CascadeType.ALL
+    )
+    private PagoEntity pago;
+
     @Column(
             name = "fecha_inicio",
             nullable = false
@@ -108,6 +114,9 @@ public class AlquilerEntity {
 
     }
 
-
+    public void asignarPago(PagoEntity pago) {
+        this.pago = pago;
+        pago.setAlquiler(this);
+    }
 
 }

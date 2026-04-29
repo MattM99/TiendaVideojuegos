@@ -23,8 +23,9 @@ import java.math.RoundingMode;
 
 public class PagoEntity {
 
-    private PagoEntity(int pagoId, EstadoPago estadoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal costoTotal) {
+    private PagoEntity(int pagoId, AlquilerEntity alquiler, EstadoPago estadoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal costoTotal) {
         this.pagoId = pagoId;
+        this.alquiler = alquiler;
         this.estadoPago = estadoPago;
         this.descuento = descuento;
         this.penalizacionTotal = penalizacionTotal;
@@ -38,6 +39,11 @@ public class PagoEntity {
             nullable = false
     )
     private int pagoId;
+
+    @OneToOne
+    @JoinColumn(name = "alquiler_id", nullable = false, unique = true)
+    @NotNull(message = "El pago debe estar asociado a un alquiler")
+    private AlquilerEntity alquiler;
 
     @Enumerated(EnumType.STRING)
     @Column(
@@ -69,6 +75,7 @@ public class PagoEntity {
     private BigDecimal costoTotal;
 
     public static PagoEntity crear(
+            AlquilerEntity alquiler,
             BigDecimal descuento,
             BigDecimal penalizacionTotal,
             BigDecimal precioBase
@@ -80,12 +87,16 @@ public class PagoEntity {
                 .add(penalizacionTotal)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        return PagoEntity.builder()
+        PagoEntity pago = PagoEntity.builder()
                 .estadoPago(EstadoPago.PENDIENTE)
                 .descuento(descuento)
                 .penalizacionTotal(penalizacionTotal)
                 .costoTotal(total)
                 .build();
+
+        alquiler.asignarPago(pago);
+
+        return pago;
     }
 
     public void acreditar() {
