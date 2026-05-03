@@ -21,7 +21,4 @@ public class DetalleAlquilerRequest {
     @Positive(message = "La cantidad debe ser mayor a 0")
     private int cantidad;
 
-
-
-
 }

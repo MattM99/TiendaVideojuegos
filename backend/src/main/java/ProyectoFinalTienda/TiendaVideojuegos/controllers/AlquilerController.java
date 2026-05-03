@@ -20,9 +20,6 @@ public class AlquilerController {
 
     @Autowired
     private AlquilerService alquilerService;
-    @Autowired
-    private DetalleAlquilerController detalleAlquilerController;
-
 
     @Operation(summary = "Crear un nuevo alquiler", description = "Permite crear un nuevo alquiler de videojuego")
     @PostMapping
