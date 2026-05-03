@@ -25,6 +25,7 @@ public class DetalleAlquilerMapper {
         return DetalleAlquilerEntity.builder()
                 .alquiler(alquiler)
                 .inventarioItem(inventario)
+                .cantidad(request.getCantidad())
                 .build();
     }
 

@@ -2,6 +2,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.mappers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
@@ -27,11 +28,16 @@ public class AlquilerMapper {
     }
 
     public AlquilerResponse toResponse(AlquilerEntity entity) {
+        List<DetalleAlquilerResponse> detalles = entity.getItems().stream()
+                .map(detalleAlquilerMapper::toResponse)
+                .toList();
+
         return AlquilerResponse.builder()
                 .alquilerId(entity.getAlquilerId())
                 .fechaInicio(entity.getFechaInicio())
                 .fechaFin(entity.getFechaFin())
                 .personaResponse(personaMapper.convertirEntidadADTO(entity.getPersona()))
+                .carrito(detalles)
                 .build();
     }
 

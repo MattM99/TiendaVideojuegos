@@ -5,8 +5,10 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerReques
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.AlquilerNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioItemNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.AlquilerMapper;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.DetalleAlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
@@ -16,6 +18,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -26,8 +29,6 @@ public class AlquilerService {
     @Autowired
     private AlquilerRepository alquilerRepository;
     @Autowired
-    private DetalleAlquilerService detalleAlquilerService;
-    @Autowired
     private PersonaRepository personaRepository;
     @Autowired
     private InventarioItemRepository InventarioItemRepository;
@@ -36,6 +37,8 @@ public class AlquilerService {
     @Autowired
     private AlquilerMapper alquilerMapper;
     @Autowired
+    private DetalleAlquilerMapper detalleAlquilerMapper;
+    @Autowired
     InventarioItemRepository inventarioItemRepository;
 
     @Transactional
@@ -43,31 +46,48 @@ public class AlquilerService {
         PersonaEntity persona = personaRepository.findById(request.getPersonaId()).orElseThrow();
         bloqueoService.verificarNoEstaEnListaNegra(request.getPersonaId()); // Verificar si la persona está en lista negra, si está lanza excepción.
 
-        AlquilerEntity entity = alquilerMapper.toEntity(request, persona);
-        entity.setEstadoAlquiler(EstadoAlquiler.EN_CURSO);
+        AlquilerEntity alquiler = alquilerMapper.toEntity(request, persona);
+        alquiler.setEstadoAlquiler(EstadoAlquiler.EN_CURSO);
 
         for (DetalleAlquilerRequest d : request.getDetalles()) {
-            InventarioItemEntity inventarioItem = inventarioItemRepository.findById(d.getInventarioItemId()).orElseThrow(() -> new BusinessException("Inventario item con id: " + d.getInventarioItemId() + " no encontrado."));
-
-            if (inventarioItem.getStockDisponible() < d.getCantidad()) {
-                throw new BusinessException("Stock insuficiente para el item con id: " + d.getInventarioItemId());
-            }
-            inventarioItem.setStockDisponible(
-                    inventarioItem.getStockDisponible() - d.getCantidad()
-            );
-
-            DetalleAlquilerEntity detalle = DetalleAlquilerEntity.builder()
-                    .inventarioItem(inventarioItem)
-                    .cantidad(d.getCantidad())
-                    .build();
-
-            entity.agregarDetalle(detalle);
-            detalle.calcularSubtotal();
+            construirDetalle(d, alquiler);
         }
-        return alquilerMapper.toResponse(alquilerRepository.save(entity));
+
+        return alquilerMapper.toResponse(alquilerRepository.save(alquiler));
     }
 
+    private void construirDetalle(@Valid DetalleAlquilerRequest request, AlquilerEntity alquiler) {
+        InventarioItemEntity inventario = inventarioItemRepository.findById(request.getInventarioItemId())
+                .orElseThrow(() -> new InventarioItemNoEncontradoException(
+                        "Inventario con id: " + request.getInventarioItemId() + " no encontrado."));
 
+        // Validar stock disponible
+        if (inventario.getStockDisponible() < request.getCantidad()) {
+            throw new BusinessException("Stock insuficiente para el item con id: " + request.getInventarioItemId());
+        }
+
+        // Actualizar stock
+        inventario.setStockDisponible(inventario.getStockDisponible() - request.getCantidad());
+
+        DetalleAlquilerEntity detalle = detalleAlquilerMapper.toEntity(request, alquiler, inventario);
+
+        detalle.calcularSubtotal();
+
+        alquiler.agregarDetalle(detalle);
+    }
+
+    @Transactional
+    public AlquilerResponse crearDetalle(Integer alquilerId, DetalleAlquilerRequest request) {
+
+        AlquilerEntity alquiler = alquilerRepository.findById(alquilerId)
+                .orElseThrow(() -> new AlquilerNoEncontradoException(
+                        "Alquiler con id: " + alquilerId + " no encontrado."
+                ));
+
+        construirDetalle(request, alquiler);
+
+        return alquilerMapper.toResponse(alquilerRepository.save(alquiler));
+    }
 
     public void eliminar(int id){
         if (!alquilerRepository.existsById(id)) {
