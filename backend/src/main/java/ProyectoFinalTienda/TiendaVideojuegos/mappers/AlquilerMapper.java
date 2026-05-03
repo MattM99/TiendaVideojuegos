@@ -36,6 +36,7 @@ public class AlquilerMapper {
                 .alquilerId(entity.getAlquilerId())
                 .fechaInicio(entity.getFechaInicio())
                 .fechaFin(entity.getFechaFin())
+                .montoDiarioAlquiler(entity.getMontoDiarioAlquiler())
                 .personaResponse(personaMapper.convertirEntidadADTO(entity.getPersona()))
                 .carrito(detalles)
                 .build();

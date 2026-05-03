@@ -53,6 +53,8 @@ public class AlquilerService {
             construirDetalle(d, alquiler);
         }
 
+        alquiler.calcularTotal();
+
         return alquilerMapper.toResponse(alquilerRepository.save(alquiler));
     }
 
@@ -85,6 +87,8 @@ public class AlquilerService {
                 ));
 
         construirDetalle(request, alquiler);
+
+        alquiler.calcularTotal();
 
         return alquilerMapper.toResponse(alquilerRepository.save(alquiler));
     }

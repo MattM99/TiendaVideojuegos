@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -71,13 +72,13 @@ public class AlquilerEntity {
     @Enumerated(EnumType.STRING) // EN_CURSO, FINALIZADO, ATRASADO
     private EstadoAlquiler estadoAlquiler;
 
-   /* @Column(
+   @Column(
             name = "monto_diario_alquiler",
             nullable = false
     )
     @NotNull(message = "El monto diario del alquiler no puede ser nulo")
     @Positive(message = "El monto diario del alquiler debe ser mayor a cero")
-    private BigDecimal montoDiarioAlquiler;*/
+    private BigDecimal montoDiarioAlquiler;
 
     @AssertTrue(message = "La fecha de fin debe ser posterior a la fecha de inicio")
     public boolean isFechaValida() {
@@ -106,6 +107,12 @@ public class AlquilerEntity {
         items.add(detalle);
         detalle.setAlquiler(this);
 
+    }
+
+    public void calcularTotal() {
+        this.montoDiarioAlquiler = this.items.stream()
+                .map(DetalleAlquilerEntity::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 
