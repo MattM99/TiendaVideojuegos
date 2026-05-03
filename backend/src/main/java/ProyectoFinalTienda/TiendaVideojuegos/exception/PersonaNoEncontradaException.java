@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.exception;
 
 public class PersonaNoEncontradaException extends RuntimeException {
-    public PersonaNoEncontradaException(String s) {
+    public PersonaNoEncontradaException(String mensaje) {
+        super(mensaje);
     }
 }

@@ -3,10 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.AlquilerNoEncontradoException;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioItemNoEncontradoException;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.*;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.AlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
@@ -43,7 +40,8 @@ public class AlquilerService {
 
     @Transactional
     public AlquilerResponse guardar(AlquilerCreateOrReplaceRequest request) {
-        PersonaEntity persona = personaRepository.findById(request.getPersonaId()).orElseThrow();
+        PersonaEntity persona = personaRepository.findById(request.getPersonaId())
+                .orElseThrow(() -> new PersonaNoEncontradaException("No existe la persona con id " + request.getPersonaId()));
         bloqueoService.verificarNoEstaEnListaNegra(request.getPersonaId()); // Verificar si la persona está en lista negra, si está lanza excepción.
 
         AlquilerEntity alquiler = alquilerMapper.toEntity(request, persona);
