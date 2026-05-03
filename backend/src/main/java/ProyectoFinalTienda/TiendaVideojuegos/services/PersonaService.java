@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaPatchRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.PersonaNoEncontradaException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.PersonaMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
@@ -38,7 +39,7 @@ public class PersonaService {
 
     public PersonaResponse buscarPorId(int id) {
         PersonaEntity entity = personaRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con id: " + id));
+                .orElseThrow(() -> new PersonaNoEncontradaException("Persona no encontrada con id: " + id));
         return personaMapper.convertirEntidadADTO(entity);
     }
 
