@@ -13,24 +13,12 @@ import java.math.RoundingMode;
 
 @Entity
 @Getter
-@Setter
-@NoArgsConstructor
-@Builder
-@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         name = "pago"
 )
 
 public class PagoEntity {
-
-    private PagoEntity(int pagoId, AlquilerEntity alquiler, EstadoPago estadoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal costoTotal) {
-        this.pagoId = pagoId;
-        this.alquiler = alquiler;
-        this.estadoPago = estadoPago;
-        this.descuento = descuento;
-        this.penalizacionTotal = penalizacionTotal;
-        this.costoTotal = costoTotal;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,6 +62,16 @@ public class PagoEntity {
     @Setter(AccessLevel.NONE)
     private BigDecimal costoTotal;
 
+    /// Constructor que usará internamente Lombok, privado para que no haya forma de instanciar con un costo total no calculado
+    private PagoEntity(AlquilerEntity alquiler, EstadoPago estadoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal costoTotal) {
+        this.alquiler = alquiler;
+        this.estadoPago = estadoPago;
+        this.descuento = descuento;
+        this.penalizacionTotal = penalizacionTotal;
+        this.costoTotal = costoTotal;
+    }
+
+    /// Factory Method
     public static PagoEntity crear(
             AlquilerEntity alquiler,
             BigDecimal descuento,
@@ -87,12 +85,13 @@ public class PagoEntity {
                 .add(penalizacionTotal)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        PagoEntity pago = PagoEntity.builder()
-                .estadoPago(EstadoPago.PENDIENTE)
-                .descuento(descuento)
-                .penalizacionTotal(penalizacionTotal)
-                .costoTotal(total)
-                .build();
+        PagoEntity pago = new PagoEntity(
+                alquiler,
+                EstadoPago.PENDIENTE,
+                descuento,
+                penalizacionTotal,
+                total
+        );
 
         alquiler.asignarPago(pago);
 
@@ -103,7 +102,6 @@ public class PagoEntity {
         if (this.estadoPago == EstadoPago.ACREDITADO) {
             throw new IllegalStateException("El pago ya está acreditado");
         }
-
         this.estadoPago = EstadoPago.ACREDITADO;
     }
 
