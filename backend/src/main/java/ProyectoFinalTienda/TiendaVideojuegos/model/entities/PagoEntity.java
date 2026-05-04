@@ -62,6 +62,10 @@ public class PagoEntity {
     @Setter(AccessLevel.NONE)
     private BigDecimal costoTotal;
 
+    void asignarAlquiler(AlquilerEntity alquiler) {
+        this.alquiler = alquiler;
+    }
+
     /// Constructor que usará internamente Lombok, privado para que no haya forma de instanciar con un costo total no calculado
     private PagoEntity(AlquilerEntity alquiler, EstadoPago estadoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal costoTotal) {
         this.alquiler = alquiler;
