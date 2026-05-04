@@ -62,7 +62,7 @@ public class PagoEntity {
     @Setter(AccessLevel.NONE)
     private BigDecimal costoTotal;
 
-    void asignarAlquiler(AlquilerEntity alquiler) {
+    void setAlquiler(AlquilerEntity alquiler) {
         this.alquiler = alquiler;
     }
 
