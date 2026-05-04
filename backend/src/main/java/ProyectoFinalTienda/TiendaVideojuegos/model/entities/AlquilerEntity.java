@@ -119,12 +119,17 @@ public class AlquilerEntity {
         this.pago = pago;
         pago.setAlquiler(this);
     }
-    public void calcularTotal() {
+
+    public void calcularMontoDiario() {
         this.montoDiarioAlquiler = this.items.stream()
                 .map(DetalleAlquilerEntity::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-
+    public BigDecimal calcularCostoFijo() {
+        long dias = calcularDiasAlquiler();
+        BigDecimal costoFijo = montoDiarioAlquiler.multiply(BigDecimal.valueOf(dias));
+        return costoFijo;
+    }
 
 }
