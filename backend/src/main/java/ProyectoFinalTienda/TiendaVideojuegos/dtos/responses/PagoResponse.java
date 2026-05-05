@@ -1,17 +1,14 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.responses;
-
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoPago;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PagoResponse {
 
     private int pagoId;
@@ -19,6 +16,6 @@ public class PagoResponse {
     private EstadoPago estadoPago;
     private BigDecimal descuento;
     private BigDecimal penalizacionTotal;
-    private BigDecimal costoTotal;
+    private BigDecimal montoFinal;
 
 }
