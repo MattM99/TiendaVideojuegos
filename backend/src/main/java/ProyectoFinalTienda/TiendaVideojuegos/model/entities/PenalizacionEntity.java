@@ -1,10 +1,9 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,39 +18,23 @@ import java.time.LocalDateTime;
 @Table(
         name = "penalizacion"
 )
-
 public class PenalizacionEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private int idPenalizacion;
+    @Column(name = "penalizacion_id")
+    private int penalizacionId;
 
-    @Column(
-            name = "fecha_emision_penalizacion",
-            nullable = false
-    )
-    @NotNull(message = "La fecha de emisión de la penalización no puede ser nula")
-    private LocalDateTime fechaEmisionAdicional;
+    @ManyToOne
+    @JoinColumn(name = "alquiler_id", nullable = false)
+    @NotNull(message = "El alquiler no puede ser nulo")
+    private AlquilerEntity alquiler;
 
-    @Column(
-            name = "monto_penalizacion_diaria",
-            nullable = false
-    )
-    @Positive(message = "El monto diario de penalización debe ser mayor a cero")
-    private double montoPenalizacionDiaria;
+    @Column(nullable = false)
+    @Positive(message = "El monto debe ser mayor a cero")
+    private double monto;
 
-    @Column(
-            name = "dias_retraso",
-            nullable = false
-    )
-    @Min(value = 0, message = "Los días de retraso no pueden ser negativos")
-    private int diasRetraso;
-
-    @Column(
-            name = "monto_total_penalizacion",
-            nullable = false
-    )
-    @PositiveOrZero(message = "El monto total de penalización no puede ser negativo")
-    private double montoTotalPenalizacion;
-
+    @Column(nullable = false)
+    @NotBlank(message = "El motivo no puede estar vacío")
+    private String motivo;
 }
