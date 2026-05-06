@@ -13,6 +13,7 @@ import java.math.RoundingMode;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         name = "pago"
@@ -39,7 +40,6 @@ public class PagoEntity {
             nullable = false
     )
     @NotNull(message = "El estado actual del pago es obligatorio")
-    @Setter(AccessLevel.NONE)
     private EstadoPago estadoPago;
 
     @NotNull
@@ -59,20 +59,15 @@ public class PagoEntity {
     @DecimalMin("0.01")
     @Digits(integer = 10, fraction = 2)
     @Column(nullable = false, precision = 12, scale = 2)
-    @Setter(AccessLevel.NONE)
-    private BigDecimal costoTotal;
-
-    void setAlquiler(AlquilerEntity alquiler) {
-        this.alquiler = alquiler;
-    }
+    private BigDecimal montoFinal;
 
     /// Constructor que usará internamente Lombok, privado para que no haya forma de instanciar con un costo total no calculado
-    private PagoEntity(AlquilerEntity alquiler, EstadoPago estadoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal costoTotal) {
+    private PagoEntity(AlquilerEntity alquiler, EstadoPago estadoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal montoFinal) {
         this.alquiler = alquiler;
         this.estadoPago = estadoPago;
         this.descuento = descuento;
         this.penalizacionTotal = penalizacionTotal;
-        this.costoTotal = costoTotal;
+        this.montoFinal = montoFinal;
     }
 
     /// Factory Method
