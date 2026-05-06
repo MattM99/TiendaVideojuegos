@@ -2,6 +2,8 @@ package ProyectoFinalTienda.TiendaVideojuegos.dtos.responses;
 
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,6 +15,6 @@ public class DetalleAlquilerResponse {
 
     private InventarioItemResponse inventario;
 
-    private double subtotal;
+    private BigDecimal subtotal;
 
 }

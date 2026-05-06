@@ -2,12 +2,12 @@ package ProyectoFinalTienda.TiendaVideojuegos.mappers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +18,7 @@ public class AlquilerMapper {
     @Autowired
     PersonaMapper personaMapper;
 
+
     public AlquilerEntity toEntity(AlquilerCreateOrReplaceRequest request, PersonaEntity persona) {
         return AlquilerEntity.builder()
                 .persona(persona)
@@ -27,11 +28,17 @@ public class AlquilerMapper {
     }
 
     public AlquilerResponse toResponse(AlquilerEntity entity) {
+        List<DetalleAlquilerResponse> detalles = entity.getItems().stream()
+                .map(detalleAlquilerMapper::toResponse)
+                .toList();
+
         return AlquilerResponse.builder()
                 .alquilerId(entity.getAlquilerId())
                 .fechaInicio(entity.getFechaInicio())
                 .fechaFin(entity.getFechaFin())
+                .montoDiarioAlquiler(entity.getMontoDiarioAlquiler())
                 .personaResponse(personaMapper.convertirEntidadADTO(entity.getPersona()))
+                .carrito(detalles)
                 .build();
     }
 

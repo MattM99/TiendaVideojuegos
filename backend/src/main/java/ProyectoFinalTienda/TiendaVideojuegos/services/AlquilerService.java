@@ -28,6 +28,7 @@ public class AlquilerService {
     private BloqueoService bloqueoService;
     @Autowired
     private AlquilerMapper alquilerMapper;
+
     public AlquilerResponse guardar(AlquilerCreateOrReplaceRequest request) {
         PersonaEntity persona = personaRepository.findById(request.getPersonaId()).orElseThrow();
 
@@ -75,4 +76,5 @@ public class AlquilerService {
         }
         return alquilerMapper.toResponseList(alquileres);
     }
+
 }

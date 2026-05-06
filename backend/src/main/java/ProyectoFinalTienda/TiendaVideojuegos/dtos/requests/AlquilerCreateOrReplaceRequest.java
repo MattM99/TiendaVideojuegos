@@ -1,9 +1,11 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,7 +23,7 @@ public class AlquilerCreateOrReplaceRequest {
     @NotNull(message = "La fecha en la que se debe devolver el juego es obligatoria")
     private LocalDate fechaFin;
 
-    @NotNull(message = "El juego a alquilar es obligatorio")
-    private int idJuego;
+    @NotEmpty(message = "Debe haber al menos un juego en el alquiler")
+    private List<DetalleAlquilerRequest> detalles;
 
 }

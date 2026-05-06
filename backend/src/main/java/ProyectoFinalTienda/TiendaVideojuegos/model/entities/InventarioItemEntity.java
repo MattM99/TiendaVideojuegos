@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -15,7 +16,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @Table(
         name = "inventario_item"
 )
@@ -53,7 +53,7 @@ public class InventarioItemEntity {
             nullable = false
     )
     @PositiveOrZero(message = "El precio diario no puede ser negativo")
-    private double precioDiario;
+    private BigDecimal precioDiario;
 
     @Column(
             name = "stock_total",

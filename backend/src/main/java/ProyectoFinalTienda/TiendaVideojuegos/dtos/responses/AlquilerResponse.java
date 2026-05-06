@@ -2,7 +2,9 @@ package ProyectoFinalTienda.TiendaVideojuegos.dtos.responses;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,6 +21,8 @@ public class AlquilerResponse {
 
     private LocalDate fechaFin;
 
-    private DetalleAlquilerResponse carrito;
+    private List<DetalleAlquilerResponse> carrito;
+
+    private BigDecimal montoDiarioAlquiler;
 
 }

@@ -37,6 +37,12 @@ public class AlquilerEntity {
 
     @OneToMany(
             mappedBy = "alquiler",
+            cascade = CascadeType.ALL
+    )
+    private List<FacturaEntity> facturas = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "alquiler",
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
@@ -56,7 +62,7 @@ public class AlquilerEntity {
     )
     @NotNull(message = "La fecha de devolución no puede ser nula")
     @Future(message = "La fecha de devolución debe estar en el futuro")
-    private LocalDate fechaFin;
+    private LocalDate fechaFin; // fecha en la que DEBERIA devolver el juego
 
     public long calcularDiasAlquiler() {
        long dias = ChronoUnit.DAYS.between(this.getFechaInicio(), this.getFechaFin());
