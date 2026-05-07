@@ -18,6 +18,10 @@ public class AlquilerMapper {
     DetalleAlquilerMapper detalleAlquilerMapper;
     @Autowired
     PersonaMapper personaMapper;
+    @Autowired
+    private PagoMapper pagoMapper;
+    @Autowired
+    private PenalizacionMapper penalizacionMapper;
 
 
     public AlquilerEntity toEntity(AlquilerCreateOrReplaceRequest request, PersonaEntity persona) {
@@ -29,27 +33,49 @@ public class AlquilerMapper {
     }
 
     public AlquilerResponse toResponse(AlquilerEntity entity) {
-        List<DetalleAlquilerResponse> detalles = entity.getItems().stream()
+
+        List<DetalleAlquilerResponse> detalles = entity.getItems()
+                .stream()
                 .map(detalleAlquilerMapper::toResponse)
                 .toList();
 
         return AlquilerResponse.builder()
                 .alquilerId(entity.getAlquilerId())
+
                 .fechaInicio(entity.getFechaInicio())
                 .fechaFin(entity.getFechaFin())
+                .fechaDevolucion(entity.getFechaDevolucion())
+
+                .estadoAlquiler(entity.getEstadoAlquiler())
+
                 .montoDiarioAlquiler(entity.getMontoDiarioAlquiler())
-                .personaResponse(personaMapper.convertirEntidadADTO(entity.getPersona()))
+
+                .personaResponse(
+                        personaMapper.convertirEntidadADTO(entity.getPersona())
+                )
+
                 .carrito(detalles)
+
+                .penalizaciones(
+                        penalizacionMapper.toResponseList(
+                                entity.getPenalizaciones()
+                        )
+                )
+
+                .pago(
+                        pagoMapper.toResponse(entity.getPago())
+                )
+
                 .build();
     }
 
-    public List<AlquilerResponse> toResponseList(List<AlquilerEntity> entities) {
+    public List<AlquilerResponse> toResponseList(
+            List<AlquilerEntity> entities
+    ) {
+
         return entities.stream()
-                .map(entity -> {
-                    PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
-                    return toResponse(entity);
-                })
-                .collect(Collectors.toList());
+                .map(this::toResponse)
+                .toList();
     }
 
 }
