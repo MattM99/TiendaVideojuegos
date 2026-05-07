@@ -6,6 +6,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerRespo
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;

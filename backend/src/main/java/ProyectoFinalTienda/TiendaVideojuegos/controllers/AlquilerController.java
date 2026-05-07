@@ -24,7 +24,7 @@ public class AlquilerController {
     @Operation(summary = "Crear un nuevo alquiler", description = "Permite crear un nuevo alquiler de videojuego")
     @PostMapping
     public ResponseEntity<AlquilerResponse> crearAlquiler(@Valid @RequestBody AlquilerCreateOrReplaceRequest request) {
-        AlquilerResponse response = alquilerService.guardar(request);
+        AlquilerResponse response = alquilerService.crearAlquiler(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

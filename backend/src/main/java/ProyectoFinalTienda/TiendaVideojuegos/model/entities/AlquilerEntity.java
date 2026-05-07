@@ -96,7 +96,7 @@ public class AlquilerEntity {
     @Positive(message = "El monto diario del alquiler debe ser mayor a cero")
     private BigDecimal montoDiarioAlquiler;
 
-   /// Validaciones:
+   /// ---- Validaciones ----
 
     @AssertTrue(message = "La fecha de fin debe ser posterior a la fecha de inicio")
     public boolean isFechaValida() {
@@ -119,13 +119,17 @@ public class AlquilerEntity {
         return LocalDate.now().isAfter(fechaFin);
     }
 
-    /// Aggregate root:
+    /// ---- Aggregate root ----
+
+    // Detalles:
 
     public void agregarDetalle(DetalleAlquilerEntity detalle) {
         items.add(detalle);
         detalle.setAlquiler(this);
 
     }
+
+    // Penalizaciones:
 
     public void agregarPenalizacion(PenalizacionEntity penalizacion) {
         penalizaciones.add(penalizacion);
@@ -155,12 +159,17 @@ public class AlquilerEntity {
         agregarPenalizacion(penalizacion);
     }
 
+    // Pagos:
+
     public void asignarPago(PagoEntity pago) {
         this.pago = pago;
-        pago.setAlquiler(this);
+
+        if (pago != null) {
+            pago.setAlquiler(this);
+        }
     }
 
-    /// Calculos:
+    /// ---- Calculos ----
 
     public long calcularDiasAlquiler() {
         long dias = ChronoUnit.DAYS.between(this.getFechaInicio(), this.getFechaFin()) + 1; // +1 para incluir el día de inicio
@@ -170,12 +179,14 @@ public class AlquilerEntity {
         return dias;
     }
 
+    // El total de todos los juegos por dia:
     public void calcularMontoDiario() {
         this.montoDiarioAlquiler = this.items.stream()
                 .map(DetalleAlquilerEntity::getSubtotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    // El total de todos los juegos en todo el plazo de alquiler:
     public BigDecimal calcularCostoFijo() {
         long dias = calcularDiasAlquiler();
         BigDecimal costoFijo = montoDiarioAlquiler.multiply(BigDecimal.valueOf(dias));

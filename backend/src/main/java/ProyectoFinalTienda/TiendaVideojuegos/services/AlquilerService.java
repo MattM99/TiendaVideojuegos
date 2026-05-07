@@ -1,15 +1,14 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PenalizacionManualRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.*;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.AlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.DetalleAlquilerEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.*;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
@@ -28,18 +27,16 @@ public class AlquilerService {
     @Autowired
     private PersonaRepository personaRepository;
     @Autowired
-    private InventarioItemRepository InventarioItemRepository;
-    @Autowired
     private BloqueoService bloqueoService;
     @Autowired
     private AlquilerMapper alquilerMapper;
     @Autowired
     private DetalleAlquilerMapper detalleAlquilerMapper;
     @Autowired
-    InventarioItemRepository inventarioItemRepository;
+    private InventarioItemRepository inventarioItemRepository;
 
     @Transactional
-    public AlquilerResponse guardar(AlquilerCreateOrReplaceRequest request) {
+    public AlquilerResponse crearAlquiler(AlquilerCreateOrReplaceRequest request) {
         PersonaEntity persona = personaRepository.findById(request.getPersonaId())
                 .orElseThrow(() -> new PersonaNoEncontradaException("No existe la persona con id " + request.getPersonaId()));
         bloqueoService.verificarNoEstaEnListaNegra(request.getPersonaId()); // Verificar si la persona está en lista negra, si está lanza excepción.
@@ -96,6 +93,51 @@ public class AlquilerService {
             throw new AlquilerNoEncontradoException("Alquiler con id: " + id + " no encontrado.");
         }
         alquilerRepository.deleteById(id);
+    }
+
+    @Transactional
+    public AlquilerResponse cerrarAlquiler(
+            Integer alquilerId,
+            CerrarAlquilerRequest request
+    ) {
+
+        AlquilerEntity alquiler = alquilerRepository.findById(alquilerId)
+                .orElseThrow(() -> new AlquilerNoEncontradoException(
+                        "Alquiler con id: " + alquilerId + " no encontrado."
+                ));
+
+        // registrar devolución
+        alquiler.setFechaDevolucion(request.getFechaDevolucion());
+
+        // generar penalización automática
+        alquiler.generarPenalizacionPorRetraso();
+
+        // agregar penalizaciones manuales
+        for (PenalizacionManualRequest p : request.getPenalizaciones()) {
+
+            PenalizacionEntity penalizacion = PenalizacionEntity.builder()
+                    .motivo(p.getMotivo())
+                    .monto(p.getMonto())
+                    .build();
+
+            alquiler.agregarPenalizacion(penalizacion);
+        }
+
+        // crear pago
+        PagoEntity pago = PagoEntity.crear(
+                alquiler,
+                request.getMetodoPago(),
+                request.getDescuento()
+        );
+
+        alquiler.asignarPago(pago);
+
+        // finalizar alquiler
+        alquiler.setEstadoAlquiler(EstadoAlquiler.FINALIZADO);
+
+        return alquilerMapper.toResponse(
+                alquilerRepository.save(alquiler)
+        );
     }
 
     // Obtener todos con validación de lista vacía

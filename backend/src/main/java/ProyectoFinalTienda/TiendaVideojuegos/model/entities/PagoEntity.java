@@ -1,6 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
-
-import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoPago;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.MetodosPago;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -34,13 +34,13 @@ public class PagoEntity {
     @NotNull(message = "El pago debe estar asociado a un alquiler")
     private AlquilerEntity alquiler;
 
-    @Enumerated(EnumType.STRING)
     @Column(
-            name = "estado_pago",
+            name = "metodo_pago",
             nullable = false
     )
-    @NotNull(message = "El estado actual del pago es obligatorio")
-    private EstadoPago estadoPago;
+    @NotNull(message = "El metodo de pago no puede ser nulo")
+    @Enumerated(EnumType.STRING)
+    private MetodosPago metodoPago;
 
     @NotNull
     @DecimalMin("0.0")
@@ -62,9 +62,9 @@ public class PagoEntity {
     private BigDecimal montoFinal;
 
     /// Constructor que usará internamente Lombok, privado para que no haya forma de instanciar con un costo total no calculado
-    private PagoEntity(AlquilerEntity alquiler, EstadoPago estadoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal montoFinal) {
+    private PagoEntity(AlquilerEntity alquiler, MetodosPago metodoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal montoFinal) {
         this.alquiler = alquiler;
-        this.estadoPago = estadoPago;
+        this.metodoPago = metodoPago;
         this.descuento = descuento;
         this.penalizacionTotal = penalizacionTotal;
         this.montoFinal = montoFinal;
@@ -73,11 +73,14 @@ public class PagoEntity {
     /// Factory Method
     public static PagoEntity crear(
             AlquilerEntity alquiler,
-            BigDecimal descuento,
-            BigDecimal penalizacionTotal,
-            BigDecimal precioBase
+            MetodosPago metodoPago,
+            BigDecimal descuento
     ) {
+        BigDecimal precioBase = alquiler.calcularCostoFijo();
         BigDecimal descuentoAplicado = precioBase.multiply(descuento);
+        BigDecimal penalizacionTotal = alquiler.getPenalizaciones().stream()
+                .map(PenalizacionEntity::getMonto)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         BigDecimal total = precioBase
                 .subtract(descuentoAplicado)
@@ -86,7 +89,7 @@ public class PagoEntity {
 
         PagoEntity pago = new PagoEntity(
                 alquiler,
-                EstadoPago.PENDIENTE,
+                metodoPago,
                 descuento,
                 penalizacionTotal,
                 total
@@ -95,13 +98,6 @@ public class PagoEntity {
         alquiler.asignarPago(pago);
 
         return pago;
-    }
-
-    public void acreditar() {
-        if (this.estadoPago == EstadoPago.ACREDITADO) {
-            throw new IllegalStateException("El pago ya está acreditado");
-        }
-        this.estadoPago = EstadoPago.ACREDITADO;
     }
 
 }
