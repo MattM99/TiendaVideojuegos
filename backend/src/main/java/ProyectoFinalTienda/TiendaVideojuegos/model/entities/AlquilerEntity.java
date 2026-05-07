@@ -41,6 +41,14 @@ public class AlquilerEntity {
             fetch = FetchType.LAZY
     )
     @Builder.Default
+    private List<PenalizacionEntity> penalizaciones = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "alquiler",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    @Builder.Default
     private List<DetalleAlquilerEntity> items = new ArrayList<>();
 
     @OneToOne(
