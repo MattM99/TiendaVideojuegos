@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,7 +33,7 @@ public class PenalizacionEntity {
 
     @Column(nullable = false)
     @Positive(message = "El monto debe ser mayor a cero")
-    private double monto;
+    private BigDecimal monto;
 
     @Column(nullable = false)
     @NotBlank(message = "El motivo no puede estar vacío")

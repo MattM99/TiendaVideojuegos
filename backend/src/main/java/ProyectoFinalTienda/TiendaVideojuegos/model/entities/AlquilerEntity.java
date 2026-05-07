@@ -46,6 +46,7 @@ public class AlquilerEntity {
     @OneToMany(
             mappedBy = "alquiler",
             cascade = CascadeType.ALL,
+            orphanRemoval = true,
             fetch = FetchType.LAZY
     )
     @Builder.Default
@@ -53,7 +54,8 @@ public class AlquilerEntity {
 
     @OneToOne(
             mappedBy = "alquiler",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private PagoEntity pago;
 
@@ -94,6 +96,8 @@ public class AlquilerEntity {
     @Positive(message = "El monto diario del alquiler debe ser mayor a cero")
     private BigDecimal montoDiarioAlquiler;
 
+   /// Validaciones:
+
     @AssertTrue(message = "La fecha de fin debe ser posterior a la fecha de inicio")
     public boolean isFechaValida() {
         if (fechaInicio == null || fechaFin == null) {
@@ -104,18 +108,18 @@ public class AlquilerEntity {
 
     @Transient
     public boolean isAtrasado() {
-        if (fechaFin == null) return false;
-        return fechaDevolucion == null && LocalDate.now().isAfter(fechaFin);
-    }
-
-
-    public long calcularDiasAlquiler() {
-       long dias = ChronoUnit.DAYS.between(this.getFechaInicio(), this.getFechaFin()) + 1; // +1 para incluir el día de inicio
-        if (dias <= 0) {
-            throw new IllegalArgumentException("La fecha de entrega debe ser posterior a la de retiro");
+        if (fechaFin == null) {
+            return false;
         }
-        return dias;
+
+        if (fechaDevolucion != null) {
+            return fechaDevolucion.isAfter(fechaFin);
+        }
+
+        return LocalDate.now().isAfter(fechaFin);
     }
+
+    /// Aggregate root:
 
     public void agregarDetalle(DetalleAlquilerEntity detalle) {
         items.add(detalle);
@@ -123,9 +127,47 @@ public class AlquilerEntity {
 
     }
 
+    public void agregarPenalizacion(PenalizacionEntity penalizacion) {
+        penalizaciones.add(penalizacion);
+        penalizacion.setAlquiler(this);
+    }
+
+    public void generarPenalizacionPorRetraso() {
+
+        if (!isAtrasado()) {
+            return;
+        }
+
+        long diasAtraso = ChronoUnit.DAYS.between(
+                fechaFin,
+                fechaDevolucion
+        );
+
+        BigDecimal monto = montoDiarioAlquiler
+                .multiply(BigDecimal.valueOf(diasAtraso))
+                .multiply(BigDecimal.valueOf(1.40));
+
+        PenalizacionEntity penalizacion = PenalizacionEntity.builder()
+                .motivo("Retraso en devolución")
+                .monto(monto)
+                .build();
+
+        agregarPenalizacion(penalizacion);
+    }
+
     public void asignarPago(PagoEntity pago) {
         this.pago = pago;
         pago.setAlquiler(this);
+    }
+
+    /// Calculos:
+
+    public long calcularDiasAlquiler() {
+        long dias = ChronoUnit.DAYS.between(this.getFechaInicio(), this.getFechaFin()) + 1; // +1 para incluir el día de inicio
+        if (dias <= 0) {
+            throw new IllegalArgumentException("La fecha de entrega debe ser posterior a la de retiro");
+        }
+        return dias;
     }
 
     public void calcularMontoDiario() {
