@@ -1,5 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.responses;
 
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -21,8 +22,15 @@ public class AlquilerResponse {
 
     private LocalDate fechaFin;
 
+    private LocalDate fechaDevolucion;
+
+    private EstadoAlquiler estadoAlquiler;
+
     private List<DetalleAlquilerResponse> carrito;
+
+    private List<PenalizacionResponse> penalizaciones;
 
     private BigDecimal montoDiarioAlquiler;
 
+    private PagoResponse pago;
 }

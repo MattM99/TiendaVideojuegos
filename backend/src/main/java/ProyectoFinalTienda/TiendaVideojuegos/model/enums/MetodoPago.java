@@ -1,6 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.enums;
 
-public enum MetodosPago {
+public enum MetodoPago {
     EFECTIVO,
     DEBITO,
     CREDITO

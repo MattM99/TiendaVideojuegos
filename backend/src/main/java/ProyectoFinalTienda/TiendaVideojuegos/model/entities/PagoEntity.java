@@ -1,6 +1,5 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
-import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
-import ProyectoFinalTienda.TiendaVideojuegos.model.enums.MetodosPago;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.MetodoPago;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -40,7 +39,7 @@ public class PagoEntity {
     )
     @NotNull(message = "El metodo de pago no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    private MetodosPago metodoPago;
+    private MetodoPago metodoPago;
 
     @NotNull
     @DecimalMin("0.0")
@@ -62,7 +61,7 @@ public class PagoEntity {
     private BigDecimal montoFinal;
 
     /// Constructor que usará internamente Lombok, privado para que no haya forma de instanciar con un costo total no calculado
-    private PagoEntity(AlquilerEntity alquiler, MetodosPago metodoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal montoFinal) {
+    private PagoEntity(AlquilerEntity alquiler, MetodoPago metodoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal montoFinal) {
         this.alquiler = alquiler;
         this.metodoPago = metodoPago;
         this.descuento = descuento;
@@ -73,7 +72,7 @@ public class PagoEntity {
     /// Factory Method
     public static PagoEntity crear(
             AlquilerEntity alquiler,
-            MetodosPago metodoPago,
+            MetodoPago metodoPago,
             BigDecimal descuento
     ) {
         BigDecimal precioBase = alquiler.calcularCostoFijo();
