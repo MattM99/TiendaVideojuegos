@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.services.AlquilerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +28,16 @@ public class AlquilerController {
         AlquilerResponse response = alquilerService.crearAlquiler(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @Operation(summary = "Cerrar el pago de un alquiler", description = "Permite finalizar un alquiler tras su devolucion")
+    @PostMapping("/finalizar")
+    public ResponseEntity<AlquilerResponse> cerrarAlquiler(
+            @RequestParam Integer alquilerId,
+            @Valid @RequestBody CerrarAlquilerRequest request
+    ) {
+        AlquilerResponse response = alquilerService.cerrarAlquiler(alquilerId, request);
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "Eliminar un alquiler", description = "Permite eliminar un alquiler de videojuego por su ID")
