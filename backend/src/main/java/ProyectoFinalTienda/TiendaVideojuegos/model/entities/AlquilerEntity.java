@@ -6,6 +6,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -149,7 +150,8 @@ public class AlquilerEntity {
 
         BigDecimal monto = montoDiarioAlquiler
                 .multiply(BigDecimal.valueOf(diasAtraso))
-                .multiply(BigDecimal.valueOf(1.40));
+                .multiply(BigDecimal.valueOf(1.40))
+                .setScale(2, RoundingMode.HALF_UP);
 
         PenalizacionEntity penalizacion = PenalizacionEntity.builder()
                 .motivo("Retraso en devolución")

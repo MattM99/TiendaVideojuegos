@@ -30,13 +30,15 @@ public class AlquilerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @Operation(summary = "Cerrar el pago de un alquiler", description = "Permite finalizar un alquiler tras su devolucion")
-    @PostMapping("/finalizar")
+    @PostMapping("/{alquilerId}/finalizar")
     public ResponseEntity<AlquilerResponse> cerrarAlquiler(
-            @RequestParam Integer alquilerId,
+            @PathVariable Integer alquilerId,
             @Valid @RequestBody CerrarAlquilerRequest request
     ) {
-        AlquilerResponse response = alquilerService.cerrarAlquiler(alquilerId, request);
+
+        AlquilerResponse response =
+                alquilerService.cerrarAlquiler(alquilerId, request);
+
         return ResponseEntity.ok(response);
     }
 
