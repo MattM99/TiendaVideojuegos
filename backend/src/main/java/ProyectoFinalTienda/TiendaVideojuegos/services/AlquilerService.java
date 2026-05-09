@@ -132,6 +132,12 @@ public class AlquilerService {
 
         alquiler.asignarPago(pago);
 
+        // actualizar stock de los items alquilados
+        for (DetalleAlquilerEntity detalle : alquiler.getItems()) {
+            InventarioItemEntity inventario = detalle.getInventarioItem();
+            inventario.setStockDisponible(inventario.getStockDisponible() + detalle.getCantidad());
+        }
+
         // finalizar alquiler
         alquiler.setEstadoAlquiler(EstadoAlquiler.FINALIZADO);
 
