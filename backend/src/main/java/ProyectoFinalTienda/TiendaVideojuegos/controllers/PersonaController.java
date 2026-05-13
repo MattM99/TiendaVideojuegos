@@ -4,17 +4,21 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaCreateOrReplac
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaPatchRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.services.PersonaService;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/personas")
@@ -32,16 +36,63 @@ public class PersonaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nueva);
     }
 
+    @Operation(summary = "Listar personas", description = "Lista a todas las personas registradas")
+    @GetMapping("/listar")
+    public ResponseEntity<Page<PersonaResponse>> listarTodos(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "apellido") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+
+        return ResponseEntity.ok(
+                personaService.listarTodos(paginacion)
+        );
+    }
+
     @Operation(summary = "Buscar personas por nombre", description = "Devuelve una lista de personas que coincidan con el nombre proporcionado")
     @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<List<PersonaResponse>> buscarPorNombre(@PathVariable String nombre) {
-        return ResponseEntity.ok(personaService.buscarPorNombre(nombre));
+    public ResponseEntity<Page<PersonaResponse>> buscarPorNombre(
+            @PathVariable String nombre,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "apellido") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+        Page<PersonaResponse> responses = personaService.buscarPorNombre(nombre, paginacion);
+        return ResponseEntity.ok(responses);
     }
 
     @Operation(summary = "Buscar personas por apellido", description = "Devuelve una lista de personas que coincidan con el apellido proporcionado")
     @GetMapping("/apellido/{apellido}")
-    public ResponseEntity<List<PersonaResponse>> buscarPorApellido(@PathVariable String apellido) {
-        return ResponseEntity.ok(personaService.buscarPorApellido(apellido));
+    public ResponseEntity<Page<PersonaResponse>> buscarPorApellido(
+            @PathVariable String apellido,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "apellido") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+        Page<PersonaResponse> responses = personaService.buscarPorApellido(apellido, paginacion);
+
+        return ResponseEntity.ok(responses);
     }
 
     @Operation(summary = "Buscar persona por DNI", description = "Devuelve una persona que coincida con el número de DNI especificado")

@@ -8,11 +8,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/alquileres")
@@ -51,8 +56,28 @@ public class AlquilerController {
 
     @Operation(summary = "Obtener todos los alquileres", description = "Devuelve una lista de todos los alquileres registrados")
     @GetMapping("/listar")
-    public ResponseEntity<List<AlquilerResponse>> obtenerTodos() {
-        return ResponseEntity.ok(alquilerService.obtenerTodos());
+    public ResponseEntity<Page<AlquilerResponse>> listarTodos(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fechaInicio,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate fechaFin,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "fechaInicio") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+
+        return ResponseEntity.ok(
+                alquilerService.listarTodos(fechaInicio, fechaFin, paginacion)
+        );
     }
 
     @Operation(summary = "Obtener un alquiler por ID", description = "Devuelve un alquiler específico por su ID")
@@ -64,8 +89,29 @@ public class AlquilerController {
 
     @Operation(summary = "Obtener alquileres por usuario", description = "Devuelve una lista de alquileres asociados a un usuario específico")
     @GetMapping("/usuario/{personaId}")
-    public ResponseEntity<List<AlquilerResponse>> obtenerPorUsuario(@PathVariable int personaId) {
-        List<AlquilerResponse> responses = alquilerService.buscarPorUsuario(personaId);
+    public ResponseEntity<Page<AlquilerResponse>> obtenerPorUsuario(
+            @PathVariable int personaId,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "fechaInicio") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+            ) {
+
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(
+                pagina,
+                tamano,
+                sort
+        );
+
+        Page<AlquilerResponse> responses =
+                alquilerService.buscarPorUsuario(
+                        personaId,
+                        paginacion
+                );
         return ResponseEntity.ok(responses);
     }
 }

@@ -3,19 +3,16 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.VideojuegoMapper;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
-import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.time.Year;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -49,12 +46,10 @@ public class VideojuegoService {
         videojuegoRepository.deleteById(id);
     }
 
-    public List<VideojuegoResponse> obtenerTodos(){
-        List<VideojuegoEntity> videojuegos = videojuegoRepository.findAll();
-        if (videojuegos.isEmpty()) {
-            throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego en el sistema.");
-        }
-        return videojuegoMapper.toResponseList(videojuegos);
+    public Page<VideojuegoResponse> listarTodos(Pageable paginacion)
+    {
+        return videojuegoRepository.findAll(paginacion)
+                .map(videojuegoMapper::toResponse);
     }
 
     public VideojuegoResponse buscarPorId(int id){
@@ -62,36 +57,39 @@ public class VideojuegoService {
         return videojuegoMapper.toResponse(entity);
     }
 
-    public List<VideojuegoResponse> buscarPorTitulo(String titulo){
-        List<VideojuegoEntity> videojuegos = videojuegoRepository.findByTituloContaining(titulo);
+    public Page<VideojuegoResponse> buscarPorTitulo(String titulo, Pageable paginacion){
+        Page<VideojuegoEntity> videojuegos = videojuegoRepository.findByTituloContaining(titulo, paginacion);
         if (videojuegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego que contenga el título: " + titulo);
         }
-        return videojuegoMapper.toResponseList(videojuegos);
+        return videojuegos
+                .map(videojuegoMapper::toResponse);
     }
 
-    public List<VideojuegoResponse> buscarPorDesarrollador(String desarrollador){
-        List<VideojuegoEntity> videojuegos = videojuegoRepository.findByDesarrolladorContaining(desarrollador);
+    public Page<VideojuegoResponse> buscarPorDesarrollador(String desarrollador, Pageable paginacion){
+        Page<VideojuegoEntity> videojuegos = videojuegoRepository.findByDesarrolladorContaining(desarrollador, paginacion);
         if (videojuegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego que contenga el desarrollador: " + desarrollador);
         }
-        return videojuegoMapper.toResponseList(videojuegos);
+        return videojuegos
+                .map(videojuegoMapper::toResponse);
     }
 
-    public List<VideojuegoResponse> buscarPorGenero(String generoStr) throws NoSuchElementException, VideojuegoNoEncontradoException {
+    public Page<VideojuegoResponse> buscarPorGenero(String generoStr, Pageable paginacion) throws NoSuchElementException, VideojuegoNoEncontradoException {
         if (!esGeneroValido(generoStr)){
             throw new NoSuchElementException("No existe el genero: " + generoStr);
         }
 
         Generos genero = Generos.valueOf(generoStr.trim().toUpperCase());
 
-        List<VideojuegoEntity> juegos = videojuegoRepository.findByGenero(genero);
+        Page<VideojuegoEntity> juegos = videojuegoRepository.findByGenero(genero, paginacion);
 
         if (juegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontraron juegos del genero: " + generoStr);
         }
 
-        return videojuegoMapper.toResponseList(juegos);
+        return juegos
+                .map(videojuegoMapper::toResponse);
     }
 
     public boolean esGeneroValido(String generoStr) {
@@ -103,20 +101,22 @@ public class VideojuegoService {
         }
     }
 
-    public List<VideojuegoResponse> buscarMultijugadores(){
-        List<VideojuegoEntity> videojuegos = videojuegoRepository.findByMultijugadorTrue();
+    public Page<VideojuegoResponse> buscarMultijugadores(Pageable paginacion){
+        Page<VideojuegoEntity> videojuegos = videojuegoRepository.findByMultijugadorTrue(paginacion);
         if (videojuegos.isEmpty()) {
             throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego multijugador.");
         }
-        return videojuegoMapper.toResponseList(videojuegos);
+        return videojuegos
+                .map(videojuegoMapper::toResponse);
     }
 
-    public List<VideojuegoResponse> buscarPorLanzamiento(Year lanzamiento){
-        List<VideojuegoEntity> videojuegos = videojuegoRepository.findByLanzamiento(lanzamiento);
+    public Page<VideojuegoResponse> buscarPorLanzamiento(Year lanzamiento, Pageable paginacion){
+        Page<VideojuegoEntity> videojuegos = videojuegoRepository.findByLanzamiento(lanzamiento, paginacion);
         if (videojuegos.isEmpty()) {
-            throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego con anio de lanzamiento: " + lanzamiento);
+            throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego con año de lanzamiento: " + lanzamiento);
         }
-        return videojuegoMapper.toResponseList(videojuegos);
+        return videojuegos
+                .map(videojuegoMapper::toResponse);
     }
 
     // Método para actualización completa (PUT)

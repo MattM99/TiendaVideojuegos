@@ -28,12 +28,6 @@ class PersonaRepositoryTest {
         personaRepository.save(persona);
     }
 
-    @Test
-    @Transactional
-    void findPersonaByNombre() {
-        List<PersonaEntity> persona = personaRepository.findByNombre("Rodrigo");
-        System.out.println("Persona = " + persona);
-    }
 
     @Test
     @Transactional
@@ -46,15 +40,6 @@ class PersonaRepositoryTest {
     @Transactional
     public void findAllPersonas() {
         List<PersonaEntity> personas = personaRepository.findAll();
-        System.out.println("Personas = " + personas);
-    }
-
-
-
-    @Test
-    @Transactional
-    void findPersonasByApellido() {
-        List<PersonaEntity> personas = personaRepository.findByApellido("Quesini");
         System.out.println("Personas = " + personas);
     }
 
