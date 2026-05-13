@@ -13,12 +13,12 @@ import java.util.List;
 @Repository
 public interface InventarioItemRepository extends JpaRepository<InventarioItemEntity, Integer> {
 
-    Page<InventarioItemEntity> findByVideojuegoId(
+    Page<InventarioItemEntity> findByVideojuegoVideojuegoId(
             int videojuegoId,
             Pageable pageable
     );
 
-    List<InventarioItemEntity> findByVideojuegoId(
+    List<InventarioItemEntity> findByVideojuegoVideojuegoId(
             int videojuegoId
     );
 

@@ -80,7 +80,7 @@ public class InventarioItemService {
 
     // Buscar por videojuego con excepción si lista vacía
     public Page<InventarioItemResponse> buscarPorVideojuego(int videojuegoId, Pageable paginacion) {
-        return inventarioItemRepository.findByVideojuegoId(videojuegoId, paginacion)
+        return inventarioItemRepository.findByVideojuegoVideojuegoId(videojuegoId, paginacion)
                 .map(inventario -> {
 
                     VideojuegoResponse videojuegoResponse =
@@ -189,7 +189,7 @@ public class InventarioItemService {
             throw new IllegalArgumentException("El stock disponible no puede ser mayor que el stock total.");
         }
 
-        List<InventarioItemEntity> inventarios = inventarioItemRepository.findByVideojuegoId(request.getVideojuegoId());
+        List<InventarioItemEntity> inventarios = inventarioItemRepository.findByVideojuegoVideojuegoId(request.getVideojuegoId());
 
         if (inventarios.stream().anyMatch(i -> i.getPlataforma() == request.getPlataforma())) {
             throw new IllegalArgumentException("Ya existe un inventario para el videojuego con la misma plataforma.");
