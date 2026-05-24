@@ -31,6 +31,17 @@ import java.util.NoSuchElementException;
 public class CuentaController {
     private final CuentaService cuentaService;
 
+    @GetMapping("/yo")
+    public ResponseEntity<CuentaResponse> obtenerUsuarioActual(
+            Authentication authentication
+    ) {
+        String nickname = authentication.getName();
+
+        CuentaResponse response = cuentaService.toCuentaResponse(cuentaService.buscarPorNickname(nickname));
+
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Listar cuentas", description = "Lista todas las cuentas registradas")
     @GetMapping("/listar")
     public ResponseEntity<Page<CuentaResponse>> listarTodos(

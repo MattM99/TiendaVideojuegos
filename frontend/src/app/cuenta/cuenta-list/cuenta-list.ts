@@ -15,6 +15,15 @@ import { CuentaService } from '../cuenta.service';
 })
 export class CuentaListComponent implements OnInit {
   usuario = computed(() => this.auth.currentUser());
+  page = signal(0);
+size = signal(5);
+
+totalPages = signal(0);
+totalElements = signal(0);
+
+sortBy = signal('nickname');
+
+direction = signal('desc');
 
   private service = inject(CuentaService);
   cuentas = signal<CuentaModel[]>([]);
@@ -26,11 +35,20 @@ export class CuentaListComponent implements OnInit {
   }
 
   loadCuentas() {
-    this.service.getAll().subscribe((data) => this.cuentas.set(data));
+    this.service.getAll(
+      this.page(),
+      this.size(),
+      this.sortBy(),
+      this.direction()
+    ).subscribe((response) => {
+      this.cuentas.set(response.content);
+      this.totalPages.set(response.totalPages);
+      this.totalElements.set(response.totalElements);
+    });
   }
 
   deleteCuenta(cuenta: CuentaModel) {
-    if (!confirm(`¿Eliminar cuenta de ${cuenta.nombreUsuario}?`)) return;
+    if (!confirm(`¿Eliminar cuenta de ${cuenta.nickname}?`)) return;
 
     this.http.delete(`http://localhost:3000/cuentas/${cuenta.id}`).subscribe({
       next: () => this.loadCuentas(),
@@ -45,4 +63,58 @@ export class CuentaListComponent implements OnInit {
   crearEmpleado() {
     this.router.navigate(['/personas/nueva'], { queryParams: { crearCuenta: true } });
   }
+
+  nextPage() {
+  if (this.page() < this.totalPages() - 1) {
+    this.page.update(p => p + 1);
+    this.loadCuentas();
+  }
+}
+
+previousPage() {
+  if (this.page() > 0) {
+    this.page.update(p => p - 1);
+    this.loadCuentas();
+  }
+}
+
+changeSize(event: Event) {
+
+  const value = Number(
+    (event.target as HTMLSelectElement).value
+  );
+
+
+  this.size.set(value);
+
+  this.page.set(0);
+
+  this.loadCuentas();
+}
+
+changeSort(event: Event) {
+
+  const value = (
+    event.target as HTMLSelectElement
+  ).value;
+
+  this.sortBy.set(value);
+
+  this.page.set(0);
+
+  this.loadCuentas();
+}
+
+changeDirection(event: Event) {
+
+  const value = (
+    event.target as HTMLSelectElement
+  ).value;
+
+  this.direction.set(value);
+
+  this.page.set(0);
+
+  this.loadCuentas();
+}
 }

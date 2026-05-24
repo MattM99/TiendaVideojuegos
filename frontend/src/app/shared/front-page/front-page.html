@@ -1,6 +1,6 @@
 <body>
   <section class="hero">
-    <h2>Bienvenido a GameHub Rentals, {{ usuario()?.nombreUsuario }}</h2>
+    <h2>Bienvenido a GameHub Rentals, {{ usuario()?.nickname }}</h2>
     <p>
       Tu plataforma para alquilar videojuegos de manera rápida, segura y con el mejor catálogo
       disponible.
@@ -8,7 +8,7 @@
   </section>
 
   <section class="dashboard-cards">
-    <div class="card" routerLink="/cuentas">
+    <div class="card" routerLink="/cuenta/listar">
       <h3>Empleados</h3>
       <p>Gestión de cuentas en el sistema.</p>
     </div>

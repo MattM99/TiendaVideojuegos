@@ -1,6 +1,7 @@
-import { Component, computed } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../auth/auth-service/auth';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
+import { CuentaModel } from '../../cuenta/cuenta.model';
 
 @Component({
   selector: 'app-front-page',
@@ -9,8 +10,16 @@ import { Router, RouterModule } from '@angular/router';
   templateUrl: './front-page.html',
   styleUrl: './front-page.css',
 })
-export class FrontPage {
-  usuario = computed(() => this.auth.currentUser());
+export class FrontPage implements OnInit {
+  usuario = signal<CuentaModel | null>(null);
 
   constructor(private auth: AuthService) {}
+
+  ngOnInit(): void {
+    this.auth.getCurrentUser().subscribe({
+      next: (response: CuentaModel) => {
+        this.usuario.set(response);
+      }
+    });
+  }
 }

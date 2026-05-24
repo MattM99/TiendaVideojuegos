@@ -1,9 +1,12 @@
+.main-content {
+  flex: 1;
+}
+
 body {
   margin: 0;
   flex: 1;
   padding: 40px 30px;
-  background: radial-gradient(circle at top, #0ff2, #001), linear-gradient(135deg, #0ff1, #f0f1);
-  background-blend-mode: overlay;
+  background: none;
   color: #fff;
   font-family: 'Orbitron', sans-serif;
 }

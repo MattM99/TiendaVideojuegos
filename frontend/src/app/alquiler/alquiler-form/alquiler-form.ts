@@ -2,16 +2,22 @@ import { Component, OnInit, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { Alquiler } from '../alquiler';
 import { AlquilerModel } from '../alquiler.model';
+
 import { Persona } from '../../persona/persona';
+
 import { VideojuegoService } from '../../videojuego/videojuego.service';
 import { VideojuegoModel } from '../../videojuego/videojuego.model';
+
 import { InventarioItemService } from '../../inventario-item/inventario-item.service';
 import { InventarioItemModel } from '../../inventario-item/inventario-item.model';
-import { InventarioItemService } from '../../inventario-item/inventario-item.service';
-import { InventarioItemModel } from '../../inventario-item/inventario-item.model';
-import { fechaValida, noFechaPasada } from '../../shared/validators/date.validator/date.validator';
+
+import {
+  fechaValida,
+  noFechaPasada
+} from '../../shared/validators/date.validator/date.validator';
 
 @Component({
   selector: 'app-alquiler-form',
@@ -21,49 +27,56 @@ import { fechaValida, noFechaPasada } from '../../shared/validators/date.validat
   styleUrl: './alquiler-form.css',
 })
 export class AlquilerForm implements OnInit {
+
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+
   private alquilerService = inject(Alquiler);
   private personaService = inject(Persona);
   private videojuegoService = inject(VideojuegoService);
   private inventarioService = inject(InventarioItemService);
-  private videojuegoService = inject(VideojuegoService);
-  private inventarioService = inject(InventarioItemService);
 
   personas = computed(() => this.personaService.personas());
+
   videojuegos = signal<VideojuegoModel[]>([]);
+
   inventario = signal<InventarioItemModel[]>([]);
+
   videojuegoMap = computed(() => {
     const map: Record<string, string> = {};
+
     this.videojuegos().forEach((j) => {
       if (j.id) {
         map[j.id] = j.titulo;
       }
     });
+
     return map;
   });
 
   titulo = 'Nuevo alquiler';
+
   alquilerId?: string;
 
   form = this.fb.group({
     personaId: ['', [Validators.required]],
+
     inventarioId: ['', [Validators.required]],
+
     fechaInicio: ['', [Validators.required, noFechaPasada]],
+
     fechaFin: ['', [Validators.required, fechaValida]],
-    personaId: ['', [Validators.required]],
-    inventarioId: ['', [Validators.required]],
-    fechaInicio: ['', [Validators.required, noFechaPasada]],
-    fechaFin: ['', [Validators.required, fechaValida]],
+
     montoFijo: [0, [Validators.required, Validators.min(0)]],
+
     fechaDevolucion: [''],
   });
 
   ngOnInit(): void {
+
     this.personaService.cargarPersonas();
 
-    // Cargar videojuegos
     // Cargar videojuegos
     this.videojuegoService.getAll().subscribe({
       next: (juegos) => this.videojuegos.set(juegos),
@@ -72,78 +85,122 @@ export class AlquilerForm implements OnInit {
 
     // Cargar inventario disponible
     this.inventarioService.getAll().subscribe({
-      next: (items) => this.inventario.set(items.filter((i) => i.enLocal > 0)),
+      next: (items) =>
+        this.inventario.set(
+          items.filter((i) => i.enLocal > 0)
+        ),
       error: (err) => console.error(err),
     });
 
-    // Editar alquiler si viene ID
+    // Editar alquiler
     const idParam = this.route.snapshot.paramMap.get('id');
+
     if (idParam) {
+
       this.titulo = 'Editar alquiler';
+
       this.alquilerId = idParam;
 
       this.alquilerService.obtenerAlquiler(this.alquilerId).subscribe({
         next: (alquiler) => {
+
           this.form.patchValue({
             personaId: alquiler.personaId,
+
             inventarioId: alquiler.inventarioId,
-            inventarioId: alquiler.inventarioId,
+
             fechaInicio: alquiler.fechaInicio,
+
             fechaFin: alquiler.fechaFin,
+
             montoFijo: alquiler.montoFijo,
+
             fechaDevolucion: alquiler.fechaDevolucion ?? '',
           });
         },
+
         error: (err) => console.error(err),
       });
     }
   }
 
   onSubmit(): void {
+
     if (this.form.invalid) {
+
       this.form.markAllAsTouched();
+
       return;
     }
 
     const value = this.form.value;
-    const item = this.inventario().find((i) => i.id === value.inventarioId);
+
+    const item = this.inventario().find(
+      (i) => i.id === value.inventarioId
+    );
+
+    if (!item) {
+      console.error('Inventario no encontrado');
+      return;
+    }
 
     const base: Omit<AlquilerModel, 'id'> = {
+
       personaId: value.personaId!,
+
       inventarioId: value.inventarioId!,
-      videojuegoId: item!.videojuegoId,
-      inventarioId: value.inventarioId!,
-      videojuegoId: item!.videojuegoId,
+
+      videojuegoId: item.videojuegoId,
+
       fechaInicio: value.fechaInicio!,
+
       fechaFin: value.fechaFin!,
+
       montoFijo: value.montoFijo!,
+
       fechaDevolucion: value.fechaDevolucion || undefined,
+
       detalles: [],
+
       penalizaciones: [],
     };
 
+    // Actualizar
     if (this.alquilerId) {
-      // Actualizar
-      const actualizado: AlquilerModel = { id: this.alquilerId, ...base };
-      this.alquilerService.actualizarAlquiler(this.alquilerId, actualizado).subscribe({
-        next: () => this.router.navigate(['/alquileres']),
-        error: (err) => console.error(err),
-      });
-    } else {
-      // Crear nuevo alquiler
-      // Crear nuevo alquiler
-      this.alquilerService.crearAlquiler(base).subscribe({
-        next: () => {
-          // Descontar stock al crear
-          this.inventarioService.descontarStock(value.inventarioId!).subscribe({
-            next: () => console.log('Stock descontado'),
-            error: (err) => console.error(err),
-          });
 
-          this.router.navigate(['/alquileres']);
-        },
-        error: (err) => console.error(err),
-      });
+      const actualizado: AlquilerModel = {
+        id: this.alquilerId,
+        ...base
+      };
+
+      this.alquilerService
+        .actualizarAlquiler(this.alquilerId, actualizado)
+        .subscribe({
+          next: () => this.router.navigate(['/alquileres']),
+          error: (err) => console.error(err),
+        });
+
+    } else {
+
+      // Crear
+      this.alquilerService
+        .crearAlquiler(base)
+        .subscribe({
+
+          next: () => {
+
+            this.inventarioService
+              .descontarStock(value.inventarioId!)
+              .subscribe({
+                next: () => console.log('Stock descontado'),
+                error: (err) => console.error(err),
+              });
+
+            this.router.navigate(['/alquileres']);
+          },
+
+          error: (err) => console.error(err),
+        });
     }
   }
 

@@ -1,8 +1,8 @@
 export interface CuentaModel {
   id: string; // modificar otras partes para poder eliminar este dato
-  nombreUsuario: string;
+  nickname: string;
   rol: string;
-  alta: boolean;
+  estado: string;
   password: string; // eliminarlo de cuenta-form
   personaId: string; // eliminarlo de cuenta-form
 

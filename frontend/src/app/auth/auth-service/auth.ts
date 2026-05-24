@@ -38,9 +38,9 @@ export class AuthService {
     return this.currentUserSignal();
   }*/
 
-  getCurrentUser(nickname: string) {
+  getCurrentUser() {
     return this.http.get<CuentaModel>(
-      `http://localhost:8080/api/cuenta/${nickname}`
+      `http://localhost:8080/api/cuenta/yo`
     );
   }
 

@@ -22,7 +22,7 @@ export class CuentaForm {
     nombreUsuario: '',
     password: '',
     rol: 'EMPLEADO',
-    alta: true,
+    estado: 'ACTIVO',
     personaId: '',
   });
 
@@ -33,10 +33,10 @@ export class CuentaForm {
     if (this.isEdit && this.id) {
       this.service.getById(this.id).subscribe((c) => {
         this.cuenta.set({
-          nombreUsuario: c.nombreUsuario,
+          nombreUsuario: c.nickname,
           password: c.password,
           rol: c.rol,
-          alta: c.alta,
+          estado: c.estado,
           personaId: c.personaId,
         });
       });
@@ -60,8 +60,8 @@ export class CuentaForm {
     this.cuenta.update((c) => ({ ...c, rol: value }));
   }
 
-  updateAlta(value: boolean) {
-    this.cuenta.update((c) => ({ ...c, alta: value }));
+  updateEstado(value: string) {
+    this.cuenta.update((c) => ({ ...c, estado: value }));
   }
 
   updatePersonaId(value: string) {
@@ -85,10 +85,10 @@ export class CuentaForm {
 
     const data = {
       personaId: raw.personaId,
-      nombreUsuario: raw.nombreUsuario,
+      nickname: raw.nombreUsuario,
       password: raw.password,
       rol: raw.rol,
-      alta: raw.alta,
+      estado: raw.estado,
     };
 
     if (this.isEdit) {

@@ -9,17 +9,96 @@
   }
 </div>
 
+<div class="pagination-controls">
+
+  <div class="page-size">
+
+    <label for="size">
+      Mostrar:
+    </label>
+
+    <select
+      id="size"
+      [value]="size()"
+      (change)="changeSize($event)">
+
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+
+    </select>
+  </div>
+
+<div class="sorting-controls">
+
+  <div class="sort-group">
+
+    <label for="sortBy">
+      Ordenar por:
+    </label>
+
+    <select
+      id="sortBy"
+      [value]="sortBy()"
+      (change)="changeSort($event)">
+
+      <option value="nickname">
+        Nickname
+      </option>
+
+      <option value="rol">
+        Rol
+      </option>
+
+      <option value="estado">
+        Estado
+      </option>
+
+    </select>
+
+  </div>
+
+  <div class="sort-group">
+
+    <label for="direction">
+      Orden:
+    </label>
+
+    <select
+      id="direction"
+      [value]="direction()"
+      (change)="changeDirection($event)">
+
+      <option value="asc">
+        Ascendente
+      </option>
+
+      <option value="desc">
+        Descendente
+      </option>
+
+    </select>
+
+  </div>
+
+</div>
+</div>
+
 <ul>
-  @for (cuenta of cuentas(); track cuenta.id) {
+  @for (cuenta of cuentas(); track cuenta.nickname) {
   <li>
     <span class="title">
-      <b>{{ cuenta.nombreUsuario }}</b> - {{ cuenta.rol }}
+      <b>{{ cuenta.nickname }}</b>
+
+  <span>
+    {{ cuenta.rol }} • {{ cuenta.estado }}
+  </span>
     </span>
 
     @if (cuenta.rol !== 'FOUNDER' && usuario()?.rol !== 'EMPLEADO') {
     <span class="actions">
       <button (click)="editCuenta(cuenta)">Editar</button>
-      @if (cuenta.id !== usuario()?.id) {
+      @if (cuenta.nickname !== usuario()?.nickname) {
       <button (click)="deleteCuenta(cuenta)">Eliminar</button>
       }
     </span>
@@ -27,3 +106,28 @@
   </li>
   }
 </ul>
+
+<div class="pagination">
+
+  <button
+    (click)="previousPage()"
+    [disabled]="page() === 0">
+
+    Anterior
+
+  </button>
+
+  <span>
+    Página {{ page() + 1 }}
+    de {{ totalPages() }}
+  </span>
+
+  <button
+    (click)="nextPage()"
+    [disabled]="page() >= totalPages() - 1">
+
+    Siguiente
+
+  </button>
+
+</div>

@@ -3,9 +3,11 @@ html, body {
     margin: 0;
 }
 
+
 body {
     display: flex;
     flex-direction: column;
+     min-height: 100vh;
     background: #0a0f14;
     background-image:
         radial-gradient(circle at 20% 30%, #1c2530 0%, transparent 60%),

@@ -19,7 +19,7 @@ export const routes: Routes = [
   { path: 'wip', component: Wip },
 
   {
-    path: 'cuentas',
+    path: 'cuenta',
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['ADMINISTRADOR'] },
     children: CUENTA_ROUTES,

@@ -8,7 +8,7 @@ import { VideojuegoService } from '../videojuego/videojuego.service';
 @Injectable({
   providedIn: 'root',
 })
-})
+
 export class InventarioItemService {
   private http = inject(HttpClient);
   private baseUrl = 'http://localhost:8080/inventarioItems';
