@@ -16,19 +16,30 @@ import { CuentaService } from '../cuenta.service';
 export class CuentaListComponent implements OnInit {
   usuario = computed(() => this.auth.currentUser());
   page = signal(0);
-size = signal(5);
+  size = signal(5);
+  totalPages = signal(0);
+  totalElements = signal(0);
+  sortBy = signal('nickname');
+  direction = signal('desc');
 
-totalPages = signal(0);
-totalElements = signal(0);
+  mostrarBajas = signal(false);
 
-sortBy = signal('nickname');
+  cuentasFiltradas = computed(() => {
 
-direction = signal('desc');
+  if (this.mostrarBajas()) {
+    return this.cuentas();
+  }
+
+  return this.cuentas().filter(
+    cuenta => cuenta.estado !== 'BAJA'
+  );
+
+});
 
   private service = inject(CuentaService);
   cuentas = signal<CuentaModel[]>([]);
 
-  constructor(private http: HttpClient, private auth: AuthService, private router: Router) {}
+  constructor(private http: HttpClient, private auth: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadCuentas();
@@ -47,74 +58,62 @@ direction = signal('desc');
     });
   }
 
-  deleteCuenta(cuenta: CuentaModel) {
-    if (!confirm(`¿Eliminar cuenta de ${cuenta.nickname}?`)) return;
-
-    this.http.delete(`http://localhost:3000/cuentas/${cuenta.id}`).subscribe({
-      next: () => this.loadCuentas(),
-      error: (err) => console.error(err),
-    });
-  }
-
-  editCuenta(cuenta: CuentaModel) {
-    this.router.navigate(['/cuentas/editar', cuenta.id]);
-  }
-
   crearEmpleado() {
     this.router.navigate(['/personas/nueva'], { queryParams: { crearCuenta: true } });
   }
 
+
+///PAGINACION, ORDENAMIENTO Y FILTRADO
   nextPage() {
-  if (this.page() < this.totalPages() - 1) {
-    this.page.update(p => p + 1);
+    if (this.page() < this.totalPages() - 1) {
+      this.page.update(p => p + 1);
+      this.loadCuentas();
+    }
+  }
+
+  previousPage() {
+    if (this.page() > 0) {
+      this.page.update(p => p - 1);
+      this.loadCuentas();
+    }
+  }
+
+  changeSize(event: Event) {
+
+    const value = Number(
+      (event.target as HTMLSelectElement).value
+    );
+
+    this.size.set(value);
+
+    this.page.set(0);
+
     this.loadCuentas();
   }
-}
 
-previousPage() {
-  if (this.page() > 0) {
-    this.page.update(p => p - 1);
+  changeSort(event: Event) {
+
+    const value = (
+      event.target as HTMLSelectElement
+    ).value;
+
+    this.sortBy.set(value);
+
+    this.page.set(0);
+
     this.loadCuentas();
   }
-}
 
-changeSize(event: Event) {
+  changeDirection(event: Event) {
 
-  const value = Number(
-    (event.target as HTMLSelectElement).value
-  );
+    const value = (
+      event.target as HTMLSelectElement
+    ).value;
 
+    this.direction.set(value);
 
-  this.size.set(value);
+    this.page.set(0);
 
-  this.page.set(0);
-
-  this.loadCuentas();
-}
-
-changeSort(event: Event) {
-
-  const value = (
-    event.target as HTMLSelectElement
-  ).value;
-
-  this.sortBy.set(value);
-
-  this.page.set(0);
-
-  this.loadCuentas();
-}
-
-changeDirection(event: Event) {
-
-  const value = (
-    event.target as HTMLSelectElement
-  ).value;
-
-  this.direction.set(value);
-
-  this.page.set(0);
-
-  this.loadCuentas();
-}
+    this.loadCuentas();
+  }
 }

@@ -18,8 +18,9 @@ export class CuentaService {
     ordenarPor: string,
     direccion: string) {
     return this.http.get<PageResponse<CuentaModel>>(
-    `${this.apiUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
-    );}
+      `${this.apiUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+    );
+  }
 
   getById(id: string): Observable<CuentaModel> {
     return this.http.get<CuentaModel>(`${this.apiUrl}/${id}`);
@@ -27,7 +28,7 @@ export class CuentaService {
 
   getByNickname(nickname: string): Observable<CuentaModel> {
     return this.http.get<CuentaModel>(
-          `http://localhost:8080/api/cuenta/${nickname}`
+      `http://localhost:8080/api/cuenta/${nickname}`
     );
   }
 
@@ -35,11 +36,65 @@ export class CuentaService {
     return this.http.post<CuentaModel>(this.apiUrl, c);
   }
 
-  update(id: string, c: CuentaModel): Observable<CuentaModel> {
-    return this.http.put<CuentaModel>(`${this.apiUrl}/${id}`, c);
+  cambiarRol(
+    nickname: string,
+    nuevoRol: string
+  ) {
+
+    return this.http.put<CuentaModel>(
+      `${this.apiUrl}/${nickname}/rol`,
+      {
+        nuevoRol: nuevoRol
+      }
+    );
   }
 
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  cambiarContrasena(
+    nickname: string,
+    nuevaContrasena: string
+  ) {
+
+    return this.http.put<CuentaModel>(
+      `${this.apiUrl}/${nickname}/contrasena`,
+      {
+        nuevaContrasena: nuevaContrasena
+      }
+    );
+  }
+
+  cambiarMiContrasena(
+    nuevaContrasena: string
+  ) {
+
+    return this.http.put<CuentaModel>(
+      `${this.apiUrl}/mi-cuenta/contrasena`,
+      {
+        nuevaContrasena: nuevaContrasena
+      }
+    );
+  }
+
+  darDeBaja(
+    nickname: string
+  ) {
+
+    return this.http.put<CuentaModel>(
+      `${this.apiUrl}/${nickname}/baja`,
+      {}
+    );
+  }
+
+  darDeAlta(
+    nickname: string
+  ) {
+
+    return this.http.put(
+      `${this.apiUrl}/${nickname}/alta`,
+      {}
+    );
+  }
+
+  delete(nickname: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${nickname}`);
   }
 }

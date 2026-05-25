@@ -1,0 +1,97 @@
+@if (cuenta(); as cuenta) {
+
+<div class="detalle-container">
+
+  <h2>Detalles del Usuario</h2>
+
+  <p>
+    <b>Nickname:</b>
+    {{ cuenta.nickname }}
+  </p>
+
+  <p>
+    <b>Rol:</b>
+    {{ cuenta.rol }}
+  </p>
+
+  <p>
+    <b>Estado:</b>
+    {{ cuenta.estado }}
+  </p>
+
+  @if (cuenta.persona) {
+
+  <h2>Datos personales</h2>
+
+  <p>
+    <b>DNI:</b>
+    {{ cuenta.persona.dni }}
+  </p>
+
+  <p>
+    <b>Nombre:</b>
+    {{ cuenta.persona.nombre }}
+  </p>
+
+  <p>
+    <b>Apellido:</b>
+    {{ cuenta.persona.apellido }}
+  </p>
+
+  <p>
+    <b>Email:</b>
+    {{ cuenta.persona.email }}
+  </p>
+
+  <p>
+    <b>Teléfono:</b>
+    {{ cuenta.persona.telefono }}
+  </p>
+
+  }
+
+  <div class="actions">
+    @if (cuenta.rol === 'EMPLEADO') {
+
+    <button (click)="cambiarRol('ADMINISTRADOR')">
+      Cambiar rol a administrador
+    </button>
+
+    } @else if (cuenta.rol === 'ADMINISTRADOR') {
+
+    <button (click)="cambiarRol('EMPLEADO')">
+      Cambiar rol a empleado
+    </button>
+
+    }
+@if (usuario()?.nickname === cuenta.nickname) {
+
+    <button (click)="cambiarPassword()">
+      Cambiar contraseña
+    </button>
+  }
+
+    @if (cuenta.estado === 'ACTIVO') {
+
+    <button (click)="darDeBaja()">
+      Dar de baja
+    </button>
+
+    } @else {
+
+    <button (click)="darDeAlta()">
+      Reactivar
+    </button>
+
+    }
+
+  </div>
+
+
+  <button routerLink="/cuenta/listar">
+    Volver
+  </button>
+
+</div>
+
+}

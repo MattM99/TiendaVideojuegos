@@ -1,0 +1,154 @@
+.detalle-container {
+
+  width: 90%;
+  max-width: 700px;
+
+  margin: 40px auto;
+
+  padding: 28px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(28, 37, 48, 0.88),
+      rgba(20, 28, 36, 0.92)
+    );
+
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  border-left: 4px solid #4c84ff;
+
+  border-radius: 14px;
+
+  backdrop-filter: blur(8px);
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.35),
+    0 0 12px rgba(76, 132, 255, 0.08);
+
+  color: #d9e1e8;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.detalle-container:hover {
+
+  border-color: rgba(76, 132, 255, 0.4);
+
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.4),
+    0 0 16px rgba(76, 132, 255, 0.12);
+}
+
+/* TITULOS */
+
+h2 {
+
+  color: #e0e6ed;
+
+  font-family: 'Segoe UI', sans-serif;
+
+  font-size: 2rem;
+
+  margin-bottom: 24px;
+
+  text-align: center;
+
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+h3 {
+
+  margin-top: 28px;
+  margin-bottom: 18px;
+
+  color: #f4f7fb;
+
+  font-size: 1.2rem;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  padding-bottom: 8px;
+}
+
+/* DATOS */
+
+p {
+
+  margin: 12px 0;
+
+  padding: 14px 16px;
+
+  background: rgba(255, 255, 255, 0.03);
+
+  border: 1px solid rgba(255, 255, 255, 0.04);
+
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #d9e1e8;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+p:hover {
+
+  background: rgba(255, 255, 255, 0.05);
+
+  border-color: rgba(76, 132, 255, 0.2);
+}
+
+b {
+
+  color: #9fbfff;
+
+  min-width: 100px;
+}
+
+/* BOTON */
+
+button {
+
+  margin-top: 28px;
+
+  background: #1c2530;
+
+  color: #e0e6ed;
+
+  border: 1px solid #2d3945;
+
+  padding: 10px 16px;
+
+  border-radius: 6px;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+
+  font-size: 0.95rem;
+}
+
+button:hover {
+
+  background: #2d3945;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+.actions {
+
+  margin-top: 30px;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}

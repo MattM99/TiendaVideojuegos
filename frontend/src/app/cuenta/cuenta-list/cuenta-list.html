@@ -22,9 +22,9 @@
       [value]="size()"
       (change)="changeSize($event)">
 
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
 
     </select>
   </div>
@@ -84,8 +84,20 @@
 </div>
 </div>
 
+<label class="checkbox-filter">
+
+  <input
+    type="checkbox"
+    [checked]="mostrarBajas()"
+    (change)="mostrarBajas.set($any($event.target).checked)"
+  >
+
+  Mostrar cuentas dadas de baja
+
+</label>
+
 <ul>
-  @for (cuenta of cuentas(); track cuenta.nickname) {
+  @for (cuenta of cuentasFiltradas(); track cuenta.nickname) {
   <li>
     <span class="title">
       <b>{{ cuenta.nickname }}</b>
@@ -97,10 +109,11 @@
 
     @if (cuenta.rol !== 'FOUNDER' && usuario()?.rol !== 'EMPLEADO') {
     <span class="actions">
-      <button (click)="editCuenta(cuenta)">Editar</button>
-      @if (cuenta.nickname !== usuario()?.nickname) {
-      <button (click)="deleteCuenta(cuenta)">Eliminar</button>
-      }
+
+      <button [routerLink]="['/cuenta', cuenta.nickname]">
+  Ver detalles
+</button>
+
     </span>
     }
   </li>

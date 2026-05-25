@@ -9,4 +9,5 @@ public class CuentaResponse {
     private String nickname;
     private String rol;
     private String estado;
+    private PersonaResponse persona;
 }

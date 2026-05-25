@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.CuentaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.RolInvalidoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.PersonaMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Estado;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
@@ -21,10 +22,12 @@ import java.util.Optional;
 public class CuentaService {
     private final PasswordEncoder passwordEncoder;
     private final CuentaRepository cuentaRepository;
+    private final PersonaMapper personaMapper;
 
-    public CuentaService(PasswordEncoder passwordEncoder, CuentaRepository cuentaRepository) {
+    public CuentaService(PasswordEncoder passwordEncoder, CuentaRepository cuentaRepository, PersonaMapper personaMapper) {
         this.passwordEncoder = passwordEncoder;
         this.cuentaRepository = cuentaRepository;
+        this.personaMapper = personaMapper;
     }
 
 
@@ -133,6 +136,12 @@ public class CuentaService {
     }
 
     public CuentaEntity darDeBajaCuenta(String nickname) throws UsuarioNoEncontradoException {
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+        String usuarioActivo = auth.getName();
+        if(nickname.equalsIgnoreCase(usuarioActivo)){
+            throw new IllegalArgumentException("No es posible dar de baja la propia cuenta.");
+        }
         CuentaEntity cuenta = buscarPorNickname(nickname);
         cuenta.setEstado(Estado.BAJA);
         return cuentaRepository.save(cuenta);
@@ -145,10 +154,13 @@ public class CuentaService {
     }
 
     public CuentaResponse toCuentaResponse(CuentaEntity cuenta) {
+
         return new CuentaResponse(
                 cuenta.getNickname(),
                 cuenta.getRol().name(),
-                cuenta.getEstado().name()
+                cuenta.getEstado().name(),
+                cuenta.getPersona() != null ? personaMapper.convertirEntidadADTO(cuenta.getPersona()) : null
+
         );
     }
 

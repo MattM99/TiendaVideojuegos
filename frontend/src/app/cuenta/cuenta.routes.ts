@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import { CuentaListComponent } from './cuenta-list/cuenta-list';
-import { CuentaForm } from './cuenta-form/cuenta-form';
+import { CuentaDetalle } from './cuenta-detalle/cuenta-detalle';
 
 export const CUENTA_ROUTES: Routes = [
   { path: 'listar', component: CuentaListComponent },
-  { path: 'nuevo', component: CuentaForm },
-  { path: 'editar/:id', component: CuentaForm },
+  { path: ':nickname', component: CuentaDetalle },
+
 ];
