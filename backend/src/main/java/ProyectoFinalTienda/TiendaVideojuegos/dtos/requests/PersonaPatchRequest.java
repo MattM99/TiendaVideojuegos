@@ -11,5 +11,5 @@ public class PersonaPatchRequest {
     private String nombre;
     private String apellido;
     private String telefono;
-    private String dni;
+    private String email;
 }

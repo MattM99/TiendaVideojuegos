@@ -21,20 +21,29 @@ export class CuentaListComponent implements OnInit {
   totalElements = signal(0);
   sortBy = signal('nickname');
   direction = signal('desc');
+  busqueda = signal('');
 
   mostrarBajas = signal(false);
 
   cuentasFiltradas = computed(() => {
 
-  if (this.mostrarBajas()) {
-    return this.cuentas();
-  }
+    let lista = this.cuentas();
 
-  return this.cuentas().filter(
-    cuenta => cuenta.estado !== 'BAJA'
-  );
+    if (!this.mostrarBajas()) {
+      lista = lista.filter(
+        cuenta => cuenta.estado !== 'BAJA'
+      );
+    }
 
-});
+    const textoBusqueda = this.busqueda().toLowerCase().trim();
+
+    return lista.filter(cuenta =>
+      cuenta.nickname.toLowerCase().includes(textoBusqueda) ||
+      cuenta.rol.toLowerCase().includes(textoBusqueda) ||
+      cuenta.estado.toLowerCase().includes(textoBusqueda)
+    );
+
+  });
 
   private service = inject(CuentaService);
   cuentas = signal<CuentaModel[]>([]);
@@ -63,7 +72,7 @@ export class CuentaListComponent implements OnInit {
   }
 
 
-///PAGINACION, ORDENAMIENTO Y FILTRADO
+  ///PAGINACION, ORDENAMIENTO Y FILTRADO
   nextPage() {
     if (this.page() < this.totalPages() - 1) {
       this.page.update(p => p + 1);

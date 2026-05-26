@@ -7,8 +7,8 @@
     <select formControlName="personaId">
       <option value="">Seleccione un cliente</option>
 
-      @for (p of personas(); track p.id) {
-      <option [value]="p.id">{{ p.dni }} - {{ p.nombre }} {{ p.apellido }}</option>
+      @for (p of personas(); track p.dni) {
+      <option [value]="p.dni">{{ p.dni }} - {{ p.nombre }} {{ p.apellido }}</option>
       }
     </select>
 

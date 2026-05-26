@@ -1,72 +1,207 @@
-<h2>{{ titulo }}</h2>
+<div class="form-container">
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-container">
-  <div>
-    <label>
-      Nombre
-      <input formControlName="nombre" />
-    </label>
-    @if (form.get('nombre')?.invalid && form.get('nombre')?.touched) {
-    <p>* Campo obligatorio</p>
-    } @if ( (form.get('nombre')?.hasError('minlength') || form.get('nombre')?.hasError('maxlength'))
-    && form.get('nombre')?.touched ) {
-    <p>* Entre 3 y 15 caracteres</p>
+  <h2>{{ titulo }}</h2>
+
+  @if (errorMessage) {
+  <div class="error-box">
+    {{ errorMessage }}
+  </div>
+}
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="onSubmit()">
+
+    <div class="form-grid">
+
+      <!-- NOMBRE -->
+
+      <div class="form-group">
+
+        <label for="nombre">
+          Nombre
+        </label>
+
+        <input
+          id="nombre"
+          type="text"
+          formControlName="nombre"
+        />
+
+        @if (
+          form.get('nombre')?.invalid &&
+          form.get('nombre')?.touched
+        ) {
+
+          <small>
+
+            El nombre debe tener entre
+            3 y 15 caracteres.
+
+          </small>
+        }
+
+      </div>
+
+
+      <!-- APELLIDO -->
+
+      <div class="form-group">
+
+        <label for="apellido">
+          Apellido
+        </label>
+
+        <input
+          id="apellido"
+          type="text"
+          formControlName="apellido"
+        />
+
+        @if (
+          form.get('apellido')?.invalid &&
+          form.get('apellido')?.touched
+        ) {
+
+          <small>
+
+            El apellido debe tener entre
+            3 y 15 caracteres.
+
+          </small>
+        }
+
+      </div>
+
+
+      <!-- DNI -->
+
+      <div class="form-group">
+
+        <label for="dni">
+          DNI
+        </label>
+
+        <input
+          id="dni"
+          type="text"
+          formControlName="dni"
+
+        />
+
+        @if (
+          form.get('dni')?.invalid &&
+          form.get('dni')?.touched
+        ) {
+
+          <small>
+
+            Ingrese un DNI válido.
+
+          </small>
+        }
+
+      </div>
+
+
+      <!-- EMAIL -->
+
+      <div class="form-group">
+
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+        />
+
+        @if (
+          form.get('email')?.invalid &&
+          form.get('email')?.touched
+        ) {
+
+          <small>
+
+            Email inválido.
+
+          </small>
+        }
+
+      </div>
+
+
+      <!-- TELEFONO -->
+
+      <div class="form-group">
+
+        <label for="telefono">
+          Teléfono
+        </label>
+
+        <input
+          id="telefono"
+          type="text"
+          formControlName="telefono"
+        />
+
+        @if (
+          form.get('telefono')?.invalid &&
+          form.get('telefono')?.touched
+        ) {
+
+          <small>
+
+            Teléfono inválido.
+
+          </small>
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- VALIDACION PERSONALIZADA -->
+
+    @if (
+      form.errors?.['emailTelefono']
+    ) {
+
+      <div class="validator-error">
+
+        Debe ingresar al menos
+        email o teléfono.
+
+      </div>
     }
-  </div>
 
-  <div>
-    <label>
-      Apellido
-      <input formControlName="apellido" />
-    </label>
-    @if (form.get('apellido')?.invalid && form.get('apellido')?.touched) {
-    <p>* Campo obligatorio</p>
-    } @if ( (form.get('apellido')?.hasError('minlength') ||
-    form.get('apellido')?.hasError('maxlength')) && form.get('apellido')?.touched ) {
-    <p>* Entre 3 y 15 caracteres</p>
-    }
-  </div>
 
-  <div>
-    <label>
-      DNI
-      <input formControlName="dni" />
-    </label>
-    @if (form.get('dni')?.invalid && form.get('dni')?.touched) {
-    <p>* Campo obligatorio</p>
-    } @if ( (form.get('dni')?.hasError('minlength') || form.get('dni')?.hasError('maxlength') ||
-    form.get('dni')?.hasError('pattern')) && form.get('dni')?.touched) {
-    <p>* Entre 7 y 10 numeros</p>
-    }
-  </div>
+    <!-- BOTONES -->
 
-  <div>
-    <label>
-      Email
-      <input formControlName="email" />
-    </label>
-    @if (form.get('email')?.invalid && form.get('email')?.touched) {
-    <p>* Email inválido</p>
-    }
-  </div>
+    <div class="buttons">
 
-  <div>
-    <label>
-      Teléfono
-      <input formControlName="telefono" />
-    </label>
-    @if( form.get('telefono')?.invalid && form.get('telefono')?.touched) {
-    <p>* Entre 7 y 15 numeros</p>
-    }
-  </div>
+      <button
+        type="button"
+        class="cancel-btn"
+        (click)="cancelar()">
 
-  @if (form.errors?.['emailOTelefonoRequerido'] && (form.get('email')?.touched ||
-  form.get('telefono')?.touched)) {
-  <p class="error">* Debe completar email o teléfono (al menos uno)</p>
-  }
+        Cancelar
 
-  <div class="form-buttons">
-    <button type="submit" [disabled]="form.invalid">Guardar</button>
-    <button type="button" (click)="cancelar()">Cancelar</button>
-  </div>
-</form>
+      </button>
+
+      <button
+        type="submit"
+        class="save-btn">
+
+        Guardar
+
+      </button>
+
+    </div>
+
+  </form>
+
+</div>

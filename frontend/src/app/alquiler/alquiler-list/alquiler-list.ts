@@ -26,7 +26,7 @@ export class AlquilerList implements OnInit {
   videojuegos = signal<VideojuegoModel[]>([]);
 
   ngOnInit(): void {
-    this.personaService.cargarPersonas();
+    /*this.personaService.cargarPersonas();*/
     this.alquilerService.cargarAlquileres();
     this.VideojuegoService.getAll().subscribe({
       next: (lista) => this.videojuegos.set(lista),
@@ -66,7 +66,7 @@ export class AlquilerList implements OnInit {
   }
 
   getNombrePersona(personaId: string): string {
-    const persona = this.personaService.personas().find((p) => p.id === personaId);
+    const persona = this.personaService.personas().find((p) => p.dni === personaId);
     return persona ? `${persona.nombre} ${persona.apellido}` : 'Desconocido';
   }
 

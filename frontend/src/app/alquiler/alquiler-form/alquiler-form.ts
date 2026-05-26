@@ -75,7 +75,7 @@ export class AlquilerForm implements OnInit {
 
   ngOnInit(): void {
 
-    this.personaService.cargarPersonas();
+   /* this.personaService.cargarPersonas();*/
 
     // Cargar videojuegos
     this.videojuegoService.getAll().subscribe({
