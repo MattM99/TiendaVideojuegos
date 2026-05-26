@@ -40,6 +40,13 @@ public class InventarioItemEntity {
     )
     private List<DetalleAlquilerEntity> detalleAlquileres;
 
+    @OneToMany(
+            mappedBy = "inventarioItem",
+            cascade = CascadeType.ALL
+    )
+
+    private List<ReservaEntity> listaDeEspera;
+
     @Enumerated(EnumType.STRING)
     @Column(
             name = "plataforma",
