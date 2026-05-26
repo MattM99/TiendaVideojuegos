@@ -1,5 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoReserva;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -10,6 +11,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -76,5 +78,22 @@ public class InventarioItemEntity {
     @Min(value = 0, message = "El stock disponible no puede ser negativo")
     private int stockDisponible;
 
+    /// ---- Aggregate root ----
+
+    public void agregarReserva(ReservaEntity reserva) {
+        this.listaDeEspera.add(reserva);
+        reserva.setInventarioItem(this);
+    }
+
+     public void eliminarReserva(ReservaEntity reserva) {
+        this.listaDeEspera.remove(reserva);
+        reserva.setInventarioItem(null);
+    }
+
+    public Optional<ReservaEntity> obtenerPrimeraReservaPendiente() {
+        return this.listaDeEspera.stream()
+                .filter(reserva -> reserva.getEstadoReserva() == EstadoReserva.PENDIENTE)
+                .findFirst();
+    }
 
 }
