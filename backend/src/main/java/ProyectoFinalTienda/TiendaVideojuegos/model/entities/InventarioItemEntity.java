@@ -8,6 +8,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -44,8 +45,7 @@ public class InventarioItemEntity {
             mappedBy = "inventarioItem",
             cascade = CascadeType.ALL
     )
-
-    private List<ReservaEntity> listaDeEspera;
+    private List<ReservaEntity> listaDeEspera = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(

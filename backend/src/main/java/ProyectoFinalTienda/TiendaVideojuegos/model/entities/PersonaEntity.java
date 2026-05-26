@@ -58,6 +58,11 @@ public class PersonaEntity implements UserDetails {
     )
     private List<AlquilerEntity> alquiler = new ArrayList<>();
 
+    @OneToMany(
+            mappedBy = "persona",
+            cascade = CascadeType.ALL
+    )
+    private List<ReservaEntity> reservas = new ArrayList<>();
 
 
     @Column(
