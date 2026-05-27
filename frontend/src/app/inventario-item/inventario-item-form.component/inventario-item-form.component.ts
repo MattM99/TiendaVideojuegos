@@ -3,6 +3,7 @@ import { InventarioItemService } from '../inventario-item.service';
 import { VideojuegoService } from '../../videojuego/videojuego.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { InventarioItemModel } from '../inventario-item.model';
 
 @Component({
   selector: 'app-inventario-item-form',
@@ -22,21 +23,22 @@ export class InventarioItemFormComponent {
   id: string = '';
 
   // Lista de videojuegos para el <select>
-  videojuegos = signal<{ id: string; titulo: string }[]>([]);
+  videojuegos = signal<{ id: number; titulo: string }[]>([]);
 
   // Modelo del formulario
-  item = signal({
-    videojuegoId: '',
-    plataforma: '',
-    precioDiario: 0,
-    stockTotal: 0,
-    enLocal: 0,
-  });
+  item = signal<InventarioItemModel>({
+  videojuegoId: 0,
+  plataforma: '',
+  precioDiario: 0,
+  stockTotal: 0,
+  enLocal: 0,
+});
 
   canSave = computed(() => {
     const v = this.item();
+
     return (
-      v.videojuegoId.trim() !== '' &&
+      v.videojuegoId > 0 &&
       v.plataforma.trim() !== '' &&
       v.precioDiario > 0 &&
       v.stockTotal >= 0 &&
@@ -45,15 +47,19 @@ export class InventarioItemFormComponent {
   });
 
   ngOnInit() {
-    // Cargar videojuegos para el dropdown
     this.videojuegosService.getAll().subscribe({
       next: (lista) =>
-        this.videojuegos.set(lista.map((v) => ({ id: v.id ?? '', titulo: v.titulo }))),
+        this.videojuegos.set(
+          lista.map((v) => ({
+            id: v.videojuegoId!,
+            titulo: v.titulo,
+          }))
+        ),
       error: () => alert('No se pudo cargar la lista de videojuegos'),
     });
 
-    // ¿Edit?
     const routeId = this.route.snapshot.paramMap.get('id');
+
     if (routeId) {
       this.id = routeId;
       this.isEdit = true;
@@ -65,8 +71,7 @@ export class InventarioItemFormComponent {
     }
   }
 
-  // Métodos de update (igual que en videojuegos)
-  updateVideojuego(id: string) {
+  updateVideojuego(id: number) {
     this.item.update((v) => ({ ...v, videojuegoId: id }));
   }
 

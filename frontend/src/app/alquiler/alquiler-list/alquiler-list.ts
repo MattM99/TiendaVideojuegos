@@ -70,8 +70,11 @@ export class AlquilerList implements OnInit {
     return persona ? `${persona.nombre} ${persona.apellido}` : 'Desconocido';
   }
 
-  getTituloJuego(videojuegoId: string): string {
-    const juego = this.videojuegos().find((v) => v.id === videojuegoId);
-    return juego ? juego.titulo : 'Desconocido';
-  }
+  getTituloJuego(videojuegoId: number): string {
+  const juego = this.videojuegos().find(
+    (v) => v.videojuegoId === videojuegoId
+  );
+
+  return juego ? juego.titulo : 'Desconocido';
+}
 }

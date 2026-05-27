@@ -2,6 +2,7 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VideojuegoService } from '../videojuego.service';
 import { FormsModule } from '@angular/forms';
+import { VideojuegoModel } from '../videojuego.model';
 
 @Component({
   selector: 'app-videojuego-form',
@@ -18,20 +19,20 @@ export class VideojuegoFormComponent {
   isEdit = false;
   id: string = '';
 
-  videojuego = signal({
-    titulo: '',
-    sinopsis: '',
-    genero: '',
-    multijugador: false,
-    lanzamiento: 2000,
-    desarrollador: ''
-  });
+  videojuego = signal<VideojuegoModel>({
+  titulo: '',
+  descripcion: '',
+  genero: '',
+  multijugador: false,
+  lanzamiento: 0,
+  desarrollador: ''
+});
 
   tituloTouched = signal(false);
 generoTouched = signal(false);
 desarrolladorTouched = signal(false);
 lanzamientoTouched = signal(false);
-sinopsisTouched = signal(false);
+descripcionTouched = signal(false);
 
 
   // ---- VALIDACIONES POR CAMPO ----
@@ -45,11 +46,11 @@ sinopsisTouched = signal(false);
     return null;
   });
 
-  sinopsisError = computed(() => {
-      if (!this.sinopsisTouched()) return null;
+  descripcionError = computed(() => {
+      if (!this.descripcionTouched()) return null;
 
-    const v = this.videojuego().sinopsis.trim();
-    if (v === '') return 'La sinopsis es obligatoria';
+    const v = this.videojuego().descripcion.trim();
+    if (v === '') return 'La descripción es obligatoria';
     if (v.length < 10) return 'Debe tener mínimo 10 caracteres';
     return null;
   });
@@ -81,20 +82,18 @@ sinopsisTouched = signal(false);
 
   // Computed signal para habilitar/deshabilitar "Guardar"
   canSave = computed(() => {
-    const v = this.videojuego();
-    return (
-      v.titulo.trim() !== '' &&
-      v.sinopsis.trim() !== '' &&
-      v.genero.trim() !== '' &&
-      v.desarrollador.trim() !== '' &&
-      v.lanzamiento != null &&
-      !this.tituloError() &&
-      !this.sinopsisError() &&
-      !this.generoError() &&
-      !this.desarrolladorError() &&
-      !this.lanzamientoError()
-    );
-  });
+  const v = this.videojuego();
+  const actual = new Date().getFullYear();
+
+  return (
+    v.titulo.trim().length >= 3 &&
+    v.descripcion.trim().length >= 10 &&
+    v.genero.trim() !== '' &&
+    v.desarrollador.trim() !== '' &&
+    v.lanzamiento >= 1960 &&
+    v.lanzamiento <= actual + 1
+  );
+});
 
 
   ngOnInit() {
@@ -103,27 +102,56 @@ sinopsisTouched = signal(false);
       this.id = routeId;
       this.isEdit = true;
 
-      this.service.getById(this.id).subscribe(v => this.videojuego.set(v));
+      this.service.getById(this.id).subscribe(v => {
+
+      this.videojuego.set({
+        ...v,
+        multijugador:
+          v.multijugador === true ||
+          v.multijugador === 'Sí'
+        });
+
+      });
     }
   }
 
   updateTitulo(value: string) { this.videojuego.update(v => ({ ...v, titulo: value })); }
-  updateSinopsis(value: string) { this.videojuego.update(v => ({ ...v, sinopsis: value })); }
+  updateDescripcion(value: string) { this.videojuego.update(v => ({ ...v, descripcion: value })); }
   updateGenero(value: string) { this.videojuego.update(v => ({ ...v, genero: value })); }
   updateDesarrollador(value: string) { this.videojuego.update(v => ({ ...v, desarrollador: value })); }
   updateMultijugador(value: boolean) { this.videojuego.update(v => ({ ...v, multijugador: value })); }
   updateLanzamiento(value: number) { this.videojuego.update(v => ({ ...v, lanzamiento: value })); }
 
   save() {
-    if (!this.canSave()) return; // nunca guardamos si no está completo
-    const data = this.videojuego();
+  console.log('CLICK GUARDAR');
+  console.log('canSave:', this.canSave());
+  console.log('data:', this.videojuego());
 
-    if (this.isEdit) {
-      this.service.update(this.id, data).subscribe(() => this.router.navigate(['/videojuegos']));
-    } else {
-      this.service.create(data).subscribe(() => this.router.navigate(['/videojuegos']));
-    }
+  if (!this.canSave()) {
+    alert('Faltan datos o hay campos inválidos');
+    return;
   }
+
+  const data = this.videojuego();
+
+  if (this.isEdit) {
+    this.service.update(this.id, data).subscribe({
+      next: () => this.router.navigate(['/videojuegos']),
+      error: (err) => {
+        console.error(err);
+        alert('Error al actualizar videojuego');
+      }
+    });
+  } else {
+    this.service.create(data).subscribe({
+      next: () => this.router.navigate(['/videojuegos']),
+      error: (err) => {
+        console.error(err);
+        alert('Error al crear videojuego');
+      }
+    });
+  }
+}
 
   volver() { history.back(); }
 
@@ -132,6 +160,6 @@ sinopsisTouched = signal(false);
     if (field === 'genero') this.generoTouched.set(true);
     if (field === 'desarrollador') this.desarrolladorTouched.set(true);
     if (field === 'lanzamiento') this.lanzamientoTouched.set(true);
-    if (field === 'sinopsis') this.sinopsisTouched.set(true);
+    if (field === 'descripcion') this.descripcionTouched.set(true);
   }
 }

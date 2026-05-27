@@ -71,16 +71,16 @@
     </button>
   </div>
 
-  <label>Sinopsis</label>
+  <label>Descripcion</label>
   <textarea
-    [ngModel]="videojuego().sinopsis"
-    (ngModelChange)="updateSinopsis($event)"
-    name="sinopsis"
-    (blur)="markTouched('sinopsis')"
+    [ngModel]="videojuego().descripcion"
+    (ngModelChange)="updateDescripcion($event)"
+    name="descripcion"
+    (blur)="markTouched('descripcion')"
   ></textarea>
 
-  @if (sinopsisError()) {
-    <p class="error">{{ sinopsisError() }}</p>
+  @if (descripcionError()) {
+    <p class="error">{{ descripcionError() }}</p>
   }
 
   <div class="form-buttons">

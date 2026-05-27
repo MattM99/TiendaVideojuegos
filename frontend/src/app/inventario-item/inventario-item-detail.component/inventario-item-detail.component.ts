@@ -18,7 +18,7 @@ export class InventarioItemDetailComponent {
   data = signal<{ item: InventarioItemModel; titulo: string }>({
     item: {
       id: '',
-      videojuegoId: '',
+      videojuegoId: 0,
       plataforma: '',
       precioDiario: 0,
       stockTotal: 0,

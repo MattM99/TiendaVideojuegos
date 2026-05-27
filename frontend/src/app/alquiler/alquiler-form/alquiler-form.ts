@@ -47,8 +47,8 @@ export class AlquilerForm implements OnInit {
     const map: Record<string, string> = {};
 
     this.videojuegos().forEach((j) => {
-      if (j.id) {
-        map[j.id] = j.titulo;
+      if (j.videojuegoId) {
+        map[j.videojuegoId] = j.titulo;
       }
     });
 

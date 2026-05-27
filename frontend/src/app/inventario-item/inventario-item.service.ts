@@ -22,9 +22,11 @@ export class InventarioItemService {
     return this.http.get<InventarioItemModel>(`${this.baseUrl}/${id}`);
   }
 
-  getTituloJuego(videojuegoId: string): Observable<string> {
-    return this.videojuegoService.getById(videojuegoId).pipe(map((v) => v.titulo));
-  }
+  getTituloJuego(videojuegoId: number): Observable<string> {
+  return this.videojuegoService
+    .getById(String(videojuegoId))
+    .pipe(map((v) => v.titulo));
+}
 
 create(item: InventarioItemModel): Observable<InventarioItemModel> {
     return this.http.post<InventarioItemModel>(this.baseUrl, item);
