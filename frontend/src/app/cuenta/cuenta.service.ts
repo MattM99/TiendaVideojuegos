@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, ValueProvider } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CuentaModel } from './cuenta.model';
 import { PageResponse } from '../models/page-response.model';
+import { RegisterRequest } from '../auth/register-request';
+
 
 @Injectable({
   providedIn: 'root',
@@ -30,10 +32,6 @@ export class CuentaService {
     return this.http.get<CuentaModel>(
       `http://localhost:8080/api/cuenta/${nickname}`
     );
-  }
-
-  create(c: Omit<CuentaModel, 'id'>): Observable<CuentaModel> {
-    return this.http.post<CuentaModel>(this.apiUrl, c);
   }
 
   cambiarRol(

@@ -4,7 +4,7 @@
   <button class="back-btn" routerLink="/home">Volver</button>
   @if (usuario()?.rol !== 'EMPLEADO') {
   <div class="create-button-container">
-    <button (click)="crearEmpleado()">Crear nuevo usuario</button>
+    <button routerLink="/cuenta/nuevo">Crear nuevo usuario</button>
   </div>
   }
 </div>

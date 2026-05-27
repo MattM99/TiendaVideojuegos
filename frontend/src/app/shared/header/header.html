@@ -1,20 +1,29 @@
-<header>
-  <img
-    src="assets/img/logo.png"
-    class="logo"
-    alt="logo"
-    style="cursor: pointer"
-    routerLink="/home"
-  />
+<header class="header">
+  <div class="header-container">
+    <img src="assets/img/logo.png" class="logo" alt="logo" routerLink="/home" />
 
-  <nav>
-    <ul>
-      <li><a routerLink="/home">Inicio</a></li>
-      @if (usuario()) {
-      <li><a href="#" (click)="logout($event)">Cerrar Sesión</a></li>
-      } @else {
-      <li><a routerLink="api/auth/login">Iniciar Sesión</a></li>
-      }
-    </ul>
-  </nav>
+    <nav class="nav">
+      <ul class="nav-links">
+        <li>
+          <a routerLink="/home" routerLinkActive="active">Inicio</a>
+        </li>
+
+        @if (usuario()) {
+        <div class="user-info">
+          <span>{{ usuario()?.nickname }}</span>
+          <span class="rol">{{ usuario()?.rol }}</span>
+        </div>
+        <li>
+          <a href="#" (click)="logout($event)">Cerrar Sesión</a>
+        </li>
+        } @else {
+        <li>
+          <a routerLink="/login" routerLinkActive="active">
+            Iniciar Sesión
+          </a>
+        </li>
+        }
+      </ul>
+    </nav>
+  </div>
 </header>
