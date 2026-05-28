@@ -31,7 +31,7 @@ export class InventarioItemFormComponent {
   plataforma: '',
   precioDiario: 0,
   stockTotal: 0,
-  enLocal: 0,
+  stockDisponible: 0,
 });
 
   canSave = computed(() => {
@@ -42,7 +42,7 @@ export class InventarioItemFormComponent {
       v.plataforma.trim() !== '' &&
       v.precioDiario > 0 &&
       v.stockTotal >= 0 &&
-      v.enLocal >= 0
+      v.stockDisponible >= 0
     );
   });
 
@@ -87,8 +87,8 @@ export class InventarioItemFormComponent {
     this.item.update((v) => ({ ...v, stockTotal: Number(value) }));
   }
 
-  updateEnLocal(value: number) {
-    this.item.update((v) => ({ ...v, enLocal: Number(value) }));
+  updateStockDisponible(value: number) {
+    this.item.update((v) => ({ ...v, stockDisponible: Number(value) }));
   }
 
   guardar() {

@@ -8,54 +8,43 @@ import { VideojuegoService } from '../videojuego/videojuego.service';
 @Injectable({
   providedIn: 'root',
 })
-
 export class InventarioItemService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/inventarioItems';
+  private baseUrl = 'http://localhost:8080/api/inventario';
   private videojuegoService = inject(VideojuegoService);
 
   getAll(): Observable<InventarioItemModel[]> {
-    return this.http.get<InventarioItemModel[]>(this.baseUrl);
+    return this.http
+      .get<{ content: InventarioItemModel[] }>(`${this.baseUrl}/listar`)
+      .pipe(map(response => response.content));
   }
 
-  getById(id: string): Observable<InventarioItemModel> {
+  getById(id: string | number): Observable<InventarioItemModel> {
     return this.http.get<InventarioItemModel>(`${this.baseUrl}/${id}`);
   }
 
   getTituloJuego(videojuegoId: number): Observable<string> {
-  return this.videojuegoService
-    .getById(String(videojuegoId))
-    .pipe(map((v) => v.titulo));
-}
+    return this.videojuegoService
+      .getById(String(videojuegoId))
+      .pipe(map(v => v.titulo));
+  }
 
-create(item: InventarioItemModel): Observable<InventarioItemModel> {
+  create(item: InventarioItemModel): Observable<InventarioItemModel> {
     return this.http.post<InventarioItemModel>(this.baseUrl, item);
   }
 
-
-  update(id: string, item: InventarioItemModel): Observable<InventarioItemModel> {
+  update(id: string | number, item: InventarioItemModel): Observable<InventarioItemModel> {
     return this.http.put<InventarioItemModel>(`${this.baseUrl}/${id}`, item);
   }
 
-  delete(id: string): Observable<void> {
+  delete(id: string | number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  descontarStock(id: string): Observable<InventarioItemModel> {
-    return this.getById(id).pipe(
-      switchMap((item) =>
-        this.http.patch<InventarioItemModel>(`${this.baseUrl}/${id}`, { enLocal: item.enLocal - 1 })
-      ),
-      catchError((err) => throwError(() => new Error('No se pudo descontar el stock')))
-    );
-  }
-
-  incrementarStock(id: string): Observable<InventarioItemModel> {
-    return this.getById(id).pipe(
-      switchMap((item) =>
-        this.http.patch<InventarioItemModel>(`${this.baseUrl}/${id}`, { enLocal: item.enLocal + 1 })
-      ),
-      catchError((err) => throwError(() => new Error('No se pudo incrementar el stock')))
+  agregarStock(id: string | number, cantidad: number): Observable<InventarioItemModel> {
+    return this.http.patch<InventarioItemModel>(
+      `${this.baseUrl}/${id}/agregar-stock?cantidad=${cantidad}`,
+      {}
     );
   }
 }

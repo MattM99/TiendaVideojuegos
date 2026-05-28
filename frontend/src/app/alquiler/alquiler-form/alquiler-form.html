@@ -1,6 +1,6 @@
 <h2>{{ titulo }}</h2>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
+<form [formGroup]="form" (ngSubmit)="guardar()">
   <!-- Cliente -->
   <div>
     <label>Cliente</label>
@@ -18,15 +18,14 @@
   </div>
 
   <!-- Inventario / Juego -->
-  <!-- Inventario / Juego -->
   <div>
     <label>Juego en inventario</label>
     <select formControlName="inventarioId">
       <option value="">Seleccione un juego</option>
 
-      @for (item of inventario(); track item.id){ @if (item.enLocal > 0) {
-      <option [value]="item.id">
-        {{ videojuegoMap()[item.videojuegoId] || 'Desconocido' }} (Stock: {{ item.enLocal }})
+      @for (item of inventario(); track item.inventarioItemId){ @if (item.stockDisponible > 0) {
+      <option [value]="item.inventarioItemId">
+        {{ videojuegoMap()[item.videojuegoId] || 'Desconocido' }} (Stock: {{ item.stockDisponible }})
       </option>
       } }
     </select>
@@ -37,7 +36,6 @@
   </div>
 
   <!-- Fecha inicio -->
-  <!-- Fecha inicio -->
   <div>
     <label>Fecha inicio</label>
     <input type="date" formControlName="fechaInicio" />
@@ -46,7 +44,6 @@
     }
   </div>
 
-  <!-- Fecha fin -->
   <!-- Fecha fin -->
   <div>
     <label>Fecha fin</label>
@@ -57,7 +54,6 @@
   </div>
 
   <!-- Monto fijo -->
-  <!-- Monto fijo -->
   <div>
     <label>Monto fijo</label>
     <input type="number" formControlName="montoFijo" />
@@ -67,13 +63,11 @@
   </div>
 
   <!-- Fecha devolución opcional -->
-  <!-- Fecha devolución opcional -->
   <div>
     <label>Fecha devolución (opcional)</label>
     <input type="date" formControlName="fechaDevolucion" />
   </div>
 
-  <!-- Botones -->
   <!-- Botones -->
   <div class="buttons">
     <button type="submit" [disabled]="form.invalid">Guardar</button>

@@ -35,7 +35,7 @@ export class InventarioItemListComponent {
     });
   }
 
-  delete(id?: string) {
+  delete(id?: number) {
     if (!id) return;
 
     if (!confirm('¿Seguro que querés eliminar este item del inventario?')) return;

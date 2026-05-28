@@ -1,8 +1,8 @@
 export interface InventarioItemModel {
-  id?: string;
+  inventarioItemId?: number;
   videojuegoId: number;
   plataforma: string;
   precioDiario: number;
   stockTotal: number;
-  enLocal: number;
+  stockDisponible: number;
 }

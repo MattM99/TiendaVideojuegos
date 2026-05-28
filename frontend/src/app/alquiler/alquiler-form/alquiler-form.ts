@@ -87,7 +87,7 @@ export class AlquilerForm implements OnInit {
     this.inventarioService.getAll().subscribe({
       next: (items) =>
         this.inventario.set(
-          items.filter((i) => i.enLocal > 0)
+          items.filter((i) => i.stockDisponible > 0)
         ),
       error: (err) => console.error(err),
     });
@@ -123,7 +123,7 @@ export class AlquilerForm implements OnInit {
       });
     }
   }
-
+/*
   onSubmit(): void {
 
     if (this.form.invalid) {
@@ -136,7 +136,7 @@ export class AlquilerForm implements OnInit {
     const value = this.form.value;
 
     const item = this.inventario().find(
-      (i) => i.id === value.inventarioId
+      (i) => i.inventarioItemId === value.inventarioId
     );
 
     if (!item) {
@@ -202,7 +202,7 @@ export class AlquilerForm implements OnInit {
           error: (err) => console.error(err),
         });
     }
-  }
+  }*/
 
   cancelar(): void {
     this.router.navigate(['/alquileres']);

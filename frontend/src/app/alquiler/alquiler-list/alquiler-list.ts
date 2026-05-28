@@ -51,12 +51,12 @@ export class AlquilerList implements OnInit {
     this.alquilerService.eliminarAlquiler(alquilerId).subscribe({
       next: () => {
         // Incrementar stock solo si tenemos inventarioId
-        if (inventarioId) {
+        /*if (inventarioId) {
           this.inventarioService.incrementarStock(inventarioId).subscribe({
             next: () => console.log('Stock incrementado'),
             error: (err) => console.error('Error incrementando stock', err),
           });
-        }
+        }*/
 
         // Recargar lista de alquileres
         this.alquilerService.cargarAlquileres();
