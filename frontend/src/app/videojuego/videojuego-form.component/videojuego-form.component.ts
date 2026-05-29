@@ -19,6 +19,22 @@ export class VideojuegoFormComponent {
   isEdit = false;
   id: string = '';
 
+  generos = [
+  'ACCION',
+  'AVENTURA',
+  'TERROR',
+  'CARRERAS',
+  'RPG',
+  'DISPAROS',
+  'ESTRATEGIA',
+  'SIMULACION',
+  'PELEAS',
+  'PLATAFORMAS',
+  'DEPORTES',
+  'MUNDO_ABIERTO',
+  'PUZZLE'
+  ];
+
   videojuego = signal<VideojuegoModel>({
   titulo: '',
   descripcion: '',
@@ -26,13 +42,13 @@ export class VideojuegoFormComponent {
   multijugador: false,
   lanzamiento: 0,
   desarrollador: ''
-});
+  });
 
   tituloTouched = signal(false);
-generoTouched = signal(false);
-desarrolladorTouched = signal(false);
-lanzamientoTouched = signal(false);
-descripcionTouched = signal(false);
+  generoTouched = signal(false);
+  desarrolladorTouched = signal(false);
+  lanzamientoTouched = signal(false);
+  descripcionTouched = signal(false);
 
 
   // ---- VALIDACIONES POR CAMPO ----
@@ -41,8 +57,7 @@ descripcionTouched = signal(false);
 
     const v = this.videojuego().titulo.trim();
     if (v === '') return 'El título es obligatorio';
-    if (v.length < 3) return 'El título debe tener al menos 3 caracteres';
-    if (v.length > 40) return 'Máximo 40 caracteres';
+    if (v.length < 2) return 'El título debe tener al menos 2 caracteres';
     return null;
   });
 
@@ -86,7 +101,7 @@ descripcionTouched = signal(false);
   const actual = new Date().getFullYear();
 
   return (
-    v.titulo.trim().length >= 3 &&
+    v.titulo.trim().length >= 2 &&
     v.descripcion.trim().length >= 10 &&
     v.genero.trim() !== '' &&
     v.desarrollador.trim() !== '' &&
