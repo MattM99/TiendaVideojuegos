@@ -123,7 +123,7 @@ export class AlquilerForm implements OnInit {
       });
     }
   }
-/*
+
   onSubmit(): void {
 
     if (this.form.invalid) {
@@ -188,21 +188,13 @@ export class AlquilerForm implements OnInit {
         .subscribe({
 
           next: () => {
-
-            this.inventarioService
-              .descontarStock(value.inventarioId!)
-              .subscribe({
-                next: () => console.log('Stock descontado'),
-                error: (err) => console.error(err),
-              });
-
             this.router.navigate(['/alquileres']);
           },
 
-          error: (err) => console.error(err),
+          error: (err: any) => console.error(err),
         });
     }
-  }*/
+  }
 
   cancelar(): void {
     this.router.navigate(['/alquileres']);
