@@ -22,17 +22,15 @@ export class InventarioItemFormComponent {
   isEdit = false;
   id: string = '';
 
-  // Lista de videojuegos para el <select>
   videojuegos = signal<{ id: number; titulo: string }[]>([]);
 
-  // Modelo del formulario
-  item = signal<InventarioItemModel>({
-  videojuegoId: 0,
-  plataforma: '',
-  precioDiario: 0,
-  stockTotal: 0,
-  stockDisponible: 0,
-});
+  item = signal({
+    videojuegoId: 0,
+    plataforma: '',
+    precioDiario: 0,
+    stockTotal: 0,
+    stockDisponible: 0,
+  });
 
   canSave = computed(() => {
     const v = this.item();
@@ -42,7 +40,8 @@ export class InventarioItemFormComponent {
       v.plataforma.trim() !== '' &&
       v.precioDiario > 0 &&
       v.stockTotal >= 0 &&
-      v.stockDisponible >= 0
+      v.stockDisponible >= 0 &&
+      v.stockDisponible <= v.stockTotal
     );
   });
 
@@ -65,46 +64,62 @@ export class InventarioItemFormComponent {
       this.isEdit = true;
 
       this.inventarioService.getById(routeId).subscribe({
-        next: (data) => this.item.set(data),
+        next: (data) =>
+          this.item.set({
+            videojuegoId: data.videojuego.videojuegoId!,
+            plataforma: data.plataforma,
+            precioDiario: data.precioDiario,
+            stockTotal: data.stockTotal,
+            stockDisponible: data.stockDisponible,
+          }),
         error: () => alert('No se pudo cargar el item a editar'),
       });
     }
   }
 
-  updateVideojuego(id: number) {
-    this.item.update((v) => ({ ...v, videojuegoId: id }));
+  updateVideojuego(id: number | string) {
+    this.item.update((v) => ({ ...v, videojuegoId: Number(id) }));
   }
 
   updatePlataforma(value: string) {
     this.item.update((v) => ({ ...v, plataforma: value }));
   }
 
-  updatePrecio(value: number) {
+  updatePrecio(value: number | string) {
     this.item.update((v) => ({ ...v, precioDiario: Number(value) }));
   }
 
-  updateStockTotal(value: number) {
+  updateStockTotal(value: number | string) {
     this.item.update((v) => ({ ...v, stockTotal: Number(value) }));
   }
 
-  updateStockDisponible(value: number) {
+  updateStockDisponible(value: number | string) {
     this.item.update((v) => ({ ...v, stockDisponible: Number(value) }));
   }
 
   guardar() {
-    if (!this.canSave()) return;
+    if (!this.canSave()) {
+      alert('Revisá los datos del inventario');
+      return;
+    }
 
     const data = this.item();
 
     if (this.isEdit) {
-      this.inventarioService.update(this.id, data).subscribe({
+      this.inventarioService.update(this.id, data as any).subscribe({
         next: () => this.router.navigate(['/inventario']),
-        error: () => alert('Error al actualizar el item'),
+        error: (err) => {
+          console.error(err);
+          alert('Error al actualizar el item');
+        },
       });
     } else {
-      this.inventarioService.create(data).subscribe({
+      this.inventarioService.create(data as any).subscribe({
         next: () => this.router.navigate(['/inventario']),
-        error: () => alert('Error al crear el item'),
+        error: (err) => {
+          console.error(err);
+          alert('Error al crear el item');
+        },
       });
     }
   }

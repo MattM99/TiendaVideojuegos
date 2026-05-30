@@ -16,8 +16,16 @@ export class InventarioItemDetailComponent {
 
   data = signal<{ item: InventarioItemModel; titulo: string }>({
     item: {
-      inventarioItemId: 0,
-      videojuegoId: 0,
+      inventarioId: 0,
+      videojuego: {
+        videojuegoId: 0,
+        titulo: '',
+        descripcion: '',
+        genero: '',
+        lanzamiento: 0,
+        multijugador: false,
+        desarrollador: '',
+      },
       plataforma: '',
       precioDiario: 0,
       stockTotal: 0,
@@ -34,11 +42,9 @@ export class InventarioItemDetailComponent {
       next: (item) => {
         if (!item) return;
 
-        this.service.getTituloJuego(item.videojuegoId).subscribe((titulo) => {
-          this.data.set({
-            item,
-            titulo: titulo || 'Desconocido',
-          });
+        this.data.set({
+          item,
+          titulo: item.videojuego?.titulo || 'Desconocido',
         });
       },
       error: () => alert('No se pudo cargar el item del inventario'),
@@ -50,7 +56,7 @@ export class InventarioItemDetailComponent {
   }
 
   editar() {
-    const id = this.data().item.inventarioItemId;
+    const id = this.data().item.inventarioId;
     if (!id) return;
 
     this.router.navigate(['/inventario/edit', id]);

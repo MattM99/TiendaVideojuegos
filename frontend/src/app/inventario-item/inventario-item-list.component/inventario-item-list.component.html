@@ -8,7 +8,7 @@
 </div>
 
 <ul>
-  @for (iwt of inventarioItemsWithTitle(); track iwt.item.inventarioItemId) {
+  @for (iwt of inventarioItemsWithTitle(); track iwt.item.inventarioId) {
 
     <li>
 
@@ -35,17 +35,17 @@
       <span class="actions">
 
         <button
-          [routerLink]="['/inventario', iwt.item.inventarioItemId]">
+          [routerLink]="['/inventario', iwt.item.inventarioId]">
           Ver
         </button>
 
         <button
-          [routerLink]="['/inventario/edit', iwt.item.inventarioItemId]">
+          [routerLink]="['/inventario/edit', iwt.item.inventarioId]">
           Editar
         </button>
 
         <button
-          (click)="delete(iwt.item.inventarioItemId)">
+          (click)="delete(iwt.item.inventarioId)">
           Eliminar
         </button>
 

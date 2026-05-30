@@ -18,11 +18,11 @@
 
   <label>Género</label>
   <select
-  [ngModel]="videojuego().genero"
-  (ngModelChange)="updateGenero($event)"
-  name="genero"
-  (blur)="markTouched('genero')"
->
+    [ngModel]="videojuego().genero"
+    (ngModelChange)="updateGenero($event)"
+    name="genero"
+    (blur)="markTouched('genero')"
+  >
   <option value="">Seleccione un género</option>
 
   @for (g of generos; track g) {
@@ -77,7 +77,7 @@
     </button>
   </div>
 
-  <label>Descripcion</label>
+  <label>Descripción</label>
   <textarea
     [ngModel]="videojuego().descripcion"
     (ngModelChange)="updateDescripcion($event)"

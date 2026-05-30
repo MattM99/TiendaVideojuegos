@@ -30,15 +30,19 @@ export class InventarioItemService {
   }
 
   create(item: InventarioItemModel): Observable<InventarioItemModel> {
-    return this.http.post<InventarioItemModel>(this.baseUrl, item);
+    return this.http.post<InventarioItemModel>(`${this.baseUrl}/crear`, item);
   }
 
   update(id: string | number, item: InventarioItemModel): Observable<InventarioItemModel> {
     return this.http.put<InventarioItemModel>(`${this.baseUrl}/${id}`, item);
   }
 
+  patch(id: string | number, item: Partial<InventarioItemModel>): Observable<InventarioItemModel> {
+    return this.http.patch<InventarioItemModel>(`${this.baseUrl}/${id}`, item);
+  }
+
   delete(id: string | number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/eliminar/${id}`);
   }
 
   agregarStock(id: string | number, cantidad: number): Observable<InventarioItemModel> {
@@ -46,5 +50,17 @@ export class InventarioItemService {
       `${this.baseUrl}/${id}/agregar-stock?cantidad=${cantidad}`,
       {}
     );
+  }
+
+  darDeBaja(id: string | number): Observable<InventarioItemModel> {
+    return this.http.patch<InventarioItemModel>(`${this.baseUrl}/${id}/baja`, {});
+  }
+
+  getStockTotal(id: string | number): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/${id}/stock-total`);
+  }
+
+  getStockDisponible(id: string | number): Observable<number> {
+    return this.http.get<number>(`${this.baseUrl}/${id}/stock-disponible`);
   }
 }

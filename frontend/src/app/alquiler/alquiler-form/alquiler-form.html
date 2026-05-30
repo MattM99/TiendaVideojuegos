@@ -20,18 +20,21 @@
   <!-- Inventario / Juego -->
   <div>
     <label>Juego en inventario</label>
+
     <select formControlName="inventarioId">
       <option value="">Seleccione un juego</option>
 
-      @for (item of inventario(); track item.inventarioItemId){ @if (item.stockDisponible > 0) {
-      <option [value]="item.inventarioItemId">
-        {{ videojuegoMap()[item.videojuegoId] || 'Desconocido' }} (Stock: {{ item.stockDisponible }})
-      </option>
-      } }
+      @for (item of inventario(); track item.inventarioId) {
+        @if (item.stockDisponible > 0) {
+          <option [value]="item.inventarioId">
+            {{ item.videojuego.titulo }} - {{ item.plataforma }} (Stock: {{ item.stockDisponible }})
+          </option>
+        }
+      }
     </select>
 
     @if (form.get('inventarioId')?.invalid && form.get('inventarioId')?.touched) {
-    <p class="error">* Debe seleccionar un juego</p>
+      <p class="error">* Debe seleccionar un juego</p>
     }
   </div>
 
