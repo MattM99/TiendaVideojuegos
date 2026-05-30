@@ -12,7 +12,16 @@
   </select>
 
   <label>Plataforma</label>
-  <input type="text" [ngModel]="item().plataforma" (ngModelChange)="updatePlataforma($event)" />
+  <select
+    [ngModel]="item().plataforma"
+    (ngModelChange)="updatePlataforma($event)"
+  >
+    <option value="">Seleccione una plataforma</option>
+
+    @for (p of plataformas; track p) {
+      <option [value]="p">{{ p }}</option>
+    }
+  </select>
 
   <label>Precio Diario</label>
   <input type="number" [ngModel]="item().precioDiario" (ngModelChange)="updatePrecio($event)" />

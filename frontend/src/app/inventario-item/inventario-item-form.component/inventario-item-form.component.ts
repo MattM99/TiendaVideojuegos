@@ -24,6 +24,18 @@ export class InventarioItemFormComponent {
 
   videojuegos = signal<{ id: number; titulo: string }[]>([]);
 
+  plataformas = [
+  'SEGA',
+  'FAMILY',
+  'PS1',
+  'PS2',
+  'PS3',
+  'PS4',
+  'PS5',
+  'XBOX',
+  'SWITCH'
+  ];
+
   item = signal({
     videojuegoId: 0,
     plataforma: '',
