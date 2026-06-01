@@ -4,13 +4,13 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity
 
 public class StockDisponibleEvent {
 
-    private final int inventarioItemId;
+    private final InventarioItemEntity inventarioItemEntity;
 
-    public StockDisponibleEvent(int inventarioItemId) {
-        this.inventarioItemId = inventarioItemId;
+    public StockDisponibleEvent(InventarioItemEntity inventarioItemEntity) {
+        this.inventarioItemEntity = inventarioItemEntity;
     }
 
-    public int getinventarioItemId() {
-        return inventarioItemId;
+    public InventarioItemEntity getInventarioItem() {
+        return inventarioItemEntity;
     }
 }

@@ -238,7 +238,7 @@ public class InventarioItemService {
 
         eventPublisher.publishEvent(
                 new StockDisponibleEvent(
-                        guardado.getInventarioItemId()
+                        guardado
                 )
         );
 
@@ -260,7 +260,7 @@ public class InventarioItemService {
 
         eventPublisher.publishEvent(
                 new StockDisponibleEvent(
-                        guardado.getInventarioItemId()
+                        guardado
                 )
         );
     }

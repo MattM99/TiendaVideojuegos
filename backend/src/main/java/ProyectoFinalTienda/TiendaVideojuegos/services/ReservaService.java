@@ -1,10 +1,12 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
+import ProyectoFinalTienda.TiendaVideojuegos.events.StockDisponibleEvent;
 import ProyectoFinalTienda.TiendaVideojuegos.factories.NotificadorFactory;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.ReservaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoReserva;
 import ProyectoFinalTienda.TiendaVideojuegos.model.interfaces.Notificador;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -12,6 +14,12 @@ import java.util.Optional;
 
 @Service
 public class ReservaService {
+
+    @EventListener
+    public void onStockDisponible(StockDisponibleEvent event){
+        InventarioItemEntity inventarioItem = event.getInventarioItem();
+        procesarListaDeEspera(inventarioItem);
+    }
 
     public void procesarListaDeEspera(InventarioItemEntity inventarioItemEntity){
 
