@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioItemResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.events.StockDisponibleEvent;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioItemNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.StockNoValidoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoException;
@@ -14,6 +15,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +31,8 @@ public class InventarioItemService {
     private InventarioItemMapper inventarioItemMapper;
     @Autowired
     private VideojuegoMapper videojuegoMapper;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     public InventarioItemResponse guardar(InventarioItemCreateOrReplaceRequest request) {
         VideojuegoEntity videojuego = videojuegoRepository.findById(request.getVideojuegoId()).
@@ -218,16 +222,55 @@ public class InventarioItemService {
     }
 
     public InventarioItemResponse agregarStock(int id, int cantidad) {
+
         InventarioItemEntity existente = obtenerInventarioPorId(id);
 
-        existente.setStockDisponible(existente.getStockDisponible() + cantidad);
-        existente.setStockTotal(existente.getStockTotal() + cantidad);
+        existente.setStockDisponible(
+                existente.getStockDisponible() + cantidad);
+
+        existente.setStockTotal(
+                existente.getStockTotal() + cantidad);
 
         validarStock(existente);
 
+        InventarioItemEntity guardado =
+                inventarioItemRepository.save(existente);
+
+        eventPublisher.publishEvent(
+                new StockDisponibleEvent(
+                        guardado.getInventarioItemId()
+                )
+        );
+
         return inventarioItemMapper.toResponse(
-                inventarioItemRepository.save(existente),
-                videojuegoMapper.toResponse(existente.getVideojuego())
+                guardado,
+                videojuegoMapper.toResponse(
+                        guardado.getVideojuego()
+                )
+        );
+    }
+
+    public InventarioItemResponse devolverVideojuego(int id, int cantidad) {
+
+        InventarioItemEntity existente = obtenerInventarioPorId(id);
+
+        existente.setStockDisponible(
+                existente.getStockDisponible() + cantidad);
+
+        InventarioItemEntity guardado =
+                inventarioItemRepository.save(existente);
+
+        eventPublisher.publishEvent(
+                new StockDisponibleEvent(
+                        guardado.getInventarioItemId()
+                )
+        );
+
+        return inventarioItemMapper.toResponse(
+                guardado,
+                videojuegoMapper.toResponse(
+                        guardado.getVideojuego()
+                )
         );
     }
 
