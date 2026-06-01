@@ -34,6 +34,8 @@ public class AlquilerService {
     private DetalleAlquilerMapper detalleAlquilerMapper;
     @Autowired
     private InventarioItemRepository inventarioItemRepository;
+    @Autowired
+    private InventarioItemService inventarioItemService;
 
     @Transactional
     public AlquilerResponse crearAlquiler(AlquilerCreateOrReplaceRequest request) {
@@ -135,7 +137,7 @@ public class AlquilerService {
         // actualizar stock de los items alquilados
         for (DetalleAlquilerEntity detalle : alquiler.getItems()) {
             InventarioItemEntity inventario = detalle.getInventarioItem();
-            inventario.setStockDisponible(inventario.getStockDisponible() + detalle.getCantidad());
+            inventarioItemService.devolverVideojuego(inventario, detalle.getCantidad());
         }
 
         // finalizar alquiler

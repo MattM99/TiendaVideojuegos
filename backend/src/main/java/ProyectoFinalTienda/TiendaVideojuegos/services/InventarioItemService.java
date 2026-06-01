@@ -250,26 +250,17 @@ public class InventarioItemService {
         );
     }
 
-    public InventarioItemResponse devolverVideojuego(int id, int cantidad) {
+    public void devolverVideojuego(InventarioItemEntity inventarioItemDevuelto, int cantidadCopiasDevueltas) {
 
-        InventarioItemEntity existente = obtenerInventarioPorId(id);
-
-        existente.setStockDisponible(
-                existente.getStockDisponible() + cantidad);
+        inventarioItemDevuelto.setStockDisponible(
+                inventarioItemDevuelto.getStockDisponible() + cantidadCopiasDevueltas);
 
         InventarioItemEntity guardado =
-                inventarioItemRepository.save(existente);
+                inventarioItemRepository.save(inventarioItemDevuelto);
 
         eventPublisher.publishEvent(
                 new StockDisponibleEvent(
                         guardado.getInventarioItemId()
-                )
-        );
-
-        return inventarioItemMapper.toResponse(
-                guardado,
-                videojuegoMapper.toResponse(
-                        guardado.getVideojuego()
                 )
         );
     }
