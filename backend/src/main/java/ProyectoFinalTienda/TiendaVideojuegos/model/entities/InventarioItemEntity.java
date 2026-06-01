@@ -78,6 +78,24 @@ public class InventarioItemEntity {
     @Min(value = 0, message = "El stock disponible no puede ser negativo")
     private int stockDisponible;
 
+    public void aumentarStock(int cantidad) {
+        if (cantidad < 0) {
+            throw new IllegalArgumentException("La cantidad a aumentar no puede ser negativa");
+        }
+        this.stockTotal += cantidad;
+        this.stockDisponible += cantidad;
+    }
+
+    public void disminuirStock(int cantidad) {
+        if (cantidad < 0) {
+            throw new IllegalArgumentException("La cantidad a disminuir no puede ser negativa");
+        }
+        if (cantidad > this.stockDisponible) {
+            throw new IllegalArgumentException("No hay suficiente stock disponible para disminuir");
+        }
+        this.stockDisponible -= cantidad;
+    }
+
     /// ---- Aggregate root ----
 
     public void agregarReserva(ReservaEntity reserva) {
