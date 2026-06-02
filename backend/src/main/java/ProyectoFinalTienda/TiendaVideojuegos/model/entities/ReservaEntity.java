@@ -50,9 +50,19 @@ public class ReservaEntity {
     private LocalDateTime fechaReserva;
 
     @Column (
-            name = "fecha_notificacion",
-            nullable = true
+            name = "fecha_notificacion"
     )
     private LocalDateTime fechaNotificacion;
+
+    public void marcarComoNotificada() {
+        estadoReserva = EstadoReserva.NOTIFICADA;
+        fechaNotificacion = LocalDateTime.now();
+    }
+
+    public boolean estaVencida(LocalDateTime fechaActual) {
+        return estadoReserva == EstadoReserva.NOTIFICADA
+                && fechaNotificacion.plusHours(24)
+                .isBefore(fechaActual);
+    }
 
 }

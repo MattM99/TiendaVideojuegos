@@ -9,6 +9,8 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -108,10 +110,22 @@ public class InventarioItemEntity {
         reserva.setInventarioItem(null);
     }
 
-    public Optional<ReservaEntity> obtenerPrimeraReservaPendiente() {
+    public Optional<ReservaEntity> obtenerSiguienteReservaPendiente() {
         return this.listaDeEspera.stream()
                 .filter(reserva -> reserva.getEstadoReserva() == EstadoReserva.PENDIENTE)
                 .findFirst();
+    }
+
+    public List<ReservaEntity> expirarReservasVencidas(LocalDateTime fechaActual) {
+
+        List<ReservaEntity> expiradas = listaDeEspera.stream()
+                .filter(r -> r.estaVencida(fechaActual))
+                .toList();
+
+        expiradas.forEach(r ->
+                r.setEstadoReserva(EstadoReserva.EXPIRADA));
+
+        return expiradas;
     }
 
 }
