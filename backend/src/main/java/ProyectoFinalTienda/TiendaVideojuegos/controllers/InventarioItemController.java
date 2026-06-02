@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioItemResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import ProyectoFinalTienda.TiendaVideojuegos.services.InventarioItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -60,7 +61,7 @@ public class InventarioItemController {
 
     @Operation(summary = "Buscar inventarios por plataforma", description = "Devuelve una lista de inventarios que pertenecen a una plataforma específica")
     @GetMapping("/plataforma/{plataforma}")
-    public ResponseEntity<List<InventarioItemResponse>> buscarPorPlataforma(@PathVariable String plataforma) {
+    public ResponseEntity<List<InventarioItemResponse>> buscarPorPlataforma(@PathVariable Plataformas plataforma) {
         return ResponseEntity.ok(inventarioItemService.buscarPorPlataforma(plataforma));
     }
 
@@ -73,7 +74,7 @@ public class InventarioItemController {
     @Operation(summary = "Buscar inventarios por plataforma y precio menor a un valor", description = "Devuelve una lista de inventarios que pertenecen a una plataforma específica y cuyo precio es menor al valor especificado")
     @GetMapping("/plataformaPrecio/menor-a")
     public ResponseEntity<List<InventarioItemResponse>> buscarPorPlataformaMasBaratosQue(
-            @RequestParam String plataforma,
+            @RequestParam Plataformas plataforma,
             @RequestParam double valor) {
         return ResponseEntity.ok(inventarioItemService.buscarPorPlataformaMasBaratosQue(plataforma, valor));
     }

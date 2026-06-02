@@ -80,12 +80,9 @@ public class InventarioItemService {
     }
 
     // Buscar por plataforma con excepción si lista vacía
-    public List<InventarioItemResponse> buscarPorPlataforma(String plataforma) throws IllegalArgumentException{
-        if (!esPlataformaValida(plataforma)) {
-            throw new IllegalArgumentException("La plataforma ingresada no es válida: " + plataforma);
-        }
+    public List<InventarioItemResponse> buscarPorPlataforma(Plataformas plataforma) throws IllegalArgumentException{
 
-        List<InventarioItemEntity> inventarios = inventarioItemRepository.findByPlataforma(Plataformas.valueOf(plataforma.trim().toUpperCase()));
+        List<InventarioItemEntity> inventarios = inventarioItemRepository.findByPlataforma(plataforma);
         if (inventarios.isEmpty()) {
             throw new InventarioItemNoEncontradoException("No se encontró ningún inventario con la plataforma: " + plataforma);
         }
@@ -105,14 +102,11 @@ public class InventarioItemService {
     }
 
     // Buscar por plataforma y precio menor que valor, validando lista vacía
-    public List<InventarioItemResponse> buscarPorPlataformaMasBaratosQue(String plataforma, double valor){
+    public List<InventarioItemResponse> buscarPorPlataformaMasBaratosQue(Plataformas plataforma, double valor){
         if (valor < 0) {
             throw new IllegalArgumentException("El valor debe ser mayor a 0.");
         }
-        if (!esPlataformaValida(plataforma)) {
-            throw new IllegalArgumentException("La plataforma ingresada no es válida: " + plataforma);
-        }
-        List<InventarioItemEntity> inventarios = inventarioItemRepository.findByPlataformaAndPrecioDiarioLessThan(Plataformas.valueOf(plataforma.trim().toUpperCase()), valor);
+        List<InventarioItemEntity> inventarios = inventarioItemRepository.findByPlataformaAndPrecioDiarioLessThan(plataforma, valor);
         if (inventarios.isEmpty()) {
             throw new InventarioItemNoEncontradoException("No se encontró ningún inventario con plataforma " + plataforma + " y precio menor a " + valor);
         }
@@ -214,10 +208,6 @@ public class InventarioItemService {
         if (!esStockValido(inventario)) {
             throw new IllegalStateException("La suma de los stocks excede el stock total.");
         }
-    }
-
-    public boolean esPlataformaValida(String PlataformaStr) {
-        return false;
     }
 
     public InventarioItemResponse agregarStock(int id, int cantidad) {
