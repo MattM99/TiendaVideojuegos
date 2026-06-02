@@ -5,7 +5,6 @@ import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioItemNoEncontrad
 import ProyectoFinalTienda.TiendaVideojuegos.factories.NotificadorFactory;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.ReservaEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoReserva;
 import ProyectoFinalTienda.TiendaVideojuegos.model.interfaces.Notificador;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
 import jakarta.transaction.Transactional;
@@ -30,32 +29,38 @@ public class ListaDeEsperaWorkflowService {
             phase = TransactionPhase.AFTER_COMMIT
     )
     public void onStockDisponible(StockDisponibleEvent event){
-        InventarioItemEntity inventarioItem = inventarioItemRepository.findById(event.getInventarioItemId())
+        InventarioItemEntity item = inventarioItemRepository.findById(event.getInventarioItemId())
                 .orElseThrow(() -> new InventarioItemNoEncontradoException(
                         "Inventario con id: " + event.getInventarioItemId() + " no encontrado."
                 ));
-        procesarListaDeEspera(inventarioItem);
+
+        boolean procesado;
+
+        do {
+            procesado = procesarListaDeEspera(item);
+        } while (procesado && item.getStockDisponible() > 0);
+
     }
 
-    public void procesarListaDeEspera(InventarioItemEntity inventarioItemEntity){
+    public boolean procesarListaDeEspera(InventarioItemEntity item){
 
         //busca la primera reserva pendiente
-        Optional<ReservaEntity> siguiente =
-                inventarioItemEntity.obtenerSiguienteReservaPendiente();
+        Optional<ReservaEntity> siguiente = item.obtenerSiguienteReservaPendiente();
 
-        if(siguiente.isPresent()){
+        if (siguiente.isEmpty()) return false;
 
-            ReservaEntity r = siguiente.get();
+        ReservaEntity r = siguiente.get();
 
-            //notifica según los medios disponibles
-            Notificador notificador = NotificadorFactory.obtenerNotificadorPara(r.getPersona());
-            notificador.notificar(
-                    r.getPersona(),
-                    inventarioItemEntity.getVideojuego().getTitulo() + "está disponible. Tienes 24 hs para retirarlo."
-            );
+        //notifica según los medios disponibles
+        Notificador notificador = NotificadorFactory.obtenerNotificadorPara(r.getPersona());
+        notificador.notificar(
+                r.getPersona(),
+                item.getVideojuego().getTitulo() + "está disponible. Tienes 24 hs para retirarlo."
+        );
 
-            r.marcarComoNotificada();
-        }
+        item.reservarCopiaPara(r);
+
+        return true;
 
     }
 

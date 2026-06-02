@@ -9,9 +9,9 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,8 +112,26 @@ public class InventarioItemEntity {
 
     public Optional<ReservaEntity> obtenerSiguienteReservaPendiente() {
         return this.listaDeEspera.stream()
-                .filter(reserva -> reserva.getEstadoReserva() == EstadoReserva.PENDIENTE)
-                .findFirst();
+                .filter(r -> r.getEstadoReserva() == EstadoReserva.PENDIENTE)
+                .min(Comparator.comparing(ReservaEntity::getFechaReserva));
+    }
+
+    public boolean tieneReservasPendientes() {
+        return this.listaDeEspera.stream()
+                .anyMatch(reserva -> reserva.getEstadoReserva() == EstadoReserva.PENDIENTE);
+    }
+
+    public void reservarCopiaPara(ReservaEntity reserva) {
+
+        if (stockDisponible <= 0) {
+            throw new IllegalStateException(
+                    "No hay stock disponible."
+            );
+        }
+
+        stockDisponible--;
+
+        reserva.marcarComoNotificada();
     }
 
     public List<ReservaEntity> expirarReservasVencidas(LocalDateTime fechaActual) {
@@ -122,8 +140,12 @@ public class InventarioItemEntity {
                 .filter(r -> r.estaVencida(fechaActual))
                 .toList();
 
-        expiradas.forEach(r ->
-                r.setEstadoReserva(EstadoReserva.EXPIRADA));
+        expiradas.forEach(r -> {
+
+            r.setEstadoReserva(EstadoReserva.EXPIRADA);
+
+            this.stockDisponible++;
+        });
 
         return expiradas;
     }
