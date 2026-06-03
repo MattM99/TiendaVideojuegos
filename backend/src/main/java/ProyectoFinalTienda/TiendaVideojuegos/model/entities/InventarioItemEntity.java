@@ -93,7 +93,7 @@ public class InventarioItemEntity {
             throw new IllegalArgumentException("La cantidad a disminuir no puede ser negativa");
         }
         if (cantidad > this.stockDisponible) {
-            throw new IllegalArgumentException("No hay suficiente stock disponible para disminuir");
+            throw new IllegalArgumentException("El item: " + inventarioItemId + " no tiene suficiente stock disponible para disminuir. Copias disponibles: " + stockDisponible);
         }
         this.stockDisponible -= cantidad;
     }

@@ -5,6 +5,8 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PenalizacionManualRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ItemConStockInsuficienteResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ValidacionDisponibilidadResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.*;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.AlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
@@ -13,10 +15,12 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,6 +40,43 @@ public class AlquilerService {
     private InventarioItemRepository inventarioItemRepository;
     @Autowired
     private InventarioItemService inventarioItemService;
+
+    @Transactional(readOnly = true)
+    public ValidacionDisponibilidadResponse validarDisponibilidad(
+            AlquilerCreateOrReplaceRequest request) {
+
+        List<ItemConStockInsuficienteResponse> faltantes = new ArrayList<>();
+
+        for (DetalleAlquilerRequest detalle : request.getDetalles()) {
+
+            InventarioItemEntity inventario =
+                    inventarioItemRepository.findById(detalle.getInventarioItemId())
+                            .orElseThrow(() ->
+                                    new InventarioItemNoEncontradoException(
+                                            "Inventario con id "
+                                                    + detalle.getInventarioItemId()
+                                                    + " no encontrado."
+                                    ));
+
+            if (inventario.getStockDisponible() < detalle.getCantidad()) {
+
+                faltantes.add(
+                        ItemConStockInsuficienteResponse.builder()
+                                .inventarioItemId(inventario.getInventarioItemId())
+                                .titulo(inventario.getVideojuego().getTitulo())
+                                .plataforma(inventario.getPlataforma())
+                                .cantidadSolicitada(detalle.getCantidad())
+                                .cantidadDisponible(inventario.getStockDisponible())
+                                .build()
+                );
+            }
+        }
+
+        return ValidacionDisponibilidadResponse.builder()
+                .puedeCrearAlquiler(faltantes.isEmpty())
+                .faltantes(faltantes)
+                .build();
+    }
 
     @Transactional
     public AlquilerResponse crearAlquiler(AlquilerCreateOrReplaceRequest request) {
@@ -60,13 +101,8 @@ public class AlquilerService {
                 .orElseThrow(() -> new InventarioItemNoEncontradoException(
                         "Inventario con id: " + request.getInventarioItemId() + " no encontrado."));
 
-        // Validar stock disponible
-        if (inventario.getStockDisponible() < request.getCantidad()) {
-            throw new BusinessException("Stock insuficiente para el item con id: " + request.getInventarioItemId());
-        }
-
-        // Actualizar stock
-        inventario.setStockDisponible(inventario.getStockDisponible() - request.getCantidad());
+        // Validar stock disponible y actualizar stock
+        inventario.disminuirStock(request.getCantidad());
 
         DetalleAlquilerEntity detalle = detalleAlquilerMapper.toEntity(request, alquiler, inventario);
 

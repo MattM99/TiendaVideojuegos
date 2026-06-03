@@ -17,6 +17,8 @@ import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -131,24 +133,6 @@ public class InventarioItemService {
         return stockDisponible;
     }
 
-    // Obtener stock alquilado, lanzar excepción si null
-//    public Integer obtenerStockAlquilado(int inventarioId) {
-//        Integer stockAlquilado = inventarioItemRepository.findStockAlquiladoByInventarioId(inventarioId);
-//        if (stockAlquilado == null) {
-//            throw new InventarioItemNoEncontradoException("No se encontró inventario con id: " + inventarioId);
-//        }
-//        return stockAlquilado;
-//    }
-
-    // Obtener stock descartado, lanzar excepción si null
-//    public Integer obtenerStockDescartado(int inventarioId) {
-//        Integer stockDescartado = inventarioItemRepository.findStockDescartadoByInventarioId(inventarioId);
-//        if (stockDescartado == null) {
-//            throw new InventarioItemNoEncontradoException("No se encontró inventario con id: " + inventarioId);
-//        }
-//        return stockDescartado;
-//    }
-
     public InventarioItemResponse actualizarCompleto(int id, InventarioItemCreateOrReplaceRequest nuevosDatos) {
         InventarioItemEntity existente = inventarioItemRepository.findById(id)
                 .orElseThrow(() -> new InventarioItemNoEncontradoException("Inventario con id " + id + " no encontrado."));
@@ -175,21 +159,9 @@ public class InventarioItemService {
 
     public boolean validarDatosDeInventario (InventarioItemCreateOrReplaceRequest request) throws IllegalArgumentException {
 
-//        if(request.getStockTotal() < request.getStockAlquilado() + request.getStockDescartado()) {
-//            throw new IllegalArgumentException("El stock total no puede ser menor que la suma de stock alquilado y stock descartado.");
-//        }
-
         if(request.getStockDisponible() > request.getStockTotal()) {
             throw new IllegalArgumentException("El stock disponible no puede ser mayor que el stock total.");
         }
-
-//        if (request.getStockAlquilado() > request.getStockTotal() - request.getStockDisponible()) {
-//            throw new IllegalArgumentException("El stock alquilado no puede ser mayor que el stock total menos el stock disponible.");
-//        }
-
-//        if(request.getStockDescartado() > request.getStockTotal() - request.getStockDisponible() - request.getStockAlquilado()) {
-//            throw new IllegalArgumentException("El stock descartado no puede ser mayor que el stock total menos el stock disponible y el stock alquilado.");
-//        }
 
         List<InventarioItemEntity> inventarios = inventarioItemRepository.findByVideojuegoId(request.getVideojuegoId());
 
@@ -239,17 +211,17 @@ public class InventarioItemService {
         );
     }
 
-    public void devolverVideojuego(InventarioItemEntity inventarioItemDevuelto, int cantidadCopiasDevueltas) {
+    @Transactional
+    public void devolverVideojuego(
+            InventarioItemEntity inventario,
+            int cantidad
+    ) {
 
-        inventarioItemDevuelto.setStockDisponible(
-                inventarioItemDevuelto.getStockDisponible() + cantidadCopiasDevueltas);
-
-        InventarioItemEntity guardado =
-                inventarioItemRepository.save(inventarioItemDevuelto);
+        inventario.aumentarStock(cantidad);
 
         eventPublisher.publishEvent(
                 new StockDisponibleEvent(
-                        guardado.getInventarioItemId()
+                        inventario.getInventarioItemId()
                 )
         );
     }
