@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ValidarDisponibilidadResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.services.AlquilerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,6 +22,17 @@ public class AlquilerController {
 
     @Autowired
     private AlquilerService alquilerService;
+
+    @Operation(summary = "Validar disponibilidad", description = "Verifica si existe stock suficiente para los videojuegos solicitados")
+    @PostMapping("/validar")
+    public ResponseEntity<ValidarDisponibilidadResponse>
+    validarDisponibilidad(
+            @RequestBody @Valid AlquilerCreateOrReplaceRequest request) {
+
+        return ResponseEntity.ok(
+                alquilerService.validarDisponibilidad(request)
+        );
+    }
 
     @Operation(summary = "Crear un nuevo alquiler", description = "Permite crear un nuevo alquiler de videojuego")
     @PostMapping

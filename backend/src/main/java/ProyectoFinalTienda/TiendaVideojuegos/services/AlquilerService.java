@@ -6,7 +6,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerReques
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PenalizacionManualRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ItemConStockInsuficienteResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ValidacionDisponibilidadResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ValidarDisponibilidadResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.*;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.AlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
@@ -42,7 +42,7 @@ public class AlquilerService {
     private InventarioItemService inventarioItemService;
 
     @Transactional(readOnly = true)
-    public ValidacionDisponibilidadResponse validarDisponibilidad(
+    public ValidarDisponibilidadResponse validarDisponibilidad(
             AlquilerCreateOrReplaceRequest request) {
 
         List<ItemConStockInsuficienteResponse> faltantes = new ArrayList<>();
@@ -72,7 +72,7 @@ public class AlquilerService {
             }
         }
 
-        return ValidacionDisponibilidadResponse.builder()
+        return ValidarDisponibilidadResponse.builder()
                 .puedeCrearAlquiler(faltantes.isEmpty())
                 .faltantes(faltantes)
                 .build();

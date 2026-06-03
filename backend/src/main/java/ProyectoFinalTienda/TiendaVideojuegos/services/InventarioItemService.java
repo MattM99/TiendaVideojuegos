@@ -141,7 +141,7 @@ public class InventarioItemService {
         existente.setStockTotal(nuevosDatos.getStockTotal());
         existente.setStockDisponible(nuevosDatos.getStockDisponible());
 
-        validarStock(existente);
+        existente.validarStock();
 
         return inventarioItemMapper.toResponse(inventarioItemRepository.save(existente), videojuegoMapper.toResponse(existente.getVideojuego()));
     }
@@ -151,7 +151,7 @@ public class InventarioItemService {
                 .orElseThrow(() -> new InventarioItemNoEncontradoException("Inventario con id: " + id + " no encontrado."));
 
         inventarioItemMapper.actualizarEntity(existente, datosActualizados);
-        validarStock(existente);
+        existente.validarStock();
 
         return inventarioItemMapper.toResponse(inventarioItemRepository.save(existente), videojuegoMapper.toResponse(existente.getVideojuego()));
     }
@@ -172,16 +172,6 @@ public class InventarioItemService {
         return true;
     }
 
-    public boolean esStockValido(InventarioItemEntity inventario) {
-        return inventario.getStockDisponible() <= inventario.getStockTotal();
-    }
-
-    public void validarStock(InventarioItemEntity inventario) {
-        if (!esStockValido(inventario)) {
-            throw new IllegalStateException("La suma de los stocks excede el stock total.");
-        }
-    }
-
     public InventarioItemResponse agregarStock(int id, int cantidad) {
 
         InventarioItemEntity existente = obtenerInventarioPorId(id);
@@ -192,7 +182,7 @@ public class InventarioItemService {
         existente.setStockTotal(
                 existente.getStockTotal() + cantidad);
 
-        validarStock(existente);
+        existente.validarStock();
 
         InventarioItemEntity guardado =
                 inventarioItemRepository.save(existente);

@@ -98,6 +98,16 @@ public class InventarioItemEntity {
         this.stockDisponible -= cantidad;
     }
 
+    public boolean esStockValido() {
+        return getStockDisponible() <= getStockTotal();
+    }
+
+    public void validarStock() {
+        if (!esStockValido()) {
+            throw new IllegalStateException("La suma de los stocks excede el stock total.");
+        }
+    }
+
     /// ---- Aggregate root ----
 
     public void agregarReserva(ReservaEntity reserva) {
@@ -108,6 +118,14 @@ public class InventarioItemEntity {
      public void eliminarReserva(ReservaEntity reserva) {
         this.listaDeEspera.remove(reserva);
         reserva.setInventarioItem(null);
+    }
+
+    public void cancelarReserva(ReservaEntity reserva) {
+        if (reserva.getEstadoReserva() == EstadoReserva.PENDIENTE) {
+            reserva.setEstadoReserva(EstadoReserva.CANCELADA);
+        } else {
+            throw new IllegalStateException("Solo se pueden cancelar reservas pendientes.");
+        }
     }
 
     public Optional<ReservaEntity> obtenerSiguienteReservaPendiente() {
