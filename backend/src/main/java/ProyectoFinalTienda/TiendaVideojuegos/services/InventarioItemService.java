@@ -2,23 +2,29 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemUpdateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.ReservaRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioItemResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ReservaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.events.StockDisponibleEvent;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioItemNoEncontradoException;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.StockNoValidoException;
-import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.*;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.InventarioItemMapper;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.ReservaMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.VideojuegoMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.ReservaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoReserva;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
+import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -34,6 +40,10 @@ public class InventarioItemService {
     private VideojuegoMapper videojuegoMapper;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private ReservaMapper reservaMapper;
+    @Autowired
+    private PersonaRepository  personaRepository;
 
     public InventarioItemResponse guardar(InventarioItemCreateOrReplaceRequest request) {
         VideojuegoEntity videojuego = videojuegoRepository.findById(request.getVideojuegoId()).
@@ -237,6 +247,57 @@ public class InventarioItemService {
                 .orElseThrow(() -> new InventarioItemNoEncontradoException(
                         "Inventario con id: " + id + " no encontrado."
                 ));
+    }
+
+
+    // Aggregate root
+
+    @Transactional
+    public ReservaResponse crearReserva(
+            ReservaRequest request
+    ) {
+
+        PersonaEntity persona = personaRepository.findById(
+                        request.getPersonaId()
+                )
+                .orElseThrow(() -> new PersonaNoEncontradaException("Persona no encontrada con id: " + request.getPersonaId()));
+
+        InventarioItemEntity inventario = inventarioItemRepository.findById(
+                        request.getInventarioItemId()
+                )
+                .orElseThrow(() -> new InventarioItemNoEncontradoException(
+                        "Inventario con id: " + request.getInventarioItemId() + " no encontrado."
+                ));
+
+        if (inventario.getStockDisponible() > 0) {
+            throw new BusinessException(
+                    "El videojuego tiene stock disponible, no es necesario reservar."
+            );
+        }
+
+        boolean yaReservo = inventario.getListaDeEspera().stream()
+                .anyMatch(r ->
+                        r.getPersona().getPersonaId() == persona.getPersonaId()
+                                && r.getEstadoReserva() == EstadoReserva.PENDIENTE
+                );
+
+        if (yaReservo) {
+            throw new BusinessException(
+                    "La persona ya posee una reserva pendiente para este videojuego."
+            );
+        }
+
+        ReservaEntity reserva = ReservaEntity.builder()
+                .persona(persona)
+                .estadoReserva(EstadoReserva.PENDIENTE)
+                .fechaReserva(LocalDateTime.now())
+                .build();
+
+        inventario.agregarReserva(reserva);
+
+        inventarioItemRepository.save(inventario);
+
+        return reservaMapper.toResponse(reserva);
     }
 }
 

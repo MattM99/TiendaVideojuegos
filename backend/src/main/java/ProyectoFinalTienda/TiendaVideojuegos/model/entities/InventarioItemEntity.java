@@ -120,14 +120,6 @@ public class InventarioItemEntity {
         reserva.setInventarioItem(null);
     }
 
-    public void cancelarReserva(ReservaEntity reserva) {
-        if (reserva.getEstadoReserva() == EstadoReserva.PENDIENTE) {
-            reserva.setEstadoReserva(EstadoReserva.CANCELADA);
-        } else {
-            throw new IllegalStateException("Solo se pueden cancelar reservas pendientes.");
-        }
-    }
-
     public Optional<ReservaEntity> obtenerSiguienteReservaPendiente() {
         return this.listaDeEspera.stream()
                 .filter(r -> r.getEstadoReserva() == EstadoReserva.PENDIENTE)

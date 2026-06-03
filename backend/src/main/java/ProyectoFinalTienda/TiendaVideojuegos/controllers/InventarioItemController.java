@@ -2,7 +2,9 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemUpdateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.ReservaRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioItemResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ReservaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import ProyectoFinalTienda.TiendaVideojuegos.services.InventarioItemService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -91,18 +93,6 @@ public class InventarioItemController {
         return ResponseEntity.ok(inventarioItemService.obtenerStockDisponible(id));
     }
 
-//    @Operation(summary = "Obtener stock alquilado", description = "Devuelve el stock alquilado de un inventario por ID")
-//    @GetMapping("/{id}/stock-alquilado")
-//    public ResponseEntity<Integer> obtenerStockAlquilado(@PathVariable int id) {
-//        return ResponseEntity.ok(inventarioItemService.obtenerStockAlquilado(id));
-//    }
-
-//    @Operation(summary = "Obtener stock descartado", description = "Devuelve el stock descartado de un inventario por ID")
-//    @GetMapping("/{id}/stock-descartado")
-//    public ResponseEntity<Integer> obtenerStockDescartado(@PathVariable int id) {
-//        return ResponseEntity.ok(inventarioItemService.obtenerStockDescartado(id));
-//    }
-
     @Operation(summary = "Actualizar inventario completo", description = "Actualiza todos los campos de un inventario por ID")
     @PutMapping("/{id}")
     public ResponseEntity<InventarioItemResponse> actualizarInventarioCompleto(
@@ -139,6 +129,21 @@ public class InventarioItemController {
 
         InventarioItemResponse response = inventarioItemService.darDeBaja(id);
         return ResponseEntity.ok(response);
+    }
+
+    // Aggregate root
+
+    @PostMapping("/inventario/reservas/crear")
+    public ResponseEntity<ReservaResponse> crearReserva(
+            @Valid @RequestBody ReservaRequest request
+    ) {
+
+        ReservaResponse response =
+                inventarioItemService.crearReserva(request);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 
 }

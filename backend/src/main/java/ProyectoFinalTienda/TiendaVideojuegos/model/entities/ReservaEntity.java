@@ -65,4 +65,13 @@ public class ReservaEntity {
                 .isBefore(fechaActual);
     }
 
+    public void cancelarReserva() {
+        if (getEstadoReserva() == EstadoReserva.PENDIENTE || getEstadoReserva() == EstadoReserva.NOTIFICADA) {
+            setEstadoReserva(EstadoReserva.CANCELADA);
+            // if estado es notificada, avisar a la persona.
+        } else {
+            throw new IllegalStateException("Solo se pueden cancelar reservas pendientes o notificadas.");
+        }
+    }
+
 }
