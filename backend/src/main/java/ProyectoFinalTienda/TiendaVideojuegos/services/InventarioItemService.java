@@ -300,7 +300,7 @@ public class InventarioItemService {
 
         inventario.agregarReserva(reserva);
 
-        inventarioItemRepository.save(inventario);
+        inventarioItemRepository.saveAndFlush(inventario);
 
         return reservaMapper.toResponse(reserva);
     }
