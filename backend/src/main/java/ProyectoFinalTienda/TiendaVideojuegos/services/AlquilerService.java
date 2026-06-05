@@ -20,6 +20,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,7 +146,7 @@ public class AlquilerService {
                 ));
 
         // registrar devolución
-        alquiler.setFechaDevolucion(request.getFechaDevolucion());
+        alquiler.setFechaDevolucion(LocalDate.now());
 
         // generar penalización automática
         alquiler.generarPenalizacionPorRetraso();
