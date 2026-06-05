@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
         name = "reserva"
 )
 public class ReservaEntity {
+
+    //private static final long TIEMPO_EXPIRACION_MINUTOS = 24 * 60;
+    private static final long TIEMPO_EXPIRACION_MINUTOS = 4;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
@@ -61,7 +65,7 @@ public class ReservaEntity {
 
     public boolean estaVencida(LocalDateTime fechaActual) {
         return estadoReserva == EstadoReserva.NOTIFICADA
-                && fechaNotificacion.plusHours(24)
+                && fechaNotificacion.plusMinutes(TIEMPO_EXPIRACION_MINUTOS)
                 .isBefore(fechaActual);
     }
 

@@ -122,6 +122,23 @@ public class InventarioItemController {
         return ResponseEntity.ok(response);
     }
 
+    /// SOLO PARA PRUEBAS; NO ESTARIA EXPUESTO REALMENTE.
+    @Operation(
+            summary = "Disminuir stock",
+            description = "Reduce el stock disponible de un inventario"
+    )
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PatchMapping("/{id}/disminuir-stock-disponible")
+    public ResponseEntity<InventarioItemResponse> disminuirStockDisponible(
+            @PathVariable int id,
+            @RequestParam int cantidad) {
+
+        InventarioItemResponse response =
+                inventarioItemService.disminuirStockDisponible(id, cantidad);
+
+        return ResponseEntity.ok(response);
+    }
+
     @Operation(summary = "Dar de baja inventario", description = "Da de baja un inventario (stock en 0)")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PatchMapping("/{id}/baja")
@@ -133,6 +150,10 @@ public class InventarioItemController {
 
     // Aggregate root
 
+    @Operation(
+            summary = "Crear una reserva",
+            description = "Agrega una nueva reserva a la lista de espera de un inventario específico"
+    )
     @PostMapping("/{inventarioId}/reservas")
     public ResponseEntity<ReservaResponse> crearReserva(
             @PathVariable Integer inventarioId,
@@ -150,10 +171,15 @@ public class InventarioItemController {
                 .body(response);
     }
 
+    @Operation(
+            summary = "Obtener reservas de un inventario",
+            description = "Devuelve todas las reservas asociadas a un inventario específico"
+    )
     @GetMapping("/{inventarioId}/reservas/listar")
     public ResponseEntity<List<ReservaResponse>> obtenerReservas(
             @PathVariable Integer inventarioId
     ) {
+
         return ResponseEntity.ok(
                 inventarioItemService.obtenerReservas(inventarioId)
         );

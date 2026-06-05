@@ -25,14 +25,20 @@ public class ListaDeEsperaWorkflowService {
     @Autowired
     InventarioItemRepository inventarioItemRepository;
 
+    @Transactional
     @TransactionalEventListener(
-            phase = TransactionPhase.AFTER_COMMIT
+            phase = TransactionPhase.BEFORE_COMMIT
     )
     public void onStockDisponible(StockDisponibleEvent event){
+
+        System.out.println("Evento recibido!");
+
         InventarioItemEntity item = inventarioItemRepository.findById(event.getInventarioItemId())
                 .orElseThrow(() -> new InventarioItemNoEncontradoException(
                         "Inventario con id: " + event.getInventarioItemId() + " no encontrado."
                 ));
+
+        System.out.println(item.getListaDeEspera().size());
 
         boolean procesado;
 
@@ -42,10 +48,15 @@ public class ListaDeEsperaWorkflowService {
 
     }
 
+    @Transactional
     public boolean procesarListaDeEspera(InventarioItemEntity item){
 
         //busca la primera reserva pendiente
         Optional<ReservaEntity> siguiente = item.obtenerSiguienteReservaPendiente();
+
+        System.out.println(
+                "Reserva encontrada: " + siguiente.isPresent()
+        );
 
         if (siguiente.isEmpty()) return false;
 
@@ -60,12 +71,18 @@ public class ListaDeEsperaWorkflowService {
 
         item.reservarCopiaPara(r);
 
+        System.out.println(
+                "Estado luego de notificar: "
+                        + r.getEstadoReserva()
+        );
+
         return true;
 
     }
 
     @Transactional
-    @Scheduled(fixedRate = 3600000)
+    //@Scheduled(fixedRate = 3600000) // Cada 1 HORA revisa si hay notificaciones expiradas.
+    @Scheduled(fixedRate = 60000) // 1 minuto
     public void revisarReservasExpiradas() {
         for (InventarioItemEntity inventarioItem : inventarioItemRepository.findAll()) {
 

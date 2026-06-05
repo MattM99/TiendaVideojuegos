@@ -182,6 +182,7 @@ public class InventarioItemService {
         return true;
     }
 
+    @Transactional
     public InventarioItemResponse agregarStock(int id, int cantidad) {
 
         InventarioItemEntity existente = obtenerInventarioPorId(id);
@@ -199,11 +200,23 @@ public class InventarioItemService {
                 )
         );
 
+        System.out.println("Evento publicado para inventario " + guardado.getInventarioItemId());
+
         return inventarioItemMapper.toResponse(
                 guardado,
                 videojuegoMapper.toResponse(
                         guardado.getVideojuego()
                 )
+        );
+    }
+
+    public InventarioItemResponse disminuirStockDisponible(int id, int cantidad) {
+
+        InventarioItemEntity existente = obtenerInventarioPorId(id);
+        existente.disminuirStockDisponible(cantidad);
+        return inventarioItemMapper.toResponse(
+                inventarioItemRepository.save(existente),
+                videojuegoMapper.toResponse(existente.getVideojuego())
         );
     }
 

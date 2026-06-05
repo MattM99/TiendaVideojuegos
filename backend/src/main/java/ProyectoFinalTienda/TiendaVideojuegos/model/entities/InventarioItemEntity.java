@@ -85,7 +85,6 @@ public class InventarioItemEntity {
             throw new IllegalArgumentException("La cantidad a aumentar no puede ser negativa");
         }
         this.stockTotal += cantidad;
-        this.stockDisponible += cantidad;
     }
 
     public void aumentarStockDisponible(int cantidad) {
@@ -144,7 +143,7 @@ public class InventarioItemEntity {
 
     public void reservarCopiaPara(ReservaEntity reserva) {
 
-        if (stockDisponible <= 0) {
+        if (stockDisponible < 1) {
             throw new IllegalStateException(
                     "No hay stock disponible."
             );
