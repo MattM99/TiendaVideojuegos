@@ -133,17 +133,30 @@ public class InventarioItemController {
 
     // Aggregate root
 
-    @PostMapping("/inventario/reservas/crear")
+    @PostMapping("/{inventarioId}/reservas")
     public ResponseEntity<ReservaResponse> crearReserva(
+            @PathVariable Integer inventarioId,
             @Valid @RequestBody ReservaRequest request
     ) {
 
         ReservaResponse response =
-                inventarioItemService.crearReserva(request);
+                inventarioItemService.crearReserva(
+                        inventarioId,
+                        request
+                );
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);
+    }
+
+    @GetMapping("/{inventarioId}/reservas/listar")
+    public ResponseEntity<List<ReservaResponse>> obtenerReservas(
+            @PathVariable Integer inventarioId
+    ) {
+        return ResponseEntity.ok(
+                inventarioItemService.obtenerReservas(inventarioId)
+        );
     }
 
 }

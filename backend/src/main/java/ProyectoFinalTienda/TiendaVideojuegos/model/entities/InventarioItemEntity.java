@@ -80,7 +80,7 @@ public class InventarioItemEntity {
     @Min(value = 0, message = "El stock disponible no puede ser negativo")
     private int stockDisponible;
 
-    public void aumentarStock(int cantidad) {
+    public void aumentarStockTotal(int cantidad) {
         if (cantidad < 0) {
             throw new IllegalArgumentException("La cantidad a aumentar no puede ser negativa");
         }
@@ -88,7 +88,17 @@ public class InventarioItemEntity {
         this.stockDisponible += cantidad;
     }
 
-    public void disminuirStock(int cantidad) {
+    public void aumentarStockDisponible(int cantidad) {
+        if (cantidad < 0) {
+            throw new IllegalArgumentException("La cantidad a aumentar no puede ser negativa");
+        }
+        if (cantidad + stockDisponible > stockTotal) {
+            throw new IllegalArgumentException("No se puede aumentar el stock disponible más allá del stock total. Stock total: " + stockTotal + ", Stock disponible actual: " + stockDisponible);
+        }
+        this.stockDisponible += cantidad;
+    }
+
+    public void disminuirStockDisponible(int cantidad) {
         if (cantidad < 0) {
             throw new IllegalArgumentException("La cantidad a disminuir no puede ser negativa");
         }
@@ -104,7 +114,7 @@ public class InventarioItemEntity {
 
     public void validarStock() {
         if (!esStockValido()) {
-            throw new IllegalStateException("La suma de los stocks excede el stock total.");
+            throw new IllegalStateException("El stock disponible no puede exceder el stock total.");
         }
     }
 
@@ -119,6 +129,7 @@ public class InventarioItemEntity {
         this.listaDeEspera.remove(reserva);
         reserva.setInventarioItem(null);
     }
+
 
     public Optional<ReservaEntity> obtenerSiguienteReservaPendiente() {
         return this.listaDeEspera.stream()

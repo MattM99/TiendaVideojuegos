@@ -186,13 +186,9 @@ public class InventarioItemService {
 
         InventarioItemEntity existente = obtenerInventarioPorId(id);
 
-        existente.setStockDisponible(
-                existente.getStockDisponible() + cantidad);
+        existente.aumentarStockTotal(cantidad);
 
-        existente.setStockTotal(
-                existente.getStockTotal() + cantidad);
-
-        existente.validarStock();
+        existente.aumentarStockDisponible(cantidad);
 
         InventarioItemEntity guardado =
                 inventarioItemRepository.save(existente);
@@ -217,7 +213,7 @@ public class InventarioItemService {
             int cantidad
     ) {
 
-        inventario.aumentarStock(cantidad);
+        inventario.aumentarStockDisponible(cantidad);
 
         eventPublisher.publishEvent(
                 new StockDisponibleEvent(
@@ -254,20 +250,27 @@ public class InventarioItemService {
 
     @Transactional
     public ReservaResponse crearReserva(
+            Integer inventarioId,
             ReservaRequest request
     ) {
 
         PersonaEntity persona = personaRepository.findById(
                         request.getPersonaId()
                 )
-                .orElseThrow(() -> new PersonaNoEncontradaException("Persona no encontrada con id: " + request.getPersonaId()));
+                .orElseThrow(() ->
+                        new PersonaNoEncontradaException(
+                                "Persona no encontrada con id: "
+                                        + request.getPersonaId()
+                        ));
 
-        InventarioItemEntity inventario = inventarioItemRepository.findById(
-                        request.getInventarioItemId()
-                )
-                .orElseThrow(() -> new InventarioItemNoEncontradoException(
-                        "Inventario con id: " + request.getInventarioItemId() + " no encontrado."
-                ));
+        InventarioItemEntity inventario =
+                inventarioItemRepository.findById(inventarioId)
+                        .orElseThrow(() ->
+                                new InventarioItemNoEncontradoException(
+                                        "Inventario con id: "
+                                                + inventarioId
+                                                + " no encontrado."
+                                ));
 
         if (inventario.getStockDisponible() > 0) {
             throw new BusinessException(
@@ -277,8 +280,10 @@ public class InventarioItemService {
 
         boolean yaReservo = inventario.getListaDeEspera().stream()
                 .anyMatch(r ->
-                        r.getPersona().getPersonaId() == persona.getPersonaId()
-                                && r.getEstadoReserva() == EstadoReserva.PENDIENTE
+                        r.getPersona().getPersonaId()
+                                == persona.getPersonaId()
+                                && r.getEstadoReserva()
+                                == EstadoReserva.PENDIENTE
                 );
 
         if (yaReservo) {
@@ -299,6 +304,17 @@ public class InventarioItemService {
 
         return reservaMapper.toResponse(reserva);
     }
+
+    @Transactional(readOnly = true)
+    public List<ReservaResponse> obtenerReservas(Integer inventarioId) {
+
+        InventarioItemEntity inventario =  obtenerInventarioPorId(inventarioId);
+
+        return inventario.getListaDeEspera().stream()
+                .map(reservaMapper::toResponse)
+                .toList();
+    }
+
 }
 
 

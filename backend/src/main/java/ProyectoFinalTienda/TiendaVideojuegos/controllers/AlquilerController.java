@@ -23,6 +23,7 @@ public class AlquilerController {
     @Autowired
     private AlquilerService alquilerService;
 
+    // Se consume esto antes que crearAlquiler, para ver disponbilidad antes de crear el alquiler y la posibilidad de crear nueva reserva
     @Operation(summary = "Validar disponibilidad", description = "Verifica si existe stock suficiente para los videojuegos solicitados")
     @PostMapping("/validar")
     public ResponseEntity<ValidarDisponibilidadResponse>

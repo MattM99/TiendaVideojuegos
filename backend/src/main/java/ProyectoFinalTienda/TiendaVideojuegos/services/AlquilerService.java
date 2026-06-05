@@ -102,7 +102,7 @@ public class AlquilerService {
                         "Inventario con id: " + request.getInventarioItemId() + " no encontrado."));
 
         // Validar stock disponible y actualizar stock
-        inventario.disminuirStock(request.getCantidad());
+        inventario.disminuirStockDisponible(request.getCantidad());
 
         DetalleAlquilerEntity detalle = detalleAlquilerMapper.toEntity(request, alquiler, inventario);
 

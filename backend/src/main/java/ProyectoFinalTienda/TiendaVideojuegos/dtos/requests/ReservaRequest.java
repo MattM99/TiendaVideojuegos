@@ -13,6 +13,4 @@ public class ReservaRequest {
     @NotNull
     private Integer personaId;
 
-    @NotNull
-    private Integer inventarioItemId;
 }
