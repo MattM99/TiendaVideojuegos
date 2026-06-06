@@ -12,7 +12,7 @@ import { LoginGuard } from './auth/guards/login-guard';
 import { Wip } from './shared/wip/wip';
 
 export const routes: Routes = [
-  { path: 'api/auth/login', component: Login, canActivate: [LoginGuard] },
+  { path: 'login', component: Login, canActivate: [LoginGuard] },
 
   { path: 'home', component: FrontPage, canActivate: [AuthGuard] },
 
