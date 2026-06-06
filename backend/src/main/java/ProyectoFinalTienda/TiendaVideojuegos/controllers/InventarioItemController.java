@@ -122,23 +122,6 @@ public class InventarioItemController {
         return ResponseEntity.ok(response);
     }
 
-    /// SOLO PARA PRUEBAS; NO ESTARIA EXPUESTO REALMENTE.
-    @Operation(
-            summary = "Disminuir stock",
-            description = "Reduce el stock disponible de un inventario"
-    )
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @PatchMapping("/{id}/disminuir-stock-disponible")
-    public ResponseEntity<InventarioItemResponse> disminuirStockDisponible(
-            @PathVariable int id,
-            @RequestParam int cantidad) {
-
-        InventarioItemResponse response =
-                inventarioItemService.disminuirStockDisponible(id, cantidad);
-
-        return ResponseEntity.ok(response);
-    }
-
     @Operation(summary = "Dar de baja inventario", description = "Da de baja un inventario (stock en 0)")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PatchMapping("/{id}/baja")
@@ -147,6 +130,23 @@ public class InventarioItemController {
         InventarioItemResponse response = inventarioItemService.darDeBaja(id);
         return ResponseEntity.ok(response);
     }
+
+// SOLO PARA PRUEBAS; NO ESTARIA EXPUESTO REALMENTE.
+//    @Operation(
+//            summary = "Disminuir stock",
+//            description = "Reduce el stock disponible de un inventario"
+//    )
+//    @PreAuthorize("hasRole('ADMINISTRADOR')")
+//    @PatchMapping("/{id}/disminuir-stock-disponible")
+//    public ResponseEntity<InventarioItemResponse> disminuirStockDisponible(
+//            @PathVariable int id,
+//            @RequestParam int cantidad) {
+//
+//        InventarioItemResponse response =
+//                inventarioItemService.disminuirStockDisponible(id, cantidad);
+//
+//        return ResponseEntity.ok(response);
+//    }
 
     // Aggregate root
 

@@ -177,12 +177,13 @@ public class InventarioItemService {
         return mapearResponse(guardado);
     }
 
-    public InventarioItemResponse disminuirStockDisponible(int id, int cantidad) {
-
-        InventarioItemEntity existente = obtenerInventarioPorId(id);
-        existente.disminuirStockDisponible(cantidad);
-        return mapearResponse(inventarioItemRepository.save(existente));
-    }
+    // Solo para pruebas
+//    public InventarioItemResponse disminuirStockDisponible(int id, int cantidad) {
+//
+//        InventarioItemEntity existente = obtenerInventarioPorId(id);
+//        existente.disminuirStockDisponible(cantidad);
+//        return mapearResponse(inventarioItemRepository.save(existente));
+//    }
 
     @Transactional
     public void devolverVideojuego(
