@@ -1,14 +1,15 @@
 package ProyectoFinalTienda.TiendaVideojuegos.events;
 
-public class StockDisponibleEvent {
+public class ItemDescontinuadoEvent {
 
     private final int inventarioItemId;
 
-    public StockDisponibleEvent(int inventarioItemId) {
+    public ItemDescontinuadoEvent(int inventarioItemId) {
         this.inventarioItemId = inventarioItemId;
     }
 
     public int getInventarioItemId() {
         return inventarioItemId;
     }
+
 }
