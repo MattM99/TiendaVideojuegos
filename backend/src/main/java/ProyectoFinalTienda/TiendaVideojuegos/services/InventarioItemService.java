@@ -45,28 +45,21 @@ public class InventarioItemService {
     @Autowired
     private PersonaRepository  personaRepository;
 
+    /// Create
+
     public InventarioItemResponse guardar(InventarioItemCreateOrReplaceRequest request) {
         VideojuegoEntity videojuego = videojuegoRepository.findById(request.getVideojuegoId()).
                 orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id: " + request.getVideojuegoId() + " no encontrado."));
 
-        if(validarDatosDeInventario(request)){
-            InventarioItemEntity entity = inventarioItemMapper.toEntity(request, videojuego);
-            // Validar que el stock sea correcto antes de guardar
-            //entity.validarStock();
-            return inventarioItemMapper.toResponse(inventarioItemRepository.save(entity), videojuegoMapper.toResponse(videojuego));
-        }else{
-            throw new IllegalArgumentException("Validaciones fallidas para el inventario.");
-        }
+        validarDatosDeInventario(request);
+
+        InventarioItemEntity entity = inventarioItemMapper.toEntity(request, videojuego);
+
+        return mapearResponse(inventarioItemRepository.save(entity));
     }
 
-    public void eliminar(int id){
-        if (!inventarioItemRepository.existsById(id)) {
-            throw new InventarioItemNoEncontradoException("Inventario con id: " + id + " no encontrado.");
-        }
-        inventarioItemRepository.deleteById(id);
-    }
+    /// Read
 
-    // Obtener todos con validación de lista vacía
     public List<InventarioItemResponse> obtenerTodos(){
         List<InventarioItemEntity> inventarios = inventarioItemRepository.findAll();
         if (inventarios.isEmpty()) {
@@ -75,14 +68,12 @@ public class InventarioItemService {
         return inventarioItemMapper.toResponseList(inventarios);
     }
 
-    // Buscar por id con excepción si no existe
     public InventarioItemResponse buscarPorId(int id){
         InventarioItemEntity entity = inventarioItemRepository.findById(id)
                 .orElseThrow(() -> new InventarioItemNoEncontradoException("Inventario con id: " + id + " no encontrado."));
-        return inventarioItemMapper.toResponse(entity, videojuegoMapper.toResponse(entity.getVideojuego()));
+        return mapearResponse(entity);
     }
 
-    // Buscar por videojuego con excepción si lista vacía
     public List<InventarioItemResponse> buscarPorVideojuego(int videojuegoId) {
         List<InventarioItemEntity> inventarios = inventarioItemRepository.findByVideojuegoId(videojuegoId);
         if (inventarios.isEmpty()) {
@@ -91,7 +82,6 @@ public class InventarioItemService {
         return inventarioItemMapper.toResponseList(inventarios);
     }
 
-    // Buscar por plataforma con excepción si lista vacía
     public List<InventarioItemResponse> buscarPorPlataforma(Plataformas plataforma) throws IllegalArgumentException{
 
         List<InventarioItemEntity> inventarios = inventarioItemRepository.findByPlataforma(plataforma);
@@ -101,7 +91,6 @@ public class InventarioItemService {
         return inventarioItemMapper.toResponseList(inventarios);
     }
 
-    // Buscar por precio menor que valor, validando lista vacía
     public List<InventarioItemResponse> buscarMasBaratosQue(double valor){
         if (valor < 0) {
             throw new IllegalArgumentException("El valor debe ser mayor a 0.");
@@ -113,7 +102,6 @@ public class InventarioItemService {
         return inventarioItemMapper.toResponseList(inventarios);
     }
 
-    // Buscar por plataforma y precio menor que valor, validando lista vacía
     public List<InventarioItemResponse> buscarPorPlataformaMasBaratosQue(Plataformas plataforma, double valor){
         if (valor < 0) {
             throw new IllegalArgumentException("El valor debe ser mayor a 0.");
@@ -125,7 +113,6 @@ public class InventarioItemService {
         return inventarioItemMapper.toResponseList(inventarios);
     }
 
-    // Obtener stock total, lanzar excepción si null
     public Integer obtenerStockTotal(int inventarioId) {
         Integer stockTotal = inventarioItemRepository.findStockTotalByInventarioId(inventarioId);
         if (stockTotal == null) {
@@ -134,7 +121,6 @@ public class InventarioItemService {
         return stockTotal;
     }
 
-    // Obtener stock disponible, lanzar excepción si null
     public Integer obtenerStockDisponible(int inventarioId) {
         Integer stockDisponible = inventarioItemRepository.findStockDisponibleByInventarioId(inventarioId);
         if (stockDisponible == null) {
@@ -142,6 +128,8 @@ public class InventarioItemService {
         }
         return stockDisponible;
     }
+
+    /// Update
 
     public InventarioItemResponse actualizarCompleto(int id, InventarioItemCreateOrReplaceRequest nuevosDatos) {
         InventarioItemEntity existente = inventarioItemRepository.findById(id)
@@ -153,7 +141,7 @@ public class InventarioItemService {
 
         existente.validarStock();
 
-        return inventarioItemMapper.toResponse(inventarioItemRepository.save(existente), videojuegoMapper.toResponse(existente.getVideojuego()));
+        return mapearResponse(inventarioItemRepository.save(existente));
     }
 
     public InventarioItemResponse actualizarPorCampo(int id, InventarioItemUpdateRequest datosActualizados) {
@@ -163,23 +151,7 @@ public class InventarioItemService {
         inventarioItemMapper.actualizarEntity(existente, datosActualizados);
         existente.validarStock();
 
-        return inventarioItemMapper.toResponse(inventarioItemRepository.save(existente), videojuegoMapper.toResponse(existente.getVideojuego()));
-    }
-
-
-    public boolean validarDatosDeInventario (InventarioItemCreateOrReplaceRequest request) throws IllegalArgumentException {
-
-        if(request.getStockDisponible() > request.getStockTotal()) {
-            throw new IllegalArgumentException("El stock disponible no puede ser mayor que el stock total.");
-        }
-
-        List<InventarioItemEntity> inventarios = inventarioItemRepository.findByVideojuegoId(request.getVideojuegoId());
-
-        if (inventarios.stream().anyMatch(i -> i.getPlataforma() == request.getPlataforma())) {
-            throw new IllegalArgumentException("Ya existe un inventario para el videojuego con la misma plataforma.");
-        }
-
-        return true;
+        return mapearResponse(inventarioItemRepository.save(existente));
     }
 
     @Transactional
@@ -202,22 +174,14 @@ public class InventarioItemService {
 
         System.out.println("Evento publicado para inventario " + guardado.getInventarioItemId());
 
-        return inventarioItemMapper.toResponse(
-                guardado,
-                videojuegoMapper.toResponse(
-                        guardado.getVideojuego()
-                )
-        );
+        return mapearResponse(guardado);
     }
 
     public InventarioItemResponse disminuirStockDisponible(int id, int cantidad) {
 
         InventarioItemEntity existente = obtenerInventarioPorId(id);
         existente.disminuirStockDisponible(cantidad);
-        return inventarioItemMapper.toResponse(
-                inventarioItemRepository.save(existente),
-                videojuegoMapper.toResponse(existente.getVideojuego())
-        );
+        return mapearResponse(inventarioItemRepository.save(existente));
     }
 
     @Transactional
@@ -235,31 +199,32 @@ public class InventarioItemService {
         );
     }
 
+    /// Delete
+
+    public void eliminar(int id) {
+        InventarioItemEntity inventario = obtenerInventarioPorId(id);
+
+        validarSinCompromisos(inventario);
+
+        inventarioItemRepository.delete(inventario);
+    }
+
     public InventarioItemResponse darDeBaja(int id) throws StockNoValidoException {
         InventarioItemEntity existente = obtenerInventarioPorId(id);
 
-        if (existente.getStockTotal() != existente.getStockDisponible()) {
-            throw new StockNoValidoException("Hay copias alquiladas, por favor complete " +
-                    "los alquileres activos antes de dar de baja el stock");
-        }
+        validarSinCompromisos(existente);
+
+        /// En una evolución futura del sistema agregaría un estado de inventario inactivo o
+        /// discontinuado. En esta versión decidimos priorizar la consistencia de los alquileres
+        /// y reservas existentes.
 
         existente.setStockTotal(0);
         existente.setStockDisponible(0);
 
-        return inventarioItemMapper.toResponse(
-                inventarioItemRepository.save(existente),
-                videojuegoMapper.toResponse(existente.getVideojuego()));
+        return mapearResponse(inventarioItemRepository.save(existente));
     }
 
-    private InventarioItemEntity obtenerInventarioPorId(int id) {
-        return inventarioItemRepository.findById(id)
-                .orElseThrow(() -> new InventarioItemNoEncontradoException(
-                        "Inventario con id: " + id + " no encontrado."
-                ));
-    }
-
-
-    // Aggregate root
+    /// Aggregate root
 
     @Transactional
     public ReservaResponse crearReserva(
@@ -276,14 +241,7 @@ public class InventarioItemService {
                                         + request.getPersonaId()
                         ));
 
-        InventarioItemEntity inventario =
-                inventarioItemRepository.findById(inventarioId)
-                        .orElseThrow(() ->
-                                new InventarioItemNoEncontradoException(
-                                        "Inventario con id: "
-                                                + inventarioId
-                                                + " no encontrado."
-                                ));
+        InventarioItemEntity inventario = obtenerInventarioPorId(inventarioId);
 
         if (inventario.getStockDisponible() > 0) {
             throw new BusinessException(
@@ -326,6 +284,50 @@ public class InventarioItemService {
         return inventario.getListaDeEspera().stream()
                 .map(reservaMapper::toResponse)
                 .toList();
+    }
+
+    /// Helpers privados
+
+    private InventarioItemEntity obtenerInventarioPorId(int id) {
+        return inventarioItemRepository.findById(id)
+                .orElseThrow(() -> new InventarioItemNoEncontradoException(
+                        "Inventario con id: " + id + " no encontrado."
+                ));
+    }
+
+    private void validarSinCompromisos(InventarioItemEntity inventario) {
+        if (inventario.getStockTotal()
+                != inventario.getStockDisponible()) {
+
+            throw new StockNoValidoException(
+                    "Hay copias comprometidas."
+            );
+        }
+    }
+
+    public void validarDatosDeInventario (InventarioItemCreateOrReplaceRequest request) throws IllegalArgumentException {
+
+        if(request.getStockDisponible() > request.getStockTotal()) {
+            throw new IllegalArgumentException("El stock disponible no puede ser mayor que el stock total.");
+        }
+
+        List<InventarioItemEntity> inventarios = inventarioItemRepository.findByVideojuegoId(request.getVideojuegoId());
+
+        if (inventarios.stream().anyMatch(i -> i.getPlataforma() == request.getPlataforma())) {
+            throw new IllegalArgumentException("Ya existe un inventario para el videojuego con la misma plataforma.");
+        }
+
+    }
+
+    private InventarioItemResponse mapearResponse(
+            InventarioItemEntity inventario
+    ) {
+        return inventarioItemMapper.toResponse(
+                inventario,
+                videojuegoMapper.toResponse(
+                        inventario.getVideojuego()
+                )
+        );
     }
 
 }

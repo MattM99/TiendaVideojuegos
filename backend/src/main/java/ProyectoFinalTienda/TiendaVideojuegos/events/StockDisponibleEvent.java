@@ -11,4 +11,5 @@ public class StockDisponibleEvent {
     public int getInventarioItemId() {
         return inventarioItemId;
     }
+
 }
