@@ -1,79 +1,139 @@
-<h2>{{ titulo }}</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="alquiler-form">
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <!-- Cliente -->
-  <div>
-    <label>Cliente</label>
-    <select formControlName="personaId">
-      <option value="">Seleccione un cliente</option>
+  <h2 class="title">{{ titulo }}</h2>
 
-      @for (p of personas(); track p.dni) {
-      <option [value]="p.dni">{{ p.dni }} - {{ p.nombre }} {{ p.apellido }}</option>
-      }
-    </select>
+  <!-- ================= PERSONA ================= -->
+  <div class="form-group">
+    <label>DNI de la persona</label>
 
-    @if (form.get('personaId')?.invalid && form.get('personaId')?.touched) {
-      <p class="error">* Debe seleccionar un cliente</p>
+    <div class="row">
+      <input
+        type="text"
+        formControlName="personaDni"
+        placeholder="Ingrese DNI"
+        [class.invalid]="form.get('personaDni')?.invalid && form.get('personaDni')?.touched"
+      />
+
+      <button type="button" (click)="buscarPersona()">
+        Buscar
+      </button>
+    </div>
+
+    @if (form.get('personaDni')?.touched && form.get('personaDni')?.hasError('required')) {
+      <small class="error">El DNI es obligatorio</small>
+    }
+
+    @if (personaValida() === true) {
+      <small class="success">Persona encontrada ✔</small>
+    }
+
+    @if (personaValida() === false) {
+      <small class="error">Persona no encontrada ❌</small>
+    }
+
+    @if (personaValida() === null && form.get('personaDni')?.value) {
+      <small class="hint">Presione buscar para validar</small>
     }
   </div>
 
-  <!-- Inventario / Juego -->
-  <div>
-    <label>Juego en inventario</label>
+  <hr />
 
-    <select formControlName="inventarioId">
-      <option value="">Seleccione un juego</option>
-
-      @for (item of inventario(); track item.inventarioId) {
-        @if (item.stockDisponible > 0) {
-          <option [value]="item.inventarioId">
-            {{ item.videojuego.titulo }} - {{ item.plataforma }} (Stock: {{ item.stockDisponible }})
-          </option>
-        }
-      }
-    </select>
-
-    @if (form.get('inventarioId')?.invalid && form.get('inventarioId')?.touched) {
-      <p class="error">* Debe seleccionar un juego</p>
-    }
-  </div>
-
-  <!-- Fecha inicio -->
-  <div>
+  <!-- ================= FECHAS ================= -->
+  <div class="form-group">
     <label>Fecha inicio</label>
-    <input type="date" formControlName="fechaInicio" />
-    @if (form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched) {
-    <p class="error">* Campo obligatorio o fecha inválida</p>
+    <input
+      type="date"
+      formControlName="fechaInicio"
+      [class.invalid]="form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched"
+    />
+
+    @if (form.get('fechaInicio')?.touched && form.get('fechaInicio')?.hasError('required')) {
+      <small class="error">Fecha inicio obligatoria</small>
     }
   </div>
 
-  <!-- Fecha fin -->
-  <div>
+  <div class="form-group">
     <label>Fecha fin</label>
-    <input type="date" formControlName="fechaFin" />
-    @if (form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched) {
-    <p class="error">* Campo obligatorio o fecha inválida</p>
+    <input
+      type="date"
+      formControlName="fechaFin"
+      [class.invalid]="form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched"
+    />
+
+    @if (form.get('fechaFin')?.touched && form.get('fechaFin')?.hasError('required')) {
+      <small class="error">Fecha fin obligatoria</small>
     }
   </div>
 
-  <!-- Monto fijo -->
-  <div>
-    <label>Monto fijo</label>
-    <input type="number" formControlName="montoFijo" />
-    @if (form.get('montoFijo')?.invalid && form.get('montoFijo')?.touched) {
-      <p class="error">* Monto inválido</p>
+  @if (form.errors?.['rangoInvalido']) {
+    <small class="error">
+      La fecha de inicio no puede ser mayor a la fecha de fin
+    </small>
+  }
+
+  <hr />
+
+  <!-- ================= DETALLES ================= -->
+  <div formArrayName="detalles" class="detalles">
+
+    <h3>Juegos</h3>
+
+    @for (detalle of detalles.controls; track $index) {
+      <div [formGroupName]="$index" class="detalle-card">
+
+        <!-- JUEGO -->
+        <select formControlName="inventarioItemId">
+          <option [ngValue]="null">Seleccione un juego</option>
+
+          @for (item of inventario(); track item.inventarioId) {
+            <option [value]="item.inventarioId">
+              {{ item.videojuego.titulo }}
+            </option>
+          }
+        </select>
+
+        @if (detalle.get('inventarioItemId')?.touched &&
+             detalle.get('inventarioItemId')?.hasError('required')) {
+          <small class="error">Seleccione un juego</small>
+        }
+
+        <!-- CANTIDAD -->
+        <input
+          type="number"
+          min="1"
+          formControlName="cantidad"
+        />
+
+        @if (detalle.get('cantidad')?.touched &&
+             detalle.get('cantidad')?.invalid) {
+          <small class="error">Cantidad mínima: 1</small>
+        }
+
+        <!-- ELIMINAR -->
+        <button type="button" class="btn-danger" (click)="eliminarDetalle($index)">
+          Eliminar
+        </button>
+
+      </div>
     }
+
+    <button type="button" class="btn-secondary" (click)="agregarDetalle()">
+      + Agregar juego
+    </button>
+
   </div>
 
-  <!-- Fecha devolución opcional -->
-  <div>
-    <label>Fecha devolución (opcional)</label>
-    <input type="date" formControlName="fechaDevolucion" />
+  <hr />
+
+  <!-- ================= BOTONES ================= -->
+  <div class="actions">
+    <button type="submit" class="btn-primary">
+      Crear alquiler
+    </button>
+
+    <button type="button" class="btn-secondary" (click)="cancelar()">
+      Cancelar
+    </button>
   </div>
 
-  <!-- Botones -->
-  <div class="buttons">
-    <button type="submit" [disabled]="form.invalid">Guardar</button>
-    <button type="button" (click)="cancelar()">Cancelar</button>
-  </div>
 </form>
