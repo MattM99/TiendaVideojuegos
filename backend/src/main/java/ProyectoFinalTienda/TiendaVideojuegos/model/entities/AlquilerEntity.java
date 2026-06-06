@@ -191,8 +191,7 @@ public class AlquilerEntity {
     // El total de todos los juegos en todo el plazo de alquiler:
     public BigDecimal calcularCostoFijo() {
         long dias = calcularDiasAlquiler();
-        BigDecimal costoFijo = montoDiarioAlquiler.multiply(BigDecimal.valueOf(dias));
-        return costoFijo;
+        return montoDiarioAlquiler.multiply(BigDecimal.valueOf(dias));
     }
 
 }
