@@ -21,21 +21,22 @@ export class InventarioItemListComponent {
   }
 
   loadData() {
-    this.service.getAll().subscribe((items) => {
-      const requests = items.map((i) => this.service.getTituloJuego(i.videojuegoId));
+    this.service.getAll().subscribe({
+      next: (items) => {
+        console.log('ITEMS INVENTARIO:', items);
 
-      forkJoin(requests).subscribe((titulos) => {
-        const combined = items.map((item, idx) => ({
+        const combined = items.map((item) => ({
           item,
-          titulo: titulos[idx] || 'Desconocido',
+          titulo: item.videojuego?.titulo || 'Desconocido',
         }));
 
         this.inventarioItemsWithTitle.set(combined);
-      });
+      },
+      error: (err) => console.error('Error cargando inventario', err),
     });
   }
 
-  delete(id?: string) {
+  delete(id?: number) {
     if (!id) return;
 
     if (!confirm('¿Seguro que querés eliminar este item del inventario?')) return;

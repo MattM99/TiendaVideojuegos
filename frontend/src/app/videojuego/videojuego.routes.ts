@@ -4,8 +4,8 @@ import { VideojuegoFormComponent } from './videojuego-form.component/videojuego-
 import { VideojuegoDetailComponent } from './videojuego-detail.component/videojuego-detail.component';
 
 export const VIDEOJUEGO_ROUTES: Routes = [
-  { path: '', component: VideojuegoListComponent },          // /videojuegos
-  { path: 'new', component: VideojuegoFormComponent },       // /videojuegos/new
-  { path: ':id', component: VideojuegoDetailComponent },      // /videojuegos/123
-  { path: 'edit/:id', component: VideojuegoFormComponent }    // /videojuegos/edit/123
+  { path: '', component: VideojuegoListComponent },
+  { path: 'new', component: VideojuegoFormComponent },
+  { path: 'edit/:id', component: VideojuegoFormComponent },
+  { path: ':id', component: VideojuegoDetailComponent }
 ];

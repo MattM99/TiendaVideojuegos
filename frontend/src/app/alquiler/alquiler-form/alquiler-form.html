@@ -18,25 +18,26 @@
   </div>
 
   <!-- Inventario / Juego -->
-  <!-- Inventario / Juego -->
   <div>
     <label>Juego en inventario</label>
+
     <select formControlName="inventarioId">
       <option value="">Seleccione un juego</option>
 
-      @for (item of inventario(); track item.id){ @if (item.enLocal > 0) {
-      <option [value]="item.id">
-        {{ videojuegoMap()[item.videojuegoId] || 'Desconocido' }} (Stock: {{ item.enLocal }})
-      </option>
-      } }
+      @for (item of inventario(); track item.inventarioId) {
+        @if (item.stockDisponible > 0) {
+          <option [value]="item.inventarioId">
+            {{ item.videojuego.titulo }} - {{ item.plataforma }} (Stock: {{ item.stockDisponible }})
+          </option>
+        }
+      }
     </select>
 
     @if (form.get('inventarioId')?.invalid && form.get('inventarioId')?.touched) {
-    <p class="error">* Debe seleccionar un juego</p>
+      <p class="error">* Debe seleccionar un juego</p>
     }
   </div>
 
-  <!-- Fecha inicio -->
   <!-- Fecha inicio -->
   <div>
     <label>Fecha inicio</label>
@@ -47,7 +48,6 @@
   </div>
 
   <!-- Fecha fin -->
-  <!-- Fecha fin -->
   <div>
     <label>Fecha fin</label>
     <input type="date" formControlName="fechaFin" />
@@ -56,7 +56,6 @@
     }
   </div>
 
-  <!-- Monto fijo -->
   <!-- Monto fijo -->
   <div>
     <label>Monto fijo</label>
@@ -67,13 +66,11 @@
   </div>
 
   <!-- Fecha devolución opcional -->
-  <!-- Fecha devolución opcional -->
   <div>
     <label>Fecha devolución (opcional)</label>
     <input type="date" formControlName="fechaDevolucion" />
   </div>
 
-  <!-- Botones -->
   <!-- Botones -->
   <div class="buttons">
     <button type="submit" [disabled]="form.invalid">Guardar</button>

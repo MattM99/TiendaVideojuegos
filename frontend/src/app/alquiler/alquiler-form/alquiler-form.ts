@@ -34,26 +34,11 @@ export class AlquilerForm implements OnInit {
 
   private alquilerService = inject(Alquiler);
   private personaService = inject(Persona);
-  private videojuegoService = inject(VideojuegoService);
   private inventarioService = inject(InventarioItemService);
 
   personas = computed(() => this.personaService.personas());
 
-  videojuegos = signal<VideojuegoModel[]>([]);
-
   inventario = signal<InventarioItemModel[]>([]);
-
-  videojuegoMap = computed(() => {
-    const map: Record<string, string> = {};
-
-    this.videojuegos().forEach((j) => {
-      if (j.id) {
-        map[j.id] = j.titulo;
-      }
-    });
-
-    return map;
-  });
 
   titulo = 'Nuevo alquiler';
 
@@ -61,82 +46,56 @@ export class AlquilerForm implements OnInit {
 
   form = this.fb.group({
     personaId: ['', [Validators.required]],
-
     inventarioId: ['', [Validators.required]],
-
     fechaInicio: ['', [Validators.required, noFechaPasada]],
-
     fechaFin: ['', [Validators.required, fechaValida]],
-
     montoFijo: [0, [Validators.required, Validators.min(0)]],
-
     fechaDevolucion: [''],
   });
 
   ngOnInit(): void {
+    this.personaService.cargarPersonas();
 
-   /* this.personaService.cargarPersonas();*/
-
-    // Cargar videojuegos
-    this.videojuegoService.getAll().subscribe({
-      next: (juegos) => this.videojuegos.set(juegos),
-      error: (err) => console.error(err),
-    });
-
-    // Cargar inventario disponible
     this.inventarioService.getAll().subscribe({
       next: (items) =>
         this.inventario.set(
-          items.filter((i) => i.enLocal > 0)
+          items.filter((i) => i.stockDisponible > 0)
         ),
       error: (err) => console.error(err),
     });
 
-    // Editar alquiler
     const idParam = this.route.snapshot.paramMap.get('id');
 
     if (idParam) {
-
       this.titulo = 'Editar alquiler';
-
       this.alquilerId = idParam;
 
       this.alquilerService.obtenerAlquiler(this.alquilerId).subscribe({
         next: (alquiler) => {
-
           this.form.patchValue({
             personaId: alquiler.personaId,
-
             inventarioId: alquiler.inventarioId,
-
             fechaInicio: alquiler.fechaInicio,
-
             fechaFin: alquiler.fechaFin,
-
             montoFijo: alquiler.montoFijo,
-
             fechaDevolucion: alquiler.fechaDevolucion ?? '',
           });
         },
-
         error: (err) => console.error(err),
       });
     }
   }
 
   onSubmit(): void {
-
     if (this.form.invalid) {
-
       this.form.markAllAsTouched();
-
       return;
     }
 
     const value = this.form.value;
 
     const item = this.inventario().find(
-      (i) => i.id === value.inventarioId
+      (i) => i.inventarioId === Number(value.inventarioId)
     );
 
     if (!item) {
@@ -145,29 +104,18 @@ export class AlquilerForm implements OnInit {
     }
 
     const base: Omit<AlquilerModel, 'id'> = {
-
       personaId: value.personaId!,
-
       inventarioId: value.inventarioId!,
-
-      videojuegoId: item.videojuegoId,
-
+      videojuegoId: item.videojuego.videojuegoId!,
       fechaInicio: value.fechaInicio!,
-
       fechaFin: value.fechaFin!,
-
       montoFijo: value.montoFijo!,
-
       fechaDevolucion: value.fechaDevolucion || undefined,
-
       detalles: [],
-
       penalizaciones: [],
     };
 
-    // Actualizar
     if (this.alquilerId) {
-
       const actualizado: AlquilerModel = {
         id: this.alquilerId,
         ...base
@@ -181,25 +129,13 @@ export class AlquilerForm implements OnInit {
         });
 
     } else {
-
-      // Crear
       this.alquilerService
         .crearAlquiler(base)
         .subscribe({
-
           next: () => {
-
-            this.inventarioService
-              .descontarStock(value.inventarioId!)
-              .subscribe({
-                next: () => console.log('Stock descontado'),
-                error: (err) => console.error(err),
-              });
-
             this.router.navigate(['/alquileres']);
           },
-
-          error: (err) => console.error(err),
+          error: (err: any) => console.error(err),
         });
     }
   }

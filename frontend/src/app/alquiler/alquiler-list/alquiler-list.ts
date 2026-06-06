@@ -51,12 +51,12 @@ export class AlquilerList implements OnInit {
     this.alquilerService.eliminarAlquiler(alquilerId).subscribe({
       next: () => {
         // Incrementar stock solo si tenemos inventarioId
-        if (inventarioId) {
+        /*if (inventarioId) {
           this.inventarioService.incrementarStock(inventarioId).subscribe({
             next: () => console.log('Stock incrementado'),
             error: (err) => console.error('Error incrementando stock', err),
           });
-        }
+        }*/
 
         // Recargar lista de alquileres
         this.alquilerService.cargarAlquileres();
@@ -70,8 +70,11 @@ export class AlquilerList implements OnInit {
     return persona ? `${persona.nombre} ${persona.apellido}` : 'Desconocido';
   }
 
-  getTituloJuego(videojuegoId: string): string {
-    const juego = this.videojuegos().find((v) => v.id === videojuegoId);
-    return juego ? juego.titulo : 'Desconocido';
-  }
+  getTituloJuego(videojuegoId: number): string {
+  const juego = this.videojuegos().find(
+    (v) => v.videojuegoId === videojuegoId
+  );
+
+  return juego ? juego.titulo : 'Desconocido';
+}
 }

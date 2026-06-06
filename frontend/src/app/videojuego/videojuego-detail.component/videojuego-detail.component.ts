@@ -17,7 +17,7 @@ export class VideojuegoDetailComponent {
   videojuego = signal<any>(null);
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id'); // ya es string
+    const id = this.route.snapshot.paramMap.get('id'); 
     if (!id) return;
 
     this.service.getById(id).subscribe({
@@ -31,7 +31,7 @@ export class VideojuegoDetailComponent {
   }
 
   editar() {
-    const id = this.videojuego()?.id;
-    this.router.navigate(['/videojuegos/edit', id]);
-  }
+  const id = this.videojuego()?.videojuegoId;
+  this.router.navigate(['/videojuegos/edit', id]);
+}
 }
