@@ -113,21 +113,21 @@ public class InventarioItemService {
         return inventarioItemMapper.toResponseList(inventarios);
     }
 
-    public Integer obtenerStockTotal(int inventarioId) {
-        Integer stockTotal = inventarioItemRepository.findStockTotalByInventarioId(inventarioId);
-        if (stockTotal == null) {
-            throw new InventarioItemNoEncontradoException("No se encontró inventario con id: " + inventarioId);
-        }
-        return stockTotal;
-    }
-
-    public Integer obtenerStockDisponible(int inventarioId) {
-        Integer stockDisponible = inventarioItemRepository.findStockDisponibleByInventarioId(inventarioId);
-        if (stockDisponible == null) {
-            throw new InventarioItemNoEncontradoException("No se encontró inventario con id: " + inventarioId);
-        }
-        return stockDisponible;
-    }
+//    public Integer obtenerStockTotal(int inventarioId) {
+//        Integer stockTotal = inventarioItemRepository.findStockTotalByInventarioId(inventarioId);
+//        if (stockTotal == null) {
+//            throw new InventarioItemNoEncontradoException("No se encontró inventario con id: " + inventarioId);
+//        }
+//        return stockTotal;
+//    }
+//
+//    public Integer obtenerStockDisponible(int inventarioId) {
+//        Integer stockDisponible = inventarioItemRepository.findStockDisponibleByInventarioId(inventarioId);
+//        if (stockDisponible == null) {
+//            throw new InventarioItemNoEncontradoException("No se encontró inventario con id: " + inventarioId);
+//        }
+//        return stockDisponible;
+//    }
 
     /// Update
 
@@ -320,9 +320,7 @@ public class InventarioItemService {
 
     }
 
-    private InventarioItemResponse mapearResponse(
-            InventarioItemEntity inventario
-    ) {
+    private InventarioItemResponse mapearResponse(InventarioItemEntity inventario) {
         return inventarioItemMapper.toResponse(
                 inventario,
                 videojuegoMapper.toResponse(
@@ -330,7 +328,6 @@ public class InventarioItemService {
                 )
         );
     }
-
 }
 
 

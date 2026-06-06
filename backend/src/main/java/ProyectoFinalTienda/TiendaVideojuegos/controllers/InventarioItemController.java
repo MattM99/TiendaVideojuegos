@@ -81,17 +81,17 @@ public class InventarioItemController {
         return ResponseEntity.ok(inventarioItemService.buscarPorPlataformaMasBaratosQue(plataforma, valor));
     }
 
-    @Operation(summary = "Obtener stock total", description = "Devuelve el stock total de un inventario por ID")
-    @GetMapping("/{id}/stock-total")
-    public ResponseEntity<Integer> obtenerStockTotal(@PathVariable int id) {
-        return ResponseEntity.ok(inventarioItemService.obtenerStockTotal(id));
-    }
-
-    @Operation(summary = "Obtener stock disponible", description = "Devuelve el stock disponible de un inventario por ID")
-    @GetMapping("/{id}/stock-disponible")
-    public ResponseEntity<Integer> obtenerStockDisponible(@PathVariable int id) {
-        return ResponseEntity.ok(inventarioItemService.obtenerStockDisponible(id));
-    }
+//    @Operation(summary = "Obtener stock total", description = "Devuelve el stock total de un inventario por ID")
+//    @GetMapping("/{id}/stock-total")
+//    public ResponseEntity<Integer> obtenerStockTotal(@PathVariable int id) {
+//        return ResponseEntity.ok(inventarioItemService.obtenerStockTotal(id));
+//    }
+//
+//    @Operation(summary = "Obtener stock disponible", description = "Devuelve el stock disponible de un inventario por ID")
+//    @GetMapping("/{id}/stock-disponible")
+//    public ResponseEntity<Integer> obtenerStockDisponible(@PathVariable int id) {
+//        return ResponseEntity.ok(inventarioItemService.obtenerStockDisponible(id));
+//    }
 
     @Operation(summary = "Actualizar inventario completo", description = "Actualiza todos los campos de un inventario por ID")
     @PutMapping("/{id}")
