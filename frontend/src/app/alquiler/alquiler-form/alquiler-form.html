@@ -7,12 +7,8 @@
     <label>DNI de la persona</label>
 
     <div class="row">
-      <input
-        type="text"
-        formControlName="personaDni"
-        placeholder="Ingrese DNI"
-        [class.invalid]="form.get('personaDni')?.invalid && form.get('personaDni')?.touched"
-      />
+      <input type="text" formControlName="personaDni" placeholder="Ingrese DNI"
+        [class.invalid]="form.get('personaDni')?.invalid && form.get('personaDni')?.touched" />
 
       <button type="button" (click)="buscarPersona()">
         Buscar
@@ -20,19 +16,23 @@
     </div>
 
     @if (form.get('personaDni')?.touched && form.get('personaDni')?.hasError('required')) {
-      <small class="error">El DNI es obligatorio</small>
+    <small class="error">El DNI es obligatorio</small>
     }
 
     @if (personaValida() === true) {
-      <small class="success">Persona encontrada ✔</small>
+    <div class="persona-info">
+      <strong class="success">Persona encontrada: {{ personaEncontrada()?.nombre }} {{ personaEncontrada()?.apellido
+        }}</strong>
+
+    </div>
     }
 
-    @if (personaValida() === false) {
-      <small class="error">Persona no encontrada ❌</small>
+    @if (form.get('personaDni')?.hasError('notFound')) {
+    <small class="error">No se encontró a la persona</small>
     }
 
     @if (personaValida() === null && form.get('personaDni')?.value) {
-      <small class="hint">Presione buscar para validar</small>
+    <small class="hint">Presione buscar para validar</small>
     }
   </div>
 
@@ -41,34 +41,34 @@
   <!-- ================= FECHAS ================= -->
   <div class="form-group">
     <label>Fecha inicio</label>
-    <input
-      type="date"
-      formControlName="fechaInicio"
-      [class.invalid]="form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched"
-    />
+    <input type="date" formControlName="fechaInicio" [max]="hoy"
+      [class.invalid]="form.get('fechaInicio')?.invalid && form.get('fechaInicio')?.touched" />
 
     @if (form.get('fechaInicio')?.touched && form.get('fechaInicio')?.hasError('required')) {
-      <small class="error">Fecha inicio obligatoria</small>
+    <small class="error">Fecha inicio obligatoria</small>
+    }
+
+    @if (form.get('fechaInicio')?.touched && form.get('fechaInicio')?.hasError('fechaFutura')) {
+    <small class="error">
+      La fecha de inicio no puede ser futura
+    </small>
     }
   </div>
 
   <div class="form-group">
     <label>Fecha fin</label>
-    <input
-      type="date"
-      formControlName="fechaFin"
-      [class.invalid]="form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched"
-    />
+    <input type="date" formControlName="fechaFin"
+      [class.invalid]="form.get('fechaFin')?.invalid && form.get('fechaFin')?.touched" />
 
     @if (form.get('fechaFin')?.touched && form.get('fechaFin')?.hasError('required')) {
-      <small class="error">Fecha fin obligatoria</small>
+    <small class="error">Fecha fin obligatoria</small>
     }
   </div>
 
   @if (form.errors?.['rangoInvalido']) {
-    <small class="error">
-      La fecha de inicio no puede ser mayor a la fecha de fin
-    </small>
+  <small class="error">
+    La fecha de inicio no puede ser mayor a la fecha de fin
+  </small>
   }
 
   <hr />
@@ -79,42 +79,43 @@
     <h3>Juegos</h3>
 
     @for (detalle of detalles.controls; track $index) {
-      <div [formGroupName]="$index" class="detalle-card">
+    <div [formGroupName]="$index" class="detalle-card">
 
-        <!-- JUEGO -->
-        <select formControlName="inventarioItemId">
-          <option [ngValue]="null">Seleccione un juego</option>
+      <!-- JUEGO -->
+      <select formControlName="inventarioItemId">
+        <option [ngValue]="null">Seleccione un juego</option>
 
-          @for (item of inventario(); track item.inventarioId) {
-            <option [value]="item.inventarioId">
-              {{ item.videojuego.titulo }}
-            </option>
-          }
-        </select>
-
-        @if (detalle.get('inventarioItemId')?.touched &&
-             detalle.get('inventarioItemId')?.hasError('required')) {
-          <small class="error">Seleccione un juego</small>
+        @for (item of inventario(); track item.inventarioId) {
+        <option [value]="item.inventarioId">
+          ({{ item.plataforma }}) {{ item.videojuego.titulo }}
+        </option>
         }
+      </select>
 
-        <!-- CANTIDAD -->
-        <input
-          type="number"
-          min="1"
-          formControlName="cantidad"
-        />
+      @if (detalle.get('inventarioItemId')?.touched &&
+      detalle.get('inventarioItemId')?.hasError('required')) {
+      <small class="error">Seleccione un juego</small>
+      }
 
-        @if (detalle.get('cantidad')?.touched &&
-             detalle.get('cantidad')?.invalid) {
-          <small class="error">Cantidad mínima: 1</small>
-        }
+      <!-- CANTIDAD -->
+      <input type="number" min="1" formControlName="cantidad" />
 
-        <!-- ELIMINAR -->
-        <button type="button" class="btn-danger" (click)="eliminarDetalle($index)">
-          Eliminar
-        </button>
+      @if (detalle.get('cantidad')?.touched && detalle.get('cantidad')?.hasError('min')) {
+      <small class="error">Cantidad mínima: 1</small>
+      }
 
-      </div>
+      @if (detalle.get('cantidad')?.touched && detalle.get('cantidad')?.hasError('stockInsuficiente')) {
+      <small class="error">
+        El stock disponible es de: {{ obtenerStockDisponible($index) }}
+      </small>
+      }
+
+      <!-- ELIMINAR -->
+      <button type="button" class="btn-danger" (click)="eliminarDetalle($index)">
+        Eliminar
+      </button>
+
+    </div>
     }
 
     <button type="button" class="btn-secondary" (click)="agregarDetalle()">
@@ -127,7 +128,7 @@
 
   <!-- ================= BOTONES ================= -->
   <div class="actions">
-    <button type="submit" class="btn-primary">
+    <button type="submit" class="btn-primary" [disabled]="form.invalid || personaValida() !== true">
       Crear alquiler
     </button>
 

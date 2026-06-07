@@ -23,6 +23,23 @@ export function noFechaPasada(control: AbstractControl): ValidationErrors | null
   return null;
 }
 
+export function noFechaFutura(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) return null;
+
+  const fechaIngresada = new Date(control.value);
+  const hoy = new Date();
+
+  // normalizar (sin horas)
+  hoy.setHours(0, 0, 0, 0);
+  fechaIngresada.setHours(0, 0, 0, 0);
+
+  if (fechaIngresada > hoy) {
+    return { fechaFutura: true };
+  }
+
+  return null;
+}
+
 export function rangoFechasValidas(group: AbstractControl): ValidationErrors | null {
   const inicio = group.get('fechaInicio')?.value;
   const fin = group.get('fechaFin')?.value;
