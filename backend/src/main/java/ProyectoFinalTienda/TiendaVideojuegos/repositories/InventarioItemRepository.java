@@ -21,10 +21,4 @@ public interface InventarioItemRepository extends JpaRepository<InventarioItemEn
 
     List<InventarioItemEntity> findByPlataformaAndPrecioDiarioLessThan(Plataformas plataforma, double precioDiario);
 
-    @Query("SELECT i.stockTotal FROM InventarioItemEntity i WHERE i.inventarioItemId = ?1")
-    Integer findStockTotalByInventarioId(int inventarioItemId);
-
-    @Query("SELECT i.stockDisponible FROM InventarioItemEntity i WHERE i.inventarioItemId = ?1")
-    Integer findStockDisponibleByInventarioId(int inventarioItemId);
-
 }
