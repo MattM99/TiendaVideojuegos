@@ -54,7 +54,7 @@ export class AlquilerForm implements OnInit {
   });
 
   ngOnInit(): void {
-    this.personaService.cargarPersonas();
+    this.personaService.cargarPersonas(0, 10, 'nombre', 'asc');
 
     this.inventarioService.getAll().subscribe({
       next: (items) =>
