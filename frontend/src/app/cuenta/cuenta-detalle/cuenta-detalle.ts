@@ -18,7 +18,7 @@ export class CuentaDetalle implements OnInit {
   private router = inject(Router);
   private authService = inject(AuthService);
 
-usuario = this.authService.currentUser;
+  usuario = this.authService.currentUser;
 
   cuenta = signal<CuentaModel | null>(null);
 
