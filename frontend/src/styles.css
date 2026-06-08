@@ -1,6 +1,8 @@
 html, body {
     height: 100%;
     margin: 0;
+      overflow-x: hidden;
+
 }
 
 
@@ -13,4 +15,8 @@ body {
         radial-gradient(circle at 20% 30%, #1c2530 0%, transparent 60%),
         radial-gradient(circle at 80% 70%, #111b24 0%, transparent 60%);
 
+}
+
+* {
+  box-sizing: border-box;
 }

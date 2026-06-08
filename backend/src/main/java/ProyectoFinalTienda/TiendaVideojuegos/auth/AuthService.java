@@ -25,6 +25,7 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final PersonaRepository personaRepository;
 
     public AuthResponse login(LoginRequest request) {
         try{
@@ -43,15 +44,15 @@ public class AuthService {
                 .build();
     }
 @Transactional
-    public AuthResponse register(RegisterRequest request) {
-        try{
-            PersonaEntity persona = PersonaEntity.builder()
-                    .nombre(request.getNombre())
-                    .apellido(request.getApellido())
-                    .dni(request.getDni())
-                    .telefono(request.getTelefono())
-                    .email(request.getEmail())
-                    .build();
+    public void register(RegisterRequest request) {
+            PersonaEntity persona = personaRepository.findByDni(request.getDni())
+                    .orElseGet(() -> PersonaEntity.builder()
+                            .nombre(request.getNombre())
+                            .apellido(request.getApellido())
+                            .dni(request.getDni())
+                            .email(request.getEmail())
+                            .telefono(request.getTelefono())
+                            .build());
 
             CuentaEntity cuenta = CuentaEntity.builder()
                     .nickname(request.getNickname())
@@ -64,14 +65,9 @@ public class AuthService {
              PersonaRepository.save(persona);
                 CuentaRepository.save(cuenta);
 
-        }catch (IllegalArgumentException e){
-            throw new RuntimeException("Fijate que onda");
+
 
         }
 
-        return AuthResponse.builder()
-                .token("Cuenta registrada exitosamente. Por favor, inicia sesión para obtener tu token.")
-                .build();
     }
-}
 
