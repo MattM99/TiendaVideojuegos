@@ -33,23 +33,4 @@ public class InventarioItemCreateOrReplaceRequest {
     @Min(value = 0, message = "El stock disponible no puede ser negativo")
     private Integer stockDisponible;
 
-//    @NotNull(message = "El stock alquilado es obligatorio")
-//    @Min(value = 0, message = "El stock alquilado no puede ser negativo")
-//    private Integer stockAlquilado;
-//
-//    @NotNull(message = "El stock descartado es obligatorio")
-//    @Min(value = 0, message = "El stock descartado no puede ser negativo")
-//    private Integer stockDescartado;
-
-    /*public InventarioItemEntity toEntity(VideojuegoEntity videojuego) {
-        return InventarioItemEntity.builder()
-                .videojuego(videojuego)
-                .plataforma(this.plataforma)
-                .precioUnitarioDiario(this.precioUnitarioDiario)
-                .stockTotal(this.stockTotal)
-                .stockDisponible(this.stockDisponible)
-                .stockAlquilado(this.stockAlquilado)
-                .stockDescartado(this.stockDescartado)
-                .build();
-    }*/
 }

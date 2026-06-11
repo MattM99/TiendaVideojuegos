@@ -107,12 +107,12 @@ public class PersonaController {
         return ResponseEntity.ok(personaService.buscarPorEmail(email));
     }
 
-    @Operation(summary = "Actualizar persona por email", description = "Permite actualizar parcialmente los datos de una persona usando su email")
-    @PatchMapping("/{email}")
+    @Operation(summary = "Actualizar persona por DNI", description = "Permite actualizar parcialmente los datos de una persona usando su DNI")
+    @PatchMapping("/dni/{dni}")
     public ResponseEntity<PersonaResponse> actualizar(
-            @PathVariable String email,
+            @PathVariable String dni,
             @RequestBody PersonaPatchRequest dto) {
-        return ResponseEntity.ok(personaService.actualizar(email, dto));
+        return ResponseEntity.ok(personaService.actualizar(dni, dto));
     }
 
     @Operation(summary = "Eliminar persona por DNI", description = "Elimina a una persona del sistema usando su número de DNI")

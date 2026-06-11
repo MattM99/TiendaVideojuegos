@@ -1,5 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoReserva;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -8,7 +9,11 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -40,6 +45,12 @@ public class InventarioItemEntity {
     )
     private List<DetalleAlquilerEntity> detalleAlquileres;
 
+    @OneToMany(
+            mappedBy = "inventarioItem",
+            cascade = CascadeType.ALL
+    )
+    private List<ReservaEntity> listaDeEspera = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(
             name = "plataforma",
@@ -69,5 +80,94 @@ public class InventarioItemEntity {
     @Min(value = 0, message = "El stock disponible no puede ser negativo")
     private int stockDisponible;
 
+    public void aumentarStockTotal(int cantidad) {
+        if (cantidad < 0) {
+            throw new IllegalArgumentException("La cantidad a aumentar no puede ser negativa");
+        }
+        this.stockTotal += cantidad;
+    }
+
+    public void aumentarStockDisponible(int cantidad) {
+        if (cantidad < 0) {
+            throw new IllegalArgumentException("La cantidad a aumentar no puede ser negativa");
+        }
+        if (cantidad + stockDisponible > stockTotal) {
+            throw new IllegalArgumentException("No se puede aumentar el stock disponible más allá del stock total. Stock total: " + stockTotal + ", Stock disponible actual: " + stockDisponible);
+        }
+        this.stockDisponible += cantidad;
+    }
+
+    public void disminuirStockDisponible(int cantidad) {
+        if (cantidad < 0) {
+            throw new IllegalArgumentException("La cantidad a disminuir no puede ser negativa");
+        }
+        if (cantidad > this.stockDisponible) {
+            throw new IllegalArgumentException("El item: " + inventarioItemId + " no tiene suficiente stock disponible para disminuir. Copias disponibles: " + stockDisponible);
+        }
+        this.stockDisponible -= cantidad;
+    }
+
+    public boolean esStockValido() {
+        return getStockDisponible() <= getStockTotal();
+    }
+
+    public void validarStock() {
+        if (!esStockValido()) {
+            throw new IllegalStateException("El stock disponible no puede exceder el stock total.");
+        }
+    }
+
+    /// ---- Aggregate root ----
+
+    public void agregarReserva(ReservaEntity reserva) {
+        this.listaDeEspera.add(reserva);
+        reserva.setInventarioItem(this);
+    }
+
+     public void eliminarReserva(ReservaEntity reserva) {
+        this.listaDeEspera.remove(reserva);
+        reserva.setInventarioItem(null);
+    }
+
+
+    public Optional<ReservaEntity> obtenerSiguienteReservaPendiente() {
+        return this.listaDeEspera.stream()
+                .filter(r -> r.getEstadoReserva() == EstadoReserva.PENDIENTE)
+                .min(Comparator.comparing(ReservaEntity::getFechaReserva));
+    }
+
+    public boolean tieneReservasPendientes() {
+        return this.listaDeEspera.stream()
+                .anyMatch(reserva -> reserva.getEstadoReserva() == EstadoReserva.PENDIENTE);
+    }
+
+    public void reservarCopiaPara(ReservaEntity reserva) {
+
+        if (stockDisponible < 1) {
+            throw new IllegalStateException(
+                    "No hay stock disponible."
+            );
+        }
+
+        stockDisponible--;
+
+        reserva.marcarComoNotificada();
+    }
+
+    public List<ReservaEntity> expirarReservasVencidas(LocalDateTime fechaActual) {
+
+        List<ReservaEntity> expiradas = listaDeEspera.stream()
+                .filter(r -> r.estaVencida(fechaActual))
+                .toList();
+
+        expiradas.forEach(r -> {
+
+            r.setEstadoReserva(EstadoReserva.EXPIRADA);
+
+            this.stockDisponible++;
+        });
+
+        return expiradas;
+    }
 
 }

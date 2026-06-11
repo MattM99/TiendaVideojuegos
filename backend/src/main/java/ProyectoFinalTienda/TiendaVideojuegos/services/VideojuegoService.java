@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.time.Year;
-import java.util.NoSuchElementException;
 
 @Service
 public class VideojuegoService {
@@ -23,20 +22,21 @@ public class VideojuegoService {
     @Autowired
     private VideojuegoMapper videojuegoMapper;
 
-    public VideojuegoResponse guardar(VideojuegoCreateOrReplaceRequest request) throws IllegalArgumentException, NoSuchElementException {
-        if(!esGeneroValido(request.getGenero())){
-            throw new NoSuchElementException("El genero ingresado no es valido: " + request.getGenero());
+    public VideojuegoResponse guardar(VideojuegoCreateOrReplaceRequest request) {
+
+        if (request.getLanzamiento() != null &&
+                request.getLanzamiento().isAfter(Year.now())) {
+            throw new IllegalArgumentException(
+                    "El año de lanzamiento no puede ser futuro: "
+                            + request.getLanzamiento());
         }
-        if (request.getLanzamiento() != null && request.getLanzamiento().isAfter(Year.now())) {
-            throw new IllegalArgumentException("El año de lanzamiento no puede ser futuro: " + request.getLanzamiento());
-        }
 
-        // 1. Convertimos el request a entidad.
-        VideojuegoEntity entity = videojuegoMapper.toEntityFromRequest(request);
+        VideojuegoEntity entity =
+                videojuegoMapper.toEntityFromRequest(request);
 
-        // 2. Guardamos la entidad y luego la convertimos en response para devolversela a controller.
-        return videojuegoMapper.toResponse(videojuegoRepository.save(entity));
-
+        return videojuegoMapper.toResponse(
+                videojuegoRepository.save(entity)
+        );
     }
 
     public void eliminar(int id){
@@ -75,30 +75,19 @@ public class VideojuegoService {
                 .map(videojuegoMapper::toResponse);
     }
 
-    public Page<VideojuegoResponse> buscarPorGenero(String generoStr, Pageable paginacion) throws NoSuchElementException, VideojuegoNoEncontradoException {
-        if (!esGeneroValido(generoStr)){
-            throw new NoSuchElementException("No existe el genero: " + generoStr);
-        }
+    public Page<VideojuegoResponse> buscarPorGenero(
+            Generos genero,
+            Pageable paginacion) {
 
-        Generos genero = Generos.valueOf(generoStr.trim().toUpperCase());
-
-        Page<VideojuegoEntity> juegos = videojuegoRepository.findByGenero(genero, paginacion);
+        Page<VideojuegoEntity> juegos =
+                videojuegoRepository.findByGenero(genero, paginacion);
 
         if (juegos.isEmpty()) {
-            throw new VideojuegoNoEncontradoException("No se encontraron juegos del genero: " + generoStr);
+            throw new VideojuegoNoEncontradoException(
+                    "No se encontraron juegos del genero: " + genero);
         }
 
-        return juegos
-                .map(videojuegoMapper::toResponse);
-    }
-
-    public boolean esGeneroValido(String generoStr) {
-        try {
-            Generos.valueOf(generoStr.trim().toUpperCase());
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        return juegos.map(videojuegoMapper::toResponse);
     }
 
     public Page<VideojuegoResponse> buscarMultijugadores(Pageable paginacion){
@@ -127,7 +116,7 @@ public class VideojuegoService {
         // Sobrescribímos todo, porque el DTO tiene todo obligatorio
         videojuegoExistente.setTitulo(datosNuevos.getTitulo());
         videojuegoExistente.setDesarrollador(datosNuevos.getDesarrollador());
-        videojuegoExistente.setGenero(Generos.valueOf(datosNuevos.getGenero().toUpperCase().trim()));
+        videojuegoExistente.setGenero(datosNuevos.getGenero());
         videojuegoExistente.setLanzamiento(datosNuevos.getLanzamiento());
         videojuegoExistente.setDescripcion(datosNuevos.getDescripcion());
         videojuegoExistente.setMultijugador(datosNuevos.isMultijugador());

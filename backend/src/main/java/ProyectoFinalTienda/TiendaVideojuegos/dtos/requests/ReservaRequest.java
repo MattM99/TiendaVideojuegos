@@ -1,5 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -7,9 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PersonaPatchRequest {
-    private String nombre;
-    private String apellido;
-    private String telefono;
-    private String email;
+public class ReservaRequest {
+
+    @NotNull
+    private Integer personaId;
+
 }

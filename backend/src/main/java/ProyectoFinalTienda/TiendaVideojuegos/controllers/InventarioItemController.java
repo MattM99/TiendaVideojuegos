@@ -2,7 +2,10 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemUpdateRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.ReservaRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioItemResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ReservaResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import ProyectoFinalTienda.TiendaVideojuegos.services.InventarioItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/inventario")
@@ -88,22 +93,26 @@ public class InventarioItemController {
         return ResponseEntity.ok(responses);
     }
 
-    @Operation(summary = "Buscar inventarios por plataforma", description = "Devuelve una lista de inventarios que pertenecen a una plataforma específica")
+    @Operation(
+            summary = "Buscar inventarios por plataforma",
+            description = "Devuelve una lista de inventarios que pertenecen a una plataforma específica"
+    )
     @GetMapping("/plataforma/{plataforma}")
     public ResponseEntity<Page<InventarioItemResponse>> buscarPorPlataforma(
-            @PathVariable String plataforma,
+            @PathVariable Plataformas plataforma,
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "inventarioItemId") String ordenarPor,
             @RequestParam(defaultValue = "asc") String direccion
-            ) {
+    ) {
         Sort sort = direccion.equalsIgnoreCase("desc")
                 ? Sort.by(ordenarPor).descending()
                 : Sort.by(ordenarPor).ascending();
 
         Pageable paginacion = PageRequest.of(pagina, tamano, sort);
 
-        Page<InventarioItemResponse> responses = inventarioItemService.buscarPorPlataforma(plataforma, paginacion);
+        Page<InventarioItemResponse> responses =
+                inventarioItemService.buscarPorPlataforma(paginacion, plataforma);
 
         return ResponseEntity.ok(responses);
     }
@@ -131,7 +140,7 @@ public class InventarioItemController {
     @Operation(summary = "Buscar inventarios por plataforma y precio menor a un valor", description = "Devuelve una lista de inventarios que pertenecen a una plataforma específica y cuyo precio es menor al valor especificado")
     @GetMapping("/plataformaPrecio/menor-a")
     public ResponseEntity<Page<InventarioItemResponse>> buscarPorPlataformaMasBaratosQue(
-            @RequestParam String plataforma,
+            @RequestParam Plataformas plataforma,
             @RequestParam double valor,
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
@@ -146,18 +155,6 @@ public class InventarioItemController {
 
         Page<InventarioItemResponse> responses = inventarioItemService.buscarPorPlataformaMasBaratosQue(plataforma, valor, paginacion);
         return ResponseEntity.ok(responses);
-    }
-
-    @Operation(summary = "Obtener stock total", description = "Devuelve el stock total de un inventario por ID")
-    @GetMapping("/{id}/stock-total")
-    public ResponseEntity<Integer> obtenerStockTotal(@PathVariable int id) {
-        return ResponseEntity.ok(inventarioItemService.obtenerStockTotal(id));
-    }
-
-    @Operation(summary = "Obtener stock disponible", description = "Devuelve el stock disponible de un inventario por ID")
-    @GetMapping("/{id}/stock-disponible")
-    public ResponseEntity<Integer> obtenerStockDisponible(@PathVariable int id) {
-        return ResponseEntity.ok(inventarioItemService.obtenerStockDisponible(id));
     }
 
     @Operation(summary = "Actualizar inventario completo", description = "Actualiza todos los campos de un inventario por ID")
@@ -196,6 +193,60 @@ public class InventarioItemController {
 
         InventarioItemResponse response = inventarioItemService.darDeBaja(id);
         return ResponseEntity.ok(response);
+    }
+
+// SOLO PARA PRUEBAS; NO ESTARIA EXPUESTO REALMENTE.
+//    @Operation(
+//            summary = "Disminuir stock",
+//            description = "Reduce el stock disponible de un inventario"
+//    )
+//    @PreAuthorize("hasRole('ADMINISTRADOR')")
+//    @PatchMapping("/{id}/disminuir-stock-disponible")
+//    public ResponseEntity<InventarioItemResponse> disminuirStockDisponible(
+//            @PathVariable int id,
+//            @RequestParam int cantidad) {
+//
+//        InventarioItemResponse response =
+//                inventarioItemService.disminuirStockDisponible(id, cantidad);
+//
+//        return ResponseEntity.ok(response);
+//    }
+
+    // Aggregate root
+
+    @Operation(
+            summary = "Crear una reserva",
+            description = "Agrega una nueva reserva a la lista de espera de un inventario específico"
+    )
+    @PostMapping("/{inventarioId}/reservas")
+    public ResponseEntity<ReservaResponse> crearReserva(
+            @PathVariable Integer inventarioId,
+            @Valid @RequestBody ReservaRequest request
+    ) {
+
+        ReservaResponse response =
+                inventarioItemService.crearReserva(
+                        inventarioId,
+                        request
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    @Operation(
+            summary = "Obtener reservas de un inventario",
+            description = "Devuelve todas las reservas asociadas a un inventario específico"
+    )
+    @GetMapping("/{inventarioId}/reservas/listar")
+    public ResponseEntity<List<ReservaResponse>> obtenerReservas(
+            @PathVariable Integer inventarioId
+    ) {
+
+        return ResponseEntity.ok(
+                inventarioItemService.obtenerReservas(inventarioId)
+        );
     }
 
 }

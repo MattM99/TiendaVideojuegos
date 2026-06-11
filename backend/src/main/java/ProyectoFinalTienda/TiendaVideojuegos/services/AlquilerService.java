@@ -5,6 +5,8 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PenalizacionManualRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ItemConStockInsuficienteResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ValidarDisponibilidadResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.*;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.AlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
@@ -13,14 +15,16 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AlquilerService {
@@ -37,6 +41,45 @@ public class AlquilerService {
     private DetalleAlquilerMapper detalleAlquilerMapper;
     @Autowired
     private InventarioItemRepository inventarioItemRepository;
+    @Autowired
+    private InventarioItemService inventarioItemService;
+
+    @Transactional(readOnly = true)
+    public ValidarDisponibilidadResponse validarDisponibilidad(
+            AlquilerCreateOrReplaceRequest request) {
+
+        List<ItemConStockInsuficienteResponse> faltantes = new ArrayList<>();
+
+        for (DetalleAlquilerRequest detalle : request.getDetalles()) {
+
+            InventarioItemEntity inventario =
+                    inventarioItemRepository.findById(detalle.getInventarioItemId())
+                            .orElseThrow(() ->
+                                    new InventarioItemNoEncontradoException(
+                                            "Inventario con id "
+                                                    + detalle.getInventarioItemId()
+                                                    + " no encontrado."
+                                    ));
+
+            if (inventario.getStockDisponible() < detalle.getCantidad()) {
+
+                faltantes.add(
+                        ItemConStockInsuficienteResponse.builder()
+                                .inventarioItemId(inventario.getInventarioItemId())
+                                .titulo(inventario.getVideojuego().getTitulo())
+                                .plataforma(inventario.getPlataforma())
+                                .cantidadSolicitada(detalle.getCantidad())
+                                .cantidadDisponible(inventario.getStockDisponible())
+                                .build()
+                );
+            }
+        }
+
+        return ValidarDisponibilidadResponse.builder()
+                .puedeCrearAlquiler(faltantes.isEmpty())
+                .faltantes(faltantes)
+                .build();
+    }
 
     @Transactional
     public AlquilerResponse crearAlquiler(AlquilerCreateOrReplaceRequest request) {
@@ -61,13 +104,8 @@ public class AlquilerService {
                 .orElseThrow(() -> new InventarioItemNoEncontradoException(
                         "Inventario con id: " + request.getInventarioItemId() + " no encontrado."));
 
-        // Validar stock disponible
-        if (inventario.getStockDisponible() < request.getCantidad()) {
-            throw new BusinessException("Stock insuficiente para el item con id: " + request.getInventarioItemId());
-        }
-
-        // Actualizar stock
-        inventario.setStockDisponible(inventario.getStockDisponible() - request.getCantidad());
+        // Validar stock disponible y actualizar stock
+        inventario.disminuirStockDisponible(request.getCantidad());
 
         DetalleAlquilerEntity detalle = detalleAlquilerMapper.toEntity(request, alquiler, inventario);
 
@@ -110,7 +148,7 @@ public class AlquilerService {
                 ));
 
         // registrar devolución
-        alquiler.setFechaDevolucion(request.getFechaDevolucion());
+        alquiler.setFechaDevolucion(LocalDate.now());
 
         // generar penalización automática
         alquiler.generarPenalizacionPorRetraso();
@@ -138,7 +176,7 @@ public class AlquilerService {
         // actualizar stock de los items alquilados
         for (DetalleAlquilerEntity detalle : alquiler.getItems()) {
             InventarioItemEntity inventario = detalle.getInventarioItem();
-            inventario.setStockDisponible(inventario.getStockDisponible() + detalle.getCantidad());
+            inventarioItemService.devolverVideojuego(inventario, detalle.getCantidad());
         }
 
         // finalizar alquiler

@@ -17,25 +17,14 @@ public class VideojuegoMapper {
         return VideojuegoEntity.builder()
                 .titulo(dto.getTitulo())
                 .desarrollador(dto.getDesarrollador())
-                .genero(Generos.valueOf(dto.getGenero().trim().toUpperCase()))
+                .genero(dto.getGenero())
                 .lanzamiento(dto.getLanzamiento())
                 .descripcion(dto.getDescripcion())
                 .multijugador(dto.isMultijugador())
                 .build();
 
     }
-/*
-    public VideojuegoEntity toEntityFromResponse(VideojuegoResponse dto) {
-        return VideojuegoEntity.builder()
-                .titulo(dto.getTitulo())
-                .desarrollador(dto.getDesarrollador())
-                .genero(dto.getGenero())
-                .lanzamiento(dto.getLanzamiento())
-                .descripcion(dto.getDescripcion())
-                .multijugador(dto.isMultijugador())
-                .build();
-    }
-*/
+
     public VideojuegoResponse toResponse(VideojuegoEntity entity) {
         return VideojuegoResponse.builder()
                 .videojuegoId(entity.getVideojuegoId())

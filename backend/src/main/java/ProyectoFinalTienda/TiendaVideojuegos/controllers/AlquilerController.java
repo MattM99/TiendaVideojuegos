@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ValidarDisponibilidadResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.services.AlquilerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/alquileres")
@@ -26,6 +28,18 @@ public class AlquilerController {
 
     @Autowired
     private AlquilerService alquilerService;
+
+    // Se consume esto antes que crearAlquiler, para ver disponbilidad antes de crear el alquiler y la posibilidad de crear nueva reserva
+    @Operation(summary = "Validar disponibilidad", description = "Verifica si existe stock suficiente para los videojuegos solicitados")
+    @PostMapping("/validar")
+    public ResponseEntity<ValidarDisponibilidadResponse>
+    validarDisponibilidad(
+            @RequestBody @Valid AlquilerCreateOrReplaceRequest request) {
+
+        return ResponseEntity.ok(
+                alquilerService.validarDisponibilidad(request)
+        );
+    }
 
     @Operation(summary = "Crear un nuevo alquiler", description = "Permite crear un nuevo alquiler de videojuego")
     @PostMapping
@@ -95,7 +109,7 @@ public class AlquilerController {
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "fechaInicio") String ordenarPor,
             @RequestParam(defaultValue = "asc") String direccion
-            ) {
+    ) {
 
         Sort sort = direccion.equalsIgnoreCase("desc")
                 ? Sort.by(ordenarPor).descending()

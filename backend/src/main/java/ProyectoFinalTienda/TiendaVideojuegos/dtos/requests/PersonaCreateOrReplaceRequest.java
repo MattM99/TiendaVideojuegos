@@ -27,11 +27,9 @@ public class PersonaCreateOrReplaceRequest {
     @Pattern(regexp = "\\d{7,8}", message = "El DNI debe tener entre 7 y 8 dígitos")
     private String dni;
 
-    @NotBlank(message = "El email no puede estar vacío")
     @Email(message = "El email debe ser válido")
     private String email;
 
-    @NotBlank(message = "El teléfono no puede estar vacío")
     @Pattern(regexp = "^\\d{7,15}$", message = "El teléfono debe contener solo números")
     private String telefono;
 }

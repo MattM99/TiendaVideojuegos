@@ -3,20 +3,20 @@ package ProyectoFinalTienda.TiendaVideojuegos.dtos.responses;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InventarioItemResponse {
+public class ItemConStockInsuficienteResponse {
 
-    private int inventarioId;
-    private VideojuegoResponse videojuego;
+    private Integer inventarioItemId;
+
+    private String titulo;
+
     private Plataformas plataforma;
-    private BigDecimal precioDiario;
-    private int stockTotal;
-    private int stockDisponible;
 
+    private Integer cantidadSolicitada;
+
+    private Integer cantidadDisponible;
 }

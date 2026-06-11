@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import ProyectoFinalTienda.TiendaVideojuegos.services.VideojuegoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,7 +43,7 @@ public class VideojuegoController {
 
     @Operation(summary = "Eliminar un videojuego", description = "Permite eliminar un videojuego por su ID")
     @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<Void> eliminarVideojuego(@PathVariable int id) {
+    public ResponseEntity<Void> eliminarVideojuego(@PathVariable int id){
         videojuegoService.eliminar(id);
         return ResponseEntity.noContent().build();
     }
@@ -69,7 +70,7 @@ public class VideojuegoController {
 
     @Operation(summary = "Buscar videojuego por ID", description = "Devuelve un videojuego específico por su ID")
     @GetMapping("/id/{id}")
-    public ResponseEntity<VideojuegoResponse> buscarPorId(@PathVariable int id) {
+    public ResponseEntity<VideojuegoResponse> buscarPorId(@PathVariable int id){
         VideojuegoResponse response = videojuegoService.buscarPorId(id);
         return ResponseEntity.ok(response);
     }
@@ -114,10 +115,9 @@ public class VideojuegoController {
         return ResponseEntity.ok(responses);
     }
 
-    @Operation(summary = "Buscar videojuegos por género", description = "Devuelve una lista de videojuegos que pertenecen al género especificado")
     @GetMapping("/genero/{genero}")
     public ResponseEntity<Page<VideojuegoResponse>> buscarPorGenero(
-            @PathVariable String genero,
+            @PathVariable Generos genero,
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "titulo") String ordenarPor,
@@ -129,7 +129,9 @@ public class VideojuegoController {
 
         Pageable paginacion = PageRequest.of(pagina, tamano, sort);
 
-        Page<VideojuegoResponse> responses = videojuegoService.buscarPorGenero(genero.trim().toUpperCase(), paginacion);
+        Page<VideojuegoResponse> responses =
+                videojuegoService.buscarPorGenero(genero, paginacion);
+
         return ResponseEntity.ok(responses);
     }
 
