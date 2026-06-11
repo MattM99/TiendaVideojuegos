@@ -2,6 +2,8 @@ package ProyectoFinalTienda.TiendaVideojuegos.repositories;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,13 +14,31 @@ import java.util.List;
 @Repository
 public interface InventarioItemRepository extends JpaRepository<InventarioItemEntity, Integer> {
 
-    @Query("SELECT i FROM InventarioItemEntity i WHERE i.videojuego.videojuegoId = :id")
-    List<InventarioItemEntity> findByVideojuegoId(@Param("id") int id);
+    @Query(
+    """
+    SELECT i
+    FROM InventarioItemEntity i
+    WHERE i.videojuego.videojuegoId = :videojuegoId
+    """)
+    Page<InventarioItemEntity> findByVideojuegoId(
+            @Param("videojuegoId") int videojuegoId,
+            Pageable pageable
+    );
 
-    List<InventarioItemEntity> findByPlataforma(Plataformas plataforma);
+    @Query(
+    """
+    SELECT i
+    FROM InventarioItemEntity i
+    WHERE i.videojuego.videojuegoId = :videojuegoId
+    """)
+    List<InventarioItemEntity> findByVideojuegoId(
+            @Param("videojuegoId") int videojuegoId
+    );
 
-    List<InventarioItemEntity> findByPrecioDiarioLessThan(double valor);
+    Page<InventarioItemEntity> findByPlataforma(Plataformas plataforma, Pageable paginacion);
 
-    List<InventarioItemEntity> findByPlataformaAndPrecioDiarioLessThan(Plataformas plataforma, double precioDiario);
+    Page<InventarioItemEntity> findByPrecioDiarioLessThan(double valor, Pageable paginacion);
+
+    Page<InventarioItemEntity> findByPlataformaAndPrecioDiarioLessThan(Plataformas plataforma, double precioDiario, Pageable paginacion);
 
 }

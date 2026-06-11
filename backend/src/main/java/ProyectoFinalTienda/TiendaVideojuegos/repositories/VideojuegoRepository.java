@@ -2,24 +2,25 @@ package ProyectoFinalTienda.TiendaVideojuegos.repositories;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.Year;
-import java.util.List;
 
 @Repository
 public interface VideojuegoRepository extends JpaRepository<VideojuegoEntity, Integer> {
 
-    List<VideojuegoEntity> findByTituloContaining(String titulo);
+    Page<VideojuegoEntity> findByTituloContaining(String titulo, Pageable paginacion);
 
-    List<VideojuegoEntity> findByDesarrolladorContaining(String desarrollador);
+    Page<VideojuegoEntity> findByDesarrolladorContaining(String desarrollador, Pageable paginacion);
 
-    List<VideojuegoEntity> findByGenero(Generos genero);
+    Page<VideojuegoEntity> findByGenero(Generos genero, Pageable paginacion);
 
-    List<VideojuegoEntity> findByMultijugadorTrue();
+    Page<VideojuegoEntity> findByMultijugadorTrue(Pageable paginacion);
 
-    List<VideojuegoEntity> findByLanzamiento(Year lanzamiento);
+    Page<VideojuegoEntity> findByLanzamiento(Year lanzamiento, Pageable paginacion);
 
 }
 

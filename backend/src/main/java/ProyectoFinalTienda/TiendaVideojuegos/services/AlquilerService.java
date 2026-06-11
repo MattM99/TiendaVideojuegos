@@ -15,6 +15,8 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -185,13 +187,25 @@ public class AlquilerService {
         );
     }
 
-    // Obtener todos con validación de lista vacía
-    public List<AlquilerResponse> obtenerTodos(){
-        List<AlquilerEntity> alquileres = alquilerRepository.findAll();
-        if (alquileres.isEmpty()) {
-            throw new AlquilerNoEncontradoException("No se encontró ningún alquiler en el sistema.");
+    public Page<AlquilerResponse> listarTodos(LocalDate fechaInicio, LocalDate fechaFin, Pageable paginacion)
+    {
+        Page<AlquilerEntity> alquileres;
+
+        if (fechaInicio != null && fechaFin != null) {
+
+            alquileres = alquilerRepository.findByFechaInicioBetween(
+                    fechaInicio,
+                    fechaFin,
+                    paginacion
+            );
+
+        } else {
+
+            alquileres = alquilerRepository.findAll(paginacion);
         }
-        return alquilerMapper.toResponseList(alquileres);
+
+        return alquileres
+                .map(alquilerMapper::toResponse);
     }
 
     // Buscar por id con excepción si no existe
@@ -202,12 +216,13 @@ public class AlquilerService {
     }
 
     // Buscar por usuario con excepción si lista vacía
-    public List<AlquilerResponse> buscarPorUsuario(int personaId){
-        List<AlquilerEntity> alquileres = alquilerRepository.findByPersonaId(personaId);
+    public Page<AlquilerResponse> buscarPorUsuario(int personaId, Pageable paginacion){
+        Page<AlquilerEntity> alquileres = alquilerRepository.findByPersonaId(personaId, paginacion);
         if (alquileres.isEmpty()) {
             throw new UsuarioNoEncontradoException("No se encontró ningún alquiler con el usuario de id: " + personaId);
         }
-        return alquilerMapper.toResponseList(alquileres);
+        return alquileres
+                .map(alquilerMapper::toResponse);
     }
 
 }

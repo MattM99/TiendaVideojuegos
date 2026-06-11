@@ -11,13 +11,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -27,6 +30,37 @@ import java.util.NoSuchElementException;
 @Tag(name = "Cuenta", description = "Operaciones relacionadas con la gestión de cuentas de usuario")
 public class CuentaController {
     private final CuentaService cuentaService;
+
+    @GetMapping("/yo")
+    public ResponseEntity<CuentaResponse> obtenerUsuarioActual(
+            Authentication authentication
+    ) {
+        String nickname = authentication.getName();
+
+        CuentaResponse response = cuentaService.toCuentaResponse(cuentaService.buscarPorNickname(nickname));
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Operation(summary = "Listar cuentas", description = "Lista todas las cuentas registradas")
+    @GetMapping("/listar")
+    public ResponseEntity<Page<CuentaResponse>> listarTodos(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "nickname") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+
+        return ResponseEntity.ok(
+                cuentaService.listarTodos(paginacion)
+        );
+    }
 
     @Operation(summary = "Buscar cuenta por nickname", description = "Devuelve los datos de una cuenta específica usando su nickname")
     @GetMapping("/{nickname}")
@@ -38,23 +72,48 @@ public class CuentaController {
     @Operation(summary = "Buscar cuentas por rol", description = "Devuelve una lista de cuentas que tienen el rol especificado")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/rol/{rol}")
-    public ResponseEntity<List<CuentaResponse>> buscarPorRol(@PathVariable String rol) throws NoSuchElementException, UsuarioNoEncontradoException {
-        List<CuentaEntity> cuentas = cuentaService.buscarPorRol(rol);
-        List<CuentaResponse> respuestas = cuentas.stream()
-                .map(cuentaService::toCuentaResponse)
-                .toList();
-        return ResponseEntity.ok(respuestas);
+    public ResponseEntity<Page<CuentaResponse>> buscarPorRol(
+            @PathVariable String rol,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "nickname") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) throws NoSuchElementException, UsuarioNoEncontradoException {
+
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+        Page<CuentaResponse> responses =
+                cuentaService.buscarPorRol(rol, paginacion);
+        return ResponseEntity.ok(responses);
     }
 
     @Operation(summary = "Buscar cuentas por estado", description = "Devuelve una lista de cuentas filtradas por estado")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/estado/{estado}")
-    public ResponseEntity<List<CuentaResponse>> buscarPorEstado(@PathVariable String estado) throws UsuarioNoEncontradoException, NoSuchElementException {
-        List<CuentaEntity> cuentas = cuentaService.buscarPorEstado(estado);
-        List<CuentaResponse> respuestas = cuentas.stream()
-                .map(cuentaService::toCuentaResponse)
-                .toList();
-        return ResponseEntity.ok(respuestas);
+    public ResponseEntity<Page<CuentaResponse>> buscarPorEstado(
+            @PathVariable String estado,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "nickname") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) throws UsuarioNoEncontradoException, NoSuchElementException {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(
+                pagina,
+                tamano,
+                sort
+        );
+
+        Page<CuentaResponse> responses =
+                cuentaService.buscarPorEstado(estado, paginacion);
+        return ResponseEntity.ok(responses);
     }
 
     @Operation(summary = "Cambiar contraseña de una cuenta (admin)", description = "Permite que un administrador cambie la contraseña de cualquier cuenta usando el nickname")

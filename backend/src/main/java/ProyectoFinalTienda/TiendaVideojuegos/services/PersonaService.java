@@ -12,11 +12,11 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PersonaService {
@@ -36,6 +36,12 @@ public class PersonaService {
         return personaMapper.convertirEntidadADTO(personaRepository.save(entity));
     }
 
+    public Page<PersonaResponse> listarTodos(Pageable paginacion)
+    {
+        return personaRepository.findAll(paginacion)
+                .map(personaMapper::convertirEntidadADTO);
+    }
+
 
     public PersonaResponse buscarPorId(int id) {
         PersonaEntity entity = personaRepository.findById(id)
@@ -43,22 +49,23 @@ public class PersonaService {
         return personaMapper.convertirEntidadADTO(entity);
     }
 
-    public List<PersonaResponse> buscarPorNombre(String nombre) {
-        List<PersonaEntity> personas = personaRepository.findByNombre(nombre);
+    public Page<PersonaResponse> buscarPorNombre(String nombre, Pageable paginacion) {
+        Page<PersonaEntity> personas = personaRepository.findByNombre(nombre, paginacion);
         if (personas.isEmpty()) {
             throw new UsuarioNoEncontradoException("No se encontraron usuarios con el nombre: " + nombre);
         }
-        return personas.stream().map(personaMapper::convertirEntidadADTO).toList();
+        return personas
+                .map(personaMapper::convertirEntidadADTO);
     }
 
-    public List<PersonaResponse> buscarPorApellido(String apellido) {
-        List<PersonaEntity> personas = personaRepository.findByApellido(apellido);
+    public Page<PersonaResponse> buscarPorApellido(String apellido, Pageable paginacion) {
+        Page<PersonaEntity> personas = personaRepository.findByApellido(apellido, paginacion);
         if (personas.isEmpty()) {
             throw new UsuarioNoEncontradoException("No se encontraron usuarios con el apellido: " + apellido);
         }
-        return personas.stream().map(personaMapper::convertirEntidadADTO).toList();
+        return personas
+                .map(personaMapper::convertirEntidadADTO);
     }
-
 
     public PersonaResponse buscarPorDni(String dni) {
         PersonaEntity entity = personaRepository.findByDni(dni)
@@ -66,17 +73,15 @@ public class PersonaService {
         return personaMapper.convertirEntidadADTO(entity);
     }
 
-
     public PersonaResponse buscarPorEmail(String email) {
         PersonaEntity entity = personaRepository.getPersonaByEmail(email)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
         return personaMapper.convertirEntidadADTO(entity);
     }
 
-
-    public PersonaResponse actualizar(String email, PersonaPatchRequest dto) {
-        PersonaEntity persona = personaRepository.getPersonaByEmail(email)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
+    public PersonaResponse actualizar(String dni, PersonaPatchRequest dto) {
+        PersonaEntity persona = personaRepository.findByDni(dni)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con DNI: " + dni));
 
         String usernameActual = SecurityContextHolder.getContext().getAuthentication().getName();
         CuentaEntity cuentaActual = cuentaRepository.findByNickname(usernameActual)
@@ -112,7 +117,7 @@ public class PersonaService {
         if (dto.getNombre() != null) persona.setNombre(dto.getNombre());
         if (dto.getApellido() != null) persona.setApellido(dto.getApellido());
         if (dto.getTelefono() != null) persona.setTelefono(dto.getTelefono());
-        if (dto.getDni() != null) persona.setDni(dto.getDni());
+        if (dto.getEmail() != null) persona.setEmail(dto.getEmail());
 
         return personaMapper.convertirEntidadADTO(personaRepository.save(persona));
     }

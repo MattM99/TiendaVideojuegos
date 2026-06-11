@@ -21,6 +21,9 @@ public class  AuthController {
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping("/register")  // Ruta especifica para registrar un nuevo usuario
     public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest request) {
-        return ResponseEntity.ok(authService.register(request));
+       authService.register(request);
+        return ResponseEntity.ok().build();
     }
+
+
 }

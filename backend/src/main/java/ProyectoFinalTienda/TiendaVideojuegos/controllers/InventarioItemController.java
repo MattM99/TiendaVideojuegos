@@ -11,6 +11,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -44,8 +48,22 @@ public class InventarioItemController {
 
     @Operation(summary = "Listar todos los inventarios", description = "Devuelve una lista de todos los inventarios")
     @GetMapping("/listar")
-    public ResponseEntity<List<InventarioItemResponse>> listarTodos() {
-        return ResponseEntity.ok(inventarioItemService.obtenerTodos());
+    public ResponseEntity<Page<InventarioItemResponse>> listarTodos(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "inventarioItemId") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+
+        return ResponseEntity.ok(
+                inventarioItemService.listarTodos(paginacion)
+        );
     }
 
     @Operation(summary = "Obtener un inventario por ID", description = "Devuelve un inventario específico por su ID")
@@ -57,41 +75,87 @@ public class InventarioItemController {
 
     @Operation(summary = "Buscar inventarios por videojuego", description = "Devuelve una lista de inventarios que contienen un videojuego específico")
     @GetMapping("/videojuego/{videojuegoId}")
-    public ResponseEntity<List<InventarioItemResponse>> buscarPorVideojuego(@PathVariable int videojuegoId) {
-        return ResponseEntity.ok(inventarioItemService.buscarPorVideojuego(videojuegoId));
+    public ResponseEntity<Page<InventarioItemResponse>> buscarPorVideojuego(
+            @PathVariable int videojuegoId,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "inventarioItemId") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+        Page<InventarioItemResponse> responses = inventarioItemService.buscarPorVideojuego(videojuegoId, paginacion);
+
+        return ResponseEntity.ok(responses);
     }
 
-    @Operation(summary = "Buscar inventarios por plataforma", description = "Devuelve una lista de inventarios que pertenecen a una plataforma específica")
+    @Operation(
+            summary = "Buscar inventarios por plataforma",
+            description = "Devuelve una lista de inventarios que pertenecen a una plataforma específica"
+    )
     @GetMapping("/plataforma/{plataforma}")
-    public ResponseEntity<List<InventarioItemResponse>> buscarPorPlataforma(@PathVariable Plataformas plataforma) {
-        return ResponseEntity.ok(inventarioItemService.buscarPorPlataforma(plataforma));
+    public ResponseEntity<Page<InventarioItemResponse>> buscarPorPlataforma(
+            @PathVariable Plataformas plataforma,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "inventarioItemId") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+        Page<InventarioItemResponse> responses =
+                inventarioItemService.buscarPorPlataforma(paginacion, plataforma);
+
+        return ResponseEntity.ok(responses);
     }
 
     @Operation(summary = "Buscar inventarios con precio menor a un valor", description = "Devuelve una lista de inventarios cuyo precio es menor al valor especificado")
     @GetMapping("/precio/menor-a")
-    public ResponseEntity<List<InventarioItemResponse>> buscarMasBaratosQue(@RequestParam double valor) {
-        return ResponseEntity.ok(inventarioItemService.buscarMasBaratosQue(valor));
+    public ResponseEntity<Page<InventarioItemResponse>> buscarMasBaratosQue(
+            @RequestParam double valor,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "inventarioItemId") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+        Page<InventarioItemResponse> responses = inventarioItemService.buscarMasBaratosQue(valor, paginacion);
+
+        return ResponseEntity.ok(responses);
     }
 
     @Operation(summary = "Buscar inventarios por plataforma y precio menor a un valor", description = "Devuelve una lista de inventarios que pertenecen a una plataforma específica y cuyo precio es menor al valor especificado")
     @GetMapping("/plataformaPrecio/menor-a")
-    public ResponseEntity<List<InventarioItemResponse>> buscarPorPlataformaMasBaratosQue(
+    public ResponseEntity<Page<InventarioItemResponse>> buscarPorPlataformaMasBaratosQue(
             @RequestParam Plataformas plataforma,
-            @RequestParam double valor) {
-        return ResponseEntity.ok(inventarioItemService.buscarPorPlataformaMasBaratosQue(plataforma, valor));
-    }
+            @RequestParam double valor,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "inventarioItemId") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
 
-//    @Operation(summary = "Obtener stock total", description = "Devuelve el stock total de un inventario por ID")
-//    @GetMapping("/{id}/stock-total")
-//    public ResponseEntity<Integer> obtenerStockTotal(@PathVariable int id) {
-//        return ResponseEntity.ok(inventarioItemService.obtenerStockTotal(id));
-//    }
-//
-//    @Operation(summary = "Obtener stock disponible", description = "Devuelve el stock disponible de un inventario por ID")
-//    @GetMapping("/{id}/stock-disponible")
-//    public ResponseEntity<Integer> obtenerStockDisponible(@PathVariable int id) {
-//        return ResponseEntity.ok(inventarioItemService.obtenerStockDisponible(id));
-//    }
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+        Page<InventarioItemResponse> responses = inventarioItemService.buscarPorPlataformaMasBaratosQue(plataforma, valor, paginacion);
+        return ResponseEntity.ok(responses);
+    }
 
     @Operation(summary = "Actualizar inventario completo", description = "Actualiza todos los campos de un inventario por ID")
     @PutMapping("/{id}")

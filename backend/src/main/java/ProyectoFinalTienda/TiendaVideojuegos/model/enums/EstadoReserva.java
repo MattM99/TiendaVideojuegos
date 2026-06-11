@@ -1,8 +1,9 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.enums;
 
 public enum EstadoReserva {
-    NOTIFICADA,
     PENDIENTE,
+    NOTIFICADA,
     EXPIRADA,
+    CONCLUIDA,
     CANCELADA
 }

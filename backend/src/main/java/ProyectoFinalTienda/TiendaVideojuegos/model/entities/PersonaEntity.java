@@ -7,12 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.List;
 
 @Entity
@@ -25,7 +21,7 @@ import java.util.List;
         name = "persona"
 )
 
-public class PersonaEntity implements UserDetails {
+public class PersonaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
@@ -99,7 +95,6 @@ public class PersonaEntity implements UserDetails {
             nullable = false,
             unique = true
     )
-    @NotBlank(message = "El email no puede estar vacío")
     @Email(message = "El email debe ser válido")
     private String email;
 
@@ -108,44 +103,5 @@ public class PersonaEntity implements UserDetails {
     @Column(
             nullable = false
     )
-    @NotBlank(message = "El teléfono no puede estar vacío")
     private String telefono;
-
-
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new
-                SimpleGrantedAuthority((cuenta.getRol().name())));
-    }
-
-    @Override
-    public String getPassword() {
-        return "";
-    }
-
-    @Override
-    public String getUsername() {
-        return cuenta.getNickname();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;  //va a ser en funcion de la caducidad del token JWT, se usan comprueba en el service
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
-    }
 }

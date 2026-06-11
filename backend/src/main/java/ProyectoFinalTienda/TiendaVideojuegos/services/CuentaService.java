@@ -3,17 +3,18 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.CuentaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.RolInvalidoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
+import ProyectoFinalTienda.TiendaVideojuegos.mappers.PersonaMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.CuentaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Estado;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -21,13 +22,22 @@ import java.util.Optional;
 public class CuentaService {
     private final PasswordEncoder passwordEncoder;
     private final CuentaRepository cuentaRepository;
+    private final PersonaMapper personaMapper;
 
-    public CuentaService(PasswordEncoder passwordEncoder, CuentaRepository cuentaRepository) {
+    public CuentaService(PasswordEncoder passwordEncoder, CuentaRepository cuentaRepository, PersonaMapper personaMapper) {
         this.passwordEncoder = passwordEncoder;
         this.cuentaRepository = cuentaRepository;
+        this.personaMapper = personaMapper;
     }
 
+
     //No hay metodo de crear cuenta, el metodo de registro esta en AuthService
+
+
+    public Page<CuentaResponse> listarTodos(Pageable paginacion) {
+        return cuentaRepository.findAll(paginacion)
+                .map(this::toCuentaResponse);
+    }
 
     public CuentaEntity buscarPorNickname(String nickname) throws UsuarioNoEncontradoException {
         Optional<CuentaEntity> cuenta = cuentaRepository.findByNickname(nickname);
@@ -37,19 +47,19 @@ public class CuentaService {
         return cuenta.get();
     }
 
-    public List<CuentaEntity> buscarPorRol(String stringRol) throws NoSuchElementException, UsuarioNoEncontradoException {
-        if (!esRolValido(stringRol)){
+    public Page<CuentaResponse> buscarPorRol(String stringRol, Pageable paginacion) throws NoSuchElementException, UsuarioNoEncontradoException {
+        if (!esRolValido(stringRol)) {
             throw new NoSuchElementException("No existe el rol: " + stringRol);
         }
 
         Roles rol = Roles.valueOf(stringRol.toUpperCase());
 
-        List<CuentaEntity> cuentas = cuentaRepository.findByRol(rol);
-
+        Page<CuentaEntity> cuentas = cuentaRepository.findByRol(rol, paginacion);
         if (cuentas.isEmpty()) {
             throw new UsuarioNoEncontradoException("No se encontraron usuarios con el rol: " + rol);
         }
-        return cuentas;
+        return cuentas
+                .map(this::toCuentaResponse);
     }
 
     public boolean esRolValido(String rolStr) {
@@ -61,19 +71,20 @@ public class CuentaService {
         }
     }
 
-    public List<CuentaEntity> buscarPorEstado(String stringEstado) throws NoSuchElementException, UsuarioNoEncontradoException {
-        if (!esEstadoValido(stringEstado)){
+    public Page<CuentaResponse> buscarPorEstado(String stringEstado, Pageable paginacion) throws NoSuchElementException, UsuarioNoEncontradoException {
+        if (!esEstadoValido(stringEstado)) {
             throw new NoSuchElementException("No existe el estado: " + stringEstado);
         }
 
         Estado estado = Estado.valueOf(stringEstado.toUpperCase());
 
-        List<CuentaEntity> cuentas = cuentaRepository.findByEstado(estado);
+        Page<CuentaEntity> cuentas = cuentaRepository.findByEstado(estado, paginacion);
 
         if (cuentas.isEmpty()) {
             throw new UsuarioNoEncontradoException("No se encontraron usuarios con el estado: " + estado);
         }
-        return cuentas;
+        return cuentas
+                .map(this::toCuentaResponse);
     }
 
     public boolean esEstadoValido(String stringEstado) {
@@ -101,7 +112,7 @@ public class CuentaService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String usuarioActivo = auth.getName();
 
-        if(nickname.equalsIgnoreCase(usuarioActivo)){
+        if (nickname.equalsIgnoreCase(usuarioActivo)) {
             throw new IllegalArgumentException("No es posible modificar el rol propio.");
         }
 
@@ -110,11 +121,11 @@ public class CuentaService {
         }
 
         cuentaRepository.findByNickname("FOUNDER")
-                        .ifPresent(FOUNDER -> {
-                            if(nickname.equalsIgnoreCase(FOUNDER.getNickname())){
-                                throw new IllegalArgumentException("No se permite modificar el rol del usuario FOUNDER");
-                            }
-                        });
+                .ifPresent(FOUNDER -> {
+                    if (nickname.equalsIgnoreCase(FOUNDER.getNickname())) {
+                        throw new IllegalArgumentException("No se permite modificar el rol del usuario FOUNDER");
+                    }
+                });
 
 
         CuentaEntity cuenta = buscarPorNickname(nickname);
@@ -125,6 +136,12 @@ public class CuentaService {
     }
 
     public CuentaEntity darDeBajaCuenta(String nickname) throws UsuarioNoEncontradoException {
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+        String usuarioActivo = auth.getName();
+        if(nickname.equalsIgnoreCase(usuarioActivo)){
+            throw new IllegalArgumentException("No es posible dar de baja la propia cuenta.");
+        }
         CuentaEntity cuenta = buscarPorNickname(nickname);
         cuenta.setEstado(Estado.BAJA);
         return cuentaRepository.save(cuenta);
@@ -137,10 +154,13 @@ public class CuentaService {
     }
 
     public CuentaResponse toCuentaResponse(CuentaEntity cuenta) {
+
         return new CuentaResponse(
                 cuenta.getNickname(),
                 cuenta.getRol().name(),
-                cuenta.getEstado().name()
+                cuenta.getEstado().name(),
+                cuenta.getPersona() != null ? personaMapper.convertirEntidadADTO(cuenta.getPersona()) : null
+
         );
     }
 
