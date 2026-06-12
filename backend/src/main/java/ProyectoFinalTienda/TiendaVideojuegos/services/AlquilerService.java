@@ -91,7 +91,7 @@ public class AlquilerService {
         alquiler.setEstadoAlquiler(EstadoAlquiler.EN_CURSO);
 
         for (DetalleAlquilerRequest d : request.getDetalles()) {
-            construirDetalle(d, alquiler);
+            construirDetalle(d, alquiler, persona);
         }
 
         alquiler.calcularMontoDiario();
@@ -99,13 +99,12 @@ public class AlquilerService {
         return alquilerMapper.toResponse(alquilerRepository.save(alquiler));
     }
 
-    private void construirDetalle(@Valid DetalleAlquilerRequest request, AlquilerEntity alquiler) {
+    private void construirDetalle(@Valid DetalleAlquilerRequest request, AlquilerEntity alquiler, PersonaEntity persona) {
         InventarioItemEntity inventario = inventarioItemRepository.findById(request.getInventarioItemId())
                 .orElseThrow(() -> new InventarioItemNoEncontradoException(
                         "Inventario con id: " + request.getInventarioItemId() + " no encontrado."));
 
-        // Validar stock disponible y actualizar stock
-        inventario.disminuirStockDisponible(request.getCantidad());
+        inventario.entregarCopias(persona, request.getCantidad());
 
         DetalleAlquilerEntity detalle = detalleAlquilerMapper.toEntity(request, alquiler, inventario);
 
@@ -114,20 +113,20 @@ public class AlquilerService {
         alquiler.agregarDetalle(detalle);
     }
 
-    @Transactional
-    public AlquilerResponse crearDetalle(Integer alquilerId, DetalleAlquilerRequest request) {
-
-        AlquilerEntity alquiler = alquilerRepository.findById(alquilerId)
-                .orElseThrow(() -> new AlquilerNoEncontradoException(
-                        "Alquiler con id: " + alquilerId + " no encontrado."
-                ));
-
-        construirDetalle(request, alquiler);
-
-        alquiler.calcularMontoDiario();
-
-        return alquilerMapper.toResponse(alquilerRepository.save(alquiler));
-    }
+//    @Transactional
+//    public AlquilerResponse crearDetalle(Integer alquilerId, DetalleAlquilerRequest request) {
+//
+//        AlquilerEntity alquiler = alquilerRepository.findById(alquilerId)
+//                .orElseThrow(() -> new AlquilerNoEncontradoException(
+//                        "Alquiler con id: " + alquilerId + " no encontrado."
+//                ));
+//
+//        construirDetalle(request, alquiler);
+//
+//        alquiler.calcularMontoDiario();
+//
+//        return alquilerMapper.toResponse(alquilerRepository.save(alquiler));
+//    }
 
     public void eliminar(int id){
         if (!alquilerRepository.existsById(id)) {
