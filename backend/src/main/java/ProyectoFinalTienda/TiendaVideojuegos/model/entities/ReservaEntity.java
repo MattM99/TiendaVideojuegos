@@ -63,6 +63,14 @@ public class ReservaEntity {
         fechaNotificacion = LocalDateTime.now();
     }
 
+    public void marcarComoConcluida() {
+        estadoReserva = EstadoReserva.CONCLUIDA;
+    }
+
+    public void marcarComoVencida() {
+        estadoReserva = EstadoReserva.EXPIRADA;
+    }
+
     public boolean estaVencida(LocalDateTime fechaActual) {
         return estadoReserva == EstadoReserva.NOTIFICADA
                 && fechaNotificacion.plusMinutes(TIEMPO_EXPIRACION_MINUTOS)

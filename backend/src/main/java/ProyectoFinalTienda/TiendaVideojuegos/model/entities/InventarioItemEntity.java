@@ -1,5 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
+import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoReserva;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import jakarta.persistence.*;
@@ -80,6 +81,28 @@ public class InventarioItemEntity {
     @Min(value = 0, message = "El stock disponible no puede ser negativo")
     private int stockDisponible;
 
+    public void entregarCopias(PersonaEntity persona, int cantidad) {
+        Optional<ReservaEntity> reserva = buscarReservaNotificada(persona);
+
+        if (reserva.isPresent()) {
+            if (cantidad != 1) {
+                throw new BusinessException(
+                        "Una reserva permite retirar una única unidad del mismo videojuego."
+                );
+            }
+            reserva.get().marcarComoConcluida();
+            return;
+        }
+
+        if (hayReservasNotificadas()) {
+            throw new BusinessException(
+                    "Este videojuego está reservado para otro cliente."
+            );
+        }
+
+        alquilarCopias(cantidad);
+    }
+
     public void aumentarStockTotal(int cantidad) {
         if (cantidad < 0) {
             throw new IllegalArgumentException("La cantidad a aumentar no puede ser negativa");
@@ -97,7 +120,17 @@ public class InventarioItemEntity {
         this.stockDisponible += cantidad;
     }
 
-    public void disminuirStockDisponible(int cantidad) {
+    public void validarStock() {
+        if (!esStockValido()) {
+            throw new IllegalStateException("El stock disponible no puede exceder el stock total.");
+        }
+    }
+
+    private void alquilarCopias(int cantidad) {
+        disminuirStockDisponible(cantidad);
+    }
+
+    private void disminuirStockDisponible(int cantidad) {
         if (cantidad < 0) {
             throw new IllegalArgumentException("La cantidad a disminuir no puede ser negativa");
         }
@@ -107,14 +140,8 @@ public class InventarioItemEntity {
         this.stockDisponible -= cantidad;
     }
 
-    public boolean esStockValido() {
+    private boolean esStockValido() {
         return getStockDisponible() <= getStockTotal();
-    }
-
-    public void validarStock() {
-        if (!esStockValido()) {
-            throw new IllegalStateException("El stock disponible no puede exceder el stock total.");
-        }
     }
 
     /// ---- Aggregate root ----
@@ -129,16 +156,10 @@ public class InventarioItemEntity {
         reserva.setInventarioItem(null);
     }
 
-
     public Optional<ReservaEntity> obtenerSiguienteReservaPendiente() {
         return this.listaDeEspera.stream()
                 .filter(r -> r.getEstadoReserva() == EstadoReserva.PENDIENTE)
                 .min(Comparator.comparing(ReservaEntity::getFechaReserva));
-    }
-
-    public boolean tieneReservasPendientes() {
-        return this.listaDeEspera.stream()
-                .anyMatch(reserva -> reserva.getEstadoReserva() == EstadoReserva.PENDIENTE);
     }
 
     public void reservarCopiaPara(ReservaEntity reserva) {
@@ -156,18 +177,34 @@ public class InventarioItemEntity {
 
     public List<ReservaEntity> expirarReservasVencidas(LocalDateTime fechaActual) {
 
-        List<ReservaEntity> expiradas = listaDeEspera.stream()
-                .filter(r -> r.estaVencida(fechaActual))
-                .toList();
+        List<ReservaEntity> expiradas = obtenerReservasExpiradas(fechaActual);
 
         expiradas.forEach(r -> {
 
-            r.setEstadoReserva(EstadoReserva.EXPIRADA);
+            r.marcarComoVencida();
 
             this.stockDisponible++;
         });
 
         return expiradas;
+    }
+
+    private Optional<ReservaEntity> buscarReservaNotificada(PersonaEntity persona) {
+        return listaDeEspera.stream()
+                .filter(r -> r.getEstadoReserva() == EstadoReserva.NOTIFICADA)
+                .filter(r -> r.getPersona().getPersonaId() == persona.getPersonaId())
+                .findFirst();
+    }
+
+    private boolean hayReservasNotificadas() {
+        return listaDeEspera.stream()
+                .anyMatch(r -> r.getEstadoReserva() == EstadoReserva.NOTIFICADA);
+    }
+
+    private List<ReservaEntity> obtenerReservasExpiradas(LocalDateTime fechaActual){
+        return listaDeEspera.stream()
+                .filter(r -> r.estaVencida(fechaActual))
+                .toList();
     }
 
 }
