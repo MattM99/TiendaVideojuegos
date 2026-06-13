@@ -2,25 +2,136 @@
 
 <div class="top-actions">
   <button class="back-btn" routerLink="/home">Volver</button>
-  <button class="new-btn" routerLink="/videojuegos/new">Crear Videojuego</button>
+
+  <div class="create-button-container">
+    <button routerLink="/videojuegos/new">Crear Videojuego</button>
+  </div>
+</div>
+
+<div class="pagination-controls">
+
+  <div class="page-size">
+    <label for="size">
+      Mostrar:
+    </label>
+
+    <select id="size" [value]="size()" (change)="changeSize($event)">
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+    </select>
+  </div>
+
+  <div class="sorting-controls">
+
+    <div class="sort-group">
+      <label for="sortBy">
+        Ordenar por:
+      </label>
+
+      <select id="sortBy" [value]="sortBy()" (change)="changeSort($event)">
+        <option value="titulo">Título</option>
+        <option value="genero">Género</option>
+        <option value="desarrollador">Desarrollador</option>
+        <option value="lanzamiento">Lanzamiento</option>
+      </select>
+    </div>
+
+    <div class="sort-group">
+      <label for="direction">
+        Orden:
+      </label>
+
+      <select id="direction" [value]="direction()" (change)="changeDirection($event)">
+        <option value="asc">Ascendente</option>
+        <option value="desc">Descendente</option>
+      </select>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="filters-bar">
+
+  <div class="search-type-container">
+    <select [value]="tipoBusqueda()" (change)="changeTipoBusqueda($event)">
+      <option value="titulo">Título</option>
+      <option value="desarrollador">Desarrollador</option>
+      <option value="genero">Género</option>
+    </select>
+  </div>
+
+  <div class="search-container">
+
+    @if (tipoBusqueda() === 'genero') {
+
+      <select [value]="busqueda()" (change)="changeBusqueda($event)">
+        <option value="">Buscar por género...</option>
+
+        @for (g of generos; track g) {
+          <option [value]="g">{{ g }}</option>
+        }
+      </select>
+
+    } @else {
+
+      <input
+        type="text"
+        placeholder="Buscar videojuego..."
+        [value]="busqueda()"
+        (input)="changeBusqueda($event)"
+      />
+
+    }
+
+  </div>
+
 </div>
 
 <ul>
   @for (v of videojuegos(); track v.videojuegoId) {
     <li>
       <span class="title">
-        <b>{{ v.titulo }}</b> - {{ v.genero }}
+        <b>{{ v.titulo }}</b>
+
+        <span>
+          {{ v.genero }} • {{ v.desarrollador }} • {{ v.lanzamiento }}
+        </span>
       </span>
 
       <span class="actions">
-        <button [routerLink]="['/videojuegos', v.videojuegoId]">Ver</button>
-        <button [routerLink]="['/videojuegos/edit', v.videojuegoId]">Editar</button>
-        <button (click)="delete(v.videojuegoId)">Eliminar</button>
+        <button [routerLink]="['/videojuegos', v.videojuegoId]">
+          Ver
+        </button>
+
+        <button [routerLink]="['/videojuegos/edit', v.videojuegoId]">
+          Editar
+        </button>
+
+        <button (click)="delete(v.videojuegoId)">
+          Eliminar
+        </button>
       </span>
     </li>
   }
 </ul>
 
+<div class="pagination">
+
+  <button (click)="previousPage()" [disabled]="page() === 0">
+    Anterior
+  </button>
+
+  <span>
+    Página {{ page() + 1 }} de {{ totalPages() }}
+  </span>
+
+  <button (click)="nextPage()" [disabled]="page() >= totalPages() - 1">
+    Siguiente
+  </button>
+
+</div>
 
 
 
