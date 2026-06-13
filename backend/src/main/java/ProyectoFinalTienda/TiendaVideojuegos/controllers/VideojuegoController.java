@@ -80,7 +80,7 @@ public class VideojuegoController {
             @PathVariable String titulo,
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
-            @RequestParam(defaultValue = "nickname") String ordenarPor,
+            @RequestParam(defaultValue = "titulo") String ordenarPor,
             @RequestParam(defaultValue = "asc") String direccion
 
     ) {
