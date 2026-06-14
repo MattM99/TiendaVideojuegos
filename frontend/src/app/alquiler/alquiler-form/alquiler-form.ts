@@ -7,7 +7,7 @@ import { Persona } from '../../persona/persona';
 import { PersonaModel } from '../../persona/persona.model';
 import { InventarioItemService } from '../../inventario-item/inventario-item.service';
 import { InventarioItemModel } from '../../inventario-item/inventario-item.model';
-import {fechaValida, noFechaFutura, rangoFechasValidas} from '../../shared/validators/date.validator/date.validator';
+import { fechaValida, noFechaFutura, rangoFechasValidas } from '../../shared/validators/date.validator/date.validator';
 import { CrearAlquilerRequest } from '../alquiler-request.model';
 import { stockValidator } from '../../shared/validators/stockValidator';
 
@@ -74,25 +74,14 @@ export class AlquilerForm implements OnInit {
       const cantidadControl = group.get('cantidad');
 
       cantidadControl?.setValidators([Validators.required, Validators.min(1),
-        (ctrl) => ctrl.value > stockDisponible ? { stockInsuficiente: true } : null
+      (ctrl) => ctrl.value > stockDisponible ? { stockInsuficiente: true } : null
       ]);
 
       cantidadControl?.updateValueAndValidity();
     });
     return group;
-    }
-
-
-
-
-/*
-  crearDetalle(): FormGroup {
-    return this.fb.group({
-      inventarioItemId: [null, Validators.required],
-      cantidad: [1, [Validators.required, Validators.min(1)]]
-    });
   }
-*/
+
   get detalles(): FormArray<FormGroup> {
     return this.form.get('detalles') as FormArray<FormGroup>;
   }
@@ -106,14 +95,14 @@ export class AlquilerForm implements OnInit {
   }
 
   obtenerStockDisponible(index: number): number {
-  const inventarioId = this.detalles.at(index).get('inventarioItemId')?.value;
+    const inventarioId = this.detalles.at(index).get('inventarioItemId')?.value;
 
-  const item = this.inventario().find(
-    i => i.inventarioId == inventarioId
-  );
+    const item = this.inventario().find(
+      i => i.inventarioId == inventarioId
+    );
 
-  return item?.stockDisponible ?? 0;
-}
+    return item?.stockDisponible ?? 0;
+  }
 
   buscarPersona(): void {
     const dni = this.form.get('personaDni')?.value;
@@ -143,18 +132,18 @@ export class AlquilerForm implements OnInit {
   onSubmit(): void {
 
     console.log('FORM VALID', this.form.valid);
-console.log('FORM INVALID', this.form.invalid);
-console.log(this.form);
+    console.log('FORM INVALID', this.form.invalid);
+    console.log(this.form);
 
-console.log(this.detalles.valid);
-console.log(this.detalles.errors);
+    console.log(this.detalles.valid);
+    console.log(this.detalles.errors);
 
-this.detalles.controls.forEach((detalle, i) => {
-  console.log('Detalle', i);
-  console.log('Valid:', detalle.valid);
-  console.log('Errors:', detalle.errors);
-  console.log('Cantidad:', detalle.get('cantidad')?.errors);
-});
+    this.detalles.controls.forEach((detalle, i) => {
+      console.log('Detalle', i);
+      console.log('Valid:', detalle.valid);
+      console.log('Errors:', detalle.errors);
+      console.log('Cantidad:', detalle.get('cantidad')?.errors);
+    });
 
     Object.keys(this.form.controls).forEach(key => {
       const control = this.form.get(key);

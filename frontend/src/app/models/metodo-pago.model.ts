@@ -15,3 +15,9 @@ if (pago.metodoPago.tipo === 'EFECTIVO') {
   const tarjeta = pago.metodoPago as MetodoPagoTarjeta;
   // usar tarjeta.numero, titular, etc.
 }*/
+
+export enum MetodoPago {
+  EFECTIVO = 'EFECTIVO',
+  TARJETA = 'TARJETA',
+  TRANSFERENCIA = 'TRANSFERENCIA'
+}

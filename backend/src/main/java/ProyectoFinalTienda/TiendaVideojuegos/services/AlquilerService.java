@@ -110,7 +110,7 @@ public class AlquilerService {
                 ));
 
         // registrar devolución
-        alquiler.setFechaDevolucion(request.getFechaDevolucion());
+        alquiler.setFechaDevolucion(LocalDate.now());
 
         // generar penalización automática
         alquiler.generarPenalizacionPorRetraso();

@@ -17,9 +17,6 @@ import java.util.List;
 public class CerrarAlquilerRequest {
 
     @NotNull
-    private LocalDate fechaDevolucion;
-
-    @NotNull
     private MetodoPago metodoPago;
 
     @DecimalMin("0.0")
