@@ -2,9 +2,132 @@
 
 <div class="top-actions">
   <button class="back-btn" routerLink="/home">Volver</button>
-  <button class="new-btn" routerLink="/inventario/new">
-    Crear Inventario
-  </button>
+
+  <div class="create-button-container">
+    <button routerLink="/inventario/new">
+      Crear Inventario
+    </button>
+  </div>
+</div>
+
+<div class="pagination-controls">
+
+  <div class="page-size">
+    <label for="size">
+      Mostrar:
+    </label>
+
+    <select id="size" [value]="size()" (change)="changeSize($event)">
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+    </select>
+  </div>
+
+  <div class="sorting-controls">
+
+    <div class="sort-group">
+      <label for="sortBy">
+        Ordenar por:
+      </label>
+
+      <select id="sortBy" [value]="sortBy()" (change)="changeSort($event)">
+        <option value="plataforma">Plataforma</option>
+        <option value="precioDiario">Precio diario</option>
+        <option value="stockTotal">Stock total</option>
+        <option value="stockDisponible">Stock disponible</option>
+      </select>
+    </div>
+
+    <div class="sort-group">
+      <label for="direction">
+        Orden:
+      </label>
+
+      <select id="direction" [value]="direction()" (change)="changeDirection($event)">
+        <option value="asc">Ascendente</option>
+        <option value="desc">Descendente</option>
+      </select>
+    </div>
+
+  </div>
+
+</div>
+
+<div class="filters-bar">
+
+  <div class="search-type-container">
+    <select [value]="tipoBusqueda()" (change)="changeTipoBusqueda($event)">
+      <option value="">Sin filtro</option>
+      <option value="videojuego">Videojuego</option>
+      <option value="plataforma">Plataforma</option>
+      <option value="precio">Precio menor a</option>
+      <option value="plataformaPrecio">Plataforma + precio</option>
+    </select>
+  </div>
+
+  <div class="search-container">
+
+    @if (tipoBusqueda() === 'videojuego') {
+
+      <select [value]="videojuegoIdBusqueda()" (change)="changeVideojuegoBusqueda($event)">
+        <option value="0">Seleccionar videojuego...</option>
+
+        @for (v of videojuegos(); track v.videojuegoId) {
+          <option [value]="v.videojuegoId">
+            {{ v.titulo }}
+          </option>
+        }
+      </select>
+
+    } @else if (tipoBusqueda() === 'plataforma') {
+
+      <select [value]="plataformaBusqueda()" (change)="changePlataformaBusqueda($event)">
+        <option value="">Seleccionar plataforma...</option>
+
+        @for (p of plataformas; track p) {
+          <option [value]="p">
+            {{ p }}
+          </option>
+        }
+      </select>
+
+    } @else if (tipoBusqueda() === 'precio') {
+
+      <input
+        type="number"
+        placeholder="Precio menor a..."
+        [value]="precioBusqueda()"
+        (input)="changePrecioBusqueda($event)"
+      />
+
+    } @else if (tipoBusqueda() === 'plataformaPrecio') {
+
+      <div class="double-filter">
+
+        <select [value]="plataformaBusqueda()" (change)="changePlataformaBusqueda($event)">
+          <option value="">Seleccionar plataforma...</option>
+
+          @for (p of plataformas; track p) {
+            <option [value]="p">
+              {{ p }}
+            </option>
+          }
+        </select>
+
+        <input
+          type="number"
+          placeholder="Precio menor a..."
+          [value]="precioBusqueda()"
+          (input)="changePrecioBusqueda($event)"
+        />
+
+      </div>
+
+    }
+
+  </div>
+
 </div>
 
 <ul>
@@ -14,38 +137,27 @@
 
       <span class="title">
 
-        <p>
-          <b>{{ iwt.titulo }} - {{ iwt.item.plataforma }}</b>
-        </p>
+        <b>{{ iwt.titulo }} - {{ iwt.item.plataforma }}</b>
 
-        <p>
-          Costo diario: {{ iwt.item.precioDiario }}
-        </p>
-
-        <p>
-          Stock total: {{ iwt.item.stockTotal }}
-        </p>
-
-        <p>
+        <span>
+          Precio diario: {{ iwt.item.precioDiario }} •
+          Stock total: {{ iwt.item.stockTotal }} •
           Stock disponible: {{ iwt.item.stockDisponible }}
-        </p>
+        </span>
 
       </span>
 
       <span class="actions">
 
-        <button
-          [routerLink]="['/inventario', iwt.item.inventarioId]">
+        <button [routerLink]="['/inventario', iwt.item.inventarioId]">
           Ver
         </button>
 
-        <button
-          [routerLink]="['/inventario/edit', iwt.item.inventarioId]">
+        <button [routerLink]="['/inventario/edit', iwt.item.inventarioId]">
           Editar
         </button>
 
-        <button
-          (click)="delete(iwt.item.inventarioId)">
+        <button (click)="delete(iwt.item.inventarioId)">
           Eliminar
         </button>
 
@@ -55,3 +167,19 @@
 
   }
 </ul>
+
+<div class="pagination">
+
+  <button (click)="previousPage()" [disabled]="page() === 0">
+    Anterior
+  </button>
+
+  <span>
+    Página {{ page() + 1 }} de {{ totalPages() }}
+  </span>
+
+  <button (click)="nextPage()" [disabled]="page() >= totalPages() - 1">
+    Siguiente
+  </button>
+
+</div>
