@@ -1,0 +1,139 @@
+<form class="cerrar-form" [formGroup]="form" (ngSubmit)="cerrarAlquiler()">
+
+  <h2 class="title">Cerrar alquiler</h2>
+
+  <div class="form-group">
+
+    <label>Método de pago</label>
+
+    <select formControlName="metodoPago">
+
+      <option [ngValue]="null"> Seleccione... </option>
+
+      @for (metodo of metodosPago; track metodo) {
+      <option [ngValue]="metodo">
+        {{ metodo }}
+      </option>
+      }
+
+    </select>
+
+  </div>
+
+  <div class="form-group">
+
+    <label>Porcentaje de descuento</label>
+
+
+    <input type="number" min="0" max="100" formControlName="descuento" [class.invalid]="
+      form.get('descuento')?.invalid &&
+      form.get('descuento')?.touched
+    ">
+
+    @if (form.get('descuento')?.touched &&
+    form.get('descuento')?.hasError('min')) {
+
+    <span class="validacion-error">
+      El descuento no puede ser menor a 0%.
+    </span>
+    }
+
+    @if (form.get('descuento')?.touched &&
+    form.get('descuento')?.hasError('max')) {
+    <span class="validacion-error">
+      El descuento no puede ser mayor a 100%.
+    </span>
+    }
+    @if (!(form.get('descuento')?.touched &&
+    form.get('descuento')?.invalid)) {
+    <span class="hint">
+      Ingrese un porcentaje entre 0 y 100.
+    </span>
+    }
+  </div>
+
+  <hr>
+  <div class="penalizaciones">
+
+
+    <h3 class="section-title">Penalizaciones adicionales</h3>
+
+    <div formArrayName="penalizaciones">
+
+      @for (penalizacion of penalizaciones.controls; track $index; let i = $index) {
+
+      <div class="penalizacion-card" [formGroupName]="i">
+        <div class="penalizacion-row">
+
+          <input type="text" placeholder="Motivo" formControlName="motivo"
+            [class.invalid]="penalizacion.get('motivo')?.invalid && penalizacion.get('motivo')?.touched">
+
+
+          <div class="money-input">
+            <span class="currency-symbol">$</span>
+            <input type="number" min="0" max="999999" placeholder="Monto" formControlName="monto"
+              [class.invalid]=" penalizacion.get('monto')?.invalid && penalizacion.get('monto')?.touched">
+          </div>
+
+          <button class="btn-danger" type="button" (click)="eliminarPenalizacion(i)"> Eliminar</button>
+
+        </div>
+
+        <div class="validacion-errors">
+
+            @if (penalizacion.get('motivo')?.touched &&
+            penalizacion.get('motivo')?.hasError('required')) {
+
+            <span class="validacion-error">
+              Debe ingresar un motivo para la penalización.
+            </span>
+
+            }
+
+
+            @if (penalizacion.get('monto')?.touched &&
+            penalizacion.get('monto')?.hasError('min')) {
+
+            <span class="validacion-error">
+              El monto no puede ser menor a $0.
+            </span>
+
+            }
+
+            @if (penalizacion.get('monto')?.touched &&
+            penalizacion.get('monto')?.hasError('required')) {
+
+            <span class="validacion-error">
+              Debe ingresar un monto.
+            </span>
+
+            }
+          </div>
+      </div>
+      }
+    </div>
+
+    <button class="btn-secondary" type="button" (click)="agregarPenalizacion()">
+
+      Agregar penalización
+
+    </button>
+  </div>
+
+  <div class="actions">
+
+    <button class="btn-secondary" type="button">
+      Cancelar
+    </button>
+
+
+    <button class="btn-primary" type="submit" [disabled]="form.invalid">
+
+      Cerrar alquiler
+
+    </button>
+
+  </div>
+
+
+</form>

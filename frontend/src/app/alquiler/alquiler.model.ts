@@ -12,4 +12,5 @@ export interface AlquilerModel {
   montoFijo: number;
   fechaDevolucion?: string; // Opcional, porque será nulo hasta que se devuelva el alquiler
   penalizaciones: PenalizacionModel[]; // <--- composición
+  estadoAlquiler: 'ACTIVO' | 'FINALIZADO';
 }
