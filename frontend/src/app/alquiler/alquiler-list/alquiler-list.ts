@@ -1,11 +1,9 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Alquiler } from '../alquiler';
-import { Persona } from '../../persona/persona';
-import { VideojuegoModel } from '../../videojuego/videojuego.model';
-import { VideojuegoService } from '../../videojuego/videojuego.service';
-import { InventarioItemService } from '../../inventario-item/inventario-item.service';
+import { AlquilerModel } from '../alquiler.model';
+
 
 @Component({
   selector: 'app-alquiler-list',
@@ -17,64 +15,64 @@ import { InventarioItemService } from '../../inventario-item/inventario-item.ser
 export class AlquilerList implements OnInit {
   private alquilerService = inject(Alquiler);
   private router = inject(Router);
-  private personaService = inject(Persona);
-  private VideojuegoService = inject(VideojuegoService);
-  private inventarioService = inject(InventarioItemService);
 
   alquileres = computed(() => this.alquilerService.alquileres());
   cargando = computed(() => this.alquilerService.cargando());
-  videojuegos = signal<VideojuegoModel[]>([]);
 
   ngOnInit(): void {
-    /*this.personaService.cargarPersonas();*/
     this.alquilerService.cargarAlquileres();
-    this.VideojuegoService.getAll().subscribe({
-      next: (lista) => this.videojuegos.set(lista),
-      error: (err) => console.error('Error cargando videojuegos', err),
-    });
   }
 
   nuevo() {
     this.router.navigate(['/alquileres/nuevo']);
   }
 
-  editar(id: string | undefined) {
+  editar(id: number | undefined) {
     if (!id) return;
+
     this.router.navigate(['/alquileres', id]);
   }
 
-  eliminar(alquilerId: string | undefined, inventarioId: string | undefined) {
+  eliminar(alquilerId: number | undefined) {
     if (!alquilerId) return;
 
-  if (!confirm('¿Seguro que querés eliminar este alquiler?')) return;
+    if (!confirm('¿Seguro que querés eliminar este alquiler?')) return;
 
     this.alquilerService.eliminarAlquiler(alquilerId).subscribe({
-      next: () => {
-        // Incrementar stock solo si tenemos inventarioId
-        /*if (inventarioId) {
-          this.inventarioService.incrementarStock(inventarioId).subscribe({
-            next: () => console.log('Stock incrementado'),
-            error: (err) => console.error('Error incrementando stock', err),
-          });
-        }*/
-
-        // Recargar lista de alquileres
-        this.alquilerService.cargarAlquileres();
-      },
+      next: () => this.alquilerService.cargarAlquileres(),
       error: (err) => console.error('Error eliminando alquiler', err),
     });
   }
 
-  getNombrePersona(personaId: string): string {
-    const persona = this.personaService.personas().find((p) => p.dni === personaId);
-    return persona ? `${persona.nombre} ${persona.apellido}` : 'Desconocido';
+  getNombrePersona(alquiler: AlquilerModel): string {
+    const persona = alquiler.personaResponse;
+
+    if (!persona) return 'Desconocido';
+
+    return `${persona.nombre} ${persona.apellido}`;
   }
 
-  getTituloJuego(videojuegoId: number): string {
-  const juego = this.videojuegos().find(
-    (v) => v.videojuegoId === videojuegoId
-  );
+  getJuegos(alquiler: AlquilerModel): string {
+    if (!alquiler.carrito || alquiler.carrito.length === 0) {
+      return 'Sin juegos';
+    }
 
-  return juego ? juego.titulo : 'Desconocido';
-}
+    return alquiler.carrito
+      .map((detalle) => {
+        const item =
+          detalle.inventarioItemResponse ||
+          detalle.inventarioItem;
+
+        const videojuego =
+          item?.videojuego ||
+          item?.videojuegoResponse;
+
+        const titulo = videojuego?.titulo || 'Juego';
+        const plataforma = item?.plataforma || '';
+        const cantidad = detalle.cantidad ? ` x${detalle.cantidad}` : '';
+
+        return `${titulo}${plataforma ? ' - ' + plataforma : ''}${cantidad}`;
+      })
+      .join(', ');
+  }
 }
