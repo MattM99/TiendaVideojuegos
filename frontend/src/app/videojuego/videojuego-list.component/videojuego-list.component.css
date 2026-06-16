@@ -1,117 +1,303 @@
 /* Título */
 h2 {
-    color: #e0e6ed;
-    font-family: 'Segoe UI', sans-serif;
-    font-size: 2rem;
-    margin: 20px 0;
-    text-align: center;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+  color: #e0e6ed;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 2rem;
+  margin: 20px 0;
+  text-align: center;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+}
+
+/* Contenedor superior: volver + crear */
+.top-actions {
+  width: 90%;
+  max-width: 700px;
+  margin: 0 auto 20px auto;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Botón VOLVER */
+.back-btn {
+  background: #1c2530;
+  color: #e0e6ed;
+  border: 1px solid #2d3945;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.back-btn:hover {
+  background: #22303c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Contenedor botón CREAR */
+.create-button-container {
+  display: flex;
+  justify-content: flex-end;
 }
 
 /* Botones generales */
 button {
-    background: #1c2530;
-    color: #e0e6ed;
-    border: 1px solid #2d3945;
-    padding: 8px 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: 0.2s ease;
-    font-size: 0.9rem;
+  background: #1c2530;
+  color: #e0e6ed;
+  border: 1px solid #2d3945;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 0.9rem;
 }
 
 button:hover {
-    background: #2d3945;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  background: #2d3945;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
-.top-actions {
-    display: flex;
-    justify-content: space-between; /* ← Distribuye uno a cada lado */
-    align-items: center;
-    width: 90%;
-    max-width: 600px;
-    margin: 20px auto;              /* Centrado del contenedor */
+/* Controles de paginación / ordenamiento */
+.pagination-controls {
+  margin-top: 24px;
+  margin-bottom: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  max-width: 700px;
+  width: 90%;
+
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.back-btn {
-    background: #1c2530;
+.page-size {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #d9e1e8;
 }
 
-.back-btn:hover {
-    background: #22303c;
+.page-size select {
+  background: #1c2530;
+  color: #e0e6ed;
+  border: 1px solid #2d3945;
+  padding: 6px 10px;
+  border-radius: 6px;
+  outline: none;
 }
 
-.new-btn {
-    background: #1c2530;
+.sorting-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
 }
 
-.new-btn:hover {
-    background: #2d3945;
+.sort-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: #d9e1e8;
 }
 
-
-/* Contenedor del botón Crear */
-.create-button-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
+.sort-group select {
+  background: #1c2530;
+  color: #e0e6ed;
+  border: 1px solid #2d3945;
+  padding: 6px 10px;
+  border-radius: 6px;
+  outline: none;
 }
 
-/* Lista */
+/* Barra de filtros */
+.filters-bar {
+  width: 90%;
+  max-width: 700px;
+
+  margin: 0 auto 18px auto;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  flex-wrap: wrap;
+}
+
+.search-type-container {
+  display: flex;
+  justify-content: center;
+}
+
+.search-type-container select {
+  width: 170px;
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: white;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.search-container {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.search-container input,
+.search-container select {
+  width: 280px;
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: white;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.search-container input:focus,
+.search-container select:focus,
+.search-type-container select:focus {
+  border-color: #3b82f6;
+}
+
+/* LISTA */
 ul {
-    list-style: none;
-    padding: 0;
-    margin: 0 auto;
-    max-width: 600px;
-    width: 90%;
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  max-width: 700px;
+  width: 90%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 li {
-  background: rgba(28, 37, 48, 0.65);
-    backdrop-filter: blur(6px);
-    margin-bottom: 12px;
-    padding: 14px 16px;
-    border-radius: 8px;
-    color: #d9e1e8;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(28, 37, 48, 0.88),
+      rgba(20, 28, 36, 0.92)
+    );
 
-    display: flex;
-    justify-content: space-between;   /* Deja texto a la izquierda y botones a la derecha */
-    align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 4px solid #4c84ff;
+  border-radius: 12px;
+
+  padding: 16px 18px;
+
+  color: #d9e1e8;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  backdrop-filter: blur(8px);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
+li:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(76, 132, 255, 0.4);
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.35),
+    0 0 12px rgba(76, 132, 255, 0.08);
+}
+
+/* Texto principal */
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  font-size: 0.95rem;
+}
+
+.title b {
+  color: #f4f7fb;
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
+}
+
+.title span {
+  color: #9fb0c2;
+  font-size: 0.85rem;
+}
+
+/* Zona de botones derecha */
 .actions {
-    min-width: 180px;  /* ← fijá aquí un ancho suficiente para los botones */
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
-/* Texto del listado */
-li b {
-    color: #f0f4f8;
-    font-size: 1rem;
-}
-
-/* Botones dentro del listado */
+/* Botones internos */
 li button {
-    margin-left: 10px;
-    background: #152028;
+  background: #18232d;
+  border: 1px solid #2d3945;
+  color: #dfe7ef;
+
+  padding: 8px 12px;
+  border-radius: 6px;
+
+  transition: 0.2s ease;
 }
 
 li button:hover {
-    background: #22303c;
+  background: #22303c;
 }
 
 /* Botón eliminar */
-li button:nth-child(3) {
-    border-color: #8c2c2c;
+.actions button:last-child {
+  border-color: rgba(180, 60, 60, 0.5);
 }
 
-li button:nth-child(3):hover {
-    background: #8c2c2c;
-    color: white;
+.actions button:last-child:hover {
+  background: #9e2f2f;
+  border-color: #9e2f2f;
+  color: white;
+}
+
+/* Paginación inferior */
+.pagination {
+  margin-top: 24px;
+  margin-bottom: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+
+  color: #d9e1e8;
+}
+
+.pagination span {
+  font-size: 0.95rem;
+  color: #aeb8c2;
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }

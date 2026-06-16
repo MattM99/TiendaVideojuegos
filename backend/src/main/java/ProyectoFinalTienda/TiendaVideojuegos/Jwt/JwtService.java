@@ -33,7 +33,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(cuenta.getUsername()) // Nombre de usuario del titular de la cuenta
                 .setIssuedAt(new Date(System.currentTimeMillis())) // Fecha de emisión del token
-                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24)) // 1 día de validez
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24 * 60)) // 1 día de validez
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
