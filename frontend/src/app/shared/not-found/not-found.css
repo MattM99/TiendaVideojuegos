@@ -1,0 +1,109 @@
+.death-screen {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: radial-gradient(circle, #1a1a1a 0%, #000 70%);
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+
+  background: black;
+
+  animation: fadeInOverlay 2s ease forwards;
+}
+
+.message-container {
+  position: relative;
+  z-index: 1;
+
+  text-align: center;
+}
+
+.you-died {
+  margin: 0;
+
+  color: #8b0000;
+  font-size: clamp(4rem, 12vw, 8rem);
+  font-family: Georgia, serif;
+  letter-spacing: 0.4rem;
+  font-weight: normal;
+
+  opacity: 0;
+
+  text-shadow:
+    0 0 10px rgba(139, 0, 0, 0.8),
+    0 0 25px rgba(139, 0, 0, 0.5);
+
+  animation: appear 3s ease forwards;
+}
+
+.subtitle,
+button {
+  opacity: 0;
+
+  animation: showContent 1s ease forwards;
+  animation-delay: 2.5s;
+}
+
+.subtitle {
+  color: #cfcfcf;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+button {
+  padding: 12px 24px;
+
+  border: 1px solid #8b0000;
+  background: transparent;
+  color: white;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+button:hover {
+  background: rgba(139, 0, 0, 0.2);
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 0.9;
+  }
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(1.1);
+    filter: blur(10px);
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes showContent {
+  to {
+    opacity: 1;
+  }
+}

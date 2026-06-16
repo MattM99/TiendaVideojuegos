@@ -122,4 +122,8 @@ export class CerrarAlquiler implements OnInit {
         }
       });
   }
+
+  cancelar(): void {
+    this.router.navigate(['/alquileres/']);
+  }
 }

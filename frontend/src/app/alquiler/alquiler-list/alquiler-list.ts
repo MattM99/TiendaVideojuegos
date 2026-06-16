@@ -33,6 +33,12 @@ export class AlquilerList implements OnInit {
     this.router.navigate(['/alquileres', id]);
   }
 
+  cerrar(id: number | undefined) {
+    if (!id) return;
+
+    this.router.navigate(['/alquileres', id, 'cerrar']);
+  }
+
   eliminar(alquilerId: number | undefined) {
     if (!alquilerId) return;
 

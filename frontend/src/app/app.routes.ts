@@ -10,13 +10,14 @@ import { ALQUILER_ROUTES } from './alquiler/alquiler.routes';
 import { RoleGuard } from './auth/guards/role-guard';
 import { LoginGuard } from './auth/guards/login-guard';
 import { Wip } from './shared/wip/wip';
+import { NotFoundComponent } from './shared/not-found/not-found';
 
 export const routes: Routes = [
   { path: 'login', component: Login, canActivate: [LoginGuard] },
 
   { path: 'home', component: FrontPage, canActivate: [AuthGuard] },
 
-  { path: 'wip', component: Wip },
+  { path: '404', component: NotFoundComponent },
 
   {
     path: 'cuenta',
@@ -54,5 +55,5 @@ export const routes: Routes = [
   },
 
   { path: '', redirectTo: '/home', pathMatch: 'full' },
-  { path: '**', redirectTo: '/wip' },
+  { path: '**', redirectTo: '/404' },
 ];
