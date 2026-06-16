@@ -1,9 +1,9 @@
 export interface VideojuegoModel {
-    id?: string;
-    titulo: string;
-    sinopsis: string;
-    genero: string;
-    multijugador: boolean;
-    lanzamiento: number;
-    desarrollador: string;
+  videojuegoId?: number;
+  titulo: string;
+  descripcion: string;
+  genero: string;
+  lanzamiento: number;
+  multijugador: boolean | 'Sí' | 'No';
+  desarrollador: string;
 }

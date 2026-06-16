@@ -25,12 +25,12 @@
 
     <div class="detail-row">
       <span class="detail-label">Multijugador</span>
-      <span class="detail-value">{{ videojuego().multijugador ? 'Sí' : 'No' }}</span>
+      <span class="detail-value"> {{ videojuego().multijugador === true || videojuego().multijugador === 'Sí' ? 'Sí' : 'No' }} </span>
     </div>
 
     <div class="detail-row">
-      <span class="detail-label">Sinopsis</span>
-      <span class="detail-value">{{ videojuego().sinopsis }}</span>
+      <span class="detail-label">Descripción</span>
+      <span class="detail-value">{{ videojuego().descripcion }}</span>
     </div>
 
     <div class="actions detail-actions">

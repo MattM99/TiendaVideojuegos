@@ -15,7 +15,7 @@ import java.util.List;
 public class AlquilerCreateOrReplaceRequest {
 
     @NotNull(message = "El ID de la persona es obligatorio")
-    private Integer personaId;
+    private Integer personaDni;
 
     @NotNull(message = "La fecha en la que se realizó el alquiler es obligatoria")
     private LocalDate fechaInicio;

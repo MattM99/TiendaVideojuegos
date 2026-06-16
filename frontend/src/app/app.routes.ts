@@ -12,44 +12,44 @@ import { LoginGuard } from './auth/guards/login-guard';
 import { Wip } from './shared/wip/wip';
 
 export const routes: Routes = [
-  { path: 'api/auth/login', component: Login, canActivate: [LoginGuard] },
+  { path: 'login', component: Login, canActivate: [LoginGuard] },
 
   { path: 'home', component: FrontPage, canActivate: [AuthGuard] },
 
   { path: 'wip', component: Wip },
 
   {
-    path: 'cuentas',
+    path: 'cuenta',
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMINISTRADOR'] },
+    data: { roles: ['FOUNDER', 'ADMINISTRADOR'] },
     children: CUENTA_ROUTES,
   },
 
   {
     path: 'personas',
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMINISTRADOR', 'GERENTE', 'EMPLEADO'] },
+    data: { roles: ['FOUNDER','ADMINISTRADOR', 'EMPLEADO'] },
     children: PERSONA_ROUTES,
   },
 
   {
     path: 'videojuegos',
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMINISTRADOR', 'EMPLEADO'] },
+    data: { roles: ['FOUNDER','ADMINISTRADOR', 'EMPLEADO'] },
     children: VIDEOJUEGO_ROUTES,
   },
 
   {
     path: 'inventario',
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMINISTRADOR'] },
+    data: { roles: ['FOUNDER','ADMINISTRADOR'] },
     children: INVENTARIO_ITEM_ROUTES,
   },
 
   {
     path: 'alquileres',
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['ADMINISTRADOR', 'EMPLEADO'] },
+    data: { roles: ['FOUNDER','ADMINISTRADOR', 'EMPLEADO'] },
     children: ALQUILER_ROUTES,
   },
 

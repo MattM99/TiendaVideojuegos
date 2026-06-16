@@ -4,7 +4,7 @@ import { PenalizacionModel } from '../models/penalizacion.model';
 export interface AlquilerModel {
   id?: string;
   personaId: string;
-  videojuegoId: string;
+  videojuegoId: number;
   inventarioId: string;
   fechaInicio: string;
   fechaFin: string;
@@ -12,4 +12,5 @@ export interface AlquilerModel {
   montoFijo: number;
   fechaDevolucion?: string; // Opcional, porque será nulo hasta que se devuelva el alquiler
   penalizaciones: PenalizacionModel[]; // <--- composición
+  estadoAlquiler: 'ACTIVO' | 'FINALIZADO';
 }

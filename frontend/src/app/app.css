@@ -1,9 +1,16 @@
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .app-layout {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #020617; 
-  color: #f9fafb;            
+   background: radial-gradient(circle at top, #0ff2, #001), linear-gradient(135deg, #0ff1, #f0f1);
+  background-blend-mode: overlay;
+  color: #f9fafb;
 }
 
 .app-main {

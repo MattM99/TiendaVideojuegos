@@ -17,12 +17,18 @@
   }
 
   <label>Género</label>
-  <input
+  <select
     [ngModel]="videojuego().genero"
     (ngModelChange)="updateGenero($event)"
     name="genero"
     (blur)="markTouched('genero')"
-  />
+  >
+  <option value="">Seleccione un género</option>
+
+  @for (g of generos; track g) {
+    <option [value]="g">{{ g }}</option>
+  }
+  </select>
   @if (generoError()) {
     <p class="error">{{ generoError() }}</p>
   }
@@ -71,16 +77,16 @@
     </button>
   </div>
 
-  <label>Sinopsis</label>
+  <label>Descripción</label>
   <textarea
-    [ngModel]="videojuego().sinopsis"
-    (ngModelChange)="updateSinopsis($event)"
-    name="sinopsis"
-    (blur)="markTouched('sinopsis')"
+    [ngModel]="videojuego().descripcion"
+    (ngModelChange)="updateDescripcion($event)"
+    name="descripcion"
+    (blur)="markTouched('descripcion')"
   ></textarea>
 
-  @if (sinopsisError()) {
-    <p class="error">{{ sinopsisError() }}</p>
+  @if (descripcionError()) {
+    <p class="error">{{ descripcionError() }}</p>
   }
 
   <div class="form-buttons">

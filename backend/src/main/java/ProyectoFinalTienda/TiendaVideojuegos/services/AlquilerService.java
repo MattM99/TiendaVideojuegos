@@ -83,9 +83,9 @@ public class AlquilerService {
 
     @Transactional
     public AlquilerResponse crearAlquiler(AlquilerCreateOrReplaceRequest request) {
-        PersonaEntity persona = personaRepository.findById(request.getPersonaId())
-                .orElseThrow(() -> new PersonaNoEncontradaException("No existe la persona con id " + request.getPersonaId()));
-        bloqueoService.verificarNoEstaEnListaNegra(request.getPersonaId()); // Verificar si la persona está en lista negra, si está lanza excepción.
+        PersonaEntity persona = personaRepository.findByDni(String.valueOf(request.getPersonaDni()))
+                .orElseThrow(() -> new PersonaNoEncontradaException("No existe la persona con id " + request.getPersonaDni()));
+        bloqueoService.verificarNoEstaEnListaNegra(request.getPersonaDni()); // Verificar si la persona está en lista negra, si está lanza excepción.
 
         AlquilerEntity alquiler = alquilerMapper.toEntity(request, persona);
         alquiler.setEstadoAlquiler(EstadoAlquiler.EN_CURSO);

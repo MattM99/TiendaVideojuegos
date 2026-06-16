@@ -1,14 +1,22 @@
 html, body {
     height: 100%;
     margin: 0;
+      overflow-x: hidden;
+
 }
+
 
 body {
     display: flex;
     flex-direction: column;
+     min-height: 100vh;
     background: #0a0f14;
     background-image:
         radial-gradient(circle at 20% 30%, #1c2530 0%, transparent 60%),
         radial-gradient(circle at 80% 70%, #111b24 0%, transparent 60%);
 
+}
+
+* {
+  box-sizing: border-box;
 }

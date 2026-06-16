@@ -1,6 +1,8 @@
 import { CuentaModel } from './../../cuenta/cuenta.model';
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/internal/Observable';
+import { RegisterRequest } from '../register-request';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +16,13 @@ export class AuthService {
       this.currentUserSignal.set(JSON.parse(saved));
     }
   }
+
+register(request: RegisterRequest): Observable<void> {
+  return this.http.post<void>(
+    'http://localhost:8080/api/auth/register',
+    request
+  );
+}
 
   currentUser = this.currentUserSignal.asReadonly();
 
@@ -34,13 +43,9 @@ export class AuthService {
     localStorage.removeItem('loggedUser');
   }
 
-  /*getCurrentUser() {
-    return this.currentUserSignal();
-  }*/
-
-  getCurrentUser(nickname: string) {
+  getCurrentUser() {
     return this.http.get<CuentaModel>(
-      `http://localhost:8080/api/cuenta/${nickname}`
+      `http://localhost:8080/api/cuenta/yo`
     );
   }
 
@@ -54,4 +59,6 @@ export class AuthService {
 
     return roles.includes(user.rol);
   }
+
+
 }

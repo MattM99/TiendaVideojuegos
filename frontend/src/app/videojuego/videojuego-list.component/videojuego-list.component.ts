@@ -26,14 +26,14 @@ export class VideojuegoListComponent {
     this.service.getAll().subscribe(data => this.videojuegos.set(data));
   }
 
-  delete(id?: string) {
-    if (!id) return; // si undefined o vacío → no hacemos nada
+  delete(id?: string | number) {
+  if (!id) return;
 
-    if (!confirm("¿Seguro que querés eliminar este videojuego?")) return;
+  if (!confirm("¿Seguro que querés eliminar este videojuego?")) return;
 
-    this.service.delete(id).subscribe({
-      next: () => this.loadData(),
-      error: () => alert("Error al eliminar el videojuego")
-    });
-  }
+  this.service.delete(String(id)).subscribe({
+    next: () => this.loadData(),
+    error: () => alert("Error al eliminar el videojuego")
+  });
+}
 }

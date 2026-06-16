@@ -7,16 +7,37 @@ export function fechaValida(control: AbstractControl): ValidationErrors | null {
 }
 
 export function noFechaPasada(control: AbstractControl): ValidationErrors | null {
-  const value = control.value;
-  if (!value) return null;
+    if (!control.value) return null;
 
+
+   const inputDate = new Date(control.value);
+  const today = new Date();
+
+   inputDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+   if (inputDate < today) {
+    return { fechaPasada: true };
+  }
+
+  return null;
+}
+
+export function noFechaFutura(control: AbstractControl): ValidationErrors | null {
+  if (!control.value) return null;
+
+  const fechaIngresada = new Date(control.value);
   const hoy = new Date();
-  const fecha = new Date(value);
 
+  // normalizar (sin horas)
   hoy.setHours(0, 0, 0, 0);
-  fecha.setHours(0, 0, 0, 0);
+  fechaIngresada.setHours(0, 0, 0, 0);
 
-  return fecha >= hoy ? null : { fechaPasada: true };
+  if (fechaIngresada > hoy) {
+    return { fechaFutura: true };
+  }
+
+  return null;
 }
 
 export function rangoFechasValidas(group: AbstractControl): ValidationErrors | null {

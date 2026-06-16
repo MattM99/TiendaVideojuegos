@@ -15,34 +15,114 @@ import { CuentaService } from '../cuenta.service';
 })
 export class CuentaListComponent implements OnInit {
   usuario = computed(() => this.auth.currentUser());
+  page = signal(0);
+  size = signal(5);
+  totalPages = signal(0);
+  totalElements = signal(0);
+  sortBy = signal('nickname');
+  direction = signal('desc');
+  busqueda = signal('');
+
+  mostrarBajas = signal(false);
+
+  cuentasFiltradas = computed(() => {
+
+    let lista = this.cuentas();
+
+    if (!this.mostrarBajas()) {
+      lista = lista.filter(
+        cuenta => cuenta.estado !== 'BAJA'
+      );
+    }
+
+    const textoBusqueda = this.busqueda().toLowerCase().trim();
+
+    return lista.filter(cuenta =>
+      cuenta.nickname.toLowerCase().includes(textoBusqueda) ||
+      cuenta.rol.toLowerCase().includes(textoBusqueda) ||
+      cuenta.estado.toLowerCase().includes(textoBusqueda)
+    );
+
+  });
 
   private service = inject(CuentaService);
   cuentas = signal<CuentaModel[]>([]);
 
-  constructor(private http: HttpClient, private auth: AuthService, private router: Router) {}
+  constructor(private http: HttpClient, private auth: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadCuentas();
   }
 
   loadCuentas() {
-    this.service.getAll().subscribe((data) => this.cuentas.set(data));
-  }
-
-  deleteCuenta(cuenta: CuentaModel) {
-    if (!confirm(`¿Eliminar cuenta de ${cuenta.nombreUsuario}?`)) return;
-
-    this.http.delete(`http://localhost:3000/cuentas/${cuenta.id}`).subscribe({
-      next: () => this.loadCuentas(),
-      error: (err) => console.error(err),
+    this.service.getAll(
+      this.page(),
+      this.size(),
+      this.sortBy(),
+      this.direction()
+    ).subscribe((response) => {
+      this.cuentas.set(response.content);
+      this.totalPages.set(response.totalPages);
+      this.totalElements.set(response.totalElements);
     });
-  }
-
-  editCuenta(cuenta: CuentaModel) {
-    this.router.navigate(['/cuentas/editar', cuenta.id]);
   }
 
   crearEmpleado() {
     this.router.navigate(['/personas/nueva'], { queryParams: { crearCuenta: true } });
+  }
+
+
+  ///PAGINACION, ORDENAMIENTO Y FILTRADO
+  nextPage() {
+    if (this.page() < this.totalPages() - 1) {
+      this.page.update(p => p + 1);
+      this.loadCuentas();
+    }
+  }
+
+  previousPage() {
+    if (this.page() > 0) {
+      this.page.update(p => p - 1);
+      this.loadCuentas();
+    }
+  }
+
+  changeSize(event: Event) {
+
+    const value = Number(
+      (event.target as HTMLSelectElement).value
+    );
+
+    this.size.set(value);
+
+    this.page.set(0);
+
+    this.loadCuentas();
+  }
+
+  changeSort(event: Event) {
+
+    const value = (
+      event.target as HTMLSelectElement
+    ).value;
+
+    this.sortBy.set(value);
+
+    this.page.set(0);
+
+    this.loadCuentas();
+  }
+
+  changeDirection(event: Event) {
+
+    const value = (
+      event.target as HTMLSelectElement
+    ).value;
+
+    this.direction.set(value);
+
+    this.page.set(0);
+
+    this.loadCuentas();
   }
 }

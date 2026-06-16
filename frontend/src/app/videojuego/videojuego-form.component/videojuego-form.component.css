@@ -40,7 +40,8 @@ label {
 
 /* Inputs */
 input,
-textarea {
+textarea,
+select {
     background: #1c2530;
     border: 1px solid #2d3945;
     padding: 10px 12px;
@@ -52,10 +53,16 @@ textarea {
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
     outline: none;
     border-color: #4a637a;
     box-shadow: 0 0 8px rgba(74, 99, 122, 0.4);
+}
+
+select option {
+    background: #1c2530;
+    color: #e0e6ed;
 }
 
 .multiplayer-toggle {
@@ -186,3 +193,4 @@ input.ng-invalid.ng-touched {
   from { opacity: 0; transform: translateY(-2px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
