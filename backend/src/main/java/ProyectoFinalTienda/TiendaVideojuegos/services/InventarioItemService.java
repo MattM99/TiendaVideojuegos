@@ -54,7 +54,7 @@ public class InventarioItemService {
         VideojuegoEntity videojuego = videojuegoRepository.findById(request.getVideojuegoId()).
                 orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id: " + request.getVideojuegoId() + " no encontrado."));
 
-        validarDatosDeInventario(request);
+        validarCreate(request);
 
         InventarioItemEntity entity = inventarioItemMapper.toEntity(request, videojuego);
 
@@ -167,14 +167,20 @@ public class InventarioItemService {
     /// Update
 
     public InventarioItemResponse actualizarCompleto(int id, InventarioItemCreateOrReplaceRequest nuevosDatos) {
-        InventarioItemEntity existente = inventarioItemRepository.findById(id)
-                .orElseThrow(() -> new InventarioItemNoEncontradoException("Inventario con id " + id + " no encontrado."));
+
+        InventarioItemEntity existente = obtenerInventarioPorId(id);
+
+        validarUpdate(
+                nuevosDatos.getVideojuegoId(),
+                nuevosDatos.getPlataforma(),
+                id
+        );
+
+        validarStock(nuevosDatos.getStockDisponible(), nuevosDatos.getStockTotal());
 
         existente.setPrecioDiario(nuevosDatos.getPrecioDiario());
         existente.setStockTotal(nuevosDatos.getStockTotal());
         existente.setStockDisponible(nuevosDatos.getStockDisponible());
-
-        existente.validarStock();
 
         return mapearResponse(inventarioItemRepository.save(existente));
     }
@@ -183,8 +189,13 @@ public class InventarioItemService {
         InventarioItemEntity existente = inventarioItemRepository.findById(id)
                 .orElseThrow(() -> new InventarioItemNoEncontradoException("Inventario con id: " + id + " no encontrado."));
 
+        validarUpdate(
+                existente.getVideojuego().getVideojuegoId(),
+                existente.getPlataforma(),
+                id
+        );
         inventarioItemMapper.actualizarEntity(existente, datosActualizados);
-        existente.validarStock();
+        validarStock(existente.getStockDisponible(), existente.getStockTotal());
 
         return mapearResponse(inventarioItemRepository.save(existente));
     }
@@ -341,18 +352,46 @@ public class InventarioItemService {
         }
     }
 
-    public void validarDatosDeInventario (InventarioItemCreateOrReplaceRequest request) throws IllegalArgumentException {
+    private void validarCreate(InventarioItemCreateOrReplaceRequest request) throws IllegalArgumentException {
 
-        if(request.getStockDisponible() > request.getStockTotal()) {
-            throw new IllegalArgumentException("El stock disponible no puede ser mayor que el stock total.");
+        validarStock(request.getStockDisponible(), request.getStockTotal());
+
+        boolean exists = inventarioItemRepository
+                .existsByVideojuego_VideojuegoIdAndPlataforma(
+                        request.getVideojuegoId(),
+                        request.getPlataforma()
+                );
+
+        if (exists) {
+            throw new IllegalArgumentException(
+                    "Ya existe un inventario para ese videojuego en la misma plataforma."
+            );
         }
 
-        List<InventarioItemEntity> inventarios = inventarioItemRepository.findByVideojuegoId(request.getVideojuegoId());
+    }
 
-        if (inventarios.stream().anyMatch(i -> i.getPlataforma() == request.getPlataforma())) {
-            throw new IllegalArgumentException("Ya existe un inventario para el videojuego con la misma plataforma.");
+    private void validarUpdate(
+            Integer videojuegoId,
+            Plataformas plataforma,
+            Integer inventarioIdActual
+    ) {
+
+        if (videojuegoId == null || plataforma == null) {
+            return;
         }
 
+        boolean exists = inventarioItemRepository
+                .existsByVideojuego_VideojuegoIdAndPlataformaAndInventarioItemIdNot(
+                        videojuegoId,
+                        plataforma,
+                        inventarioIdActual
+                );
+
+        if (exists) {
+            throw new IllegalArgumentException(
+                    "Ya existe un inventario para ese videojuego en la misma plataforma."
+            );
+        }
     }
 
     private InventarioItemResponse mapearResponse(InventarioItemEntity inventario) {
@@ -369,6 +408,14 @@ public class InventarioItemService {
                 videojuegoMapper.toResponse(inventario.getVideojuego());
 
         return inventarioItemMapper.toResponse(inventario, videojuegoResponse);
+    }
+
+    private void validarStock(Integer disponible, Integer total) {
+        if (disponible != null && total != null && disponible > total) {
+            throw new IllegalArgumentException(
+                    "El stock disponible no puede ser mayor que el stock total."
+            );
+        }
     }
 
 }

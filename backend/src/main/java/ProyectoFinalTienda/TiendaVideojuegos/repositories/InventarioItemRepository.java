@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.repositories;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,5 +41,13 @@ public interface InventarioItemRepository extends JpaRepository<InventarioItemEn
     Page<InventarioItemEntity> findByPrecioDiarioLessThan(double valor, Pageable paginacion);
 
     Page<InventarioItemEntity> findByPlataformaAndPrecioDiarioLessThan(Plataformas plataforma, double precioDiario, Pageable paginacion);
+
+    boolean existsByVideojuego_VideojuegoIdAndPlataforma(Integer videojuegoId, Plataformas plataforma);
+
+    boolean existsByVideojuego_VideojuegoIdAndPlataformaAndInventarioItemIdNot(
+            Integer videojuegoId,
+            Plataformas plataforma,
+            Integer inventarioItemId
+    );
 
 }
