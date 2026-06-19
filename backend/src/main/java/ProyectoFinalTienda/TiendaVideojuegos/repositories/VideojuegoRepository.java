@@ -22,5 +22,9 @@ public interface VideojuegoRepository extends JpaRepository<VideojuegoEntity, In
 
     Page<VideojuegoEntity> findByLanzamiento(Year lanzamiento, Pageable paginacion);
 
+    boolean existsByTitulo(String titulo);
+
+    boolean existsByTituloAndVideojuegoIdNot(String titulo, int videojuegoId);
+
 }
 

@@ -24,12 +24,8 @@ public class VideojuegoService {
 
     public VideojuegoResponse guardar(VideojuegoCreateOrReplaceRequest request) {
 
-        if (request.getLanzamiento() != null &&
-                request.getLanzamiento().isAfter(Year.now())) {
-            throw new IllegalArgumentException(
-                    "El año de lanzamiento no puede ser futuro: "
-                            + request.getLanzamiento());
-        }
+        validarLanzamiento(request.getLanzamiento());
+        validarTituloDuplicado(request.getTitulo(), null);
 
         VideojuegoEntity entity =
                 videojuegoMapper.toEntityFromRequest(request);
@@ -113,6 +109,9 @@ public class VideojuegoService {
         VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
                 .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id " + id + " no encontrado."));
 
+        validarLanzamiento(datosNuevos.getLanzamiento());
+        validarTituloDuplicado(datosNuevos.getTitulo(), id);
+
         // Sobrescribímos todo, porque el DTO tiene todo obligatorio
         videojuegoExistente.setTitulo(datosNuevos.getTitulo());
         videojuegoExistente.setDesarrollador(datosNuevos.getDesarrollador());
@@ -130,8 +129,33 @@ public class VideojuegoService {
     public VideojuegoResponse actualizarPorCampo(int id, VideojuegoUpdateRequest datosActualizados) {
         VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
                 .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id " + id + " no encontrado."));
+        validarLanzamiento(datosActualizados.getLanzamiento());
+        validarTituloDuplicado(datosActualizados.getTitulo(), id);
         videojuegoMapper.actualizarEntity(videojuegoExistente, datosActualizados);
         return videojuegoMapper.toResponse(videojuegoRepository.save(videojuegoExistente));
+    }
+
+    private void validarTituloDuplicado(String titulo, Integer idActual) {
+
+        if (titulo == null) {
+            return;
+        }
+
+        boolean existe = (idActual == null)
+                ? videojuegoRepository.existsByTitulo(titulo)
+                : videojuegoRepository.existsByTituloAndVideojuegoIdNot(titulo, idActual);
+
+        if (existe) {
+            throw new IllegalArgumentException(
+                    "Ya existe un videojuego con ese título.");
+        }
+    }
+
+    private void validarLanzamiento(Year lanzamiento) {
+        if (lanzamiento != null && lanzamiento.isAfter(Year.now())) {
+            throw new IllegalArgumentException(
+                    "El año de lanzamiento no puede ser futuro: " + lanzamiento);
+        }
     }
 
 }

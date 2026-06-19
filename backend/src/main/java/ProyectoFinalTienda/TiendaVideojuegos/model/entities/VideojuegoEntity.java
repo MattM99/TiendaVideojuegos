@@ -35,7 +35,8 @@ public class VideojuegoEntity {
     private List<InventarioItemEntity> inventario = new ArrayList<>();
 
     @Column(
-            nullable = false
+            nullable = false,
+            unique = true
     )
     @NotBlank(message = "El título no puede estar vacío")
     private String titulo;
