@@ -35,6 +35,13 @@ public class BloqueoController {
         return ResponseEntity.ok(actualizado);
     }
 
+    @Operation(summary = "Desbanear a una persona", description = "Permite desbanear a una persona de la lista negra")
+    @PutMapping("/desbanear/{dni}")
+    public ResponseEntity<BloqueoResponse> desbanear(@PathVariable String dni) {
+        BloqueoResponse actualizado = bloqueoService.desbanear(dni);
+        return ResponseEntity.ok(actualizado);
+    }
+
     @Operation(summary = "Obtener histórico de lista negra", description = "Devuelve el histórico completo de personas en la lista negra")
     @GetMapping("/historico")
     public ResponseEntity<List<BloqueoResponse>> obtenerHistorico() {

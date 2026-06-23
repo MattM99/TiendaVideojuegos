@@ -65,6 +65,22 @@ public class BloqueoService {
         }
     }
 
+    public BloqueoResponse desbanear(String dni) {
+        Optional<BloqueoEntity> blackList = bloqueoRepository.findVigenteByPersona(dni);
+
+        if (blackList.isPresent()) {
+            BloqueoEntity entity = blackList.get();
+            entity.setFechaFin(LocalDate.now());
+
+            PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
+            BloqueoEntity updatedEntity = bloqueoRepository.save(entity);
+
+            return bloqueoMapper.toResponse(updatedEntity, personaResponse);
+        } else {
+            throw new NoSuchElementException("La persona no está en lista negra.");
+        }
+    }
+
     public List<BloqueoResponse> obtenerHistorico(){
         List<BloqueoEntity> listaNegra = bloqueoRepository.findAll();
         if (listaNegra.isEmpty()) {
