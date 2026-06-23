@@ -27,8 +27,6 @@ public class BloqueoService {
     @Autowired
     private BloqueoMapper bloqueoMapper;
     @Autowired
-    private PersonaService personaService;
-    @Autowired
     private PersonaRepository personaRepository;
     @Autowired
     private PersonaMapper personaMapper;
@@ -105,7 +103,7 @@ public class BloqueoService {
         Optional<BloqueoEntity> blacklist = bloqueoRepository.findVigenteByPersona(personaId);
 
         if (blacklist.isPresent()) {
-            throw new BusinessException("La persona no puede alquilar porque está en lista negra. Motivo: "
+            throw new BusinessException("La persona está en lista negra. Motivo: "
                     + blacklist.get().getMotivo());
         }
     }
