@@ -14,8 +14,8 @@ import java.time.LocalDate;
 @Builder
 public class BloqueoCreateOrReplaceRequest {
 
-    @NotNull(message = "El dni de la persona es obligatorio")
-    private String personaDNI;
+    @NotNull(message = "El ID de la persona es obligatorio")
+    private Integer personaID;
 
     @NotNull(message = "La fecha de inicio es obligatoria")
     private LocalDate fecha_inicio;
