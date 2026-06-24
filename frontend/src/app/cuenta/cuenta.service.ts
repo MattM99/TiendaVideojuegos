@@ -96,3 +96,4 @@ export class CuentaService {
     return this.http.delete<void>(`${this.apiUrl}/${nickname}`);
   }
 }
+ 
