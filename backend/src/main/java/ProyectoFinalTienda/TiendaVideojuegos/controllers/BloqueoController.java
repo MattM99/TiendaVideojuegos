@@ -28,13 +28,6 @@ public class BloqueoController {
         return ResponseEntity.ok(creada);
     }
 
-//    @Operation(summary = "Desbanear a una persona", description = "Permite desbanear a una persona de la lista negra")
-//    @PutMapping("/desbanear/{personaId}")
-//    public ResponseEntity<BloqueoResponse> desbanear(@PathVariable int personaId) {
-//        BloqueoResponse actualizado = bloqueoService.desbanear(personaId);
-//        return ResponseEntity.ok(actualizado);
-//    }
-
     @Operation(summary = "Desbanear a una persona", description = "Permite desbanear a una persona de la lista negra")
     @PutMapping("/desbanear/{dni}")
     public ResponseEntity<BloqueoResponse> desbanear(@PathVariable String dni) {

@@ -32,35 +32,27 @@ public class BloqueoService {
     private PersonaMapper personaMapper;
 
     public BloqueoResponse crear(BloqueoCreateOrReplaceRequest request) {
-        if (bloqueoRepository.findVigenteByPersona(request.getPersonaDNI()).isPresent()) {
+
+        String dni = request.getPersonaDNI();
+
+        if (dni == null) {
+            throw new BusinessException("DNI no puede ser null");
+        }
+
+        if (bloqueoRepository.findVigenteByPersona(dni).isPresent()) {
             throw new BusinessException("La persona ya está en la lista negra.");
         }
-        // Buscar la persona relacionada al dni
-        PersonaEntity persona = personaRepository.findByDni(request.getPersonaDNI())
-                        .orElseThrow(() -> new PersonaNoEncontradaException("Persona no encontrada con DNI: " + request.getPersonaDNI()));
 
-        // Convertir el DTO a entidad
+        PersonaEntity persona = personaRepository.findByDni(dni)
+                .orElseThrow(() -> new PersonaNoEncontradaException(
+                        "Persona no encontrada con DNI: " + dni));
+
         BloqueoEntity entity = request.toEntity(persona);
+
         bloqueoRepository.save(entity);
 
-        // Guardar en base de datos
-        return bloqueoMapper.toResponse(entity, personaMapper.convertirEntidadADTO(persona));
-    }
-
-    public BloqueoResponse desbanear(int personaId) {
-        Optional<BloqueoEntity> blackList = bloqueoRepository.findVigenteByPersona(personaId);
-
-        if (blackList.isPresent()) {
-            BloqueoEntity entity = blackList.get();
-            entity.setFechaFin(LocalDate.now());
-
-            PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
-            BloqueoEntity updatedEntity = bloqueoRepository.save(entity);
-
-            return bloqueoMapper.toResponse(updatedEntity, personaResponse);
-        } else {
-            throw new NoSuchElementException("La persona no está en lista negra.");
-        }
+        return bloqueoMapper.toResponse(entity,
+                personaMapper.convertirEntidadADTO(persona));
     }
 
     public BloqueoResponse desbanear(String dni) {

@@ -5,6 +5,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BloqueoUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BloqueoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BloqueoEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.services.PersonaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,9 +25,9 @@ public class BloqueoMapper {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 
-        public BloqueoEntity toEntity(BloqueoCreateOrReplaceRequest dto) {
+        public BloqueoEntity toEntity(BloqueoCreateOrReplaceRequest dto, PersonaEntity persona) {
             return BloqueoEntity.builder()
-                    .persona(personaMapper.toEntity(personaService.buscarPorDni(dto.getPersonaDNI())))
+                    .persona(persona)
                     .fechaInicio(dto.getFecha_inicio())
                     .fechaFin(dto.getFecha_fin())
                     .motivo(dto.getMotivo())

@@ -9,9 +9,6 @@ import java.util.Optional;
 
 public interface BloqueoRepository extends JpaRepository<BloqueoEntity, Integer> {
 
-    @Query("SELECT b FROM BloqueoEntity b WHERE b.persona.personaId = ?1 AND CURRENT_DATE >= b.fechaInicio AND (b.fechaFin IS NULL OR CURRENT_DATE < b.fechaFin)")
-    Optional<BloqueoEntity> findVigenteByPersona(int personaId);
-
     @Query("SELECT b FROM BloqueoEntity b WHERE b.persona.dni = ?1 AND CURRENT_DATE >= b.fechaInicio AND (b.fechaFin IS NULL OR CURRENT_DATE < b.fechaFin)")
     Optional<BloqueoEntity> findVigenteByPersona(String dni);
 
