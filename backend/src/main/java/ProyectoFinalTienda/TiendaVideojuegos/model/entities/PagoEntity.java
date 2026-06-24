@@ -6,9 +6,11 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -59,6 +61,10 @@ public class PagoEntity {
     @Digits(integer = 10, fraction = 2)
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal montoFinal;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime fechaCreacion;
 
     /// Constructor que usará internamente Lombok, privado para que no haya forma de instanciar con un costo total no calculado
     private PagoEntity(AlquilerEntity alquiler, MetodoPago metodoPago, BigDecimal descuento, BigDecimal penalizacionTotal, BigDecimal montoFinal) {

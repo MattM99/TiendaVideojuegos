@@ -1,0 +1,119 @@
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #e6e6e6;
+  font-family: Arial, sans-serif;
+}
+
+/* ================= TITULO ================= */
+
+.dashboard-title {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 2rem;
+  color: #ffffff;
+}
+
+/* ================= KPIs ================= */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  background: rgba(20, 25, 35, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.2rem;
+  text-align: center;
+  transition: 0.2s ease;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(100, 180, 255, 0.3);
+}
+
+.stat-card span {
+  display: block;
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card h2 {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #ffffff;
+}
+
+.money h2 {
+  color: #4dff88;
+}
+
+/* ================= SECCIONES ================= */
+
+.rankings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.ranking-card,
+.clientes-card {
+  background: rgba(20, 25, 35, 0.9);
+  border-radius: 14px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+}
+
+.ranking-card h2,
+.clientes-card h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: #ffffff;
+}
+
+/* ================= TABLAS ================= */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+thead {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+th,
+td {
+  padding: 0.8rem;
+  text-align: left;
+}
+
+tbody tr {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: 0.2s;
+}
+
+tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ================= LOADING ================= */
+
+.loading {
+  text-align: center;
+  margin-top: 4rem;
+  font-size: 1.2rem;
+  opacity: 0.8;
+}

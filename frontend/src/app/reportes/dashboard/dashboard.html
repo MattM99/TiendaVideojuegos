@@ -1,0 +1,189 @@
+
+@if (dashboard){
+    <div class="dashboard-container">
+
+  <h1 class="dashboard-title">
+     Dashboard de Reportes
+  </h1>
+
+  <!-- KPIs -->
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <span>Total Alquileres</span>
+      <h2>{{ dashboard.totalAlquileres }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Activos</span>
+      <h2>{{ dashboard.alquileresActivos }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Finalizan Mañana</span>
+      <h2>{{ dashboard.alquileresFinalizanManiana }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Mes Actual</span>
+      <h2>{{ dashboard.alquileresMesActual }}</h2>
+    </div>
+
+    <div class="stat-card money">
+      <span>Ingresos del Mes</span>
+      <h2>${{ dashboard.ingresosMes }}</h2>
+    </div>
+
+    <div class="stat-card money">
+      <span>Penalizaciones</span>
+      <h2>${{ dashboard.ingresosPenalizacionesMes }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Promedio por Alquiler</span>
+      <h2>${{ dashboard.promedioPorAlquiler }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <span>Videojuegos Alquilados</span>
+      <h2>{{ dashboard.videojuegosAlquilados }}</h2>
+    </div>
+
+  </div>
+
+  <!-- Rankings -->
+  <div class="rankings-grid">
+
+    <!-- Top Juegos -->
+    <div class="ranking-card">
+
+      <h2> Juegos Más Alquilados</h2>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Juego</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (juego of dashboard.juegosMasAlquilados; track juego.titulo) {
+            <tr>
+              <td>{{ juego.titulo }}</td>
+              <td>{{ juego.cantidad }}</td>
+            </tr>
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- Top Géneros -->
+    <div class="ranking-card">
+
+      <h2> Géneros Más Alquilados</h2>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Género</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (genero of dashboard.generosMasAlquilados; track genero.nombre) {
+            <tr>
+              <td>{{ genero.nombre }}</td>
+              <td>{{ genero.cantidad }}</td>
+            </tr>
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+    <!-- Top Plataformas -->
+    <div class="ranking-card">
+
+      <h2> Plataformas Más Alquiladas</h2>
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Plataforma</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (plataforma of dashboard.plataformasMasAlquiladas; track plataforma.nombre) {
+            <tr>
+              <td>{{ plataforma.nombre }}</td>
+              <td>{{ plataforma.cantidad }}</td>
+            </tr>
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <!-- Clientes -->
+  <div class="clientes-card">
+
+    <h2> Clientes Frecuentes</h2>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>DNI</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Alquileres</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        @for (cliente of dashboard.clientesFrecuentes; track cliente.dni) {
+
+          <tr>
+            <td>{{ cliente.dni }}</td>
+            <td>{{ cliente.nombre }}</td>
+            <td>{{ cliente.apellido }}</td>
+            <td>{{ cliente.total }}</td>
+          </tr>
+
+        }
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+} @else {
+
+<div class="loading">
+  Cargando dashboard...
+</div>
+
+}
