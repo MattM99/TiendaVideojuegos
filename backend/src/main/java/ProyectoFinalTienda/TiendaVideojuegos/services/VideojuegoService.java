@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.VideojuegoMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
@@ -146,14 +147,14 @@ public class VideojuegoService {
                 : videojuegoRepository.existsByTituloAndVideojuegoIdNot(titulo, idActual);
 
         if (existe) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Ya existe un videojuego con ese título.");
         }
     }
 
     private void validarLanzamiento(Year lanzamiento) {
         if (lanzamiento != null && lanzamiento.isAfter(Year.now())) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "El año de lanzamiento no puede ser futuro: " + lanzamiento);
         }
     }

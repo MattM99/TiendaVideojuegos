@@ -363,7 +363,7 @@ public class InventarioItemService {
                 );
 
         if (exists) {
-            throw new IllegalArgumentException(
+            throw new BusinessException(
                     "Ya existe un inventario para ese videojuego en la misma plataforma."
             );
         }
