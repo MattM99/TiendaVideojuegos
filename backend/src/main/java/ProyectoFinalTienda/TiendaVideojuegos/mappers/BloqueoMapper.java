@@ -26,7 +26,7 @@ public class BloqueoMapper {
 
         public BloqueoEntity toEntity(BloqueoCreateOrReplaceRequest dto) {
             return BloqueoEntity.builder()
-                    .persona(personaMapper.toEntity(personaService.buscarPorId(dto.getPersonaID())))
+                    .persona(personaMapper.toEntity(personaService.buscarPorDni(dto.getPersonaDNI())))
                     .fechaInicio(dto.getFecha_inicio())
                     .fechaFin(dto.getFecha_fin())
                     .motivo(dto.getMotivo())

@@ -32,12 +32,12 @@ public class BloqueoService {
     private PersonaMapper personaMapper;
 
     public BloqueoResponse crear(BloqueoCreateOrReplaceRequest request) {
-        if (bloqueoRepository.findVigenteByPersona(request.getPersonaID()).isPresent()) {
+        if (bloqueoRepository.findVigenteByPersona(request.getPersonaDNI()).isPresent()) {
             throw new BusinessException("La persona ya está en la lista negra.");
         }
-        // Buscar la persona relacionada al ID
-        PersonaEntity persona = personaRepository.findById(request.getPersonaID())
-                        .orElseThrow(() -> new PersonaNoEncontradaException("Persona no encontrada con ID: " + request.getPersonaID()));
+        // Buscar la persona relacionada al dni
+        PersonaEntity persona = personaRepository.findByDni(request.getPersonaDNI())
+                        .orElseThrow(() -> new PersonaNoEncontradaException("Persona no encontrada con DNI: " + request.getPersonaDNI()));
 
         // Convertir el DTO a entidad
         BloqueoEntity entity = request.toEntity(persona);
@@ -88,19 +88,20 @@ public class BloqueoService {
     }
 
     public List<BloqueoResponse> obtenerPersonasEnListaNegraVigente() {
-        List<BloqueoEntity> lista = bloqueoRepository.findPersonasEnListaNegraVigente();
-        if (lista.isEmpty()) {
-            throw new BusinessException("No se encontró ningún registro en la lista negra.");
-        }
+
+        List<BloqueoEntity> lista =
+                bloqueoRepository.findPersonasEnListaNegraVigente();
+
         return bloqueoMapper.toResponseList(lista);
+
     }
 
     /**
      * Verifica si una persona está en la lista negra actualmente.
      * Lanza BusinessException si está en lista negra.
      */
-    public void verificarNoEstaEnListaNegra(int personaId) {
-        Optional<BloqueoEntity> blacklist = bloqueoRepository.findVigenteByPersona(personaId);
+    public void verificarNoEstaEnListaNegra(String dni) {
+        Optional<BloqueoEntity> blacklist = bloqueoRepository.findVigenteByPersona(dni);
 
         if (blacklist.isPresent()) {
             throw new BusinessException("La persona está en lista negra. Motivo: "
