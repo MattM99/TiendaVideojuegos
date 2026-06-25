@@ -11,6 +11,7 @@ import { RoleGuard } from './auth/guards/role-guard';
 import { LoginGuard } from './auth/guards/login-guard';
 import { Wip } from './shared/wip/wip';
 import { NotFoundComponent } from './shared/not-found/not-found';
+import { BLOQUEO_ROUTES } from './bloqueo/bloqueo.routes';
 
 export const routes: Routes = [
   { path: 'login', component: Login, canActivate: [LoginGuard] },
@@ -31,6 +32,13 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['FOUNDER','ADMINISTRADOR', 'EMPLEADO'] },
     children: PERSONA_ROUTES,
+  },
+
+  {
+    path: 'bloqueos',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['FOUNDER', 'ADMINISTRADOR', 'EMPLEADO'] },
+    children: BLOQUEO_ROUTES,
   },
 
   {

@@ -1,0 +1,104 @@
+<h2>Lista negra</h2>
+
+<div class="top-actions">
+
+    <a
+        class="create-button"
+        routerLink="/bloqueos/nuevo">
+
+        Nuevo bloqueo
+
+    </a>
+
+    <a
+        class="back-button"
+        routerLink="/home">
+
+        Volver
+
+    </a>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Persona</th>
+<th>DNI</th>
+<th>Inicio</th>
+<th>Fin</th>
+<th>Motivo</th>
+
+<th>Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr *ngFor="let bloqueo of bloqueados()">
+
+<td>
+
+{{bloqueo.persona.nombre}}
+{{bloqueo.persona.apellido}}
+
+</td>
+
+<td>
+
+{{bloqueo.persona.dni}}
+
+</td>
+
+<td>
+
+{{bloqueo.fechaInicio}}
+
+</td>
+
+<td>
+
+<span
+class="indefinido"
+*ngIf="bloqueo.fechaFin=='Indefinido'">
+
+Indefinido
+
+</span>
+
+<span *ngIf="bloqueo.fechaFin!='Indefinido'">
+
+{{bloqueo.fechaFin}}
+
+</span>
+
+</td>
+
+<td class="motivo">
+
+{{bloqueo.motivo}}
+
+</td>
+
+<td>
+
+<button
+class="desbanear"
+(click)="desbanear(bloqueo.persona.dni)">
+
+Desbanear
+
+</button>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>

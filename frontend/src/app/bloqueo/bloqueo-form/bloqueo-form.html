@@ -1,0 +1,80 @@
+<div class="form-container">
+
+    <h2>Nuevo bloqueo</h2>
+
+    <div class="form-group">
+
+        <label>Persona</label>
+
+        <select
+            [ngModel]="bloqueo().personaDni"
+            (ngModelChange)="actualizarPersona($event)">
+
+            <option value="">Seleccione una persona</option>
+
+            <option
+                *ngFor="let persona of personas()"
+                [value]="persona.dni">
+
+                {{ persona.nombre }} {{ persona.apellido }}
+
+            </option>
+
+        </select>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Fecha de inicio</label>
+
+        <input
+            type="date"
+            [ngModel]="bloqueo().fechaInicio"
+            (ngModelChange)="actualizarFechaInicio($event)">
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Fecha de fin</label>
+
+        <input
+            type="date"
+            [ngModel]="bloqueo().fechaFin"
+            (ngModelChange)="actualizarFechaFin($event)">
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Motivo</label>
+
+        <textarea
+            [ngModel]="bloqueo().motivo"
+            (ngModelChange)="actualizarMotivo($event)">
+        </textarea>
+
+    </div>
+
+    <div class="buttons">
+
+        <button
+            class="cancel-btn"
+            (click)="router.navigate(['/bloqueos'])">
+
+            Cancelar
+
+        </button>
+
+        <button
+            class="save-btn"
+            (click)="guardar()">
+
+            Guardar
+
+        </button>
+
+    </div>
+
+</div>

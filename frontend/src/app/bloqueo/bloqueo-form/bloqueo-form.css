@@ -1,0 +1,145 @@
+.form-container{
+
+    width:90%;
+    max-width:700px;
+
+    margin:40px auto;
+
+    padding:30px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(28,37,48,.92),
+            rgba(20,28,36,.95)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.05);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.35);
+
+}
+
+
+h2{
+
+    text-align:center;
+
+    color:#f8fafc;
+
+    margin-bottom:30px;
+
+}
+
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    margin-bottom:18px;
+
+}
+
+
+label{
+
+    margin-bottom:8px;
+
+    color:#dbe4ec;
+
+}
+
+
+input,
+select,
+textarea{
+
+    background:#0f172a;
+
+    color:white;
+
+    border:1px solid #334155;
+
+    border-radius:8px;
+
+    padding:12px;
+
+    outline:none;
+
+    transition:.2s;
+
+}
+
+
+input:focus,
+select:focus,
+textarea:focus{
+
+    border-color:#3b82f6;
+
+    box-shadow:
+        0 0 0 3px rgba(59,130,246,.15);
+
+}
+
+
+textarea{
+
+    resize:vertical;
+
+    min-height:120px;
+
+}
+
+
+.buttons{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:15px;
+
+    margin-top:30px;
+
+}
+
+
+.save-btn{
+
+    background:#991b1b;
+
+    color:white;
+
+    border:1px solid #b91c1c;
+
+}
+
+
+.save-btn:hover{
+
+    background:#b91c1c;
+
+}
+
+
+.cancel-btn{
+
+    background:#1c2530;
+
+    color:white;
+
+}
+
+
+.cancel-btn:hover{
+
+    background:#2d3945;
+
+}
