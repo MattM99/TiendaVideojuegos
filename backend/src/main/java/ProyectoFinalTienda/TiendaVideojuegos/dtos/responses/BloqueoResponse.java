@@ -19,4 +19,6 @@ public class BloqueoResponse {
 
     private String motivo;
 
+    private boolean vigente;
+
 }

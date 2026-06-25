@@ -32,17 +32,22 @@ public class BloqueoMapper {
                     .build();
         }
 
-        public BloqueoResponse toResponse(BloqueoEntity entity, PersonaResponse personaResponse) {
+    public BloqueoResponse toResponse(BloqueoEntity entity, PersonaResponse personaResponse) {
 
+        boolean vigente =
+                !entity.getFechaInicio().isAfter(LocalDate.now()) &&
+                        (entity.getFechaFin() == null ||
+                                LocalDate.now().isBefore(entity.getFechaFin()));
 
-            return BloqueoResponse.builder()
-                    .bloqueoId(entity.getBloqueoId())
-                    .persona(personaResponse)
-                    .fechaInicio(entity.getFechaInicio().format(formatter))
-                    .fechaFin(fechaFinString(entity.getFechaFin()))
-                    .motivo(entity.getMotivo())
-                    .build();
-        }
+        return BloqueoResponse.builder()
+                .bloqueoId(entity.getBloqueoId())
+                .persona(personaResponse)
+                .fechaInicio(entity.getFechaInicio().format(formatter))
+                .fechaFin(fechaFinString(entity.getFechaFin()))
+                .motivo(entity.getMotivo())
+                .vigente(vigente)
+                .build();
+    }
 
         public String fechaFinString(LocalDate fecha) {
             return (fecha != null)
