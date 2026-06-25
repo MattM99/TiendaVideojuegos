@@ -11,7 +11,7 @@ public class BloqueoResponse {
 
     private int bloqueoId;
 
-    private PersonaResponse personaResponse;
+    private PersonaResponse persona;
 
     private String fechaInicio;
 

@@ -14,24 +14,15 @@ import java.time.LocalDate;
 @Builder
 public class BloqueoCreateOrReplaceRequest {
 
-    @NotNull(message = "El ID de la persona es obligatorio")
-    private Integer personaID;
+    @NotNull(message = "El DNI de la persona es obligatorio")
+    private String personaDni;
 
     @NotNull(message = "La fecha de inicio es obligatoria")
-    private LocalDate fecha_inicio;
+    private LocalDate fechaInicio;
 
-    private LocalDate fecha_fin; // Puede ser null para indicar bloqueo indefinido
+    private LocalDate fechaFin; // Puede ser null para indicar bloqueo indefinido
 
     @NotNull(message = "El motivo es obligatorio")
     private String motivo;
-
-    public BloqueoEntity toEntity(PersonaEntity persona) {
-        return BloqueoEntity.builder()
-                .persona(persona)
-                .fechaInicio(this.fecha_inicio)
-                .fechaFin(this.fecha_fin)
-                .motivo(this.motivo)
-                .build();
-    }
 
 }

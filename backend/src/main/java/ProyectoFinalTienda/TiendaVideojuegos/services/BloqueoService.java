@@ -34,23 +34,31 @@ public class BloqueoService {
     private PersonaMapper personaMapper;
 
     public BloqueoResponse crear(BloqueoCreateOrReplaceRequest request) {
-        if (bloqueoRepository.findVigenteByPersona(request.getPersonaID()).isPresent()) {
+
+        String dni = request.getPersonaDni();
+
+        if (dni == null) {
+            throw new BusinessException("DNI no puede ser null");
+        }
+
+        if (bloqueoRepository.findVigenteByPersona(dni).isPresent()) {
             throw new BusinessException("La persona ya está en la lista negra.");
         }
-        // Buscar la persona relacionada al ID
-        PersonaEntity persona = personaRepository.findById(request.getPersonaID())
-                        .orElseThrow(() -> new PersonaNoEncontradaException("Persona no encontrada con ID: " + request.getPersonaID()));
 
-        // Convertir el DTO a entidad
-        BloqueoEntity entity = request.toEntity(persona);
+        PersonaEntity persona = personaRepository.findByDni(dni)
+                .orElseThrow(() -> new PersonaNoEncontradaException(
+                        "Persona no encontrada con DNI: " + dni));
+
+        BloqueoEntity entity = bloqueoMapper.toEntity(request, persona);
+
         bloqueoRepository.save(entity);
 
-        // Guardar en base de datos
-        return bloqueoMapper.toResponse(entity, personaMapper.convertirEntidadADTO(persona));
+        return bloqueoMapper.toResponse(entity,
+                personaMapper.convertirEntidadADTO(persona));
     }
 
-    public BloqueoResponse desbanear(int personaId) {
-        Optional<BloqueoEntity> blackList = bloqueoRepository.findVigenteByPersona(personaId);
+    public BloqueoResponse desbanear(String dni) {
+        Optional<BloqueoEntity> blackList = bloqueoRepository.findVigenteByPersona(dni);
 
         if (blackList.isPresent()) {
             BloqueoEntity entity = blackList.get();
@@ -67,17 +75,11 @@ public class BloqueoService {
 
     public List<BloqueoResponse> obtenerHistorico(){
         List<BloqueoEntity> listaNegra = bloqueoRepository.findAll();
-        if (listaNegra.isEmpty()) {
-            throw new BusinessException("No se encontró ningún registro en la lista negra.");
-        }
         return bloqueoMapper.toResponseList(listaNegra);
     }
 
     public List<BloqueoResponse> obtenerPersonasEnListaNegraVigente() {
         List<BloqueoEntity> lista = bloqueoRepository.findPersonasEnListaNegraVigente();
-        if (lista.isEmpty()) {
-            throw new BusinessException("No se encontró ningún registro en la lista negra.");
-        }
         return bloqueoMapper.toResponseList(lista);
     }
 
@@ -85,8 +87,8 @@ public class BloqueoService {
      * Verifica si una persona está en la lista negra actualmente.
      * Lanza BusinessException si está en lista negra.
      */
-    public void verificarNoEstaEnListaNegra(int personaId) {
-        Optional<BloqueoEntity> blacklist = bloqueoRepository.findVigenteByPersona(personaId);
+    public void verificarNoEstaEnListaNegra(String dni) {
+        Optional<BloqueoEntity> blacklist = bloqueoRepository.findVigenteByPersona(dni);
 
         if (blacklist.isPresent()) {
             throw new BusinessException("La persona está en lista negra. Motivo: "
