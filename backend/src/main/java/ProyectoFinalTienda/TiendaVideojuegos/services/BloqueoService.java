@@ -27,8 +27,6 @@ public class BloqueoService {
     @Autowired
     private BloqueoMapper bloqueoMapper;
     @Autowired
-    private PersonaService personaService;
-    @Autowired
     private PersonaRepository personaRepository;
     @Autowired
     private PersonaMapper personaMapper;
