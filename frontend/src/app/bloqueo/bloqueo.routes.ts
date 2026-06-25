@@ -2,18 +2,23 @@ import { Routes } from '@angular/router';
 import { BloqueoListComponent } from './bloqueo-list/bloqueo-list';
 import { BloqueoFormComponent } from './bloqueo-form/bloqueo-form';
 import { BloqueoHistoricoComponent } from './bloqueo-historico/bloqueo-historico';
+import { BloqueoMenuComponent } from './bloqueo-menu/bloqueo-menu';
 
 export const BLOQUEO_ROUTES: Routes = [
   {
-    path: '',
-    component: BloqueoListComponent,
+      path: '',
+      component: BloqueoMenuComponent,
   },
   {
-    path:'historico',
-    component: BloqueoHistoricoComponent
+      path: 'vigentes',
+      component: BloqueoListComponent,
   },
   {
-    path: 'nuevo',
-    component: BloqueoFormComponent,
-  }
+      path: 'historico',
+      component: BloqueoHistoricoComponent,
+  },
+  {
+      path: 'nuevo',
+      component: BloqueoFormComponent,
+  },
 ];

@@ -4,7 +4,7 @@
 
     <a
         class="back-button"
-        routerLink="/home">
+        routerLink="/bloqueos">
 
         Volver
 
@@ -23,6 +23,7 @@
 <th>Inicio</th>
 <th>Fin</th>
 <th>Motivo</th>
+<th>Estado</th>
 
 </tr>
 
@@ -72,6 +73,26 @@ Indefinido
 <td class="motivo">
 
 {{bloqueo.motivo}}
+
+</td>
+
+<td>
+
+    <span
+        class="vigente"
+        *ngIf="bloqueo.vigente">
+
+        Vigente
+
+    </span>
+
+    <span
+        class="finalizado"
+        *ngIf="!bloqueo.vigente">
+
+        Finalizado
+
+    </span>
 
 </td>
 

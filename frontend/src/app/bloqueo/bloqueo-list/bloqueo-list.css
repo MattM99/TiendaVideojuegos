@@ -153,6 +153,16 @@ tbody td{
 
 }
 
+.vigente {
+    color: green;
+    font-weight: bold;
+}
+
+.finalizado {
+    color: crimson;
+    font-weight: bold;
+}
+
 
 /* BOTON DESBANEAR */
 

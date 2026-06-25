@@ -6,4 +6,5 @@ export interface BloqueoModel {
     fechaInicio: string;
     fechaFin: string;
     motivo: string;
+    vigente: boolean;
 }
