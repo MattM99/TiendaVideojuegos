@@ -20,6 +20,54 @@
 
 </div>
 
+<div class="filters">
+
+    <input
+        type="text"
+        placeholder="Buscar bloqueo..."
+        [value]="busqueda()"
+        (input)="busqueda.set($any($event.target).value)">
+
+    <select (change)="changeSort($event)">
+
+        <option value="fechaInicio">
+            Fecha inicio
+        </option>
+
+        <option value="fechaFin">
+            Fecha fin
+        </option>
+
+        <option value="motivo">
+            Motivo
+        </option>
+
+    </select>
+
+    <select (change)="changeDirection($event)">
+
+        <option value="desc">
+            Descendente
+        </option>
+
+        <option value="asc">
+            Ascendente
+        </option>
+
+    </select>
+
+    <select (change)="changeSize($event)">
+
+        <option value="5">5</option>
+
+        <option value="10">10</option>
+
+        <option value="20">20</option>
+
+    </select>
+
+</div>
+
 <table>
 
 <thead>
@@ -40,7 +88,7 @@
 
 <tbody>
 
-<tr *ngFor="let bloqueo of bloqueados()">
+<tr *ngFor="let bloqueo of bloqueadosFiltrados()">
 
 <td>
 
@@ -102,3 +150,40 @@ Desbanear
 </tbody>
 
 </table>
+
+<div class="pagination">
+
+    <button
+
+        (click)="previousPage()"
+
+        [disabled]="page()==0">
+
+        Anterior
+
+    </button>
+
+    @if(totalPages() === 0){
+
+    <span>Sin resultados</span>
+
+    }
+    @else{
+
+    <span>
+        Página {{ page()+1 }} de {{ totalPages() }}
+    </span>
+
+    }
+
+    <button
+
+        (click)="nextPage()"
+
+        [disabled]="page()>=totalPages()-1">
+
+        Siguiente
+
+    </button>
+
+</div>

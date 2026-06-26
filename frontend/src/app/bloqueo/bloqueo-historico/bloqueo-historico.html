@@ -12,92 +12,173 @@
 
 </div>
 
+<div class="filters">
+
+    <input
+        type="text"
+        placeholder="Buscar bloqueo..."
+        [value]="busqueda()"
+        (input)="busqueda.set($any($event.target).value)">
+
+    <select (change)="changeSort($event)">
+
+        <option value="fechaInicio">
+            Fecha inicio
+        </option>
+
+        <option value="fechaFin">
+            Fecha fin
+        </option>
+
+        <option value="motivo">
+            Motivo
+        </option>
+
+    </select>
+
+    <select (change)="changeDirection($event)">
+
+        <option value="desc">
+            Descendente
+        </option>
+
+        <option value="asc">
+            Ascendente
+        </option>
+
+    </select>
+
+    <select (change)="changeSize($event)">
+
+        <option value="5">5</option>
+
+        <option value="10">10</option>
+
+        <option value="20">20</option>
+
+    </select>
+
+</div>
+
 <table>
 
-<thead>
+    <thead>
 
-<tr>
+    <tr>
 
-<th>Persona</th>
-<th>DNI</th>
-<th>Inicio</th>
-<th>Fin</th>
-<th>Motivo</th>
-<th>Estado</th>
+    <th>Persona</th>
+    <th>DNI</th>
+    <th>Inicio</th>
+    <th>Fin</th>
+    <th>Motivo</th>
+    <th>Estado</th>
 
-</tr>
+    </tr>
 
-</thead>
+    </thead>
 
-<tbody>
+        <tbody>
 
-<tr *ngFor="let bloqueo of bloqueados()">
+        <tr *ngFor="let bloqueo of bloqueadosFiltrados()">
 
-<td>
+        <td>
 
-{{bloqueo.persona.nombre}}
-{{bloqueo.persona.apellido}}
+        {{bloqueo.persona.nombre}}
+        {{bloqueo.persona.apellido}}
 
-</td>
+        </td>
 
-<td>
+        <td>
 
-{{bloqueo.persona.dni}}
+        {{bloqueo.persona.dni}}
 
-</td>
+        </td>
 
-<td>
+        <td>
 
-{{bloqueo.fechaInicio}}
+        {{bloqueo.fechaInicio}}
 
-</td>
+        </td>
 
-<td>
+        <td>
 
-<span
-class="indefinido"
-*ngIf="bloqueo.fechaFin=='Indefinido'">
+        <span
+        class="indefinido"
+        *ngIf="bloqueo.fechaFin=='Indefinido'">
 
-Indefinido
+        Indefinido
 
-</span>
+        </span>
 
-<span *ngIf="bloqueo.fechaFin!='Indefinido'">
+        <span *ngIf="bloqueo.fechaFin!='Indefinido'">
 
-{{bloqueo.fechaFin}}
+        {{bloqueo.fechaFin}}
 
-</span>
+        </span>
 
-</td>
+        </td>
 
-<td class="motivo">
+        <td class="motivo">
 
-{{bloqueo.motivo}}
+        {{bloqueo.motivo}}
 
-</td>
+        </td>
 
-<td>
+        <td>
 
-    <span
-        class="vigente"
-        *ngIf="bloqueo.vigente">
+            <span
+                class="vigente"
+                *ngIf="bloqueo.vigente">
 
-        Vigente
+                Vigente
 
-    </span>
+            </span>
 
-    <span
-        class="finalizado"
-        *ngIf="!bloqueo.vigente">
+            <span
+                class="finalizado"
+                *ngIf="!bloqueo.vigente">
 
-        Finalizado
+                Finalizado
 
-    </span>
+            </span>
 
-</td>
+        </td>
 
-</tr>
+        </tr>
 
-</tbody>
+        </tbody>
 
 </table>
+
+    <div class="pagination">
+
+        <button
+            (click)="previousPage()"
+            [disabled]="page()==0">
+
+            Anterior
+
+        </button>
+
+        @if(totalPages() === 0){
+
+        <span>Sin resultados</span>
+
+        }
+        @else{
+
+        <span>
+            Página {{ page()+1 }} de {{ totalPages() }}
+        </span>
+
+        }
+
+        <button
+            (click)="nextPage()"
+            [disabled]="page()>=totalPages()-1">
+
+            Siguiente
+
+        </button>
+
+    </div>
