@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -41,13 +42,19 @@ public class BloqueoController {
 
     @GetMapping("/historico")
     public ResponseEntity<Page<BloqueoResponse>> obtenerHistorico(
-            @PageableDefault(
-                    size = 5,
-                    sort = "fechaInicio",
-                    direction = Sort.Direction.DESC
-            )
-            Pageable pageable
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "5") int tamano,
+            @RequestParam(defaultValue = "fechaInicio") String ordenarPor,
+            @RequestParam(defaultValue = "desc") String direccion
     ) {
+        Pageable pageable = PageRequest.of(
+                pagina,
+                tamano,
+                Sort.by(
+                        Sort.Direction.fromString(direccion),
+                        ordenarPor
+                )
+        );
         return ResponseEntity.ok(
                 bloqueoService.obtenerHistorico(pageable)
         );
@@ -55,13 +62,19 @@ public class BloqueoController {
 
     @GetMapping("/vigentes")
     public ResponseEntity<Page<BloqueoResponse>> obtenerVigentes(
-            @PageableDefault(
-                    size = 5,
-                    sort = "fechaInicio",
-                    direction = Sort.Direction.DESC
-            )
-            Pageable pageable
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "5") int tamano,
+            @RequestParam(defaultValue = "fechaInicio") String ordenarPor,
+            @RequestParam(defaultValue = "desc") String direccion
     ) {
+        Pageable pageable = PageRequest.of(
+                pagina,
+                tamano,
+                Sort.by(
+                        Sort.Direction.fromString(direccion),
+                        ordenarPor
+                )
+        );
         return ResponseEntity.ok(
                 bloqueoService.obtenerPersonasEnListaNegraVigente(pageable)
         );

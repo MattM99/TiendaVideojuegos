@@ -117,5 +117,4 @@ public class BloqueoService {
         return bloqueoMapper.toResponse(entity, personaResponse);
     }
 
-
 }
