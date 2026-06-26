@@ -2,79 +2,148 @@
 
     <h2>Nuevo bloqueo</h2>
 
-    <div class="form-group">
+    @if (errorMessage) {
+        <div class="error-box">
+            {{ errorMessage }}
+        </div>
+    }
 
-        <label>Persona</label>
+    <form
+        [formGroup]="form"
+        (ngSubmit)="guardar()">
 
-        <select
-            [ngModel]="bloqueo().personaDni"
-            (ngModelChange)="actualizarPersona($event)">
+        <!-- PERSONA -->
 
-            <option value="">Seleccione una persona</option>
+        <div class="form-group">
 
-            <option
-                *ngFor="let persona of personas()"
-                [value]="persona.dni">
+            <label>Persona</label>
 
-                {{ persona.nombre }} {{ persona.apellido }}
+            <select formControlName="personaDni">
 
-            </option>
+                <option value="">
+                    Seleccione una persona
+                </option>
 
-        </select>
+                <option
+                    *ngFor="let persona of personas()"
+                    [value]="persona.dni">
 
-    </div>
+                    {{ persona.apellido }}, {{ persona.nombre }}
 
-    <div class="form-group">
+                </option>
 
-        <label>Fecha de inicio</label>
+            </select>
 
-        <input
-            type="date"
-            [ngModel]="bloqueo().fechaInicio"
-            (ngModelChange)="actualizarFechaInicio($event)">
+            @if(
+                form.get('personaDni')?.invalid &&
+                form.get('personaDni')?.touched
+            ){
 
-    </div>
+                <small>
 
-    <div class="form-group">
+                    Debe seleccionar una persona.
 
-        <label>Fecha de fin</label>
+                </small>
 
-        <input
-            type="date"
-            [ngModel]="bloqueo().fechaFin"
-            (ngModelChange)="actualizarFechaFin($event)">
+            }
 
-    </div>
+        </div>
 
-    <div class="form-group">
 
-        <label>Motivo</label>
+        <!-- FECHA INICIO -->
 
-        <textarea
-            [ngModel]="bloqueo().motivo"
-            (ngModelChange)="actualizarMotivo($event)">
-        </textarea>
+        <div class="form-group">
 
-    </div>
+            <label>Fecha de inicio</label>
 
-    <div class="buttons">
+            <input
+                type="date"
+                formControlName="fechaInicio"
+                [max]="hoy">
 
-        <button
-            class="cancel-btn"
-            (click)="router.navigate(['/bloqueos'])">
+            @if(
+                form.get('fechaInicio')?.invalid &&
+                form.get('fechaInicio')?.touched
+            ){
 
-            Cancelar
+                <small>
 
-        </button>
+                    Debe ingresar una fecha de inicio.
 
-        <button
-            class="save-btn"
-            (click)="guardar()">
+                </small>
 
-            Guardar
+            }
 
-        </button>
+        </div>
 
-    </div>
+
+        <!-- FECHA FIN -->
+
+        <div class="form-group">
+            <input
+                type="date"
+                formControlName="fechaFin">
+            @if(form.errors?.['rangoInvalido']){
+                <small>
+                    La fecha de fin no puede ser anterior a la fecha de inicio.
+                </small>
+            }
+        </div>
+
+
+        <!-- MOTIVO -->
+
+        <div class="form-group">
+
+            <label>Motivo</label>
+
+            <textarea
+                formControlName="motivo">
+            </textarea>
+            <div class="char-counter">
+                {{ form.get('motivo')?.value?.length || 0 }}/255
+            </div>
+
+            @if(
+                form.get('motivo')?.invalid &&
+                form.get('motivo')?.touched
+            ){
+
+                <small>
+
+                    El motivo debe tener entre 5 y 255 caracteres.
+
+                </small>
+
+            }
+
+        </div>
+
+
+        <!-- BOTONES -->
+
+        <div class="buttons">
+
+            <button
+                type="button"
+                class="cancel-btn"
+                (click)="router.navigate(['/bloqueos'])">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="submit"
+                class="save-btn"
+                [disabled]="form.invalid">
+
+                Guardar
+
+            </button>
+
+        </div>
+
+    </form>
 
 </div>

@@ -1,5 +1,5 @@
 import { Component, inject, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import { Router } from "@angular/router";
 import { BloqueoService } from "../bloqueo.service";
 import { Persona } from "../../persona/persona";
@@ -7,15 +7,18 @@ import { BloqueoCreateRequest } from "../bloqueo-create-request";
 import { CommonModule } from "@angular/common";
 import { PersonaModel } from "../../persona/persona.model";
 import { map } from "rxjs/operators";
+import { fechaValida, noFechaFutura, noFechaPasada, rangoFechasValidas } from "../../shared/validators/date.validator/date.validator";
 
 @Component({
   selector: 'app-bloqueo-form',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './bloqueo-form.html',
   styleUrl: './bloqueo-form.css'
 })
 export class BloqueoFormComponent{
+
+    public errorMessage = '';
 
     private bloqueoService = inject(BloqueoService);
 
@@ -23,14 +26,22 @@ export class BloqueoFormComponent{
 
     router = inject(Router);
 
+    private fb = inject(FormBuilder);
+
     personas = signal<PersonaModel[]>([]);
 
-    bloqueo = signal<BloqueoCreateRequest>({
-        personaDni: '',
-        fechaInicio: '',
-        fechaFin: null,
-        motivo: ''
-    });
+    hoy = new Date().toLocaleDateString('en-CA');
+
+    form = this.fb.group({
+        personaDni: ['', Validators.required],
+        fechaInicio: ['', [Validators.required, noFechaFutura,fechaValida]],
+        fechaFin: ['', [fechaValida]],
+        motivo: ['', [ Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
+        },
+        {
+            validators: rangoFechasValidas
+        }
+    );
 
     ngOnInit() {
         this.personaService
@@ -42,57 +53,33 @@ export class BloqueoFormComponent{
                 next: (lista) => this.personas.set(lista),
                 error: (err) => console.error(err)
             });
-    }
-
-    actualizarPersona(dni: string) {
-        this.bloqueo.update(b => ({
-            ...b,
-            personaDni: dni
-        }));
-    }
-
-    actualizarFechaInicio(fecha: string) {
-
-        this.bloqueo.update((b) => ({
-            ...b,
-            fechaInicio: fecha,
-        }));
-
-    }
-
-    actualizarFechaFin(fecha: string) {
-
-        this.bloqueo.update((b) => ({
-            ...b,
-            fechaFin: fecha,
-        }));
-
-    }
-
-    actualizarMotivo(motivo: string) {
-
-        this.bloqueo.update((b) => ({
-            ...b,
-            motivo: motivo,
-        }));
-
+        this.form.valueChanges.subscribe(() => {
+            this.errorMessage = '';
+        });
     }
 
     guardar() {
-
-        const request = this.bloqueo();
-
-        console.log(request);
-
-        if (!request.personaDni) {
-            console.error("Debe seleccionar una persona");
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
             return;
         }
 
+        const request: BloqueoCreateRequest = {
+            personaDni: this.form.value.personaDni!,
+            fechaInicio: this.form.value.fechaInicio!,
+            fechaFin: this.form.value.fechaFin || undefined,
+            motivo: this.form.value.motivo!
+        };
+
         this.bloqueoService.crear(request).subscribe({
             next: () => this.router.navigate(['/bloqueos']),
-            error: err => console.error(err)
+            error: err => {this.errorMessage = this.mapError(err);}
         });
+    }
+
+    private mapError(err: any): string {
+        if (err.status === 400) { return err.error?.message || 'Solicitud inválida.';}
+        return err.error?.message || 'Error inesperado.';
     }
 
 }

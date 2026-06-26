@@ -55,6 +55,32 @@ label{
 
 }
 
+.error-box {
+
+    background: #ffe5e5;
+
+    color: #b00020;
+
+    padding: 10px 14px;
+
+    border-radius: 6px;
+
+    margin-bottom: 15px;
+
+    border: 1px solid #ffb3b3;
+
+}
+
+small{
+
+    color:#f87171;
+
+    font-size:.8rem;
+
+    margin-top:4px;
+
+}
+
 
 input,
 select,
@@ -95,51 +121,109 @@ textarea{
 
     min-height:120px;
 
-}
-
-
-.buttons{
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    gap:15px;
-
-    margin-top:30px;
+    font-family:inherit;
 
 }
 
+.char-counter{
 
-.save-btn{
+    text-align:right;
 
-    background:#991b1b;
+    font-size:.8rem;
 
-    color:white;
+    color:#94a3b8;
 
-    border:1px solid #b91c1c;
+    margin-top:4px;
 
 }
 
 
-.save-btn:hover{
+select{
 
-    background:#b91c1c;
+    cursor:pointer;
+
+}
+
+/* BOTONES */
+
+.buttons {
+
+  margin-top: 30px;
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 14px;
+
+  flex-wrap: wrap;
+}
+
+button {
+
+  padding: 10px 18px;
+
+  border-radius: 8px;
+
+  border: 1px solid #2d3945;
+
+  cursor: pointer;
+
+  font-size: 0.92rem;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+button:disabled{
+
+    opacity:.5;
+
+    cursor:not-allowed;
+
+    transform:none;
+
+    box-shadow:none;
 
 }
 
 
-.cancel-btn{
+/* GUARDAR */
 
-    background:#1c2530;
+.save-btn {
 
-    color:white;
+  background: #2563eb;
 
+  color: white;
+
+  border-color: #2563eb;
+}
+
+.save-btn:hover {
+
+  background: #1d4ed8;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 4px 12px rgba(37, 99, 235, 0.35);
 }
 
 
-.cancel-btn:hover{
+/* CANCELAR */
 
-    background:#2d3945;
+.cancel-btn {
 
+  background: #1c2530;
+
+  color: #dbe4ec;
+}
+
+.cancel-btn:hover {
+
+  background: #2d3945;
+
+  transform: translateY(-2px);
 }
