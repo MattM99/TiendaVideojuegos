@@ -13,6 +13,8 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.BloqueoRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -71,14 +73,24 @@ public class BloqueoService {
         }
     }
 
-    public List<BloqueoResponse> obtenerHistorico(){
-        List<BloqueoEntity> listaNegra = bloqueoRepository.findAll();
-        return bloqueoMapper.toResponseList(listaNegra);
+    public Page<BloqueoResponse> obtenerHistorico(Pageable pageable) {
+        return bloqueoRepository
+                .findAll(pageable)
+                .map(entity -> {
+                    PersonaResponse persona =
+                            personaMapper.convertirEntidadADTO(entity.getPersona());
+                    return bloqueoMapper.toResponse(entity, persona);
+                });
     }
 
-    public List<BloqueoResponse> obtenerPersonasEnListaNegraVigente() {
-        List<BloqueoEntity> lista = bloqueoRepository.findPersonasEnListaNegraVigente();
-        return bloqueoMapper.toResponseList(lista);
+    public Page<BloqueoResponse> obtenerPersonasEnListaNegraVigente(Pageable pageable) {
+        return bloqueoRepository
+                .findPersonasEnListaNegraVigente(pageable)
+                .map(entity -> {
+                    PersonaResponse persona =
+                            personaMapper.convertirEntidadADTO(entity.getPersona());
+                    return bloqueoMapper.toResponse(entity, persona);
+                });
     }
 
     /**

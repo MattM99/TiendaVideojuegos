@@ -1,6 +1,8 @@
 package ProyectoFinalTienda.TiendaVideojuegos.repositories;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.BloqueoEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -12,6 +14,11 @@ public interface BloqueoRepository extends JpaRepository<BloqueoEntity, Integer>
     @Query("SELECT b FROM BloqueoEntity b WHERE b.persona.dni = ?1 AND CURRENT_DATE >= b.fechaInicio AND (b.fechaFin IS NULL OR CURRENT_DATE < b.fechaFin)")
     Optional<BloqueoEntity> findVigenteByPersona(String personaDni);
 
-    @Query("SELECT b FROM BloqueoEntity b WHERE b.fechaInicio <= CURRENT_DATE AND (b.fechaFin IS NULL OR CURRENT_DATE < b.fechaFin)")
-    List<BloqueoEntity> findPersonasEnListaNegraVigente();
+    @Query("""
+        SELECT b
+        FROM BloqueoEntity b
+        WHERE b.fechaInicio <= CURRENT_DATE
+        AND (b.fechaFin IS NULL OR CURRENT_DATE < b.fechaFin)
+    """)
+    Page<BloqueoEntity> findPersonasEnListaNegraVigente(Pageable pageable);
 }

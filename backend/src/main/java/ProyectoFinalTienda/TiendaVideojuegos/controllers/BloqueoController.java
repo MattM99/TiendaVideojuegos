@@ -6,6 +6,10 @@ import ProyectoFinalTienda.TiendaVideojuegos.services.BloqueoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,17 +39,31 @@ public class BloqueoController {
         return ResponseEntity.ok(actualizado);
     }
 
-    @Operation(summary = "Obtener histórico de lista negra", description = "Devuelve el histórico completo de personas en la lista negra")
     @GetMapping("/historico")
-    public ResponseEntity<List<BloqueoResponse>> obtenerHistorico() {
-        List<BloqueoResponse> lista = bloqueoService.obtenerHistorico();
-        return ResponseEntity.ok(lista);
+    public ResponseEntity<Page<BloqueoResponse>> obtenerHistorico(
+            @PageableDefault(
+                    size = 5,
+                    sort = "fechaInicio",
+                    direction = Sort.Direction.DESC
+            )
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                bloqueoService.obtenerHistorico(pageable)
+        );
     }
 
-    @Operation(summary = "Obtener personas en lista negra vigente", description = "Devuelve las personas actualmente en la lista negra")
     @GetMapping("/vigentes")
-    public ResponseEntity<List<BloqueoResponse>> obtenerVigentes() {
-        List<BloqueoResponse> listaVigente = bloqueoService.obtenerPersonasEnListaNegraVigente();
-        return ResponseEntity.ok(listaVigente);
+    public ResponseEntity<Page<BloqueoResponse>> obtenerVigentes(
+            @PageableDefault(
+                    size = 5,
+                    sort = "fechaInicio",
+                    direction = Sort.Direction.DESC
+            )
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(
+                bloqueoService.obtenerPersonasEnListaNegraVigente(pageable)
+        );
     }
 }
