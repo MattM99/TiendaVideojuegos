@@ -18,6 +18,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PersonaService {
 
@@ -127,6 +129,5 @@ public class PersonaService {
         personaRepository.deleteByDni(dni)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con DNI: " + dni));
     }
-
 
 }
