@@ -44,7 +44,6 @@ public class BloqueoEntity {
     @Column(
             name = "fecha_fin"
     )
-    @FutureOrPresent(message = "La fecha de fin debe ser actual o futura")
     private LocalDate fechaFin;
 
     @Column(
