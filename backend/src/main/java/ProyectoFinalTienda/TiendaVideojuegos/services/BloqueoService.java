@@ -20,6 +20,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BloqueoService {
@@ -32,6 +34,8 @@ public class BloqueoService {
     private PersonaRepository personaRepository;
     @Autowired
     private PersonaMapper personaMapper;
+
+    /// Create
 
     public BloqueoResponse crear(BloqueoCreateOrReplaceRequest request) {
 
@@ -57,21 +61,7 @@ public class BloqueoService {
                 personaMapper.convertirEntidadADTO(persona));
     }
 
-    public BloqueoResponse desbanear(String dni) {
-        Optional<BloqueoEntity> blackList = bloqueoRepository.findVigenteByPersona(dni);
-
-        if (blackList.isPresent()) {
-            BloqueoEntity entity = blackList.get();
-            entity.setFechaFin(LocalDate.now());
-
-            PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
-            BloqueoEntity updatedEntity = bloqueoRepository.save(entity);
-
-            return bloqueoMapper.toResponse(updatedEntity, personaResponse);
-        } else {
-            throw new NoSuchElementException("La persona no está en lista negra.");
-        }
-    }
+    /// Read
 
     public Page<BloqueoResponse> obtenerHistorico(Pageable pageable) {
         return bloqueoRepository
@@ -93,6 +83,54 @@ public class BloqueoService {
                 });
     }
 
+    /// Update
+
+    public BloqueoResponse actualizarParcialmente(int id, BloqueoUpdateRequest dto) {
+        BloqueoEntity entity = bloqueoRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No se encontró entrada en lista negra con ID: " + id));
+
+        bloqueoMapper.actualizarEntity(entity, dto);
+        bloqueoRepository.save(entity);
+
+        PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
+        return bloqueoMapper.toResponse(entity, personaResponse);
+    }
+
+    public List<PersonaResponse> obtenerPersonasDisponiblesParaBloqueo() {
+
+        List<PersonaEntity> personas = personaRepository.findAll();
+
+        List<BloqueoEntity> bloqueosVigentes =
+                bloqueoRepository.findPersonasEnListaNegraVigente();
+
+        Set<String> dnisBloqueados = bloqueosVigentes.stream()
+                .map(b -> b.getPersona().getDni())
+                .collect(Collectors.toSet());
+
+        return personas.stream()
+                .filter(p -> !dnisBloqueados.contains(p.getDni()))
+                .map(personaMapper::convertirEntidadADTO)
+                .toList();
+    }
+
+    /// Delete
+
+    public BloqueoResponse desbanear(String dni) {
+        Optional<BloqueoEntity> blackList = bloqueoRepository.findVigenteByPersona(dni);
+
+        if (blackList.isPresent()) {
+            BloqueoEntity entity = blackList.get();
+            entity.setFechaFin(LocalDate.now());
+
+            PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
+            BloqueoEntity updatedEntity = bloqueoRepository.save(entity);
+
+            return bloqueoMapper.toResponse(updatedEntity, personaResponse);
+        } else {
+            throw new NoSuchElementException("La persona no está en lista negra.");
+        }
+    }
+
     /**
      * Verifica si una persona está en la lista negra actualmente.
      * Lanza BusinessException si está en lista negra.
@@ -104,17 +142,6 @@ public class BloqueoService {
             throw new BusinessException("La persona está en lista negra. Motivo: "
                     + blacklist.get().getMotivo());
         }
-    }
-
-    public BloqueoResponse actualizarParcialmente(int id, BloqueoUpdateRequest dto) {
-        BloqueoEntity entity = bloqueoRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("No se encontró entrada en lista negra con ID: " + id));
-
-        bloqueoMapper.actualizarEntity(entity, dto);
-        bloqueoRepository.save(entity);
-
-        PersonaResponse personaResponse = personaMapper.convertirEntidadADTO(entity.getPersona());
-        return bloqueoMapper.toResponse(entity, personaResponse);
     }
 
 }

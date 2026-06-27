@@ -2,6 +2,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.BloqueoCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.BloqueoResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.services.BloqueoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -79,4 +80,16 @@ public class BloqueoController {
                 bloqueoService.obtenerPersonasEnListaNegraVigente(pageable)
         );
     }
+
+    @Operation(
+            summary = "Obtener personas disponibles para bloqueo",
+            description = "Devuelve las personas que actualmente no poseen un bloqueo vigente"
+    )
+    @GetMapping("/personas-disponibles")
+    public ResponseEntity<List<PersonaResponse>> obtenerPersonasDisponiblesParaBloqueo() {
+        return ResponseEntity.ok(
+                bloqueoService.obtenerPersonasDisponiblesParaBloqueo()
+        );
+    }
+
 }

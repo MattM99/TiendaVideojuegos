@@ -21,4 +21,12 @@ public interface BloqueoRepository extends JpaRepository<BloqueoEntity, Integer>
         AND (b.fechaFin IS NULL OR CURRENT_DATE < b.fechaFin)
     """)
     Page<BloqueoEntity> findPersonasEnListaNegraVigente(Pageable pageable);
+
+    @Query("""
+        SELECT b
+        FROM BloqueoEntity b
+        WHERE b.fechaInicio <= CURRENT_DATE
+        AND (b.fechaFin IS NULL OR CURRENT_DATE < b.fechaFin)
+    """)
+    List<BloqueoEntity> findPersonasEnListaNegraVigente();
 }
