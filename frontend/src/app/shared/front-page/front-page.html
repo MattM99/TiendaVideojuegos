@@ -74,5 +74,22 @@
         <p>Informes y estadísticas del sistema.</p>
       </div>
     </div>
+
+    @if(botonSecreto) {
+ <a class="card secreto" routerLink="/secreto">
+
+      <div class="card-icon">
+        <img src="assets/icons/secreto.svg" class="icon">
+      </div>
+
+      <div class="card-content">
+        <h3>???</h3>
+        <p>Has descubierto un secreto.</p>
+      </div>
+
+    </a>
+}
   </section>
 </div>
+
+

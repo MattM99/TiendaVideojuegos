@@ -11,6 +11,8 @@ import { RoleGuard } from './auth/guards/role-guard';
 import { LoginGuard } from './auth/guards/login-guard';
 import { NotFoundComponent } from './shared/not-found/not-found';
 import { Dashboard } from './reportes/dashboard/dashboard';
+import { Secreto } from './shared/secreto/secreto';
+import { secretoGuard } from './shared/secreto/secreto-guard';
 
 export const routes: Routes = [
   { path: 'login', component: Login, canActivate: [LoginGuard] },
@@ -60,6 +62,8 @@ export const routes: Routes = [
    // canActivate: [AuthGuard, RoleGuard],
     //data: { roles: ['FOUNDER', 'ADMINISTRADOR'] },
   },
+
+  {path: 'secreto', component: Secreto, canActivate: [secretoGuard] },
 
 
 
