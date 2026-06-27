@@ -1,0 +1,84 @@
+<div class="reservas-container">
+
+  <div class="top-actions">
+    <button class="back-btn" (click)="volver()">
+      ← Volver
+    </button>
+  </div>
+
+  <h2>Lista de reservas</h2>
+
+  @if (inventarioItem()) {
+    <div class="inventory-header">
+      <h3>
+        {{ inventarioItem()?.videojuego?.titulo || 'Videojuego desconocido' }}
+      </h3>
+
+      <p>
+        Plataforma:
+        <strong>{{ inventarioItem()?.plataforma }}</strong>
+      </p>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="error-box">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (cargando()) {
+    <p class="loading">
+      Cargando reservas...
+    </p>
+  } @else if (reservas().length === 0) {
+    <p class="empty-message">
+      Este inventario no tiene reservas registradas.
+    </p>
+  } @else {
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>DNI</th>
+            <th>Fecha de reserva</th>
+            <th>Estado</th>
+            <th>Fecha de notificación</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (row of reservas(); track row.reserva.reservaId) {
+            <tr>
+              <td>{{ row.cliente }}</td>
+
+              <td>{{ row.reserva.personaDni }}</td>
+
+              <td>
+                {{ formatearFecha(row.reserva.fechaReserva) }}
+              </td>
+
+              <td>
+                <span class="estado" [class]="row.reserva.estadoReserva.toLowerCase()">
+                  {{ row.reserva.estadoReserva }}
+                </span>
+              </td>
+
+              <td>
+                {{ formatearFecha(row.reserva.fechaNotificacion) }}
+              </td>
+            </tr>
+          }
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</div>

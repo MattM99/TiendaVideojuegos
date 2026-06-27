@@ -11,6 +11,7 @@ import { RoleGuard } from './auth/guards/role-guard';
 import { LoginGuard } from './auth/guards/login-guard';
 import { Wip } from './shared/wip/wip';
 import { NotFoundComponent } from './shared/not-found/not-found';
+import { RESERVA_ROUTES } from './reserva/reserva.routes';
 
 export const routes: Routes = [
   { path: 'login', component: Login, canActivate: [LoginGuard] },
@@ -48,12 +49,28 @@ export const routes: Routes = [
   },
 
   {
+    path: 'reservas',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['FOUNDER', 'ADMINISTRADOR', 'EMPLEADO'] },
+    children: RESERVA_ROUTES,
+  },
+
+  {
     path: 'alquileres',
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['FOUNDER','ADMINISTRADOR', 'EMPLEADO'] },
     children: ALQUILER_ROUTES,
   },
 
+  {
+    path: 'reservas',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['FOUNDER', 'ADMINISTRADOR', 'EMPLEADO'] },
+    children: RESERVA_ROUTES,
+  },
+
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/404' },
+
+  
 ];

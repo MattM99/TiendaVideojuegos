@@ -157,6 +157,12 @@
           Editar
         </button>
 
+        @if (iwt.item.stockDisponible === 0) {
+          <button (click)="reservar(iwt.item.inventarioId)">
+            Reservar
+          </button>
+        }
+
         <button (click)="delete(iwt.item.inventarioId)">
           Eliminar
         </button>

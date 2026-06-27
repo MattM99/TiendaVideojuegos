@@ -1,1 +1,87 @@
-<p>reserva-form works!</p>
+<div class="form-container">
+
+  <h2>Registrar reserva</h2>
+
+  @if (errorMessage) {
+    <div class="error-box">
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="success-box">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (inventarioItem()) {
+    <div class="inventory-info">
+      <h3>
+        {{ inventarioItem()?.videojuego?.titulo || 'Videojuego' }}
+      </h3>
+
+      <p>
+        Plataforma:
+        <strong>{{ inventarioItem()?.plataforma }}</strong>
+      </p>
+
+      <p>
+        Stock disponible:
+        <strong>{{ inventarioItem()?.stockDisponible }}</strong>
+      </p>
+    </div>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+
+    <div class="form-group">
+
+      <label for="personaDni">
+        Cliente
+      </label>
+
+      <select
+        id="personaDni"
+        formControlName="personaDni"
+      >
+        <option value="">
+          Seleccionar cliente...
+        </option>
+
+        @for (p of personas(); track p.dni) {
+          <option [value]="p.dni">
+            {{ p.apellido }}, {{ p.nombre }} - DNI {{ p.dni }}
+          </option>
+        }
+      </select>
+
+      @if (form.get('personaDni')?.invalid && form.get('personaDni')?.touched) {
+        <small>
+          Debe seleccionar una persona.
+        </small>
+      }
+
+    </div>
+
+    <div class="buttons">
+
+      <button
+        type="button"
+        class="cancel-btn"
+        (click)="cancelar()"
+      >
+        Cancelar
+      </button>
+
+      <button
+        type="submit"
+        class="save-btn"
+      >
+        Registrar reserva
+      </button>
+
+    </div>
+
+  </form>
+
+</div>

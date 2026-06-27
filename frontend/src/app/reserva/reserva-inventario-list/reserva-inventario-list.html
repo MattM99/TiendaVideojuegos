@@ -1,0 +1,45 @@
+<p class="subtitle">
+  Seleccioná un videojuego y plataforma para visualizar su lista de reservas.
+</p>
+
+@if (cargando()) {
+  <p class="loading">
+    Cargando inventarios...
+  </p>
+} @else if (inventarios().length === 0) {
+  <p class="empty-message">
+    No hay inventarios registrados.
+  </p>
+} @else {
+
+  <div class="reservas-grid">
+
+    @for (item of inventarios(); track item.inventarioId) {
+
+      <div class="reserva-card">
+
+        <div class="reserva-info">
+          <h3>
+            {{ item.videojuego?.titulo || 'Videojuego desconocido' }}
+          </h3>
+
+          <p>
+            Plataforma:
+            <strong>{{ item.plataforma }}</strong>
+          </p>
+        </div>
+
+        <button
+          class="view-btn"
+          (click)="verReservas(item.inventarioId)"
+        >
+          Ver reservas
+        </button>
+
+      </div>
+
+    }
+
+  </div>
+
+}

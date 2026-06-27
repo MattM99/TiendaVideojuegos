@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { InventarioItemService } from '../inventario-item.service';
 import { InventarioItemModel } from '../inventario-item.model';
 import { forkJoin } from 'rxjs';
@@ -17,6 +17,7 @@ import { VideojuegoModel } from '../../videojuego/videojuego.model';
 export class InventarioItemListComponent implements OnInit {
   private service = inject(InventarioItemService);
   private videojuegoService = inject(VideojuegoService);
+  private router = inject(Router);
 
   inventarioItemsWithTitle = signal<{ item: InventarioItemModel; titulo: string }[]>([]);
   videojuegos = signal<VideojuegoModel[]>([]);
@@ -238,5 +239,11 @@ export class InventarioItemListComponent implements OnInit {
       next: () => this.loadInventario(),
       error: () => alert('Error al eliminar el item del inventario'),
     });
+  }
+
+  reservar(inventarioId?: number) {
+    if (!inventarioId) return;
+
+    this.router.navigate(['/reservas/nueva', inventarioId]);
   }
 }
