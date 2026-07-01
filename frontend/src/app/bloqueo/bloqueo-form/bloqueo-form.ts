@@ -28,12 +28,14 @@ export class BloqueoFormComponent{
 
     private fb = inject(FormBuilder);
 
-    personas = signal<PersonaModel[]>([]);
+    personaEncontrada = signal<PersonaModel | null>(null);
+    personaValida = signal<boolean | null>(null);
+    mensajePersona = signal<string | null>(null);
 
     hoy = new Date().toLocaleDateString('en-CA');
 
     form = this.fb.group({
-        personaDni: ['', Validators.required],
+        personaDni: ['', [Validators.required, Validators.pattern(/^\d{7,8}$/)]],
         fechaInicio: ['', [Validators.required, noFechaFutura,fechaValida]],
         fechaFin: ['', [fechaValida]],
         motivo: ['', [ Validators.required, Validators.minLength(5), Validators.maxLength(255)]],
@@ -44,18 +46,71 @@ export class BloqueoFormComponent{
     );
 
     ngOnInit() {
-        this.personaService
-            .getAll(0, 1000, 'apellido', 'asc')
-            .pipe(
-                map(response => response.content)
-            )
-            .subscribe({
-                next: (lista) => this.personas.set(lista),
-                error: (err) => console.error(err)
-            });
         this.form.valueChanges.subscribe(() => {
             this.errorMessage = '';
         });
+
+        this.form.get('personaDni')?.valueChanges.subscribe(() => {
+
+            this.personaEncontrada.set(null);
+            this.personaValida.set(null);
+            this.mensajePersona.set(null);
+
+
+            const control = this.form.get('personaDni');
+
+            if (control?.hasError('backend')) {
+
+                const errors = { ...control.errors };
+
+                delete errors['backend'];
+
+                control.setErrors(
+                    Object.keys(errors).length ? errors : null
+                );
+            }
+        });
+    }
+
+    buscarPersona() {
+
+        if (this.form.get('personaDni')?.invalid) {
+            this.form.get('personaDni')?.markAsTouched();
+            return;
+        }
+
+        const dni = this.form.value.personaDni;
+
+        if (!dni) {
+            return;
+        }
+
+        this.personaValida.set(null);
+        this.personaEncontrada.set(null);
+
+        this.bloqueoService.validarPersona(dni).subscribe({
+
+            next: persona => {
+
+                this.personaEncontrada.set(persona);
+                this.personaValida.set(true);
+                this.mensajePersona.set(null);
+
+            },
+
+            error: err => {
+
+                this.personaEncontrada.set(null);
+                this.personaValida.set(false);
+
+                this.mensajePersona.set(
+                    err.error?.message ?? 'No se encontró la persona.'
+                );
+
+            }
+
+        });
+
     }
 
     guardar() {
@@ -70,6 +125,10 @@ export class BloqueoFormComponent{
             fechaFin: this.form.value.fechaFin || undefined,
             motivo: this.form.value.motivo!
         };
+
+        if (this.personaValida() !== true) {
+            return;
+        }
 
         this.bloqueoService.crear(request).subscribe({
             next: () => this.router.navigate(['/bloqueos']),

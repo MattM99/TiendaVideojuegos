@@ -3,6 +3,7 @@ import { Injectable, inject } from "@angular/core";
 import { BloqueoCreateRequest } from "./bloqueo-create-request";
 import { BloqueoModel } from "./bloqueo.model";
 import { PageResponse } from '../models/page-response.model';
+import { PersonaModel } from "../persona/persona.model";
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +44,12 @@ export class BloqueoService {
         return this.http.put<BloqueoModel>(
             `${this.apiUrl}/desbanear/${dni}`,
             {}
+        );
+    }
+
+    validarPersona(dni: string) {
+        return this.http.get<PersonaModel>(
+            `${this.apiUrl}/validar/${dni}`
         );
     }
 

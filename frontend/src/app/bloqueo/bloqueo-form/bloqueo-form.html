@@ -16,32 +16,54 @@
 
         <div class="form-group">
 
-            <label>Persona</label>
+            <label>DNI de la persona</label>
 
-            <select formControlName="personaDni">
+            <div class="row">
 
-                <option value="">
-                    Seleccione una persona
-                </option>
+                <input
+                    type="text"
+                    formControlName="personaDni"
+                    placeholder="Ingrese DNI" />
 
-                <option
-                    *ngFor="let persona of personas()"
-                    [value]="persona.dni">
+                <button
+                    type="button"
+                    (click)="buscarPersona()">
 
-                    {{ persona.apellido }}, {{ persona.nombre }}
+                    Buscar
 
-                </option>
+                </button>
 
-            </select>
+            </div>
 
-            @if(
-                form.get('personaDni')?.invalid &&
-                form.get('personaDni')?.touched
-            ){
+            @if (personaValida() === true) {
 
-                <small>
+                <small class="success">
 
-                    Debe seleccionar una persona.
+                    Persona encontrada:
+                    {{ personaEncontrada()?.apellido }},
+                    {{ personaEncontrada()?.nombre }}
+
+                </small>
+
+            }
+
+            @if (form.get('personaDni')?.hasError('pattern')) {
+                <small class="error">
+                    El DNI debe contener únicamente números y tener entre 7 y 8 dígitos.
+                </small>
+            }
+
+            @if (mensajePersona()) {
+                <small class="error">
+                    {{ mensajePersona() }}
+                </small>
+            }
+
+            @if (personaValida() === null && form.get('personaDni')?.valid && form.get('personaDni')?.value) {
+
+                <small class="hint">
+
+                    Presione Buscar para validar la persona.
 
                 </small>
 
@@ -136,7 +158,7 @@
             <button
                 type="submit"
                 class="save-btn"
-                [disabled]="form.invalid">
+                [disabled]="form.invalid || personaValida() !== true">
 
                 Guardar
 
