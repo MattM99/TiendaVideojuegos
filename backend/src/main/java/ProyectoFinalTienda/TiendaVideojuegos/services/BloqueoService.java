@@ -39,13 +39,13 @@ public class BloqueoService {
 
     public BloqueoResponse crear(BloqueoCreateOrReplaceRequest request) {
 
-        verificarNoEstaEnListaNegra(request.getPersonaDni());
-
         PersonaEntity persona = personaRepository.findByDni(request.getPersonaDni())
                 .orElseThrow(() ->
                         new PersonaNoEncontradaException(
                                 "Persona no encontrada con DNI: "
                                         + request.getPersonaDni()));
+
+        verificarNoEstaEnListaNegra(persona.getDni());
 
         BloqueoEntity entity = bloqueoMapper.toEntity(request, persona);
 
@@ -129,6 +129,19 @@ public class BloqueoService {
     }
 
     /// Validaciones
+
+    public PersonaResponse validarPersonaParaBloqueo(String dni) {
+
+        PersonaEntity persona = personaRepository.findByDni(dni)
+                .orElseThrow(() ->
+                        new PersonaNoEncontradaException(
+                                "Persona no encontrada."
+                        ));
+
+        verificarNoEstaEnListaNegra(dni);
+
+        return personaMapper.convertirEntidadADTO(persona);
+    }
 
     public void verificarNoEstaEnListaNegra(String dni) {
 

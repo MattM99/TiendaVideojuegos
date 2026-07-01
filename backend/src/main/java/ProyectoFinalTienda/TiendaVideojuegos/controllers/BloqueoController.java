@@ -28,6 +28,15 @@ public class BloqueoController {
     @Autowired
     private BloqueoService bloqueoService;
 
+    @GetMapping("/validar/{dni}")
+    public ResponseEntity<PersonaResponse> validarPersona(
+            @PathVariable String dni) {
+
+        return ResponseEntity.ok(
+                bloqueoService.validarPersonaParaBloqueo(dni)
+        );
+    }
+
     @Operation(
             summary = "Crear un nuevo registro en la lista negra",
             description = "Permite crear una nueva entrada en la lista negra"
