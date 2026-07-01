@@ -20,7 +20,7 @@ public class BloqueoCreateOrReplaceRequest {
     @NotNull(message = "La fecha de inicio es obligatoria")
     private LocalDate fechaInicio;
 
-    private LocalDate fechaFin; // Puede ser null para indicar bloqueo indefinido
+    private LocalDate fechaFin; // Puede ser null para indicar bloqueo x tiempo indefinido
 
     @NotNull(message = "El motivo es obligatorio")
     private String motivo;

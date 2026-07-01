@@ -6,6 +6,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.services.BloqueoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,11 +28,16 @@ public class BloqueoController {
     @Autowired
     private BloqueoService bloqueoService;
 
-    @Operation(summary = "Crear un nuevo registro en la lista negra", description = "Permite crear una nueva entrada en la lista negra")
+    @Operation(
+            summary = "Crear un nuevo registro en la lista negra",
+            description = "Permite crear una nueva entrada en la lista negra"
+    )
     @PostMapping("/crear")
-    public ResponseEntity<BloqueoResponse> crear(@RequestBody BloqueoCreateOrReplaceRequest request) {
-        BloqueoResponse creada = bloqueoService.crear(request);
-        return ResponseEntity.ok(creada);
+    public ResponseEntity<BloqueoResponse> crear(
+            @Valid @RequestBody BloqueoCreateOrReplaceRequest request) {
+        return ResponseEntity.ok(
+                bloqueoService.crear(request)
+        );
     }
 
     @Operation(summary = "Desbanear a una persona", description = "Permite desbanear a una persona de la lista negra")
