@@ -148,7 +148,7 @@ public class BloqueoService {
         return persona;
     }
 
-    private void verificarNoEstaEnListaNegra(String dni) {
+    public void verificarNoEstaEnListaNegra(String dni) {
 
         Optional<BloqueoEntity> bloqueo = buscarBloqueoVigente(dni);
 
