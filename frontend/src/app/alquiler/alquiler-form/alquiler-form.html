@@ -101,13 +101,23 @@
       <input type="number" min="1" formControlName="cantidad" />
 
       @if (detalle.get('cantidad')?.touched && detalle.get('cantidad')?.hasError('min')) {
-      <small class="error">Cantidad mínima: 1</small>
+        <small class="error">Cantidad mínima: 1</small>
       }
 
       @if (detalle.get('cantidad')?.touched && detalle.get('cantidad')?.hasError('stockInsuficiente')) {
-      <small class="error">
-        El stock disponible es de: {{ obtenerStockDisponible($index) }}
-      </small>
+        <div class="stock-error-box">
+          <small class="error">
+            El stock disponible es de: {{ obtenerStockDisponible($index) }}
+          </small>
+
+          <button
+            type="button"
+            class="btn-reservar"
+            (click)="reservarDetalle($index)"
+          >
+            Reservar
+          </button>
+        </div>
       }
 
       <!-- ELIMINAR -->

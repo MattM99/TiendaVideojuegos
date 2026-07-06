@@ -28,14 +28,21 @@ export class ReservaForm implements OnInit {
 
   inventarioId!: number;
 
-  personas = signal<PersonaModel[]>([]);
+  personaValida = signal<boolean | null>(null);
+  personaEncontrada = signal<PersonaModel | null>(null);
   inventarioItem = signal<InventarioItemModel | null>(null);
 
   errorMessage = '';
   successMessage = '';
 
   form = this.fb.group({
-    personaDni: ['', [Validators.required]],
+    personaDni: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/^\d{7,8}$/)
+      ]
+    ],
   });
 
   ngOnInit(): void {
@@ -49,7 +56,13 @@ export class ReservaForm implements OnInit {
     this.inventarioId = Number(idParam);
 
     this.cargarInventario();
-    this.cargarPersonas();
+
+    this.form.get('personaDni')?.valueChanges.subscribe(() => {
+      this.personaValida.set(null);
+      this.personaEncontrada.set(null);
+      this.errorMessage = '';
+      this.successMessage = '';
+    });
   }
 
   cargarInventario(): void {
@@ -64,14 +77,31 @@ export class ReservaForm implements OnInit {
     });
   }
 
-  cargarPersonas(): void {
-    this.personaService.getAll(0, 100, 'apellido', 'asc').subscribe({
-      next: (response) => {
-        this.personas.set(response.content);
+  buscarPersona(): void {
+    const dniControl = this.form.get('personaDni');
+    const dni = dniControl?.value;
+
+    this.personaEncontrada.set(null);
+    this.personaValida.set(null);
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    if (!dni || dniControl?.invalid) {
+      dniControl?.markAsTouched();
+      return;
+    }
+
+    this.personaService.obtenerPersona(dni).subscribe({
+      next: (persona) => {
+        this.personaEncontrada.set(persona);
+        this.personaValida.set(true);
+        dniControl?.setErrors(null);
       },
-      error: (err) => {
-        console.error('Error cargando personas', err);
-        this.errorMessage = 'No se pudieron cargar las personas.';
+      error: () => {
+        this.personaValida.set(false);
+        dniControl?.setErrors({
+          notFound: true
+        });
       }
     });
   }
@@ -80,7 +110,7 @@ export class ReservaForm implements OnInit {
     this.errorMessage = '';
     this.successMessage = '';
 
-    if (this.form.invalid) {
+    if (this.form.invalid || this.personaValida() !== true) {
       this.form.markAllAsTouched();
       return;
     }
@@ -88,6 +118,7 @@ export class ReservaForm implements OnInit {
     const request: ReservaRequest = {
       personaDni: this.form.value.personaDni!
     };
+
     this.reservaService.crearReserva(this.inventarioId, request).subscribe({
       next: () => {
         this.successMessage = 'Reserva registrada correctamente.';

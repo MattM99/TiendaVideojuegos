@@ -111,7 +111,7 @@ export class ReservaList implements OnInit {
   }
 
   volver(): void {
-    this.router.navigate(['/reservas']);
+    this.router.navigate(['/inventario']);
   }
 
   formatearFecha(fecha?: string | null): string {

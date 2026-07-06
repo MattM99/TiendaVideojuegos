@@ -1,6 +1,6 @@
-<div class="form-container">
+<form [formGroup]="form" (ngSubmit)="guardar()" class="reserva-form">
 
-  <h2>Registrar reserva</h2>
+  <h2 class="title">Registrar reserva</h2>
 
   @if (errorMessage) {
     <div class="error-box">
@@ -32,56 +32,77 @@
     </div>
   }
 
-  <form [formGroup]="form" (ngSubmit)="guardar()">
+  <hr />
 
-    <div class="form-group">
+  <div class="form-group">
+    <label>DNI de la persona</label>
 
-      <label for="personaDni">
-        Cliente
-      </label>
-
-      <select
-        id="personaDni"
+    <div class="row">
+      <input
+        type="text"
         formControlName="personaDni"
-      >
-        <option value="">
-          Seleccionar cliente...
-        </option>
+        placeholder="Ingrese DNI"
+        [class.invalid]="form.get('personaDni')?.invalid && form.get('personaDni')?.touched"
+      />
 
-        @for (p of personas(); track p.dni) {
-          <option [value]="p.dni">
-            {{ p.apellido }}, {{ p.nombre }} - DNI {{ p.dni }}
-          </option>
-        }
-      </select>
-
-      @if (form.get('personaDni')?.invalid && form.get('personaDni')?.touched) {
-        <small>
-          Debe seleccionar una persona.
-        </small>
-      }
-
+      <button type="button" (click)="buscarPersona()">
+        Buscar
+      </button>
     </div>
 
-    <div class="buttons">
+    @if (form.get('personaDni')?.touched && form.get('personaDni')?.hasError('required')) {
+      <small class="error">
+        El DNI es obligatorio
+      </small>
+    }
 
-      <button
-        type="button"
-        class="cancel-btn"
-        (click)="cancelar()"
-      >
-        Cancelar
-      </button>
+    @if (form.get('personaDni')?.touched && form.get('personaDni')?.hasError('pattern')) {
+      <small class="error">
+        El DNI debe tener entre 7 y 8 números
+      </small>
+    }
 
-      <button
-        type="submit"
-        class="save-btn"
-      >
-        Registrar reserva
-      </button>
+    @if (personaValida() === true) {
+      <div class="persona-info">
+        <strong class="success">
+          Persona encontrada:
+          {{ personaEncontrada()?.nombre }}
+          {{ personaEncontrada()?.apellido }}
+        </strong>
+      </div>
+    }
 
-    </div>
+    @if (form.get('personaDni')?.hasError('notFound')) {
+      <small class="error">
+        No se encontró a la persona
+      </small>
+    }
 
-  </form>
+    @if (personaValida() === null && form.get('personaDni')?.value) {
+      <small class="hint">
+        Presione buscar para validar
+      </small>
+    }
+  </div>
 
-</div>
+  <hr />
+
+  <div class="actions">
+    <button
+      type="submit"
+      class="btn-primary"
+      [disabled]="form.invalid || personaValida() !== true"
+    >
+      Registrar reserva
+    </button>
+
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="cancelar()"
+    >
+      Cancelar
+    </button>
+  </div>
+
+</form>

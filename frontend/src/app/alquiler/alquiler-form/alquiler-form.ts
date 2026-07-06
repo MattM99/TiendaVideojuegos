@@ -104,6 +104,14 @@ export class AlquilerForm implements OnInit {
     return item?.stockDisponible ?? 0;
   }
 
+  reservarDetalle(index: number): void {
+    const inventarioId = this.detalles.at(index).get('inventarioItemId')?.value;
+
+    if (!inventarioId) return;
+
+    this.router.navigate(['/reservas/nueva', inventarioId]);
+  }
+
   buscarPersona(): void {
     const dni = this.form.get('personaDni')?.value;
 

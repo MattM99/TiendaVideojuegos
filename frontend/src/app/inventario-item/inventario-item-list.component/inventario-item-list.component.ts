@@ -246,4 +246,10 @@ export class InventarioItemListComponent implements OnInit {
 
     this.router.navigate(['/reservas/nueva', inventarioId]);
   }
+
+  verReservas(inventarioId?: number) {
+    if (!inventarioId) return;
+
+    this.router.navigate(['/reservas/inventario', inventarioId]);
+  }
 }
