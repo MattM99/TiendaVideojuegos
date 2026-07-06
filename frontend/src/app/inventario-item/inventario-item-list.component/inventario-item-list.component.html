@@ -70,103 +70,94 @@
 
     @if (tipoBusqueda() === 'videojuego') {
 
-      <select [value]="videojuegoIdBusqueda()" (change)="changeVideojuegoBusqueda($event)">
-        <option value="0">Seleccionar videojuego...</option>
+    <select [value]="videojuegoIdBusqueda()" (change)="changeVideojuegoBusqueda($event)">
+      <option value="0">Seleccionar videojuego...</option>
 
-        @for (v of videojuegos(); track v.videojuegoId) {
-          <option [value]="v.videojuegoId">
-            {{ v.titulo }}
-          </option>
-        }
-      </select>
+      @for (v of videojuegos(); track v.videojuegoId) {
+      <option [value]="v.videojuegoId">
+        {{ v.titulo }}
+      </option>
+      }
+    </select>
 
     } @else if (tipoBusqueda() === 'plataforma') {
+
+    <select [value]="plataformaBusqueda()" (change)="changePlataformaBusqueda($event)">
+      <option value="">Seleccionar plataforma...</option>
+
+      @for (p of plataformas; track p) {
+      <option [value]="p">
+        {{ p }}
+      </option>
+      }
+    </select>
+
+    } @else if (tipoBusqueda() === 'precio') {
+
+    <input type="number" placeholder="Precio menor a..." [value]="precioBusqueda()"
+      (input)="changePrecioBusqueda($event)" />
+
+    } @else if (tipoBusqueda() === 'plataformaPrecio') {
+
+    <div class="double-filter">
 
       <select [value]="plataformaBusqueda()" (change)="changePlataformaBusqueda($event)">
         <option value="">Seleccionar plataforma...</option>
 
         @for (p of plataformas; track p) {
-          <option [value]="p">
-            {{ p }}
-          </option>
+        <option [value]="p">
+          {{ p }}
+        </option>
         }
       </select>
 
-    } @else if (tipoBusqueda() === 'precio') {
-
-      <input
-        type="number"
-        placeholder="Precio menor a..."
-        [value]="precioBusqueda()"
-        (input)="changePrecioBusqueda($event)"
-      />
-
-    } @else if (tipoBusqueda() === 'plataformaPrecio') {
-
-      <div class="double-filter">
-
-        <select [value]="plataformaBusqueda()" (change)="changePlataformaBusqueda($event)">
-          <option value="">Seleccionar plataforma...</option>
-
-          @for (p of plataformas; track p) {
-            <option [value]="p">
-              {{ p }}
-            </option>
-          }
-        </select>
-
-        <input
-          type="number"
-          placeholder="Precio menor a..."
-          [value]="precioBusqueda()"
-          (input)="changePrecioBusqueda($event)"
-        />
-
-      </div>
-
+      <input type="number" placeholder="Precio menor a..." [value]="precioBusqueda()"
+        (input)="changePrecioBusqueda($event)" />
+    </div>
     }
 
   </div>
 
 </div>
-
+@if (sinResultados()) {
+<div class="no-results">
+  No se encontraron ítems del inventario.
+</div>
+} @else {
 <ul>
   @for (iwt of inventarioItemsWithTitle(); track iwt.item.inventarioId) {
 
-    <li>
-
-      <span class="title">
-
-        <b>{{ iwt.titulo }} - {{ iwt.item.plataforma }}</b>
-
-        <span>
-          Precio diario: {{ iwt.item.precioDiario }} •
-          Stock total: {{ iwt.item.stockTotal }} •
-          Stock disponible: {{ iwt.item.stockDisponible }}
-        </span>
-
+  <li>
+    <span class="title">
+      <b>{{ iwt.titulo }} - {{ iwt.item.plataforma }}</b>
+      <span>
+        Precio diario: {{ iwt.item.precioDiario }} •
+        Stock total: {{ iwt.item.stockTotal }} •
+        Stock disponible: {{ iwt.item.stockDisponible }}
       </span>
+    </span>
 
-      <span class="actions">
+    <span class="actions">
 
-        <button [routerLink]="['/inventario', iwt.item.inventarioId]">
-          Ver
-        </button>
+      <button [routerLink]="['/inventario', iwt.item.inventarioId]">
+        Ver
+      </button>
 
-        <button [routerLink]="['/inventario/edit', iwt.item.inventarioId]">
-          Editar
-        </button>
+      <button [routerLink]="['/inventario/edit', iwt.item.inventarioId]">
+        Editar
+      </button>
 
-        <button (click)="delete(iwt.item.inventarioId)">
-          Eliminar
-        </button>
+      <button (click)="delete(iwt.item.inventarioId)">
+        Eliminar
+      </button>
 
-      </span>
+    </span>
 
-    </li>
+  </li>
 
   }
 </ul>
+}
 
 <div class="pagination">
 

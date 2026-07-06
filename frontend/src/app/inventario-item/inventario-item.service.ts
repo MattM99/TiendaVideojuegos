@@ -21,14 +21,12 @@ export class InventarioItemService {
   private baseUrl = 'http://localhost:8080/api/inventario';
   private videojuegoService = inject(VideojuegoService);
 
-  // Para componentes que necesitan lista simple
   getAll(): Observable<InventarioItemModel[]> {
     return this.http
       .get<{ content: InventarioItemModel[] }>(`${this.baseUrl}/listar`)
       .pipe(map(response => response.content));
   }
 
-  // Para listado con paginación
   getPage(
     pagina: number,
     tamano: number,

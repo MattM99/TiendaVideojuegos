@@ -34,7 +34,7 @@ label {
     display: flex;
     width: 100%;
     gap: 0;
-    margin-bottom: 10px;   /* ← MISMO ESPACIADO QUE UN INPUT */
+    margin-bottom: 10px;
 }
 
 
@@ -77,10 +77,9 @@ select option {
     border: 1px solid #2d3945;
     background: #1c2530;
     cursor: pointer;
-    transition: 0.2s ease; /* transición suave */
+    transition: 0.2s ease;
 }
 
-/* SIEMPRE verde */
 .multiplayer-toggle button.true-btn {
     background: #1b4d2b !important;
     border-color: #2e8b57 !important;
@@ -93,7 +92,6 @@ select option {
     color: #ffe0e0 !important;
 }
 
-/* Se ve presionado/activo */
 .multiplayer-toggle button.active {
     transform: scale(1.04);
     box-shadow:
@@ -102,14 +100,11 @@ select option {
     border-width: 2px;
 }
 
-
-
-
 /* ===== Contenedor de botones abajo ===== */
 .form-buttons {
     margin-top: 10px;
     display: flex;
-    justify-content: space-between; /* ← Volver izquierda, Guardar derecha */
+    justify-content: space-between;
     align-items: center;
 }
 

@@ -3,7 +3,6 @@ import { InventarioItemService } from '../inventario-item.service';
 import { VideojuegoService } from '../../videojuego/videojuego.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { InventarioItemModel } from '../inventario-item.model';
 
 @Component({
   selector: 'app-inventario-item-form',
@@ -24,16 +23,20 @@ export class InventarioItemFormComponent {
 
   videojuegos = signal<{ id: number; titulo: string }[]>([]);
 
+  precioError = signal('');
+  stockTotalError = signal('');
+  stockDisponibleError = signal('');
+
   plataformas = [
-  'SEGA',
-  'FAMILY',
-  'PS1',
-  'PS2',
-  'PS3',
-  'PS4',
-  'PS5',
-  'XBOX',
-  'SWITCH'
+    'SEGA',
+    'FAMILY',
+    'PS1',
+    'PS2',
+    'PS3',
+    'PS4',
+    'PS5',
+    'XBOX',
+    'SWITCH'
   ];
 
   item = signal({
@@ -53,7 +56,11 @@ export class InventarioItemFormComponent {
       v.precioDiario > 0 &&
       v.stockTotal >= 0 &&
       v.stockDisponible >= 0 &&
-      v.stockDisponible <= v.stockTotal
+      v.stockDisponible <= v.stockTotal &&
+      this.precioError() === '' &&
+      this.stockTotalError() === '' &&
+      this.stockDisponibleError() === ''
+
     );
   });
 
@@ -98,20 +105,57 @@ export class InventarioItemFormComponent {
   }
 
   updatePrecio(value: number | string) {
-    this.item.update((v) => ({ ...v, precioDiario: Number(value) }));
+    const numero = Number(value);
+    if (isNaN(numero) || numero <= 0) {
+      this.precioError.set('El precio debe ser un número positivo');
+      return;
+    }
+    if (numero > 99999) {
+      this.precioError.set('El precio no puede ser mayor a 99999');
+      return;
+    }
+    this.precioError.set('');
+
+    this.item.update((v) => ({ ...v, precioDiario: numero }));
   }
 
   updateStockTotal(value: number | string) {
-    this.item.update((v) => ({ ...v, stockTotal: Number(value) }));
+    const numero = Number(value);
+
+    if (isNaN(numero) || numero < 0) {
+      this.stockTotalError.set('El stock debe ser positivo');
+      return;
+    }
+
+    if (numero > 999) {
+      this.stockTotalError.set('El stock no puede exceder 999');
+      return;
+    }
+
+    this.stockTotalError.set('');
+    this.item.update((v) => ({ ...v, stockTotal: numero }));
   }
 
   updateStockDisponible(value: number | string) {
-    this.item.update((v) => ({ ...v, stockDisponible: Number(value) }));
+    const numero = Number(value);
+
+    if (isNaN(numero) || numero < 0) {
+      this.stockDisponibleError.set('El stock debe ser positivo');
+      return;
+    }
+
+    if (numero > 999) {
+      this.stockDisponibleError.set('El stock no puede exceder 999');
+      return;
+    }
+
+    this.stockDisponibleError.set('');
+    this.item.update((v) => ({ ...v, stockDisponible: numero }));
   }
 
   guardar() {
     if (!this.canSave()) {
-      alert('Revisá los datos del inventario');
+      alert('Revise los datos del inventario');
       return;
     }
 

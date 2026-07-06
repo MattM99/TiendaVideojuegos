@@ -33,6 +33,7 @@ export class InventarioItemListComponent implements OnInit {
   videojuegoIdBusqueda = signal(0);
   plataformaBusqueda = signal('');
   precioBusqueda = signal('');
+  sinResultados = signal(false);
 
   plataformas = [
     'SEGA',
@@ -121,10 +122,17 @@ export class InventarioItemListComponent implements OnInit {
         this.inventarioItemsWithTitle.set(combined);
         this.totalPages.set(response.totalPages);
         this.totalElements.set(response.totalElements);
+        this.sinResultados.set(response.content.length === 0);
       },
       error: (err) => {
-        console.error('Error cargando inventario', err);
-        alert('Error al cargar inventario');
+         if (err.status === 404) {
+    this.inventarioItemsWithTitle.set([]);
+    this.totalPages.set(0);
+    this.totalElements.set(0);
+    this.sinResultados.set(true);
+  } else {
+    console.error(err);
+  }
       },
     });
   }

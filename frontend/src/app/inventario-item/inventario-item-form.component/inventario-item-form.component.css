@@ -43,6 +43,7 @@ select {
   font-size: 0.95rem;
   color: #e0e6ed;
   width: 100%;
+
   outline: none;
 }
 
@@ -95,4 +96,14 @@ button.cancel:hover {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
+}
+.error {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.input-error {
+  border: 1px solid #ff6b6b;
+  outline: none;
 }

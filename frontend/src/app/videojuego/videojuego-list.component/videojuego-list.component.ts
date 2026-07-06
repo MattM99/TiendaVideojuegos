@@ -27,6 +27,8 @@ export class VideojuegoListComponent implements OnInit {
   busqueda = signal('');
   tipoBusqueda = signal('titulo');
 
+  sinResultados = signal(false);
+
   generos = [
     'ACCION',
     'AVENTURA',
@@ -99,10 +101,17 @@ export class VideojuegoListComponent implements OnInit {
         this.videojuegos.set(response.content);
         this.totalPages.set(response.totalPages);
         this.totalElements.set(response.totalElements);
+        this.sinResultados.set(response.content.length === 0);
       },
       error: (err) => {
-        console.error(err);
-        alert('Error al cargar videojuegos');
+        if (err.status === 404) {
+          this.videojuegos.set([]);
+          this.totalPages.set(0);
+          this.totalElements.set(0);
+          this.sinResultados.set(true);
+        } else {
+          console.error(err);
+        }
       }
     });
   }
@@ -170,7 +179,7 @@ export class VideojuegoListComponent implements OnInit {
   delete(id?: number) {
     if (!id) return;
 
-    if (!confirm('¿Seguro que querés eliminar este videojuego?')) return;
+    if (!confirm('¿Seguro que desea eliminar este videojuego?')) return;
 
     this.service.delete(id).subscribe({
       next: () => this.loadVideojuegos(),

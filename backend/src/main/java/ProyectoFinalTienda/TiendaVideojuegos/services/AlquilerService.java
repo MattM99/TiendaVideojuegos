@@ -113,20 +113,6 @@ public class AlquilerService {
         alquiler.agregarDetalle(detalle);
     }
 
-//    @Transactional
-//    public AlquilerResponse crearDetalle(Integer alquilerId, DetalleAlquilerRequest request) {
-//
-//        AlquilerEntity alquiler = alquilerRepository.findById(alquilerId)
-//                .orElseThrow(() -> new AlquilerNoEncontradoException(
-//                        "Alquiler con id: " + alquilerId + " no encontrado."
-//                ));
-//
-//        construirDetalle(request, alquiler);
-//
-//        alquiler.calcularMontoDiario();
-//
-//        return alquilerMapper.toResponse(alquilerRepository.save(alquiler));
-//    }
 
     public void eliminar(int id){
         if (!alquilerRepository.existsById(id)) {

@@ -53,11 +53,12 @@ export class VideojuegoFormComponent {
 
   // ---- VALIDACIONES POR CAMPO ----
   tituloError = computed(() => {
-      if (!this.tituloTouched()) return null;   // <--- AGREGAR ESTO
+      if (!this.tituloTouched()) return null;
 
     const v = this.videojuego().titulo.trim();
     if (v === '') return 'El título es obligatorio';
     if (v.length < 2) return 'El título debe tener al menos 2 caracteres';
+    if (v.length > 100) return 'El título debe tener como máximo 100 caracteres';
     return null;
   });
 
@@ -66,7 +67,8 @@ export class VideojuegoFormComponent {
 
     const v = this.videojuego().descripcion.trim();
     if (v === '') return 'La descripción es obligatoria';
-    if (v.length < 10) return 'Debe tener mínimo 10 caracteres';
+    if (v.length < 10) return 'La descripción debe tener mínimo 10 caracteres';
+    if (v.length > 255) return 'La descripción debe tener como máximo 255 caracteres';
     return null;
   });
 
@@ -138,9 +140,7 @@ export class VideojuegoFormComponent {
   updateLanzamiento(value: number) { this.videojuego.update(v => ({ ...v, lanzamiento: value })); }
 
   save() {
-  console.log('CLICK GUARDAR');
-  console.log('canSave:', this.canSave());
-  console.log('data:', this.videojuego());
+
 
   if (!this.canSave()) {
     alert('Faltan datos o hay campos inválidos');

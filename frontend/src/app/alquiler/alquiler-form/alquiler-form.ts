@@ -9,7 +9,6 @@ import { InventarioItemService } from '../../inventario-item/inventario-item.ser
 import { InventarioItemModel } from '../../inventario-item/inventario-item.model';
 import { fechaValida, noFechaFutura, rangoFechasValidas } from '../../shared/validators/date.validator/date.validator';
 import { CrearAlquilerRequest } from '../alquiler-request.model';
-import { stockValidator } from '../../shared/validators/stockValidator';
 
 @Component({
   selector: 'app-alquiler-form',
