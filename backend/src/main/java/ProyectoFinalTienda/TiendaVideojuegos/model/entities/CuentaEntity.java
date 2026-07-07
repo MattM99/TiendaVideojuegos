@@ -45,7 +45,7 @@ public class CuentaEntity implements UserDetails {
             length = 15
     )
     @NotBlank(message = "El nickname es obligatorio")
-    @Size(min = 3, max = 50, message = "El nickname debe tener entre 3 y 50 caracteres")
+    @Size(min = 4, max = 15, message = "El nickname debe tener entre 4 y 15 caracteres")
     private String nickname;
 
     @Column(

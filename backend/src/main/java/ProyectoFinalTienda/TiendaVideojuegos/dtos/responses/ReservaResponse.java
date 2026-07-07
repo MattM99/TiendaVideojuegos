@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 public class ReservaResponse {
 
     private Integer reservaId;
-    private Integer personaId;
+    private String personaDni;
     private Integer inventarioItemId;
     private EstadoReserva estadoReserva;
     private LocalDateTime fechaReserva;
     private LocalDateTime fechaNotificacion;
+
 }

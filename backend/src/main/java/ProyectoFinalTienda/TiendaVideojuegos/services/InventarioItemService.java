@@ -279,13 +279,13 @@ public class InventarioItemService {
             ReservaRequest request
     ) {
 
-        PersonaEntity persona = personaRepository.findById(
-                        request.getPersonaId()
+        PersonaEntity persona = personaRepository.findByDni(
+                        request.getPersonaDni()
                 )
                 .orElseThrow(() ->
                         new PersonaNoEncontradaException(
-                                "Persona no encontrada con id: "
-                                        + request.getPersonaId()
+                                "Persona no encontrada con DNI: "
+                                        + request.getPersonaDni()
                         ));
 
         InventarioItemEntity inventario = obtenerInventarioPorId(inventarioId);
@@ -298,10 +298,8 @@ public class InventarioItemService {
 
         boolean yaReservo = inventario.getListaDeEspera().stream()
                 .anyMatch(r ->
-                        r.getPersona().getPersonaId()
-                                == persona.getPersonaId()
-                                && r.getEstadoReserva()
-                                == EstadoReserva.PENDIENTE
+                        r.getPersona().getDni().equals(persona.getDni())
+                                && r.getEstadoReserva() == EstadoReserva.PENDIENTE
                 );
 
         if (yaReservo) {

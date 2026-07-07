@@ -13,7 +13,7 @@ public class ReservaMapper {
 
         return ReservaResponse.builder()
                 .reservaId(entity.getReservaId())
-                .personaId(entity.getPersona().getPersonaId())
+                .personaDni(entity.getPersona().getDni())
                 .inventarioItemId(
                         entity.getInventarioItem().getInventarioItemId()
                 )
