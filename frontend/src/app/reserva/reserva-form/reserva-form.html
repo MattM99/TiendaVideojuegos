@@ -2,15 +2,15 @@
 
   <h2 class="title">Registrar reserva</h2>
 
-  @if (errorMessage) {
+  @if (errorMessage()) {
     <div class="error-box">
-      {{ errorMessage }}
+      {{ errorMessage() }}
     </div>
   }
 
-  @if (successMessage) {
+  @if (successMessage()) {
     <div class="success-box">
-      {{ successMessage }}
+      {{ successMessage() }}
     </div>
   }
 
@@ -86,6 +86,12 @@
   </div>
 
   <hr />
+
+  @if (submitErrorMessage()) {
+    <div class="submit-error-box">
+      {{ submitErrorMessage() }}
+    </div>
+  }
 
   <div class="actions">
     <button

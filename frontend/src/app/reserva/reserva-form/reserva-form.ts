@@ -32,8 +32,9 @@ export class ReservaForm implements OnInit {
   personaEncontrada = signal<PersonaModel | null>(null);
   inventarioItem = signal<InventarioItemModel | null>(null);
 
-  errorMessage = '';
-  successMessage = '';
+  errorMessage = signal('');
+  successMessage = signal('');
+  submitErrorMessage = signal('');
 
   form = this.fb.group({
     personaDni: [
@@ -49,7 +50,7 @@ export class ReservaForm implements OnInit {
     const idParam = this.route.snapshot.paramMap.get('inventarioId');
 
     if (!idParam) {
-      this.errorMessage = 'No se encontró el inventario para reservar.';
+      this.errorMessage.set('No se encontró el inventario para reservar.');
       return;
     }
 
@@ -60,8 +61,9 @@ export class ReservaForm implements OnInit {
     this.form.get('personaDni')?.valueChanges.subscribe(() => {
       this.personaValida.set(null);
       this.personaEncontrada.set(null);
-      this.errorMessage = '';
-      this.successMessage = '';
+      this.errorMessage.set('');
+      this.successMessage.set('');
+      this.submitErrorMessage.set('');
     });
   }
 
@@ -72,7 +74,7 @@ export class ReservaForm implements OnInit {
       },
       error: (err) => {
         console.error('Error cargando inventario', err);
-        this.errorMessage = 'No se pudo cargar el item de inventario.';
+        this.errorMessage.set('No se pudo cargar el item de inventario.');
       }
     });
   }
@@ -83,8 +85,9 @@ export class ReservaForm implements OnInit {
 
     this.personaEncontrada.set(null);
     this.personaValida.set(null);
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.errorMessage.set('');
+    this.successMessage.set('');
+    this.submitErrorMessage.set('');
 
     if (!dni || dniControl?.invalid) {
       dniControl?.markAsTouched();
@@ -106,9 +109,38 @@ export class ReservaForm implements OnInit {
     });
   }
 
+  private obtenerMensajeError(err: any): string {
+    if (typeof err.error === 'string') {
+      return err.error;
+    }
+
+    if (err.error?.message) {
+      return err.error.message;
+    }
+
+    if (err.error?.mensaje) {
+      return err.error.mensaje;
+    }
+
+    if (err.error?.error) {
+      return err.error.error;
+    }
+
+    if (err.error?.text) {
+      return err.error.text;
+    }
+
+    if (err.message) {
+      return err.message;
+    }
+
+    return 'No se pudo registrar la reserva.';
+  }
+
   guardar(): void {
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.errorMessage.set('');
+    this.successMessage.set('');
+    this.submitErrorMessage.set('');
 
     if (this.form.invalid || this.personaValida() !== true) {
       this.form.markAllAsTouched();
@@ -121,7 +153,7 @@ export class ReservaForm implements OnInit {
 
     this.reservaService.crearReserva(this.inventarioId, request).subscribe({
       next: () => {
-        this.successMessage = 'Reserva registrada correctamente.';
+        this.successMessage.set('Reserva registrada correctamente.');
 
         setTimeout(() => {
           this.router.navigate(['/inventario']);
@@ -130,11 +162,9 @@ export class ReservaForm implements OnInit {
       error: (err) => {
         console.error('Error creando reserva', err);
 
-        this.errorMessage =
-          err.error?.message ||
-          err.error?.mensaje ||
-          err.error ||
-          'No se pudo registrar la reserva.';
+        const mensaje = this.obtenerMensajeError(err);
+
+        this.submitErrorMessage.set(mensaje);
       }
     });
   }
