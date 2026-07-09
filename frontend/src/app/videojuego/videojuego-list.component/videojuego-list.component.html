@@ -66,22 +66,17 @@
 
     @if (tipoBusqueda() === 'genero') {
 
-      <select [value]="busqueda()" (change)="changeBusqueda($event)">
-        <option value="">Buscar por género...</option>
+    <select [value]="busqueda()" (change)="changeBusqueda($event)">
+      <option value="">Buscar por género...</option>
 
-        @for (g of generos; track g) {
-          <option [value]="g">{{ g }}</option>
-        }
-      </select>
+      @for (g of generos; track g) {
+      <option [value]="g">{{ g }}</option>
+      }
+    </select>
 
     } @else {
 
-      <input
-        type="text"
-        placeholder="Buscar videojuego..."
-        [value]="busqueda()"
-        (input)="changeBusqueda($event)"
-      />
+    <input type="text" placeholder="Buscar videojuego..." [value]="busqueda()" (input)="changeBusqueda($event)" />
 
     }
 
@@ -89,31 +84,38 @@
 
 </div>
 
+
 <ul>
+
+  @if (sinResultados()) {
+  <div class="no-results">
+    No se encontraron videojuegos.
+  </div>
+  }
   @for (v of videojuegos(); track v.videojuegoId) {
-    <li>
-      <span class="title">
-        <b>{{ v.titulo }}</b>
+  <li>
+    <span class="title">
+      <b>{{ v.titulo }}</b>
 
-        <span>
-          {{ v.genero }} • {{ v.desarrollador }} • {{ v.lanzamiento }}
-        </span>
+      <span>
+        {{ v.genero }} • {{ v.desarrollador }} • {{ v.lanzamiento }}
       </span>
+    </span>
 
-      <span class="actions">
-        <button [routerLink]="['/videojuegos', v.videojuegoId]">
-          Ver
-        </button>
+    <span class="actions">
+      <button [routerLink]="['/videojuegos', v.videojuegoId]">
+        Ver
+      </button>
 
-        <button [routerLink]="['/videojuegos/edit', v.videojuegoId]">
-          Editar
-        </button>
+      <button [routerLink]="['/videojuegos/edit', v.videojuegoId]">
+        Editar
+      </button>
 
-        <button (click)="delete(v.videojuegoId)">
-          Eliminar
-        </button>
-      </span>
-    </li>
+      <button (click)="delete(v.videojuegoId)">
+        Eliminar
+      </button>
+    </span>
+  </li>
   }
 </ul>
 
@@ -132,7 +134,3 @@
   </button>
 
 </div>
-
-
-
-

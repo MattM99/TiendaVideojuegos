@@ -7,33 +7,45 @@
     <option value="">-- Seleccionar --</option>
 
     @for (vg of videojuegos(); track vg.id) {
-    <option [value]="vg.id">{{ vg.titulo }}</option>
+    <option [value]="vg.id">{{ vg.titulo.length > 50 ? vg.titulo.slice(0, 50) + '...' : vg.titulo }}</option>
     }
   </select>
 
   <label>Plataforma</label>
-  <select
-    [ngModel]="item().plataforma"
-    (ngModelChange)="updatePlataforma($event)"
-  >
+  <select [ngModel]="item().plataforma" (ngModelChange)="updatePlataforma($event)">
     <option value="">Seleccione una plataforma</option>
 
     @for (p of plataformas; track p) {
-      <option [value]="p">{{ p }}</option>
+    <option [value]="p">{{ p }}</option>
     }
   </select>
 
   <label>Precio Diario</label>
   <input type="number" [ngModel]="item().precioDiario" (ngModelChange)="updatePrecio($event)" />
+  @if (precioError(); as error) {
+  <div class="error">
+    {{ error }}
+  </div>
+  }
 
   <label>Stock Total</label>
+
   <input type="number" [ngModel]="item().stockTotal" (ngModelChange)="updateStockTotal($event)" />
+ @if (stockTotalError(); as error) {
+  <div class="error">{{ error }}</div>
+}
+
 
   <label>Stock Disponible</label>
   <input type="number" [ngModel]="item().stockDisponible" (ngModelChange)="updateStockDisponible($event)" />
+ @if (stockDisponibleError(); as error) {
+  <div class="error">{{ error }}</div>
+}
+
 
   <div class="actions">
-    <button [disabled]="!canSave()" (click)="guardar()">Guardar</button>
+
     <button class="cancel" (click)="cancelar()">Cancelar</button>
+    <button [disabled]="!canSave()" (click)="guardar()">Guardar</button>
   </div>
 </div>

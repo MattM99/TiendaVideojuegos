@@ -6,6 +6,7 @@ h2 {
   margin: 20px 0;
   text-align: center;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+
 }
 
 /* Contenedor superior: volver + crear */
@@ -187,11 +188,9 @@ ul {
 
 li {
   background:
-    linear-gradient(
-      135deg,
+    linear-gradient(135deg,
       rgba(28, 37, 48, 0.88),
-      rgba(20, 28, 36, 0.92)
-    );
+      rgba(20, 28, 36, 0.92));
 
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-left: 4px solid #4c84ff;
@@ -223,6 +222,18 @@ li:hover {
     0 0 12px rgba(76, 132, 255, 0.08);
 }
 
+.no-results {
+  width: 100%;
+  margin: 30px 0;
+  padding: 18px 24px;
+  text-align: center;
+
+  color: #e0e6ed;
+  font-size: 1.1rem;
+  font-weight: 500;
+
+}
+
 /* Texto principal */
 .title {
   display: flex;
@@ -230,6 +241,7 @@ li:hover {
   gap: 4px;
 
   font-size: 0.95rem;
+  overflow-wrap: anywhere;
 }
 
 .title b {

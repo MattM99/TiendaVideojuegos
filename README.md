@@ -1,47 +1,123 @@
-# GameHub -- Sistema de Gestión de Alquiler de Videojuegos
+# GameHub Rentals -- Sistema de Gestión de Alquiler de Videojuegos
 
-GameHub es un sistema interno diseñado para optimizar y digitalizar la
-gestión de alquileres en una tienda de videojuegos. Permite administrar
-clientes, empleados, videojuegos, alquileres y reservas, ofreciendo una
-solución centralizada y eficiente.
+![Java](https://img.shields.io/badge/Java-21-red) ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-green) ![Angular](https://img.shields.io/badge/Angular-20-red) ![License](https://img.shields.io/badge/license-Educational-blue)
 
-## Características Principales
+## Índice
 
-### Funcionalidades Implementadas
+- [Descripción](#descripción)
+- [Características](#características)
+- [Funcionalidades](#funcionalidades)
+- [Arquitectura](#arquitectura)
+- [Tecnologías](#tecnologías)
+- [Objetivo del sistema](#objetivo-del-sistema)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [API REST](#api-rest)
+- [Requisitos](#requisitos)
+- [Instalación](#instalación)
+- [Credenciales iniciales](#credenciales-iniciales)
+- [Autores](#autores)
+- [Licencia](#licencia)
 
--   Registro y administración de clientes.
--   Alta, baja y modificación de empleados.
--   Gestión de roles (Founder, Administrador, Empleado).
--   Protección de la cuenta Founder.
--   Registro de alquileres y videojuegos.
--   Control de stock.
--   Seguridad por credenciales y validación de acciones.
--   Registro básico de eventos para auditoría.
+## Descripción
+GameHub Rentals es una aplicación web desarrollada para administrar una tienda de alquiler de videojuegos. Permite gestionar clientes, usuarios del sisteama, videojuegos, alquileres, reservas y pagos siguiendo una arquitectura cliente-servidor basada en una API REST desarrollada con Spring Boot y un frontend en Angular.
+Este proyecto fue desarrollado como Trabajo Final Integrador de la carrera de Técnico Universitario en Programación. El objetivo fue aplicar principios de arquitectura cliente-servidor, desarrollo de APIs REST, autenticación con JWT, gestión de bases de datos relacionales y desarrollo de interfaces modernas con Angular.
 
-### Funcionalidades Pendientes
+## Características
 
--   Registro de devoluciones.
--   Penalizaciones por demora o mal estado.
--   Historial de alquileres por cliente.
--   Facturación e impresión de comprobantes.
--   Lista negra y restricciones automáticas.
--   Sistema de reservas completo con notificaciones.
--   Métodos de pago adicionales.
+✔ Autenticación JWT
 
-## Arquitectura del Proyecto
+✔ Control de stock en tiempo real
+
+✔ Gestión de reservas
+
+✔ Reportes administrativos
+
+✔ Penalizaciones automáticas
+
+✔ Arquitectura REST
+
+✔ Roles y permisos
+
+## Funcionalidades
+
+### Videojuegos
+
+- Alta
+- Baja
+- Modificación
+- Control de stock
+- Versiones por consola
+
+### Alquileres
+
+- Registro
+- Devolución
+- Penalizaciones
+- Historial
+
+### Clientes
+
+- Alta
+- Baja
+- Modificación
+- Bloqueo de clientes con penalizaciones.
+
+### Usuarios
+- Alta
+- Baja
+- Modificación
+- Filtros por roles
+
+### Reservas
+
+- Registro
+- Cancelación
+- Notificaciones
+- Control de disponibilidad
+
+### Reportes
+
+- Historial de alquileres
+- Alquileres activos
+- Alquileres proximos a vencer
+- Alquileres realizados durante el mes
+- Ingresos mensuales
+- Ingresos por penalizaciones
+- Promedio de ingresos por alquiler
+- Videojuegos alquilados
+- Videojuegos más alquilados
+- Géneros más alquilados
+- Plataformas más alquiladas
+- Clientes con mayor actividad
+
+
+## Arquitectura
+```mermaid
+flowchart LR
+    Angular --> SpringBoot
+    SpringBoot --> MySQL
+```
+
+
+## Tecnologías
 
 ### Backend
 
--   Java
--   Spring Boot (API REST)
--   JSON Server (simulación de backend para esta entrega)
+- Java 21
+- Spring Boot 3
+- Spring Security
+- Spring Data JPA
+- Hibernate
+- MySQL
 
 ### Frontend
 
--   Angular
--   TypeScript
--   HTML5 / CSS3
--   Angular CLI
+- Angular 20
+- TypeScript
+- RxJS
+- Signals
+- HTML
+- CSS
 
 ### Herramientas
 
@@ -59,30 +135,85 @@ solución centralizada y eficiente.
 -   Base sólida para ampliaciones futuras.
 
 ## Estructura del Proyecto
+```text
 
-/gamehub\
-├── backend/\
-├── frontend/\
+gamehub/
+├── backend/
+│   ├── auth
+│   ├── config
+│   ├── controllers
+│   ├── model
+│   ├── repositories
+│   └── services
+├── frontend/
+│   ├── alquiler
+│   ├── cuenta
+│   ├── persona
+│   ├── reportes
+│   ├── shared
+│   └── videojuego
 └── README.md
+```
 
-## Cómo Ejecutarlo
+## API REST
 
-### 1. Clonar el repositorio
+La aplicación expone una API REST desarrollada con Spring Boot.
 
-git clone https://github.com/MattM99/TiendaVideojuegos.git
+Principales recursos:
+
+- /api/videojuegos
+- /api/alquileres
+- /api/personas
+- /api/cuentas
+- /api/reservas
+- /api/reportes
+
+## Requisitos
+
+- Java 21
+- Node.js 22+
+- Angular CLI
+- Maven
+- MySQL
+
+## Instalación
+### Backend
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+### Frontend
+
+```bash
 cd frontend
+npm install
+ng serve
+```
 
-### 2. Iniciar JSON Server
+### Base de datos
 
-json-server --watch db.json --port 3000
+Configurar application.properties
 
-### 3. Iniciar el Frontend
+## Credenciales iniciales
 
-npm install\
-ng serve -o
+Al iniciar la aplicación se crea automáticamente un usuario con permisos de administrador.
+
+| Usuario | Contraseña | Rol |
+|----------|------------|-----|
+| founder | admin123 | FOUNDER |
+
+> El usuario FOUNDER no puede ser eliminado ni modificado.
+
+
 
 ## Autores
 
 -   Matías Mendoza
 -   Kevin Pedro Falcón
 -   Nicolás Pettinelli
+
+## Licencia
+
+Proyecto desarrollado con fines educativos.

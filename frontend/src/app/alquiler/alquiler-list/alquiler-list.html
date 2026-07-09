@@ -1,20 +1,43 @@
 <h2>Alquileres</h2>
 
-<div class="top-actions">
-  <button class="back-btn" routerLink="/home">Volver</button>
-  <button class="create-button" (click)="nuevo()">Nuevo alquiler</button>
+<div class="controls">
+
+  <input
+    type="text"
+    placeholder="Buscar una persona..."
+    [value]="busqueda()"
+    (input)="busqueda.set($any($event.target).value)"
+  />
+
+  <label>
+  <input
+    type="checkbox"
+    [checked]="mostrarFinalizados()"
+    (change)="mostrarFinalizados.set($any($event.target).checked)"
+  />
+  Mostrar alquileres finalizados
+</label>
+
+  <select (change)="changeSize($event)">
+    <option [selected]="size() === 5" value="5">5</option>
+    <option [selected]="size() === 10" value="10">10</option>
+    <option [selected]="size() === 20" value="20">20</option>
+  </select>
+
+  <select (change)="changeDirection($event)">
+    <option [selected]="direction() === 'desc'" value="desc">Desc</option>
+    <option [selected]="direction() === 'asc'" value="asc">Asc</option>
+  </select>
+
+  <button (click)="nuevo()">Nuevo alquiler</button>
+
 </div>
 
-@if (cargando()) {
-  <p>Cargando alquileres...</p>
-} @else if (alquileres().length === 0) {
-  <p>No hay alquileres registrados.</p>
-} @else {
+
   <table>
     <thead>
       <tr>
         <th>Cliente</th>
-        <th>Juegos</th>
         <th>Fecha inicio</th>
         <th>Fecha fin</th>
         <th>Fecha devolución</th>
@@ -25,10 +48,16 @@
     </thead>
 
     <tbody>
-      @for (a of alquileres(); track a.alquilerId) {
+       @if (alquileresFiltrados().length === 0) {
+    <tr>
+      <td colspan="7" class="sin-resultados">
+        No se encontraron resultados.
+      </td>
+    </tr>
+  } @else {
+      @for (a of alquileresFiltrados(); track a.alquilerId) {
         <tr>
           <td>{{ getNombrePersona(a) }}</td>
-          <td>{{ getJuegos(a) }}</td>
           <td>{{ a.fechaInicio }}</td>
           <td>{{ a.fechaFin }}</td>
           <td>{{ a.fechaDevolucion || '-' }}</td>
@@ -41,6 +70,22 @@
           </td>
         </tr>
       }
+    }
     </tbody>
   </table>
-}
+
+<div class="pagination">
+
+  <button (click)="previousPage()" [disabled]="page() === 0">
+    Anterior
+  </button>
+
+  <span>
+    Página {{ page() + 1 }} de {{ totalPages() }}
+  </span>
+
+  <button (click)="nextPage()" [disabled]="page() >= totalPages() - 1">
+    Siguiente
+  </button>
+
+</div>
