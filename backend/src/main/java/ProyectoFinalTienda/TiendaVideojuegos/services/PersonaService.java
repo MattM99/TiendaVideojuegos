@@ -34,8 +34,20 @@ public class PersonaService {
 
 
     public PersonaResponse crearPersona(PersonaCreateOrReplaceRequest dto) {
+
+        if (personaRepository.findByDni(dto.getDni()).isPresent()) {
+            throw new IllegalArgumentException("Ya existe una persona con ese DNI.");
+        }
+
+        if (personaRepository.getPersonaByEmail(dto.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Ya existe una persona con ese email.");
+        }
+
         PersonaEntity entity = personaMapper.convertirDTOaEntidad(dto);
-        return personaMapper.convertirEntidadADTO(personaRepository.save(entity));
+
+        return personaMapper.convertirEntidadADTO(
+                personaRepository.save(entity)
+        );
     }
 
     public Page<PersonaResponse> listarTodos(Pageable paginacion)
@@ -115,7 +127,17 @@ public class PersonaService {
                 }
             }
         }
-        
+
+        if (dto.getEmail() != null) {
+            personaRepository.getPersonaByEmail(dto.getEmail())
+                    .ifPresent(personaConEseEmail -> {
+                        if (!personaConEseEmail.getDni().equals(persona.getDni())) {
+                            throw new IllegalArgumentException("Ya existe una persona con ese email.");
+                        }
+                    });
+        }
+
+
         if (dto.getNombre() != null) persona.setNombre(dto.getNombre());
         if (dto.getApellido() != null) persona.setApellido(dto.getApellido());
         if (dto.getTelefono() != null) persona.setTelefono(dto.getTelefono());

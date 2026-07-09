@@ -29,11 +29,11 @@ export class CuentaWizardComponent {
   form = this.fb.group({
     dni: ['',[Validators.required, Validators.pattern(/^\d{7,8}$/)]],
     nombre: ['',[Validators.required, Validators.minLength(2)]],
-     apellido: ['',[Validators.required, Validators.minLength(2)]],
+    apellido: ['',[Validators.required, Validators.minLength(2)]],
     email: ['',[Validators.required, Validators.email]],
     telefono: ['',[Validators.required, Validators.pattern(/^\d{7,15}$/)]],
 
-    nickname: ['',[Validators.required, Validators.minLength(4),Validators.maxLength(15)]],
+    nickname: ['',[Validators.required, Validators.minLength(4),Validators.maxLength(15), Validators.pattern(/^[a-zA-Z0-9_-]{4,15}$/)]],
     password: ['',[Validators.required, Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{5,15}$/)]],
     rol: ['EMPLEADO']
   });

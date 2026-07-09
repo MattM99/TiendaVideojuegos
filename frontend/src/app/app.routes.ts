@@ -10,6 +10,7 @@ import { ALQUILER_ROUTES } from './alquiler/alquiler.routes';
 import { RoleGuard } from './auth/guards/role-guard';
 import { LoginGuard } from './auth/guards/login-guard';
 import { NotFoundComponent } from './shared/not-found/not-found';
+import { RESERVA_ROUTES } from './reserva/reserva.routes';
 import { BLOQUEO_ROUTES } from './bloqueo/bloqueo.routes';
 import { Dashboard } from './reportes/dashboard/dashboard';
 import { Secreto } from './shared/secreto/secreto';
@@ -58,10 +59,24 @@ export const routes: Routes = [
   },
 
   {
+    path: 'reservas',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['FOUNDER', 'ADMINISTRADOR', 'EMPLEADO'] },
+    children: RESERVA_ROUTES,
+  },
+
+  {
     path: 'alquileres',
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['FOUNDER', 'ADMINISTRADOR', 'EMPLEADO'] },
     children: ALQUILER_ROUTES,
+  },
+
+  {
+    path: 'reservas',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['FOUNDER', 'ADMINISTRADOR', 'EMPLEADO'] },
+    children: RESERVA_ROUTES,
   },
 
   {
@@ -77,4 +92,6 @@ export const routes: Routes = [
 
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/404' },
+
+
 ];

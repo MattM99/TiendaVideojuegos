@@ -147,6 +147,24 @@
         Editar
       </button>
 
+        <span
+          class="reserve-tooltip"
+          [title]="iwt.item.stockDisponible > 0 ? 'El videojuego tiene stock disponible, no es necesario reservar.' : ''"
+        >
+          <button
+            class="reserve-btn"
+            (click)="reservar(iwt.item.inventarioId)"
+            [class.disabled]="iwt.item.stockDisponible > 0"
+            [disabled]="iwt.item.stockDisponible > 0"
+          >
+            Reservar
+          </button>
+        </span>
+
+        <button (click)="verReservas(iwt.item.inventarioId)">
+          Ver reservas
+        </button>
+
       <button (click)="delete(iwt.item.inventarioId)">
         Eliminar
       </button>

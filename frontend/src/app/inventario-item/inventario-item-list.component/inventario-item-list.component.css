@@ -286,14 +286,58 @@ li button:hover {
 }
 
 /* Botón eliminar */
-.actions button:last-child {
+/* Importante: usamos > para que solo agarre el botón Eliminar,
+   y no afecte al botón Reservar que está dentro del span del tooltip. */
+.actions > button:last-child {
   border-color: rgba(180, 60, 60, 0.5);
 }
 
-.actions button:last-child:hover {
+.actions > button:last-child:hover {
   background: #9e2f2f;
   border-color: #9e2f2f;
   color: white;
+}
+
+/* Botón Reservar */
+.reserve-tooltip {
+  display: inline-block;
+}
+
+.reserve-btn {
+  background: #1c2530;
+  color: #e0e6ed;
+  border: 1px solid #2d3945;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.reserve-btn:hover {
+  background: #2d3945;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Reservar deshabilitado */
+.reserve-btn.disabled,
+.reserve-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #1c2530;
+  color: #999;
+  border-color: #2d3945;
+  transform: none;
+  box-shadow: none;
+}
+
+.reserve-btn.disabled:hover,
+.reserve-btn:disabled:hover {
+  background: #2d3945;
+  color: #999;
+  border-color: #2d3945;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Paginación inferior */

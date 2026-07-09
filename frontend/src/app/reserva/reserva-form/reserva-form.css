@@ -1,5 +1,4 @@
-/* ================= FORM CONTAINER ================= */
-.alquiler-form {
+.reserva-form {
   max-width: 650px;
   margin: 30px auto;
   padding: 25px;
@@ -14,7 +13,6 @@
   gap: 18px;
 }
 
-/* ================= TITLE ================= */
 .title {
   text-align: center;
   color: #e0e6ed;
@@ -22,7 +20,23 @@
   margin: 10px 0;
 }
 
-/* ================= FORM GROUP ================= */
+.inventory-info {
+  padding: 16px;
+  border-radius: 10px;
+  background: rgba(20, 28, 36, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e0e6ed;
+}
+
+.inventory-info h3 {
+  margin: 0 0 10px;
+  color: #f0f4f8;
+}
+
+.inventory-info p {
+  margin: 8px 0;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -34,9 +48,7 @@ label {
   font-size: 0.95rem;
 }
 
-/* ================= INPUTS ================= */
-input,
-select {
+input {
   background: #1c2530;
   border: 1px solid #2d3945;
   padding: 10px 12px;
@@ -47,20 +59,17 @@ select {
   width: 100%;
 }
 
-input:focus,
-select:focus {
+input:focus {
   outline: none;
   border-color: #4a637a;
   box-shadow: 0 0 8px rgba(74, 99, 122, 0.4);
 }
 
-/* input error */
 .invalid {
   border-color: #d9534f !important;
   box-shadow: 0 0 6px rgba(217, 83, 79, 0.3);
 }
 
-/* ================= ROW (DNI + BUTTON) ================= */
 .row {
   display: flex;
   gap: 10px;
@@ -71,7 +80,6 @@ select:focus {
   flex: 1;
 }
 
-/* ================= BUTTON BASE ================= */
 button {
   border: 1px solid #2d3945;
   background: #1c2530;
@@ -88,7 +96,6 @@ button:hover {
   transform: translateY(-2px);
 }
 
-/* ================= BUTTON VARIANTS ================= */
 .btn-primary {
   background: #1b4d2b;
   border-color: #2e8b57;
@@ -107,17 +114,6 @@ button:hover {
   background: #2d3945;
 }
 
-.btn-danger {
-  background: #552222;
-  border-color: #aa4444;
-  color: #ffe0e0;
-}
-
-.btn-danger:hover {
-  background: #772c2c;
-}
-
-/* ================= ACTIONS ================= */
 .actions {
   display: flex;
   justify-content: space-between;
@@ -125,27 +121,6 @@ button:hover {
   gap: 10px;
 }
 
-/* ================= DETALLES ================= */
-.detalles {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.detalle-card {
-  padding: 12px;
-  border-radius: 10px;
-
-  background: rgba(20, 28, 36, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-
-  display: grid;
-  grid-template-columns: 1fr 120px auto;
-  gap: 10px;
-  align-items: center;
-}
-
-/* ================= TEXTOS ================= */
 .error {
   color: #ff6b6b;
   font-size: 0.85rem;
@@ -161,12 +136,6 @@ button:hover {
   font-size: 0.85rem;
 }
 
-/* ================= HR ================= */
-hr {
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  margin: 5px 0;
-}
 .persona-info {
   margin-top: 8px;
   padding: 8px 10px;
@@ -177,6 +146,28 @@ hr {
   font-size: 0.95rem;
 }
 
+.error-box {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.success-box {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #86efac;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 5px 0;
+}
+
 .btn-primary:disabled {
   background: #555;
   border-color: #666;
@@ -185,29 +176,21 @@ hr {
   opacity: 0.7;
 }
 
-.stock-error-box {
-  grid-column: 1 / -1;
+.btn-primary:disabled:hover {
+  transform: none;
+  background: #555;
+}
 
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-
-  margin-top: 6px;
+.submit-error-box {
+  margin-top: 12px;
   padding: 10px 12px;
 
-  border-radius: 8px;
+  border-radius: 6px;
+
   background: rgba(239, 68, 68, 0.12);
   border: 1px solid rgba(239, 68, 68, 0.25);
-}
 
-.btn-reservar {
-  background: #1b4d2b;
-  border-color: #2e8b57;
-  color: #e0ffe4;
-  white-space: nowrap;
-}
-
-.btn-reservar:hover {
-  background: #22663a;
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  font-weight: 600;
 }

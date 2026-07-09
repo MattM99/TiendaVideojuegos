@@ -1,0 +1,114 @@
+<form [formGroup]="form" (ngSubmit)="guardar()" class="reserva-form">
+
+  <h2 class="title">Registrar reserva</h2>
+
+  @if (errorMessage()) {
+    <div class="error-box">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="success-box">
+      {{ successMessage() }}
+    </div>
+  }
+
+  @if (inventarioItem()) {
+    <div class="inventory-info">
+      <h3>
+        {{ inventarioItem()?.videojuego?.titulo || 'Videojuego' }}
+      </h3>
+
+      <p>
+        Plataforma:
+        <strong>{{ inventarioItem()?.plataforma }}</strong>
+      </p>
+
+      <p>
+        Stock disponible:
+        <strong>{{ inventarioItem()?.stockDisponible }}</strong>
+      </p>
+    </div>
+  }
+
+  <hr />
+
+  <div class="form-group">
+    <label>DNI de la persona</label>
+
+    <div class="row">
+      <input
+        type="text"
+        formControlName="personaDni"
+        placeholder="Ingrese DNI"
+        [class.invalid]="form.get('personaDni')?.invalid && form.get('personaDni')?.touched"
+      />
+
+      <button type="button" (click)="buscarPersona()">
+        Buscar
+      </button>
+    </div>
+
+    @if (form.get('personaDni')?.touched && form.get('personaDni')?.hasError('required')) {
+      <small class="error">
+        El DNI es obligatorio
+      </small>
+    }
+
+    @if (form.get('personaDni')?.touched && form.get('personaDni')?.hasError('pattern')) {
+      <small class="error">
+        El DNI debe tener entre 7 y 8 números
+      </small>
+    }
+
+    @if (personaValida() === true) {
+      <div class="persona-info">
+        <strong class="success">
+          Persona encontrada:
+          {{ personaEncontrada()?.nombre }}
+          {{ personaEncontrada()?.apellido }}
+        </strong>
+      </div>
+    }
+
+    @if (form.get('personaDni')?.hasError('notFound')) {
+      <small class="error">
+        No se encontró a la persona
+      </small>
+    }
+
+    @if (personaValida() === null && form.get('personaDni')?.value) {
+      <small class="hint">
+        Presione buscar para validar
+      </small>
+    }
+  </div>
+
+  <hr />
+
+  @if (submitErrorMessage()) {
+    <div class="submit-error-box">
+      {{ submitErrorMessage() }}
+    </div>
+  }
+
+  <div class="actions">
+    <button
+      type="submit"
+      class="btn-primary"
+      [disabled]="form.invalid || personaValida() !== true"
+    >
+      Registrar reserva
+    </button>
+
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="cancelar()"
+    >
+      Cancelar
+    </button>
+  </div>
+
+</form>

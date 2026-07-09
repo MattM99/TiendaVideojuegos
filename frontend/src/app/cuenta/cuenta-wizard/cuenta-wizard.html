@@ -1,172 +1,237 @@
 <div class="wizard-container">
   <form [formGroup]="form">
+
     <div class="step-actions">
 
       @if (step() === 1) {
 
-      <h3>Crear empleado</h3>
+        <h3>Crear empleado</h3>
 
-      <button type="button" (click)="seleccionarModo('NUEVO')"> Nueva persona </button>
+        <button type="button" (click)="seleccionarModo('NUEVO')">
+          Nueva persona
+        </button>
 
-      <button type="button" (click)="seleccionarModo('EXISTENTE')"> Persona existente </button>
+        <button type="button" (click)="seleccionarModo('EXISTENTE')">
+          Persona existente
+        </button>
+
       }
-    </div>
 
+    </div>
 
     @if (step() === 2) {
 
-    <button type="button" class="back-btn" (click)="step.set(1)">
-      ← Volver
-    </button>
+      <button type="button" class="back-btn" (click)="step.set(1)">
+        ← Volver
+      </button>
 
-    <h3 class="wizard-subtitle">
-      @if (modo() === 'NUEVO') {
-      Ingrese los datos de la nueva persona
+      <h3 class="wizard-subtitle">
+        @if (modo() === 'NUEVO') {
+          Ingrese los datos de la nueva persona
+        }
+
+        @if (modo() === 'EXISTENTE') {
+          Ingrese el DNI para buscar a la persona
+        }
+      </h3>
+
+      <input
+        formControlName="dni"
+        placeholder="DNI"
+        (blur)="buscarPersona()"
+      />
+
+      @if (form.get('dni')?.invalid && form.get('dni')?.touched) {
+        <small>
+          @if (form.get('dni')?.errors?.['required']) {
+            El DNI es obligatorio
+          }
+
+          @if (form.get('dni')?.errors?.['pattern']) {
+            El DNI debe tener entre 7 y 8 números
+          }
+        </small>
       }
 
-      @if (modo() === 'EXISTENTE') {
-      Ingrese el DNI para buscar a la persona
-      }
-    </h3>
-
-    <input formControlName="dni" placeholder="DNI" (blur)="buscarPersona()" />
-
-    @if (
-    form.get('dni')?.invalid &&
-    form.get('dni')?.touched
-    ) {
-
-    <small>
-      @if (form.get('dni')?.errors?.['required']) {
-      El DNI es obligatorio
+      @if (personaEncontrada) {
+        <p>
+          Persona encontrada:
+          {{ personaEncontrada.nombre }}
+          {{ personaEncontrada.apellido }}
+        </p>
       }
 
-      @if (form.get('dni')?.errors?.['pattern']) {
-      El DNI debe tener entre 7 y 8 números
-      }
-    </small>
-    }
-
-    @if (personaEncontrada) {
-
-    <p>
-      Persona encontrada:
-      {{ personaEncontrada.nombre }}
-      {{ personaEncontrada.apellido }}
-    </p>
-
-    }
-
-    @if (busquedaRealizada() && !personaEncontrada && form.get('dni')?.value) {
-    <p>
-      No existe una persona con ese DNI.
-      Se creará una nueva.
-    </p>
-    }
-
-    <input formControlName="nombre" placeholder="Nombre" [readonly]="!!personaEncontrada">
-
-    @if (form.get('nombre')?.invalid && form.get('nombre')?.touched ) {
-    <small>
-      @if (form.get('nombre')?.errors?.['required']) {
-      El nombre es obligatorio
+      @if (busquedaRealizada() && !personaEncontrada && form.get('dni')?.value) {
+        <p>
+          No existe una persona con ese DNI.
+          Se creará una nueva.
+        </p>
       }
 
-      @if (form.get('nombre')?.errors?.['minlength']) {
-      El nombre debe tener al menos 2 letras
-      }
-    </small>
-    }
+      <input
+        formControlName="nombre"
+        placeholder="Nombre"
+        [readonly]="!!personaEncontrada"
+      />
 
-    <input formControlName="apellido" placeholder="Apellido" [readonly]="!!personaEncontrada">
+      @if (form.get('nombre')?.invalid && form.get('nombre')?.touched) {
+        <small>
+          @if (form.get('nombre')?.errors?.['required']) {
+            El nombre es obligatorio
+          }
 
-    @if (form.get('apellido')?.invalid && form.get('apellido')?.touched) {
+          @if (form.get('nombre')?.errors?.['minlength']) {
+            El nombre debe tener al menos 2 letras
+          }
 
-    <small>
-      @if (form.get('apellido')?.errors?.['required']) {
-      El apellido es obligatorio
-      }
+          @if (form.get('nombre')?.errors?.['maxlength']) {
+            El nombre no puede tener más de 50 caracteres
+          }
 
-      @if (form.get('apellido')?.errors?.['minlength']) {
-      El apellido debe tener al menos 2 letras
-      }
-    </small>
-
-    }
-
-    <input formControlName="email" placeholder="Email" [readonly]="!!personaEncontrada" />
-
-    @if (form.get('email')?.invalid && form.get('email')?.touched) {
-
-    <small>
-      @if (form.get('email')?.errors?.['required']) {
-      El email es obligatorio
+          @if (form.get('nombre')?.errors?.['pattern']) {
+            El nombre solo puede contener letras y espacios
+          }
+        </small>
       }
 
-      @if (form.get('email')?.errors?.['email']) {
-      Ingrese un email válido
+      <input
+        formControlName="apellido"
+        placeholder="Apellido"
+        [readonly]="!!personaEncontrada"
+      />
+
+      @if (form.get('apellido')?.invalid && form.get('apellido')?.touched) {
+        <small>
+          @if (form.get('apellido')?.errors?.['required']) {
+            El apellido es obligatorio
+          }
+
+          @if (form.get('apellido')?.errors?.['minlength']) {
+            El apellido debe tener al menos 2 letras
+          }
+
+          @if (form.get('apellido')?.errors?.['maxlength']) {
+            El apellido no puede tener más de 50 caracteres
+          }
+
+          @if (form.get('apellido')?.errors?.['pattern']) {
+            El apellido solo puede contener letras y espacios
+          }
+        </small>
       }
-    </small>
-    }
 
+      <input
+        formControlName="email"
+        placeholder="Email"
+        [readonly]="!!personaEncontrada"
+      />
 
-    <input formControlName="telefono" placeholder="Teléfono" [readonly]="!!personaEncontrada">
+      @if (form.get('email')?.invalid && form.get('email')?.touched) {
+        <small>
+          @if (form.get('email')?.errors?.['required']) {
+            El email es obligatorio
+          }
 
-    @if (form.get('telefono')?.invalid && form.get('telefono')?.touched) {
-
-    <small>
-      @if (form.get('telefono')?.errors?.['required']) {
-      El teléfono es obligatorio
+          @if (form.get('email')?.errors?.['email']) {
+            Ingrese un email válido
+          }
+        </small>
       }
 
-      @if (form.get('telefono')?.errors?.['pattern']) {
-      El teléfono debe contener entre 7 y 15 números
-      } </small>
+      <input
+        formControlName="telefono"
+        placeholder="Teléfono"
+        [readonly]="!!personaEncontrada"
+      />
 
-    }
+      @if (form.get('telefono')?.invalid && form.get('telefono')?.touched) {
+        <small>
+          @if (form.get('telefono')?.errors?.['required']) {
+            El teléfono es obligatorio
+          }
 
+          @if (form.get('telefono')?.errors?.['pattern']) {
+            El teléfono debe contener entre 7 y 15 números
+          }
+        </small>
+      }
 
-    <button type="button" [disabled]="form.get('dni')?.invalid ||
+      <button
+        type="button"
+        [disabled]="
+          form.get('dni')?.invalid ||
           form.get('nombre')?.invalid ||
           form.get('apellido')?.invalid ||
           form.get('email')?.invalid ||
-          form.get('telefono')?.invalid" (click)="step.set(3)">
-      Continuar
-    </button>
-    }
+          form.get('telefono')?.invalid
+        "
+        (click)="step.set(3)"
+      >
+        Continuar
+      </button>
 
+    }
 
     @if (step() === 3) {
 
-    <button type="button" class="back-btn" (click)="step.set(2)">
-      ← Volver
-    </button>
+      <button type="button" class="back-btn" (click)="step.set(2)">
+        ← Volver
+      </button>
 
-    <input formControlName="nickname" placeholder="Usuario">
-    @if (form.get('nickname')?.invalid && form.get('nickname')?.touched) {
-    <small> @if (form.get('nickname')?.errors?.['required']) {
-      El usuario es obligatorio
+      <input
+        formControlName="nickname"
+        placeholder="Usuario"
+      />
+
+      @if (form.get('nickname')?.invalid && form.get('nickname')?.touched) {
+        <small>
+          @if (form.get('nickname')?.errors?.['required']) {
+            El usuario es obligatorio
+          }
+
+          @if (form.get('nickname')?.errors?.['minlength']) {
+            El usuario debe tener al menos 4 caracteres
+          }
+
+          @if (form.get('nickname')?.errors?.['maxlength']) {
+            El usuario no puede tener más de 15 caracteres
+          }
+
+          @if (form.get('nickname')?.errors?.['pattern']) {
+            El usuario solo puede contener letras, números, guiones y guiones bajos
+          }
+        </small>
       }
 
-      @if (form.get('nickname')?.errors?.['minlength']) {
-      El usuario debe tener al menos 4 caracteres
-      }</small>
-    }
-    <input type="password" formControlName="password" placeholder="Contraseña">
-    @if (form.get('password')?.invalid && form.get('password')?.touched) {
-    <small> @if (form.get('password')?.errors?.['required']) {
-      La contraseña es obligatoria
+      <input
+        type="password"
+        formControlName="password"
+        placeholder="Contraseña"
+      />
+
+      @if (form.get('password')?.invalid && form.get('password')?.touched) {
+        <small>
+          @if (form.get('password')?.errors?.['required']) {
+            La contraseña es obligatoria
+          }
+
+          @if (form.get('password')?.errors?.['pattern']) {
+            La contraseña debe tener entre 5 y 15 caracteres, con al menos una letra y un número
+          }
+        </small>
       }
 
-      @if (form.get('password')?.errors?.['minlength']) {
-      La contraseña debe tener al menos 5 caracteres
-      }
-    </small>
-    }
+      <button
+        type="button"
+        [disabled]="
+          form.get('nickname')?.invalid ||
+          form.get('password')?.invalid
+        "
+        (click)="guardar()"
+      >
+        Crear empleado
+      </button>
 
-    <button type="button" (click)="guardar()">
-      Crear empleado
-    </button>
     }
 
   </form>
