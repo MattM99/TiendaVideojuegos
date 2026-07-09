@@ -53,12 +53,11 @@ export class Secreto implements AfterViewInit {
 
     this.groundY = this.canvasHeight - this.groundOffset;
 
-    // ajustar dinosaurio al suelo
-    this.dinosaur.y = this.groundY - this.dinosaur.height;
+    this.personaje.y = this.groundY - this.personaje.height;
   }
 
-  // DINOSAURIO
-  private dinosaur = {
+  // Personaje
+  private personaje = {
     x: 50,
     y: 0,
     width: 40,
@@ -79,9 +78,6 @@ export class Secreto implements AfterViewInit {
     window.addEventListener('resize', () => {
       this.resizeCanvas();
     });
-
-    /*const canvas = this.canvasRef.nativeElement;
-    this.ctx = canvas.getContext('2d')!;*/
 
     this.runImg1.src = 'assets/secreto/sonic-run-1.png';
     this.runImg2.src = 'assets/secreto/sonic-run-2.png';
@@ -111,10 +107,10 @@ export class Secreto implements AfterViewInit {
   };
 
   private jump(): void {
-    if (this.dinosaur.jumping || this.gameOver) return;
+    if (this.personaje.jumping || this.gameOver) return;
 
-    this.dinosaur.velocityY = -12;
-    this.dinosaur.jumping = true;
+    this.personaje.velocityY = -12;
+    this.personaje.jumping = true;
   }
 
   // ------------------------
@@ -133,18 +129,18 @@ export class Secreto implements AfterViewInit {
   };
 
   // ------------------------
-  // UPDATE DINOSAURIO
+  // UPDATE PERSONAJE
   // ------------------------
   private update(): void {
     if (this.gameOver) return;
 
-    this.dinosaur.y += this.dinosaur.velocityY;
-    this.dinosaur.velocityY += 0.6; // gravedad
+    this.personaje.y += this.personaje.velocityY;
+    this.personaje.velocityY += 0.6; // gravedad
 
-    if (this.dinosaur.y >= this.groundY - this.dinosaur.height) {
-      this.dinosaur.y = this.groundY - this.dinosaur.height;
-      this.dinosaur.velocityY = 0;
-      this.dinosaur.jumping = false;
+    if (this.personaje.y >= this.groundY - this.personaje.height) {
+      this.personaje.y = this.groundY - this.personaje.height;
+      this.personaje.velocityY = 0;
+      this.personaje.jumping = false;
     }
     this.score++;
   }
@@ -215,10 +211,10 @@ export class Secreto implements AfterViewInit {
   private checkCollision(): void {
     for (let obs of this.obstacles) {
       if (
-        this.dinosaur.x < obs.x + obs.width &&
-        this.dinosaur.x + this.dinosaur.width > obs.x &&
-        this.dinosaur.y < obs.y + obs.height &&
-        this.dinosaur.y + this.dinosaur.height > obs.y
+        this.personaje.x < obs.x + obs.width &&
+        this.personaje.x + this.personaje.width > obs.x &&
+        this.personaje.y < obs.y + obs.height &&
+        this.personaje.y + this.personaje.height > obs.y
       ) {
         this.gameOver = true;
       }
@@ -232,7 +228,7 @@ export class Secreto implements AfterViewInit {
   private drawCharacter(): void {
     let img: HTMLImageElement;
 
-    if (this.dinosaur.jumping) {
+    if (this.personaje.jumping) {
       img = this.jumpImg;
     } else {
       img = this.frame === 0 ? this.runImg1 : this.runImg2;
@@ -240,10 +236,10 @@ export class Secreto implements AfterViewInit {
 
     this.ctx.drawImage(
       img,
-      this.dinosaur.x,
-      this.dinosaur.y,
-      this.dinosaur.width,
-      this.dinosaur.height
+      this.personaje.x,
+      this.personaje.y,
+      this.personaje.width,
+      this.personaje.height
     );
   }
 
@@ -258,17 +254,7 @@ export class Secreto implements AfterViewInit {
     // suelo
     this.ctx.fillStyle = '#333';
     this.ctx.fillRect(0, this.groundY, this.canvasWidth, 2);
-    // dinosaurio animado
     this.drawCharacter();
-
-    // dinosaurio
-    /* this.ctx.fillStyle = 'green';
-     this.ctx.fillRect(
-       this.dinosaur.x,
-       this.dinosaur.y,
-       this.dinosaur.width,
-       this.dinosaur.height
-     );*/
 
     // obstáculos
     this.ctx.fillStyle = 'black';
@@ -301,11 +287,22 @@ export class Secreto implements AfterViewInit {
   // ------------------------
   private restart(): void {
     this.gameOver = false;
+
+    this.score = 0;
+
     this.obstacles = [];
     this.obstacleTimer = 0;
 
-    this.dinosaur.y = this.groundY - this.dinosaur.height;
-    this.dinosaur.velocityY = 0;
-    this.dinosaur.jumping = false;
+    this.gameSpeed = 6;
+    this.speedIncreaseTimer = 0;
+    this.obstacleSpawnRate = 90;
+
+
+    this.frame = 0;
+    this.frameCounter = 0;
+
+    this.personaje.y = this.groundY - this.personaje.height;
+    this.personaje.velocityY = 0;
+    this.personaje.jumping = false;
   }
 }

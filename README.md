@@ -24,19 +24,19 @@ Este proyecto fue desarrollado como Trabajo Final Integrador de la carrera de T�
 
 ## Características
 
-✔ Autenticación JWT
+- Autenticación JWT
 
-✔ Control de stock en tiempo real
+- Control de stock en tiempo real
 
-✔ Gestión de reservas
+- Gestión de reservas
 
-✔ Reportes administrativos
+- Reportes administrativos
 
-✔ Penalizaciones automáticas
+- Penalizaciones automáticas
 
-✔ Arquitectura REST
+- Arquitectura REST
 
-✔ Roles y permisos
+- Roles y permisos
 
 ## Funcionalidades
 
@@ -97,7 +97,6 @@ flowchart LR
     Angular --> SpringBoot
     SpringBoot --> MySQL
 ```
-
 
 ## Tecnologías
 
