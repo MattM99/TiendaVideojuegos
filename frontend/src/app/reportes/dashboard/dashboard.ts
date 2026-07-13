@@ -12,14 +12,12 @@ import { ChangeDetectorRef } from '@angular/core';
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
-   //dashboard?: DashboardResponse;
    dashboard: DashboardResponse | null = null;
 
   private reportesService = inject(ReportesService);
   private cdr = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
-     console.log('🔥 DASHBOARD COMPONENT ACTIVO');
     this.cargarDashboard();
   }
 
@@ -33,7 +31,7 @@ export class Dashboard implements OnInit {
 
                   this.dashboard = data;
         console.log('3 - asignado dashboard:', this.dashboard);
-          this.cdr.detectChanges(); // 🔥 CLAVE
+          this.cdr.detectChanges();
 
         },
         error: (err) => {
