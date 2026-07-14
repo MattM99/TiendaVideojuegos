@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { VideojuegoService } from '../videojuego.service';
 import { FormsModule } from '@angular/forms';
 import { VideojuegoModel } from '../videojuego.model';
+import { ErrorService } from '../../shared/error/error';
 
 @Component({
   selector: 'app-videojuego-form',
@@ -15,6 +16,7 @@ export class VideojuegoFormComponent {
   service = inject(VideojuegoService);
   route = inject(ActivatedRoute);
   router = inject(Router);
+  private errorService = inject(ErrorService);
 
   isEdit = false;
   id: string = '';
@@ -152,18 +154,12 @@ export class VideojuegoFormComponent {
   if (this.isEdit) {
     this.service.update(this.id, data).subscribe({
       next: () => this.router.navigate(['/videojuegos']),
-      error: (err) => {
-        console.error(err);
-        alert('Error al actualizar videojuego');
-      }
+      error: err => this.errorService.mostrar(err)
     });
   } else {
     this.service.create(data).subscribe({
       next: () => this.router.navigate(['/videojuegos']),
-      error: (err) => {
-        console.error(err);
-        alert('Error al crear videojuego');
-      }
+      error: err => this.errorService.mostrar(err)
     });
   }
 }

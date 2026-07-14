@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { InventarioItemService } from '../inventario-item.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InventarioItemModel } from '../inventario-item.model';
+import { ErrorService } from '../../shared/error/error';
 
 @Component({
   selector: 'app-inventario-item-detail.component',
@@ -13,6 +14,7 @@ export class InventarioItemDetailComponent {
   service = inject(InventarioItemService);
   route = inject(ActivatedRoute);
   router = inject(Router);
+  private errorService = inject(ErrorService);
 
   data = signal<{ item: InventarioItemModel; titulo: string }>({
     item: {
@@ -47,7 +49,7 @@ export class InventarioItemDetailComponent {
           titulo: item.videojuego?.titulo || 'Desconocido',
         });
       },
-      error: () => alert('No se pudo cargar el item del inventario'),
+      error: err => this.errorService.mostrar(err),
     });
   }
 

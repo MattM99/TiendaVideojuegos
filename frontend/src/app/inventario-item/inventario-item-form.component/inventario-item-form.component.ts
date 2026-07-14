@@ -3,6 +3,7 @@ import { InventarioItemService } from '../inventario-item.service';
 import { VideojuegoService } from '../../videojuego/videojuego.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { ErrorService } from '../../shared/error/error';
 
 @Component({
   selector: 'app-inventario-item-form',
@@ -14,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 export class InventarioItemFormComponent {
   inventarioService = inject(InventarioItemService);
   videojuegosService = inject(VideojuegoService);
+  private errorService = inject(ErrorService);
 
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -73,7 +75,7 @@ export class InventarioItemFormComponent {
             titulo: v.titulo,
           }))
         ),
-      error: () => alert('No se pudo cargar la lista de videojuegos'),
+      error: err => this.errorService.mostrar(err)
     });
 
     const routeId = this.route.snapshot.paramMap.get('id');
@@ -91,7 +93,7 @@ export class InventarioItemFormComponent {
             stockTotal: data.stockTotal,
             stockDisponible: data.stockDisponible,
           }),
-        error: () => alert('No se pudo cargar el item a editar'),
+        error: err => this.errorService.mostrar(err),
       });
     }
   }
@@ -164,18 +166,12 @@ export class InventarioItemFormComponent {
     if (this.isEdit) {
       this.inventarioService.update(this.id, data as any).subscribe({
         next: () => this.router.navigate(['/inventario']),
-        error: (err) => {
-          console.error(err);
-          alert('Error al actualizar el item');
-        },
+        error: err => this.errorService.mostrar(err)
       });
     } else {
       this.inventarioService.create(data as any).subscribe({
         next: () => this.router.navigate(['/inventario']),
-        error: (err) => {
-          console.error(err);
-          alert('Error al crear el item');
-        },
+        error: err => this.errorService.mostrar(err)
       });
     }
   }

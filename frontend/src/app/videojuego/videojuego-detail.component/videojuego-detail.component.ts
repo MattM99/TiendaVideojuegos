@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VideojuegoService } from '../videojuego.service';
+import { ErrorService } from '../../shared/error/error';
 
 @Component({
   selector: 'app-videojuego-detail',
@@ -13,6 +14,7 @@ export class VideojuegoDetailComponent {
   service = inject(VideojuegoService);
   route = inject(ActivatedRoute);
   router = inject(Router);
+  private errorService = inject(ErrorService);
 
   videojuego = signal<any>(null);
 
@@ -22,7 +24,7 @@ export class VideojuegoDetailComponent {
 
     this.service.getById(id).subscribe({
       next: (data) => this.videojuego.set(data),
-      error: () => alert("No se pudo cargar el videojuego")
+      error: err => this.errorService.mostrar(err)
     });
   }
 
@@ -31,7 +33,7 @@ export class VideojuegoDetailComponent {
   }
 
   editar() {
-  const id = this.videojuego()?.videojuegoId;
-  this.router.navigate(['/videojuegos/edit', id]);
-}
+    const id = this.videojuego()?.videojuegoId;
+    this.router.navigate(['/videojuegos/edit', id]);
+  }
 }

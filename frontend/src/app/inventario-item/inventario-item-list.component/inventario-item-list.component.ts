@@ -6,6 +6,7 @@ import { forkJoin } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { VideojuegoService } from '../../videojuego/videojuego.service';
 import { VideojuegoModel } from '../../videojuego/videojuego.model';
+import { ErrorService } from '../../shared/error/error';
 
 @Component({
   selector: 'app-inventario-item-list.component',
@@ -18,6 +19,7 @@ export class InventarioItemListComponent implements OnInit {
   private service = inject(InventarioItemService);
   private videojuegoService = inject(VideojuegoService);
   private router = inject(Router);
+  private errorService = inject(ErrorService);
 
   inventarioItemsWithTitle = signal<{ item: InventarioItemModel; titulo: string }[]>([]);
   videojuegos = signal<VideojuegoModel[]>([]);
@@ -56,7 +58,7 @@ export class InventarioItemListComponent implements OnInit {
   loadVideojuegos() {
     this.videojuegoService.getPage(0, 100, 'titulo', 'asc').subscribe({
       next: (response) => this.videojuegos.set(response.content),
-      error: (err) => console.error('Error cargando videojuegos', err),
+      error: err => this.errorService.mostrar(err)
     });
   }
 
@@ -245,7 +247,7 @@ export class InventarioItemListComponent implements OnInit {
 
     this.service.delete(id).subscribe({
       next: () => this.loadInventario(),
-      error: () => alert('Error al eliminar el item del inventario'),
+      error: err => this.errorService.mostrar(err)
     });
   }
 

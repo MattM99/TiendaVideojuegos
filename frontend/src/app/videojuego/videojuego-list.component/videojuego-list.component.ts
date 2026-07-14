@@ -3,6 +3,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { VideojuegoService } from '../videojuego.service';
 import { VideojuegoModel } from '../videojuego.model';
 import { RouterModule } from '@angular/router';
+import { ErrorService } from '../../shared/error/error';
 
 @Component({
   selector: 'app-videojuego-list.component',
@@ -13,6 +14,7 @@ import { RouterModule } from '@angular/router';
 })
 export class VideojuegoListComponent implements OnInit {
   private service = inject(VideojuegoService);
+  private errorService = inject(ErrorService);
 
   videojuegos = signal<VideojuegoModel[]>([]);
 
@@ -183,7 +185,7 @@ export class VideojuegoListComponent implements OnInit {
 
     this.service.delete(id).subscribe({
       next: () => this.loadVideojuegos(),
-      error: () => alert('Error al eliminar el videojuego')
+      error: err => this.errorService.mostrar(err)
     });
   }
 }
