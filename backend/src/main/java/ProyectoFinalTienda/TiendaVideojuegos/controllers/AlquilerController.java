@@ -17,9 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/alquileres")
@@ -29,7 +27,7 @@ public class AlquilerController {
     @Autowired
     private AlquilerService alquilerService;
 
-    // Se consume esto antes que crearAlquiler, para ver disponbilidad antes de crear el alquiler y la posibilidad de crear nueva reserva
+    // Se consume esto antes que crearAlquiler, para ver disponibilidad antes de crear el alquiler y la posibilidad de crear nueva reserva
     @Operation(summary = "Validar disponibilidad", description = "Verifica si existe stock suficiente para los videojuegos solicitados")
     @PostMapping("/validar")
     public ResponseEntity<ValidarDisponibilidadResponse>

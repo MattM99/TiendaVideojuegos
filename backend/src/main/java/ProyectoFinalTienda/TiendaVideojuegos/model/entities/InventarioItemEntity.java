@@ -120,12 +120,6 @@ public class InventarioItemEntity {
         this.stockDisponible += cantidad;
     }
 
-//    public void validarStock() {
-//        if (!esStockValido()) {
-//            throw new IllegalStateException("El stock disponible no puede exceder el stock total.");
-//        }
-//    }
-
     private void alquilarCopias(int cantidad) {
         disminuirStockDisponible(cantidad);
     }
@@ -139,10 +133,6 @@ public class InventarioItemEntity {
         }
         this.stockDisponible -= cantidad;
     }
-
-//    private boolean esStockValido() {
-//        return getStockDisponible() <= getStockTotal();
-//    }
 
     /// ---- Aggregate root ----
 

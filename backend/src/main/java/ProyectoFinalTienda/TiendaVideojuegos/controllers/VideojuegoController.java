@@ -154,7 +154,6 @@ public class VideojuegoController {
         return ResponseEntity.ok(responses);
     }
 
-    // Búsqueda por año de lanzamiento
     @Operation(summary = "Buscar videojuegos por lanzamiento", description = "Devuelve una lista de videojuegos lanzados en un año específico")
     @GetMapping("/lanzamiento/{lanzamiento}")
     public ResponseEntity<Page<VideojuegoResponse>> buscarPorLanzamiento(

@@ -44,42 +44,7 @@ public class AlquilerService {
     @Autowired
     private InventarioItemService inventarioItemService;
 
-    @Transactional(readOnly = true)
-    public ValidarDisponibilidadResponse validarDisponibilidad(
-            AlquilerCreateOrReplaceRequest request) {
-
-        List<ItemConStockInsuficienteResponse> faltantes = new ArrayList<>();
-
-        for (DetalleAlquilerRequest detalle : request.getDetalles()) {
-
-            InventarioItemEntity inventario =
-                    inventarioItemRepository.findById(detalle.getInventarioItemId())
-                            .orElseThrow(() ->
-                                    new InventarioItemNoEncontradoException(
-                                            "Inventario con id "
-                                                    + detalle.getInventarioItemId()
-                                                    + " no encontrado."
-                                    ));
-
-            if (inventario.getStockDisponible() < detalle.getCantidad()) {
-
-                faltantes.add(
-                        ItemConStockInsuficienteResponse.builder()
-                                .inventarioItemId(inventario.getInventarioItemId())
-                                .titulo(inventario.getVideojuego().getTitulo())
-                                .plataforma(inventario.getPlataforma())
-                                .cantidadSolicitada(detalle.getCantidad())
-                                .cantidadDisponible(inventario.getStockDisponible())
-                                .build()
-                );
-            }
-        }
-
-        return ValidarDisponibilidadResponse.builder()
-                .puedeCrearAlquiler(faltantes.isEmpty())
-                .faltantes(faltantes)
-                .build();
-    }
+    /// Create
 
     @Transactional
     public AlquilerResponse crearAlquiler(AlquilerCreateOrReplaceRequest request) {
@@ -114,13 +79,45 @@ public class AlquilerService {
         alquiler.agregarDetalle(detalle);
     }
 
+    /// Read
 
-    public void eliminar(int id){
-        if (!alquilerRepository.existsById(id)) {
-            throw new AlquilerNoEncontradoException("Alquiler con id: " + id + " no encontrado.");
+    public Page<AlquilerResponse> listarTodos(LocalDate fechaInicio, LocalDate fechaFin, Pageable paginacion)
+    {
+        Page<AlquilerEntity> alquileres;
+
+        if (fechaInicio != null && fechaFin != null) {
+
+            alquileres = alquilerRepository.findByFechaInicioBetween(
+                    fechaInicio,
+                    fechaFin,
+                    paginacion
+            );
+
+        } else {
+
+            alquileres = alquilerRepository.findAll(paginacion);
         }
-        alquilerRepository.deleteById(id);
+
+        return alquileres
+                .map(alquilerMapper::toResponse);
     }
+
+    public AlquilerResponse buscarPorId(int id){
+        AlquilerEntity entity = alquilerRepository.findById(id)
+                .orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler con id: " + id + " no encontrado."));
+        return alquilerMapper.toResponse(entity);
+    }
+
+    public Page<AlquilerResponse> buscarPorUsuario(int personaId, Pageable paginacion){
+        Page<AlquilerEntity> alquileres = alquilerRepository.findByPersonaId(personaId, paginacion);
+        if (alquileres.isEmpty()) {
+            throw new UsuarioNoEncontradoException("No se encontró ningún alquiler con el usuario de id: " + personaId);
+        }
+        return alquileres
+                .map(alquilerMapper::toResponse);
+    }
+
+    /// Update
 
     @Transactional
     public AlquilerResponse cerrarAlquiler(
@@ -173,42 +170,52 @@ public class AlquilerService {
         );
     }
 
-    public Page<AlquilerResponse> listarTodos(LocalDate fechaInicio, LocalDate fechaFin, Pageable paginacion)
-    {
-        Page<AlquilerEntity> alquileres;
+    /// Delete
 
-        if (fechaInicio != null && fechaFin != null) {
-
-            alquileres = alquilerRepository.findByFechaInicioBetween(
-                    fechaInicio,
-                    fechaFin,
-                    paginacion
-            );
-
-        } else {
-
-            alquileres = alquilerRepository.findAll(paginacion);
+    public void eliminar(int id){
+        if (!alquilerRepository.existsById(id)) {
+            throw new AlquilerNoEncontradoException("Alquiler con id: " + id + " no encontrado.");
         }
-
-        return alquileres
-                .map(alquilerMapper::toResponse);
+        alquilerRepository.deleteById(id);
     }
 
-    // Buscar por id con excepción si no existe
-    public AlquilerResponse buscarPorId(int id){
-        AlquilerEntity entity = alquilerRepository.findById(id)
-                .orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler con id: " + id + " no encontrado."));
-        return alquilerMapper.toResponse(entity);
-    }
+    /// -------------- Regla de negocio -------------- ///
 
-    // Buscar por usuario con excepción si lista vacía
-    public Page<AlquilerResponse> buscarPorUsuario(int personaId, Pageable paginacion){
-        Page<AlquilerEntity> alquileres = alquilerRepository.findByPersonaId(personaId, paginacion);
-        if (alquileres.isEmpty()) {
-            throw new UsuarioNoEncontradoException("No se encontró ningún alquiler con el usuario de id: " + personaId);
+    @Transactional(readOnly = true)
+    public ValidarDisponibilidadResponse validarDisponibilidad(
+            AlquilerCreateOrReplaceRequest request) {
+
+        List<ItemConStockInsuficienteResponse> faltantes = new ArrayList<>();
+
+        for (DetalleAlquilerRequest detalle : request.getDetalles()) {
+
+            InventarioItemEntity inventario =
+                    inventarioItemRepository.findById(detalle.getInventarioItemId())
+                            .orElseThrow(() ->
+                                    new InventarioItemNoEncontradoException(
+                                            "Inventario con id "
+                                                    + detalle.getInventarioItemId()
+                                                    + " no encontrado."
+                                    ));
+
+            if (inventario.getStockDisponible() < detalle.getCantidad()) {
+
+                faltantes.add(
+                        ItemConStockInsuficienteResponse.builder()
+                                .inventarioItemId(inventario.getInventarioItemId())
+                                .titulo(inventario.getVideojuego().getTitulo())
+                                .plataforma(inventario.getPlataforma())
+                                .cantidadSolicitada(detalle.getCantidad())
+                                .cantidadDisponible(inventario.getStockDisponible())
+                                .build()
+                );
+            }
         }
-        return alquileres
-                .map(alquilerMapper::toResponse);
+
+        return ValidarDisponibilidadResponse.builder()
+                .puedeCrearAlquiler(faltantes.isEmpty())
+                .faltantes(faltantes)
+                .build();
     }
 
 }

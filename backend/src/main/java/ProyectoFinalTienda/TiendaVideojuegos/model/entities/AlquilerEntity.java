@@ -4,7 +4,6 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

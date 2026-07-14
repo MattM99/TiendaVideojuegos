@@ -1,7 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.repositories;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
