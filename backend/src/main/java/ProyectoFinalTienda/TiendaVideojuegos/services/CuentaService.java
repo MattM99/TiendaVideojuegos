@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -96,23 +97,24 @@ public class CuentaService {
         }
     }
 
-
     public CuentaEntity cambiarContrasena(String nickname, String password) throws UsuarioNoEncontradoException {
         if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("La nueva contraseña no puede ser nula o vacía");
         }
 
         CuentaEntity cuenta = buscarPorNickname(nickname);
-        cuenta.setPassword(passwordEncoder.encode(password));
 
+        boolean esPropiaCuenta = nickname.equalsIgnoreCase(usuarioActivo());
+        if (cuenta.getRol() == Roles.FOUNDER && !esPropiaCuenta) {
+            throw new AccessDeniedException("Solo el FOUNDER puede cambiar su propia contraseña.");
+        }
+
+        cuenta.setPassword(passwordEncoder.encode(password));
         return cuentaRepository.save(cuenta);
     }
 
     public CuentaEntity cambiarRol(String nickname, String rol) throws UsuarioNoEncontradoException, RolInvalidoException {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String usuarioActivo = auth.getName();
-
-        if (nickname.equalsIgnoreCase(usuarioActivo)) {
+        if (nickname.equalsIgnoreCase(usuarioActivo())) {
             throw new IllegalArgumentException("No es posible modificar el rol propio.");
         }
 
@@ -120,29 +122,34 @@ public class CuentaService {
             throw new RolInvalidoException("El rol proporcionado no es válido: " + rol);
         }
 
-        cuentaRepository.findByNickname("FOUNDER")
-                .ifPresent(FOUNDER -> {
-                    if (nickname.equalsIgnoreCase(FOUNDER.getNickname())) {
-                        throw new IllegalArgumentException("No se permite modificar el rol del usuario FOUNDER");
-                    }
-                });
+        Roles nuevoRol = Roles.valueOf(rol.trim().toUpperCase());
 
+        if (nuevoRol == Roles.FOUNDER && !usuarioActivoEsFounder()) {
+            throw new AccessDeniedException("Solo un FOUNDER puede asignar el rol FOUNDER.");
+        }
 
         CuentaEntity cuenta = buscarPorNickname(nickname);
 
-        cuenta.setRol(Roles.valueOf(rol.toUpperCase()));
+        if (cuenta.getRol() == Roles.FOUNDER) {
+            throw new AccessDeniedException("No se permite modificar el rol de una cuenta FOUNDER.");
+        }
 
+        cuenta.setRol(nuevoRol);
         return cuentaRepository.save(cuenta);
     }
 
+
     public CuentaEntity darDeBajaCuenta(String nickname) throws UsuarioNoEncontradoException {
-        Authentication auth =
-                SecurityContextHolder.getContext().getAuthentication();
-        String usuarioActivo = auth.getName();
-        if(nickname.equalsIgnoreCase(usuarioActivo)){
+        if (nickname.equalsIgnoreCase(usuarioActivo())) {
             throw new IllegalArgumentException("No es posible dar de baja la propia cuenta.");
         }
+
         CuentaEntity cuenta = buscarPorNickname(nickname);
+
+        if (cuenta.getRol() == Roles.FOUNDER) {
+            throw new AccessDeniedException("No se puede dar de baja la cuenta FOUNDER.");
+        }
+
         cuenta.setEstado(Estado.BAJA);
         return cuentaRepository.save(cuenta);
     }
@@ -162,6 +169,16 @@ public class CuentaService {
                 cuenta.getPersona() != null ? personaMapper.convertirEntidadADTO(cuenta.getPersona()) : null
 
         );
+    }
+
+    private String usuarioActivo() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+
+    private boolean usuarioActivoEsFounder() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_FOUNDER"));
     }
 
 }
