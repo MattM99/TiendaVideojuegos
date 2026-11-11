@@ -14,12 +14,19 @@ import { SecretoService } from '../secreto/secreto-service';
 export class FrontPage implements OnInit {
   usuario = signal<CuentaModel | null>(null);
 
+  esAdmin(): boolean {
+    return this.auth.hasRole(['FOUNDER', 'ADMINISTRADOR']);
+  }
+
   constructor(private auth: AuthService, private secretoService: SecretoService) { }
 
   ngOnInit(): void {
     this.auth.getCurrentUser().subscribe({
       next: (response: CuentaModel) => {
         this.usuario.set(response);
+      },
+      error: (err) => {
+        console.error('Error al obtener el usuario actual', err);
       }
     });
   }
