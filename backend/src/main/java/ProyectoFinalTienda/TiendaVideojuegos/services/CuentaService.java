@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.CuentaResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.RolInvalidoException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.PersonaMapper;
@@ -10,12 +11,10 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Roles;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.access.AccessDeniedException;
-
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -32,7 +31,7 @@ public class CuentaService {
     }
 
 
-    //No hay metodo de crear cuenta, el metodo de registro esta en AuthService
+    //No hay metodo de crear cuenta, el metodo de registro está en AuthService
 
 
     public Page<CuentaResponse> listarTodos(Pageable paginacion) {
@@ -103,6 +102,7 @@ public class CuentaService {
         }
 
         CuentaEntity cuenta = buscarPorNickname(nickname);
+        validarPermisoSobre(cuenta);
 
         boolean esPropiaCuenta = nickname.equalsIgnoreCase(usuarioActivo());
         if (cuenta.getRol() == Roles.FOUNDER && !esPropiaCuenta) {
@@ -124,11 +124,12 @@ public class CuentaService {
 
         Roles nuevoRol = Roles.valueOf(rol.trim().toUpperCase());
 
-        if (nuevoRol == Roles.FOUNDER && !usuarioActivoEsFounder()) {
-            throw new AccessDeniedException("Solo un FOUNDER puede asignar el rol FOUNDER.");
+        if (nuevoRol == Roles.FOUNDER) {
+            throw new BusinessException("El rol FOUNDER no se puede asignar: lo crea el sistema al iniciar.");
         }
 
         CuentaEntity cuenta = buscarPorNickname(nickname);
+        validarPermisoSobre(cuenta);
 
         if (cuenta.getRol() == Roles.FOUNDER) {
             throw new AccessDeniedException("No se permite modificar el rol de una cuenta FOUNDER.");
@@ -145,6 +146,7 @@ public class CuentaService {
         }
 
         CuentaEntity cuenta = buscarPorNickname(nickname);
+        validarPermisoSobre(cuenta);
 
         if (cuenta.getRol() == Roles.FOUNDER) {
             throw new AccessDeniedException("No se puede dar de baja la cuenta FOUNDER.");
@@ -156,6 +158,7 @@ public class CuentaService {
 
     public CuentaEntity restablecerCuenta(String nickname) throws UsuarioNoEncontradoException {
         CuentaEntity cuenta = buscarPorNickname(nickname);
+        validarPermisoSobre(cuenta);
         cuenta.setEstado(Estado.ACTIVO);
         return cuentaRepository.save(cuenta);
     }
@@ -175,6 +178,14 @@ public class CuentaService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    private void validarPermisoSobre(CuentaEntity objetivo) {
+        boolean objetivoEsAdmin = objetivo.getRol() == Roles.ADMINISTRADOR;
+        boolean esPropiaCuenta = objetivo.getNickname().equalsIgnoreCase(usuarioActivo());
+
+        if (objetivoEsAdmin && !esPropiaCuenta && !usuarioActivoEsFounder()) {
+            throw new AccessDeniedException("Un ADMINISTRADOR no puede modificar a otro ADMINISTRADOR.");
+        }
+    }
 
     private boolean usuarioActivoEsFounder() {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()

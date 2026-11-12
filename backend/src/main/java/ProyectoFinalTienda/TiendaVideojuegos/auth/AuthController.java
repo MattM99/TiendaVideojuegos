@@ -1,5 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.auth;
 
+import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +23,9 @@ public class  AuthController {
 
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PostMapping("/register")  // Ruta especifica para registrar un nuevo usuario
-    public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest request,
-                                                 Authentication authentication) {
-        boolean esFounder = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_FOUNDER"));
-        boolean pideFounder = request.getRol() != null
-                && request.getRol().trim().equalsIgnoreCase("FOUNDER");
-
-        if (pideFounder && !esFounder) {
-            throw new AccessDeniedException("Solo un FOUNDER puede crear cuentas FOUNDER.");
+    public ResponseEntity<AuthResponse> register(@RequestBody @Valid RegisterRequest request) {
+        if (request.getRol() != null && request.getRol().trim().equalsIgnoreCase("FOUNDER")) {
+            throw new BusinessException("El rol FOUNDER no es un rol asignable.");
         }
 
         authService.register(request);

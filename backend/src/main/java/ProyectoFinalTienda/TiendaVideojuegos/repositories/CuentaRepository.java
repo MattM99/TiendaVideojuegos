@@ -16,5 +16,7 @@ public interface CuentaRepository extends JpaRepository<CuentaEntity, Integer> {
     Page<CuentaEntity> findByRol(Roles rol, Pageable paginacion);
 
     Page<CuentaEntity> findByEstado(Estado estado, Pageable paginacion);
+
+    boolean existsByNickname(String nickname);
 }
 

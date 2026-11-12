@@ -47,5 +47,6 @@ public class RegisterRequest {
     @Pattern(regexp = "^\\d{7,15}$", message = "El teléfono debe contener solo números")
     private String telefono;
 
+    @NotBlank(message = "El rol es obligatorio")
     private String rol;
 }

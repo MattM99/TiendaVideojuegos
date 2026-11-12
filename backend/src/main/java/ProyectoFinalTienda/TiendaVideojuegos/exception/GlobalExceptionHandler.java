@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -78,6 +80,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<String> manejarBusinessException(BusinessException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    // ===============================
+    // UNAUTHORIZED (401)
+    // ===============================
+
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<String> manejarCuentaDeshabilitada(DisabledException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La cuenta está dada de baja");
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<String> manejarAutenticacion(AuthenticationException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorrectos");
     }
 
     // ===============================

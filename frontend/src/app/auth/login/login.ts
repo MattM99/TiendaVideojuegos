@@ -28,15 +28,20 @@ export class Login {
             this.auth.setUser(cuenta);
             this.router.navigate(['/home']);
           },
-          error: (err) => {
+          error: () => {
             localStorage.removeItem('token');
             alert('No se pudieron obtener los datos de la cuenta.');
           }
         });
       },
       error: (err) => {
-        console.error('Error en login', err);
-        alert('Usuario o contraseña incorrectas');
+        if (err.status === 401 && typeof err.error === 'string') {
+          alert(err.error);
+        } else if (err.status === 0) {
+          alert('No se pudo conectar con el servidor.');
+        } else {
+          alert('Ocurrió un error inesperado. Intentá de nuevo.');
+        }
       },
     });
   }

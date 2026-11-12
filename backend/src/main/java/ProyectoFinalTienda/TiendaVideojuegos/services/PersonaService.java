@@ -57,14 +57,7 @@ public class PersonaService {
         return personaRepository.findAll(paginacion)
                 .map(personaMapper::convertirEntidadADTO);
     }
-
-
-    public PersonaResponse buscarPorId(int id) {
-        PersonaEntity entity = personaRepository.findById(id)
-                .orElseThrow(() -> new PersonaNoEncontradaException("Persona no encontrada con id: " + id));
-        return personaMapper.convertirEntidadADTO(entity);
-    }
-
+    
     public Page<PersonaResponse> buscarPorNombre(String nombre, Pageable paginacion) {
         Page<PersonaEntity> personas = personaRepository.findByNombre(nombre, paginacion);
         if (personas.isEmpty()) {
