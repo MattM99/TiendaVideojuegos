@@ -130,6 +130,12 @@ public class AlquilerService {
                         "Alquiler con id: " + alquilerId + " no encontrado."
                 ));
 
+        if (alquiler.getEstadoAlquiler() != EstadoAlquiler.EN_CURSO) {
+            throw new BusinessException(
+                    "Solo se pueden cerrar alquileres en curso."
+            );
+        }
+
         // registrar devolución
         alquiler.setFechaDevolucion(LocalDate.now());
 
