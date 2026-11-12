@@ -72,7 +72,6 @@ public class AlquilerEntity {
             nullable = false
     )
     @NotNull(message = "La fecha limite no puede ser nula")
-    @Future(message = "La fecha limite debe estar en el futuro")
     private LocalDate fechaFin; // fecha en la que DEBERIA devolver el juego
 
     @Column(

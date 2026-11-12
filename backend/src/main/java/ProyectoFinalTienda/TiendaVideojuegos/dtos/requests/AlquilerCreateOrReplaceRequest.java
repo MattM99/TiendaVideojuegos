@@ -1,5 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
 
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -21,6 +22,7 @@ public class AlquilerCreateOrReplaceRequest {
     private LocalDate fechaInicio;
 
     @NotNull(message = "La fecha en la que se debe devolver el juego es obligatoria")
+    @Future(message = "La fecha de devolución debe estar en el futuro")
     private LocalDate fechaFin;
 
     @NotEmpty(message = "Debe haber al menos un juego en el alquiler")
