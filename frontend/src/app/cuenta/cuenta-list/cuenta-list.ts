@@ -71,8 +71,6 @@ export class CuentaListComponent implements OnInit {
     this.router.navigate(['/personas/nueva'], { queryParams: { crearCuenta: true } });
   }
 
-
-  ///PAGINACION, ORDENAMIENTO Y FILTRADO
   nextPage() {
     if (this.page() < this.totalPages() - 1) {
       this.page.update(p => p + 1);
