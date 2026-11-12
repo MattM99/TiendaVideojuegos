@@ -4,7 +4,6 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoCreateOrRep
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.VideojuegoUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

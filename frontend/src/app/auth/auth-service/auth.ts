@@ -17,12 +17,12 @@ export class AuthService {
     }
   }
 
-register(request: RegisterRequest): Observable<void> {
-  return this.http.post<void>(
-    'http://localhost:8080/api/auth/register',
-    request
-  );
-}
+  register(request: RegisterRequest): Observable<void> {
+    return this.http.post<void>(
+      'http://localhost:8080/api/auth/register',
+      request
+    );
+  }
 
   currentUser = this.currentUserSignal.asReadonly();
 

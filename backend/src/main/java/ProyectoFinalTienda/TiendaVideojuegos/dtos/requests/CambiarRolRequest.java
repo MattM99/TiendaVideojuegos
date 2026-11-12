@@ -1,8 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
-
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class CambiarRolRequest {

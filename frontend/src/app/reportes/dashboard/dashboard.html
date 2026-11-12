@@ -1,9 +1,8 @@
-
 @if (dashboard){
-    <div class="dashboard-container">
+<div class="dashboard-container">
 
   <h1 class="dashboard-title">
-     Dashboard de Reportes
+    Dashboard de Reportes
   </h1>
 
   <!-- KPIs -->
@@ -71,10 +70,10 @@
         <tbody>
 
           @for (juego of dashboard.juegosMasAlquilados; track juego.titulo) {
-            <tr>
-              <td>{{ juego.titulo }}</td>
-              <td>{{ juego.cantidad }}</td>
-            </tr>
+          <tr>
+            <td>{{ juego.titulo }}</td>
+            <td>{{ juego.cantidad }}</td>
+          </tr>
           }
 
         </tbody>
@@ -100,10 +99,10 @@
         <tbody>
 
           @for (genero of dashboard.generosMasAlquilados; track genero.nombre) {
-            <tr>
-              <td>{{ genero.nombre }}</td>
-              <td>{{ genero.cantidad }}</td>
-            </tr>
+          <tr>
+            <td>{{ genero.nombre }}</td>
+            <td>{{ genero.cantidad }}</td>
+          </tr>
           }
 
         </tbody>
@@ -129,10 +128,10 @@
         <tbody>
 
           @for (plataforma of dashboard.plataformasMasAlquiladas; track plataforma.nombre) {
-            <tr>
-              <td>{{ plataforma.nombre }}</td>
-              <td>{{ plataforma.cantidad }}</td>
-            </tr>
+          <tr>
+            <td>{{ plataforma.nombre }}</td>
+            <td>{{ plataforma.cantidad }}</td>
+          </tr>
           }
 
         </tbody>
@@ -163,12 +162,12 @@
 
         @for (cliente of dashboard.clientesFrecuentes; track cliente.dni) {
 
-          <tr>
-            <td>{{ cliente.dni }}</td>
-            <td>{{ cliente.nombre }}</td>
-            <td>{{ cliente.apellido }}</td>
-            <td>{{ cliente.total }}</td>
-          </tr>
+        <tr>
+          <td>{{ cliente.dni }}</td>
+          <td>{{ cliente.nombre }}</td>
+          <td>{{ cliente.apellido }}</td>
+          <td>{{ cliente.total }}</td>
+        </tr>
 
         }
 

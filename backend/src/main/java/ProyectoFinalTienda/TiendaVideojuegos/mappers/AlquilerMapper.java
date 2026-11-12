@@ -3,14 +3,11 @@ package ProyectoFinalTienda.TiendaVideojuegos.mappers;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.DetalleAlquilerResponse;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
-import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class AlquilerMapper {
@@ -72,7 +69,6 @@ public class AlquilerMapper {
     public List<AlquilerResponse> toResponseList(
             List<AlquilerEntity> entities
     ) {
-
         return entities.stream()
                 .map(this::toResponse)
                 .toList();

@@ -82,11 +82,11 @@ export const routes: Routes = [
   {
     path: 'reportes',
     component: Dashboard,
-   // canActivate: [AuthGuard, RoleGuard],
-    //data: { roles: ['FOUNDER', 'ADMINISTRADOR'] },
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['FOUNDER', 'ADMINISTRADOR'] },
   },
 
-  {path: 'secreto', component: Secreto, canActivate: [secretoGuard] },
+  { path: 'secreto', component: Secreto, canActivate: [secretoGuard] },
 
 
 

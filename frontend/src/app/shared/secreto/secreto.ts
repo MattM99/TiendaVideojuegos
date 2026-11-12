@@ -38,8 +38,9 @@ export class Secreto implements AfterViewInit {
 
   private score = 0;
 
-
-  //TAMANO PANTALLA
+  // ------------------------
+  //Tamaño pantalla
+  // ------------------------
   private resizeCanvas(): void {
     const canvas = this.canvasRef.nativeElement;
 
@@ -56,7 +57,9 @@ export class Secreto implements AfterViewInit {
     this.personaje.y = this.groundY - this.personaje.height;
   }
 
+  // ------------------------
   // Personaje
+  // ------------------------
   private personaje = {
     x: 50,
     y: 0,
@@ -66,11 +69,16 @@ export class Secreto implements AfterViewInit {
     jumping: false
   };
 
+
+  // ------------------------
   // OBSTÁCULOS
+  // ------------------------
   private obstacles: Obstacle[] = [];
   private obstacleTimer = 0;
 
+  // ------------------------
   // ESTADO
+  // ------------------------
   private gameOver = false;
 
   ngAfterViewInit(): void {
@@ -150,7 +158,6 @@ export class Secreto implements AfterViewInit {
 
     this.frameCounter++;
 
-    // cambia frame cada 8 ticks
     if (this.frameCounter > 8) {
       this.frame = this.frame === 0 ? 1 : 0;
       this.frameCounter = 0;
@@ -164,7 +171,7 @@ export class Secreto implements AfterViewInit {
     if (this.gameOver) return;
 
     this.obstacleTimer++;
-    const height = 20 + Math.random() * 60; // entre 20 y 80
+    const height = 20 + Math.random() * 60;
 
 
     if (this.obstacleTimer > this.obstacleSpawnRate) {

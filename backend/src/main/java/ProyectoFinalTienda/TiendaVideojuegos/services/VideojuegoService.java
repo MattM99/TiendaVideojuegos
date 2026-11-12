@@ -23,6 +23,8 @@ public class VideojuegoService {
     @Autowired
     private VideojuegoMapper videojuegoMapper;
 
+    /// Create
+
     public VideojuegoResponse guardar(VideojuegoCreateOrReplaceRequest request) {
 
         validarLanzamiento(request.getLanzamiento());
@@ -36,12 +38,7 @@ public class VideojuegoService {
         );
     }
 
-    public void eliminar(int id){
-        if (!videojuegoRepository.existsById(id)) {
-            throw new VideojuegoNoEncontradoException("Videojuego con id: " + id + " no encontrado.");
-        }
-        videojuegoRepository.deleteById(id);
-    }
+    /// Read
 
     public Page<VideojuegoResponse> listarTodos(Pageable paginacion)
     {
@@ -105,6 +102,8 @@ public class VideojuegoService {
                 .map(videojuegoMapper::toResponse);
     }
 
+    /// Update
+
     // Método para actualización completa (PUT)
     public VideojuegoResponse actualizarCompleto(int id, VideojuegoCreateOrReplaceRequest datosNuevos) {
         VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
@@ -135,6 +134,17 @@ public class VideojuegoService {
         videojuegoMapper.actualizarEntity(videojuegoExistente, datosActualizados);
         return videojuegoMapper.toResponse(videojuegoRepository.save(videojuegoExistente));
     }
+
+    /// Delete
+
+    public void eliminar(int id){
+        if (!videojuegoRepository.existsById(id)) {
+            throw new VideojuegoNoEncontradoException("Videojuego con id: " + id + " no encontrado.");
+        }
+        videojuegoRepository.deleteById(id);
+    }
+
+    /// Helpers privados
 
     private void validarTituloDuplicado(String titulo, Integer idActual) {
 
