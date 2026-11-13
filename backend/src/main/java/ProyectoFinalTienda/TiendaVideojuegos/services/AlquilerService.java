@@ -48,9 +48,9 @@ public class AlquilerService {
 
     @Transactional
     public AlquilerResponse crearAlquiler(AlquilerCreateOrReplaceRequest request) {
-        String dni = String.valueOf(request.getPersonaDni());
+        String dni = request.getPersonaDni();
         PersonaEntity persona = personaRepository.findByDni(dni)
-                .orElseThrow(() -> new PersonaNoEncontradaException("No existe la persona con id " + request.getPersonaDni()));
+                .orElseThrow(() -> new PersonaNoEncontradaException("No existe la persona con DNI " + dni));
         bloqueoService.verificarNoEstaEnListaNegra(dni); // Verificar si la persona está en lista negra, si está lanza excepción.
 
         AlquilerEntity alquiler = alquilerMapper.toEntity(request, persona);

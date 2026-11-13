@@ -1,8 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.dtos.requests;
 
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -15,8 +14,12 @@ import java.util.List;
 @Builder
 public class AlquilerCreateOrReplaceRequest {
 
-    @NotNull(message = "El DNI de la persona es obligatorio")
-    private Integer personaDni;
+    @NotBlank(message = "El DNI de la persona es obligatorio")
+    @Pattern(
+            regexp = "\\d{7,8}",
+            message = "El DNI debe contener 7 u 8 dígitos"
+    )
+    private String personaDni;
 
     @NotNull(message = "La fecha en la que se realizó el alquiler es obligatoria")
     private LocalDate fechaInicio;
