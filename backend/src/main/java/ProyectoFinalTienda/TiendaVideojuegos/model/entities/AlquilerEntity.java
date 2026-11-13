@@ -87,7 +87,7 @@ public class AlquilerEntity {
             nullable = false
     )
     @NotNull(message = "El estado del alquiler no puede ser nulo")
-    @Enumerated(EnumType.STRING) // EN_CURSO, FINALIZADO, ATRASADO
+    @Enumerated(EnumType.STRING) // EN_CURSO, FINALIZADO
     private EstadoAlquiler estadoAlquiler;
 
    @Column(
