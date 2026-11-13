@@ -23,6 +23,9 @@ import java.util.List;
 
 
 public class AlquilerEntity {
+
+    private static final BigDecimal FACTOR_RECARGO_ATRASO = new BigDecimal("1.40");
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
@@ -148,7 +151,7 @@ public class AlquilerEntity {
 
         BigDecimal monto = montoDiarioAlquiler
                 .multiply(BigDecimal.valueOf(diasAtraso))
-                .multiply(BigDecimal.valueOf(1.40))
+                .multiply(FACTOR_RECARGO_ATRASO)
                 .setScale(2, RoundingMode.HALF_UP);
 
         PenalizacionEntity penalizacion = PenalizacionEntity.builder()
