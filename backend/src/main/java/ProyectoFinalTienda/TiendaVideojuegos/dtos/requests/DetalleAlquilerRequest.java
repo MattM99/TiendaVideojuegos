@@ -11,9 +11,6 @@ import lombok.*;
 @Builder
 public class DetalleAlquilerRequest {
 
-    @NotNull(message = "El ID del alquiler es obligatorio")
-    private int alquilerId;
-
     @NotNull(message = "El ID del juego es obligatorio")
     private int inventarioItemId;
 
