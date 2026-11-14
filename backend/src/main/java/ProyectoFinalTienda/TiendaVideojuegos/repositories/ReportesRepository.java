@@ -49,19 +49,21 @@ public interface ReportesRepository extends JpaRepository<AlquilerEntity, Intege
                               @Param("finMes") LocalDate finMes);
 
     @Query("""
-    SELECT COALESCE(SUM(p.montoFinal),0)
+    SELECT COALESCE(SUM(p.montoFinal), 0)
     FROM PagoEntity p
-    WHERE p.alquiler.fechaInicio BETWEEN :inicio AND :fin
+    WHERE p.fechaCreacion >= :inicio
+      AND p.fechaCreacion < :fin
 """)
     BigDecimal ingresosMes(
-            @Param("inicio") LocalDate inicio,
-            @Param("fin") LocalDate fin
+            @Param("inicio") LocalDateTime inicio,
+            @Param("fin") LocalDateTime fin
     );
 
     @Query("""
-    SELECT COALESCE(SUM(p.monto),0)
-    FROM PenalizacionEntity p
-    WHERE p.fechaCreacion BETWEEN :inicio AND :fin
+    SELECT COALESCE(SUM(p.penalizacionTotal), 0)
+    FROM PagoEntity p
+    WHERE p.fechaCreacion >= :inicio
+      AND p.fechaCreacion < :fin
 """)
     BigDecimal totalPenalizaciones(
             @Param("inicio") LocalDateTime inicio,
@@ -69,9 +71,10 @@ public interface ReportesRepository extends JpaRepository<AlquilerEntity, Intege
     );
 
     @Query("""
-SELECT COALESCE(AVG(p.montoFinal),0)
-FROM PagoEntity p
-WHERE p.fechaCreacion BETWEEN :inicio AND :fin
+    SELECT COALESCE(AVG(p.montoFinal), 0)
+    FROM PagoEntity p
+    WHERE p.fechaCreacion >= :inicio
+      AND p.fechaCreacion < :fin
 """)
     BigDecimal promedioIngresoPorAlquiler(
             @Param("inicio") LocalDateTime inicio,

@@ -23,14 +23,14 @@ public class ReportesService {
         LocalDate inicioMes = hoy.withDayOfMonth(1);
         LocalDate finMes = hoy.withDayOfMonth(hoy.lengthOfMonth());
         LocalDateTime inicioMesDateTime = inicioMes.atStartOfDay();
-        LocalDateTime finMesDateTime = finMes.atTime(23, 59, 59);
+        LocalDateTime finMesDateTime = inicioMes.plusMonths(1).atStartOfDay();
 
         return DashboardResponse.builder()
                 .totalAlquileres(reportesRepository.contarTotalAlquileres())
                 .alquileresActivos(reportesRepository.contarActivos())
                 .alquileresFinalizanManiana(reportesRepository.contarFinalizanPronto(hoy.plusDays(1)))
                 .alquileresMesActual(reportesRepository.contarAlquileresMes(inicioMes, finMes))
-                .ingresosMes(reportesRepository.ingresosMes(inicioMes, finMes))
+                .ingresosMes(reportesRepository.ingresosMes(inicioMesDateTime, finMesDateTime))
                 .ingresosPenalizacionesMes(reportesRepository.totalPenalizaciones(inicioMesDateTime, finMesDateTime))
                 .promedioPorAlquiler(reportesRepository.promedioIngresoPorAlquiler(inicioMesDateTime, finMesDateTime))
                 .videojuegosAlquilados(reportesRepository.contarVideojuegosAlquilados())
