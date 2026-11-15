@@ -38,6 +38,10 @@ public class ListaDeEsperaWorkflowService {
                         "Inventario con id: " + event.getInventarioItemId() + " no encontrado."
                 ));
 
+        if (!item.isActivo()) {
+            return;
+        }
+
         System.out.println(item.getListaDeEspera().size());
 
         boolean procesado;

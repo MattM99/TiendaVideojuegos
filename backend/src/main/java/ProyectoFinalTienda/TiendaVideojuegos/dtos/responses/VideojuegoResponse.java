@@ -29,5 +29,8 @@ public class VideojuegoResponse {
         return multijugador ? "Sí" : "No";
     }
 
+    // Baja lógica del videojuego
+    private boolean activo;
+
 }
 

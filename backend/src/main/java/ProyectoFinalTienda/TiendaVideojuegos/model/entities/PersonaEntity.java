@@ -29,35 +29,17 @@ public class PersonaEntity {
     )
     private int personaId;
 
-
-
     @JsonIgnore
-    @OneToOne(
-            mappedBy = "persona",
-            cascade = CascadeType.ALL
-    )
+    @OneToOne(mappedBy = "persona")
     private CuentaEntity cuenta;
 
-
-
-    @OneToMany(
-            mappedBy = "persona",
-            cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "persona")
     private List<BloqueoEntity> blacklist = new ArrayList<>();
 
-
-
-    @OneToMany(
-            mappedBy = "persona",
-            cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "persona")
     private List<AlquilerEntity> alquiler = new ArrayList<>();
 
-    @OneToMany(
-            mappedBy = "persona",
-            cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "persona")
     private List<ReservaEntity> reservas = new ArrayList<>();
 
 
@@ -104,4 +86,9 @@ public class PersonaEntity {
             nullable = false
     )
     private String telefono;
+
+    // Baja lógica de la persona
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean activo = true;
 }

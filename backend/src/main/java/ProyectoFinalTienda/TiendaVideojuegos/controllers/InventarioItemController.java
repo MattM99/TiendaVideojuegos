@@ -66,6 +66,29 @@ public class InventarioItemController {
         );
     }
 
+    @Operation(
+            summary = "Listar todos los inventarios para administración",
+            description = "Devuelve inventarios activos e inactivos"
+    )
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/administracion/listar")
+    public ResponseEntity<Page<InventarioItemResponse>> listarTodosAdministracion(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "inventarioItemId") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+        return ResponseEntity.ok(
+                inventarioItemService.obtenerTodos(paginacion)
+        );
+    }
+
     @Operation(summary = "Obtener un inventario por ID", description = "Devuelve un inventario específico por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<InventarioItemResponse> obtenerPorId(@PathVariable int id) {
@@ -186,7 +209,7 @@ public class InventarioItemController {
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Dar de baja inventario", description = "Da de baja un inventario (stock en 0)")
+    @Operation(summary = "Dar de baja inventario", description = "Realiza la baja lógica de un inventario, estableciendo activo=false sin eliminarlo ni modificar su stock.")
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @PatchMapping("/{id}/baja")
     public ResponseEntity<InventarioItemResponse> darDeBaja(@PathVariable int id) {

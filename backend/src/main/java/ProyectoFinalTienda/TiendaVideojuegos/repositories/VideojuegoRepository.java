@@ -22,6 +22,32 @@ public interface VideojuegoRepository extends JpaRepository<VideojuegoEntity, In
 
     Page<VideojuegoEntity> findByLanzamiento(Year lanzamiento, Pageable paginacion);
 
+    Page<VideojuegoEntity> findByActivoTrue(Pageable paginacion);
+
+    Page<VideojuegoEntity> findByTituloContainingAndActivoTrue(
+            String titulo,
+            Pageable paginacion
+    );
+
+    Page<VideojuegoEntity> findByDesarrolladorContainingAndActivoTrue(
+            String desarrollador,
+            Pageable paginacion
+    );
+
+    Page<VideojuegoEntity> findByGeneroAndActivoTrue(
+            Generos genero,
+            Pageable paginacion
+    );
+
+    Page<VideojuegoEntity> findByMultijugadorTrueAndActivoTrue(
+            Pageable paginacion
+    );
+
+    Page<VideojuegoEntity> findByLanzamientoAndActivoTrue(
+            Year lanzamiento,
+            Pageable paginacion
+    );
+
     boolean existsByTitulo(String titulo);
 
     boolean existsByTituloAndVideojuegoIdNot(String titulo, int videojuegoId);

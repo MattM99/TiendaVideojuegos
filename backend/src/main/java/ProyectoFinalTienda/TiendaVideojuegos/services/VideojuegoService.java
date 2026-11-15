@@ -8,11 +8,14 @@ import ProyectoFinalTienda.TiendaVideojuegos.exception.VideojuegoNoEncontradoExc
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.VideojuegoMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Generos;
+import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Year;
 
 @Service
@@ -22,6 +25,8 @@ public class VideojuegoService {
     private VideojuegoRepository videojuegoRepository;
     @Autowired
     private VideojuegoMapper videojuegoMapper;
+    @Autowired
+    private InventarioItemRepository inventarioItemRepository;
 
     /// Create
 
@@ -42,6 +47,11 @@ public class VideojuegoService {
 
     public Page<VideojuegoResponse> listarTodos(Pageable paginacion)
     {
+        return videojuegoRepository.findByActivoTrue(paginacion)
+                .map(videojuegoMapper::toResponse);
+    }
+
+    public Page<VideojuegoResponse> obtenerTodos(Pageable paginacion) {
         return videojuegoRepository.findAll(paginacion)
                 .map(videojuegoMapper::toResponse);
     }
@@ -51,22 +61,30 @@ public class VideojuegoService {
         return videojuegoMapper.toResponse(entity);
     }
 
-    public Page<VideojuegoResponse> buscarPorTitulo(String titulo, Pageable paginacion){
-        Page<VideojuegoEntity> videojuegos = videojuegoRepository.findByTituloContaining(titulo, paginacion);
-        if (videojuegos.isEmpty()) {
-            throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego que contenga el título: " + titulo);
-        }
-        return videojuegos
-                .map(videojuegoMapper::toResponse);
+    public Page<VideojuegoResponse> buscarPorTitulo(
+            String titulo,
+            Pageable paginacion) {
+
+        Page<VideojuegoEntity> videojuegos =
+                videojuegoRepository.findByTituloContainingAndActivoTrue(
+                        titulo,
+                        paginacion
+                );
+
+        return videojuegos.map(videojuegoMapper::toResponse);
     }
 
-    public Page<VideojuegoResponse> buscarPorDesarrollador(String desarrollador, Pageable paginacion){
-        Page<VideojuegoEntity> videojuegos = videojuegoRepository.findByDesarrolladorContaining(desarrollador, paginacion);
-        if (videojuegos.isEmpty()) {
-            throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego que contenga el desarrollador: " + desarrollador);
-        }
-        return videojuegos
-                .map(videojuegoMapper::toResponse);
+    public Page<VideojuegoResponse> buscarPorDesarrollador(
+            String desarrollador,
+            Pageable paginacion) {
+
+        Page<VideojuegoEntity> videojuegos =
+                videojuegoRepository.findByDesarrolladorContainingAndActivoTrue(
+                        desarrollador,
+                        paginacion
+                );
+
+        return videojuegos.map(videojuegoMapper::toResponse);
     }
 
     public Page<VideojuegoResponse> buscarPorGenero(
@@ -74,32 +92,35 @@ public class VideojuegoService {
             Pageable paginacion) {
 
         Page<VideojuegoEntity> juegos =
-                videojuegoRepository.findByGenero(genero, paginacion);
-
-        if (juegos.isEmpty()) {
-            throw new VideojuegoNoEncontradoException(
-                    "No se encontraron juegos del genero: " + genero);
-        }
+                videojuegoRepository.findByGeneroAndActivoTrue(
+                        genero,
+                        paginacion
+                );
 
         return juegos.map(videojuegoMapper::toResponse);
     }
 
-    public Page<VideojuegoResponse> buscarMultijugadores(Pageable paginacion){
-        Page<VideojuegoEntity> videojuegos = videojuegoRepository.findByMultijugadorTrue(paginacion);
-        if (videojuegos.isEmpty()) {
-            throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego multijugador.");
-        }
-        return videojuegos
-                .map(videojuegoMapper::toResponse);
+    public Page<VideojuegoResponse> buscarMultijugadores(Pageable paginacion) {
+
+        Page<VideojuegoEntity> videojuegos =
+                videojuegoRepository.findByMultijugadorTrueAndActivoTrue(
+                        paginacion
+                );
+
+        return videojuegos.map(videojuegoMapper::toResponse);
     }
 
-    public Page<VideojuegoResponse> buscarPorLanzamiento(Year lanzamiento, Pageable paginacion){
-        Page<VideojuegoEntity> videojuegos = videojuegoRepository.findByLanzamiento(lanzamiento, paginacion);
-        if (videojuegos.isEmpty()) {
-            throw new VideojuegoNoEncontradoException("No se encontró ningún videojuego con año de lanzamiento: " + lanzamiento);
-        }
-        return videojuegos
-                .map(videojuegoMapper::toResponse);
+    public Page<VideojuegoResponse> buscarPorLanzamiento(
+            Year lanzamiento,
+            Pageable paginacion) {
+
+        Page<VideojuegoEntity> videojuegos =
+                videojuegoRepository.findByLanzamientoAndActivoTrue(
+                        lanzamiento,
+                        paginacion
+                );
+
+        return videojuegos.map(videojuegoMapper::toResponse);
     }
 
     /// Update
@@ -108,6 +129,12 @@ public class VideojuegoService {
     public VideojuegoResponse actualizarCompleto(int id, VideojuegoCreateOrReplaceRequest datosNuevos) {
         VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
                 .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id " + id + " no encontrado."));
+
+        if (!videojuegoExistente.isActivo()) {
+            throw new BusinessException(
+                    "El videojuego está dado de baja y no se puede modificar."
+            );
+        }
 
         validarLanzamiento(datosNuevos.getLanzamiento());
         validarTituloDuplicado(datosNuevos.getTitulo(), id);
@@ -129,6 +156,12 @@ public class VideojuegoService {
     public VideojuegoResponse actualizarPorCampo(int id, VideojuegoUpdateRequest datosActualizados) {
         VideojuegoEntity videojuegoExistente = videojuegoRepository.findById(id)
                 .orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id " + id + " no encontrado."));
+        if (!videojuegoExistente.isActivo()) {
+            throw new BusinessException(
+                    "El videojuego está dado de baja y no se puede modificar."
+            );
+        }
+
         validarLanzamiento(datosActualizados.getLanzamiento());
         validarTituloDuplicado(datosActualizados.getTitulo(), id);
         videojuegoMapper.actualizarEntity(videojuegoExistente, datosActualizados);
@@ -137,11 +170,32 @@ public class VideojuegoService {
 
     /// Delete
 
-    public void eliminar(int id){
-        if (!videojuegoRepository.existsById(id)) {
-            throw new VideojuegoNoEncontradoException("Videojuego con id: " + id + " no encontrado.");
+    @Transactional
+    public void eliminar(int id) {
+
+        VideojuegoEntity videojuego = videojuegoRepository.findById(id)
+                .orElseThrow(() -> new VideojuegoNoEncontradoException(
+                        "Videojuego con id: " + id + " no encontrado."
+                ));
+
+        if (!videojuego.isActivo()) {
+            throw new BusinessException(
+                    "El videojuego ya se encuentra dado de baja."
+            );
         }
-        videojuegoRepository.deleteById(id);
+
+        boolean tieneInventariosActivos =
+                inventarioItemRepository.existsByVideojuego_VideojuegoIdAndActivoTrue(id);
+
+        if (tieneInventariosActivos) {
+            throw new BusinessException(
+                    "No se puede dar de baja el videojuego porque tiene inventarios activos."
+            );
+        }
+
+        videojuego.setActivo(false);
+
+        videojuegoRepository.save(videojuego);
     }
 
     /// Helpers privados

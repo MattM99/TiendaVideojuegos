@@ -37,6 +37,7 @@ public class InventarioItemMapper {
                 .precioDiario(entity.getPrecioDiario())
                 .stockTotal(entity.getStockTotal())
                 .stockDisponible(entity.getStockDisponible())
+                .activo(entity.isActivo())
                 .build();
     }
 

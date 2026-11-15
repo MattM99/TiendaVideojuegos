@@ -51,6 +51,13 @@ public class AlquilerService {
         String dni = request.getPersonaDni();
         PersonaEntity persona = personaRepository.findByDni(dni)
                 .orElseThrow(() -> new PersonaNoEncontradaException("No existe la persona con DNI " + dni));
+
+        if (!persona.isActivo()) {
+            throw new BusinessException(
+                    "La persona está dada de baja y no puede realizar alquileres."
+            );
+        }
+
         bloqueoService.verificarNoEstaEnListaNegra(dni); // Verificar si la persona está en lista negra, si está lanza excepción.
 
         AlquilerEntity alquiler = alquilerMapper.toEntity(request, persona);
@@ -69,6 +76,18 @@ public class AlquilerService {
         InventarioItemEntity inventario = inventarioItemRepository.findById(request.getInventarioItemId())
                 .orElseThrow(() -> new InventarioItemNoEncontradoException(
                         "Inventario con id: " + request.getInventarioItemId() + " no encontrado."));
+
+        if (!inventario.isActivo()) {
+            throw new BusinessException(
+                    "El inventario está dado de baja y no se puede alquilar."
+            );
+        }
+
+        if (!inventario.getVideojuego().isActivo()) {
+            throw new BusinessException(
+                    "El videojuego asociado está dado de baja y no se puede alquilar."
+            );
+        }
 
         inventario.entregarCopias(persona, request.getCantidad());
 

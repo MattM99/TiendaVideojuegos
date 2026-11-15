@@ -154,6 +154,12 @@ public class PersonaService {
         PersonaEntity persona = personaRepository.findByDni(dni)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con DNI: " + dni));
 
+        if (!persona.isActivo()) {
+            throw new BusinessException(
+                    "La persona ya se encuentra dada de baja."
+            );
+        }
+
         CuentaEntity cuenta = persona.getCuenta();
         if (cuenta != null) {
             if (cuenta.getRol() == Roles.FOUNDER) {
@@ -162,7 +168,8 @@ public class PersonaService {
             throw new BusinessException("La persona tiene una cuenta asociada. Dala de baja en lugar de eliminarla.");
         }
 
-        personaRepository.delete(persona);
+        persona.setActivo(false);
+        personaRepository.save(persona);
     }
 
 }

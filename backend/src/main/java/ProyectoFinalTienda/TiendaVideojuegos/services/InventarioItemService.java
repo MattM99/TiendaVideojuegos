@@ -54,6 +54,12 @@ public class InventarioItemService {
         VideojuegoEntity videojuego = videojuegoRepository.findById(request.getVideojuegoId()).
                 orElseThrow(() -> new VideojuegoNoEncontradoException("Videojuego con id: " + request.getVideojuegoId() + " no encontrado."));
 
+        if (!videojuego.isActivo()) {
+            throw new BusinessException(
+                    "No se puede crear un inventario para un videojuego dado de baja."
+            );
+        }
+
         validarCreate(request);
 
         InventarioItemEntity entity = inventarioItemMapper.toEntity(request, videojuego);
@@ -63,15 +69,7 @@ public class InventarioItemService {
 
     /// Read
 
-    public List<InventarioItemResponse> obtenerTodos(){
-        List<InventarioItemEntity> inventarios = inventarioItemRepository.findAll();
-        if (inventarios.isEmpty()) {
-            throw new InventarioItemNoEncontradoException("No se encontró ningún inventario en el sistema.");
-        }
-        return inventarioItemMapper.toResponseList(inventarios);
-    }
-
-    public Page<InventarioItemResponse> listarTodos(Pageable paginacion) {
+    public Page<InventarioItemResponse> obtenerTodos(Pageable paginacion) {
         return inventarioItemRepository.findAll(paginacion)
                 .map(inventario -> {
 
@@ -87,6 +85,23 @@ public class InventarioItemService {
                 });
     }
 
+    public Page<InventarioItemResponse> listarTodos(Pageable paginacion) {
+        return inventarioItemRepository.findByActivoTrue(paginacion)
+                .map(inventario -> {
+
+                    VideojuegoResponse videojuegoResponse =
+                            videojuegoMapper.toResponse(
+                                    inventario.getVideojuego()
+                            );
+
+                    return inventarioItemMapper.toResponse(
+                            inventario,
+                            videojuegoResponse
+                    );
+                });
+    }
+
+
     public InventarioItemResponse buscarPorId(int id){
         InventarioItemEntity entity = inventarioItemRepository.findById(id)
                 .orElseThrow(() -> new InventarioItemNoEncontradoException("Inventario con id: " + id + " no encontrado."));
@@ -95,7 +110,10 @@ public class InventarioItemService {
 
     public Page<InventarioItemResponse> buscarPorVideojuego(int videojuegoId, Pageable paginacion) {
         Page<InventarioItemEntity> inventarios =
-                inventarioItemRepository.findByVideojuegoId(videojuegoId, paginacion);
+                inventarioItemRepository.findByVideojuego_VideojuegoIdAndActivoTrue(
+                        videojuegoId,
+                        paginacion
+                );
         if (inventarios.isEmpty()) {
             throw new InventarioItemNoEncontradoException("No se encontró ningún inventario con la id del videojuego: " + videojuegoId);
         }
@@ -107,33 +125,29 @@ public class InventarioItemService {
                 Plataformas plataforma) {
 
             Page<InventarioItemEntity> inventarios =
-                    inventarioItemRepository.findByPlataforma(plataforma, paginacion);
+                    inventarioItemRepository.findByPlataformaAndActivoTrue(
+                            plataforma,
+                            paginacion
+                    );
 
-            if (inventarios.isEmpty()) {
-                throw new InventarioItemNoEncontradoException(
-                        "No se encontró ningún inventario con la plataforma: " + plataforma);
-            }
-
-        return inventarios.map(this::mapearInventario);
-        }
+            return inventarios.map(this::mapearInventario);
+    }
 
     public Page<InventarioItemResponse> buscarMasBaratosQue(
             double valor,
             Pageable paginacion) {
 
-        if (valor < 0) {
-            throw new IllegalArgumentException("El valor debe ser mayor a 0.");
+        if (valor <= 0) {
+            throw new IllegalArgumentException(
+                    "El valor debe ser mayor a 0."
+            );
         }
 
         Page<InventarioItemEntity> inventarios =
-                inventarioItemRepository.findByPrecioDiarioLessThan(
+                inventarioItemRepository.findByPrecioDiarioLessThanAndActivoTrue(
                         valor,
-                        paginacion);
-
-        if (inventarios.isEmpty()) {
-            throw new InventarioItemNoEncontradoException(
-                    "No se encontró ningún inventario con precio menor a: " + valor);
-        }
+                        paginacion
+                );
 
         return inventarios.map(this::mapearInventario);
     }
@@ -143,23 +157,18 @@ public class InventarioItemService {
             double valor,
             Pageable paginacion) {
 
-        if (valor < 0) {
-            throw new IllegalArgumentException("El valor debe ser mayor a 0.");
+        if (valor <= 0) {
+            throw new IllegalArgumentException(
+                    "El valor debe ser mayor a 0."
+            );
         }
 
         Page<InventarioItemEntity> inventarios =
-                inventarioItemRepository.findByPlataformaAndPrecioDiarioLessThan(
+                inventarioItemRepository.findByPlataformaAndPrecioDiarioLessThanAndActivoTrue(
                         plataforma,
                         valor,
-                        paginacion);
-
-        if (inventarios.isEmpty()) {
-            throw new InventarioItemNoEncontradoException(
-                    "No se encontró ningún inventario con plataforma "
-                            + plataforma
-                            + " y precio menor a "
-                            + valor);
-        }
+                        paginacion
+                );
 
         return inventarios.map(this::mapearInventario);
     }
@@ -169,6 +178,18 @@ public class InventarioItemService {
     public InventarioItemResponse actualizarCompleto(int id, InventarioItemCreateOrReplaceRequest nuevosDatos) {
 
         InventarioItemEntity existente = obtenerInventarioPorId(id);
+
+        if (!existente.isActivo()) {
+            throw new BusinessException(
+                    "El inventario está dado de baja y no se puede modificar."
+            );
+        }
+
+        if (!existente.getVideojuego().isActivo()) {
+            throw new BusinessException(
+                    "El videojuego asociado está dado de baja y no se puede modificar su inventario."
+            );
+        }
 
         validarUpdate(
                 nuevosDatos.getVideojuegoId(),
@@ -186,15 +207,31 @@ public class InventarioItemService {
     }
 
     public InventarioItemResponse actualizarPorCampo(int id, InventarioItemUpdateRequest datosActualizados) {
+
         InventarioItemEntity existente = inventarioItemRepository.findById(id)
-                .orElseThrow(() -> new InventarioItemNoEncontradoException("Inventario con id: " + id + " no encontrado."));
+                .orElseThrow(() -> new InventarioItemNoEncontradoException(
+                        "Inventario con id: " + id + " no encontrado."));
+
+        if (!existente.isActivo()) {
+            throw new BusinessException(
+                    "El inventario está dado de baja y no se puede modificar."
+            );
+        }
+
+        if (!existente.getVideojuego().isActivo()) {
+            throw new BusinessException(
+                    "El videojuego asociado está dado de baja y no se puede modificar su inventario."
+            );
+        }
 
         validarUpdate(
                 existente.getVideojuego().getVideojuegoId(),
                 existente.getPlataforma(),
                 id
         );
+
         inventarioItemMapper.actualizarEntity(existente, datosActualizados);
+
         validarStock(existente.getStockDisponible(), existente.getStockTotal());
 
         return mapearResponse(inventarioItemRepository.save(existente));
@@ -205,8 +242,19 @@ public class InventarioItemService {
 
         InventarioItemEntity existente = obtenerInventarioPorId(id);
 
-        existente.aumentarStockTotal(cantidad);
+        if (!existente.isActivo()) {
+            throw new BusinessException(
+                    "El inventario está dado de baja y no se puede agregar stock."
+            );
+        }
 
+        if (!existente.getVideojuego().isActivo()) {
+            throw new BusinessException(
+                    "El videojuego asociado está dado de baja y no se puede agregar stock."
+            );
+        }
+
+        existente.aumentarStockTotal(cantidad);
         existente.aumentarStockDisponible(cantidad);
 
         InventarioItemEntity guardado =
@@ -218,7 +266,9 @@ public class InventarioItemService {
                 )
         );
 
-        System.out.println("Evento publicado para inventario " + guardado.getInventarioItemId());
+        System.out.println(
+                "Evento publicado para inventario " + guardado.getInventarioItemId()
+        );
 
         return mapearResponse(guardado);
     }
@@ -246,27 +296,36 @@ public class InventarioItemService {
         );
     }
 
-    /// Delete
 
+    @Transactional
     public void eliminar(int id) {
         InventarioItemEntity inventario = obtenerInventarioPorId(id);
 
+        if (!inventario.isActivo()) {
+            throw new BusinessException(
+                    "El inventario ya se encuentra dado de baja."
+            );
+        }
+
         validarSinCompromisos(inventario);
 
-        inventarioItemRepository.delete(inventario);
+        inventario.setActivo(false);
+        inventarioItemRepository.save(inventario);
     }
 
-    public InventarioItemResponse darDeBaja(int id) throws StockNoValidoException {
+    @Transactional
+    public InventarioItemResponse darDeBaja(int id) {
         InventarioItemEntity existente = obtenerInventarioPorId(id);
+
+        if (!existente.isActivo()) {
+            throw new BusinessException(
+                    "El inventario ya se encuentra dado de baja."
+            );
+        }
 
         validarSinCompromisos(existente);
 
-        /// En una evolución futura del sistema agregaría un estado de inventario inactivo o
-        /// discontinuado. En esta versión decidimos priorizar la consistencia de los alquileres
-        /// y reservas existentes.
-
-        existente.setStockTotal(0);
-        existente.setStockDisponible(0);
+        existente.setActivo(false);
 
         return mapearResponse(inventarioItemRepository.save(existente));
     }
@@ -288,7 +347,25 @@ public class InventarioItemService {
                                         + request.getPersonaDni()
                         ));
 
+        if (!persona.isActivo()) {
+            throw new BusinessException(
+                    "La persona está dada de baja y no puede realizar reservas."
+            );
+        }
+
         InventarioItemEntity inventario = obtenerInventarioPorId(inventarioId);
+
+        if (!inventario.isActivo()) {
+            throw new BusinessException(
+                    "El inventario está dado de baja y no se pueden realizar reservas."
+            );
+        }
+
+        if (!inventario.getVideojuego().isActivo()) {
+            throw new BusinessException(
+                    "El videojuego asociado está dado de baja y no se pueden realizar reservas."
+            );
+        }
 
         if (inventario.getStockDisponible() > 0) {
             throw new BusinessException(
@@ -341,11 +418,23 @@ public class InventarioItemService {
     }
 
     private void validarSinCompromisos(InventarioItemEntity inventario) {
-        if (inventario.getStockTotal()
-                != inventario.getStockDisponible()) {
 
+        if (inventario.getStockTotal() != inventario.getStockDisponible()) {
             throw new StockNoValidoException(
                     "Hay copias comprometidas."
+            );
+        }
+
+        boolean tieneReservasActivas = inventario.getListaDeEspera()
+                .stream()
+                .anyMatch(reserva ->
+                        reserva.getEstadoReserva() == EstadoReserva.PENDIENTE
+                                || reserva.getEstadoReserva() == EstadoReserva.NOTIFICADA
+                );
+
+        if (tieneReservasActivas) {
+            throw new BusinessException(
+                    "No se puede dar de baja el inventario porque tiene reservas pendientes o notificadas."
             );
         }
     }

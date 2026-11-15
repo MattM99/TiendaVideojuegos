@@ -27,10 +27,7 @@ public class VideojuegoEntity {
     )
     private int videojuegoId;
 
-    @OneToMany(
-            mappedBy = "videojuego",
-            cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "videojuego")
     private List<InventarioItemEntity> inventario = new ArrayList<>();
 
     @Column(
@@ -75,5 +72,9 @@ public class VideojuegoEntity {
     )
     private boolean multijugador;
 
+    // Baja lógica del videojuego
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean activo = true;
 
 }

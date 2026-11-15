@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -65,6 +66,29 @@ public class VideojuegoController {
 
         return ResponseEntity.ok(
                 videojuegoService.listarTodos(paginacion)
+        );
+    }
+
+    @Operation(
+            summary = "Listar todos los videojuegos para administración",
+            description = "Devuelve videojuegos activos e inactivos"
+    )
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/administracion/listar")
+    public ResponseEntity<Page<VideojuegoResponse>> listarTodosAdministracion(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "titulo") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+        return ResponseEntity.ok(
+                videojuegoService.obtenerTodos(paginacion)
         );
     }
 

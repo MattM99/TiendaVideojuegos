@@ -14,6 +14,33 @@ import java.util.List;
 @Repository
 public interface InventarioItemRepository extends JpaRepository<InventarioItemEntity, Integer> {
 
+    Page<InventarioItemEntity> findByActivoTrue(Pageable paginacion);
+
+    Page<InventarioItemEntity> findByVideojuego_VideojuegoIdAndActivoTrue(
+            int videojuegoId,
+            Pageable paginacion
+    );
+
+    boolean existsByVideojuego_VideojuegoIdAndActivoTrue(
+            int videojuegoId
+    );
+
+    Page<InventarioItemEntity> findByPrecioDiarioLessThanAndActivoTrue(
+            double valor,
+            Pageable paginacion
+    );
+
+    Page<InventarioItemEntity> findByPlataformaAndActivoTrue(
+            Plataformas plataforma,
+            Pageable paginacion
+    );
+
+    Page<InventarioItemEntity> findByPlataformaAndPrecioDiarioLessThanAndActivoTrue(
+            Plataformas plataforma,
+            double valor,
+            Pageable paginacion
+    );
+
     @Query(
     """
     SELECT i

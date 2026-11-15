@@ -33,6 +33,7 @@ public class VideojuegoMapper {
                 .lanzamiento(entity.getLanzamiento())
                 .descripcion(entity.getDescripcion())
                 .multijugador(entity.isMultijugador())
+                .activo(entity.isActivo())
                 .build();
     }
 

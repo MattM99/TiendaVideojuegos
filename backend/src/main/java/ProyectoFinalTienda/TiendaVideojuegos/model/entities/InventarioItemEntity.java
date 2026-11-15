@@ -40,15 +40,15 @@ public class InventarioItemEntity {
     @NotNull(message = "El videojuego no puede ser nulo")
     private VideojuegoEntity videojuego;
 
-    @OneToMany(
-            mappedBy = "inventarioItem",
-            cascade = CascadeType.ALL
-    )
+    @OneToMany(mappedBy = "inventarioItem")
     private List<DetalleAlquilerEntity> detalleAlquileres;
 
     @OneToMany(
             mappedBy = "inventarioItem",
-            cascade = CascadeType.ALL
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            }
     )
     private List<ReservaEntity> listaDeEspera = new ArrayList<>();
 
@@ -80,6 +80,10 @@ public class InventarioItemEntity {
     )
     @Min(value = 0, message = "El stock disponible no puede ser negativo")
     private int stockDisponible;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean activo = true;
 
     public void entregarCopias(PersonaEntity persona, int cantidad) {
         Optional<ReservaEntity> reserva = buscarReservaNotificada(persona);

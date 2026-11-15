@@ -18,5 +18,5 @@ public class InventarioItemResponse {
     private BigDecimal precioDiario;
     private int stockTotal;
     private int stockDisponible;
-
+    private boolean activo;
 }
