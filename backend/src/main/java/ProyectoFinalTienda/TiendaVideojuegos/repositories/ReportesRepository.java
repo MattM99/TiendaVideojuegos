@@ -5,6 +5,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.TopGenerosResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.TopJuegosResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.TopPlataformasResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -37,8 +38,12 @@ public interface ReportesRepository extends JpaRepository<AlquilerEntity, Intege
     SELECT COUNT(a)
     FROM AlquilerEntity a
     WHERE a.fechaFin = :fecha
+    AND a.estadoAlquiler = :estado
 """)
-    Long contarFinalizanPronto(LocalDate fecha);
+    Long contarFinalizanPronto(
+            @Param("fecha") LocalDate fecha,
+            @Param("estado") EstadoAlquiler estado
+    );
 
     @Query("""
     SELECT COUNT(a)

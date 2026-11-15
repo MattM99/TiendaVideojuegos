@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.*;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.ReportesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -28,7 +29,7 @@ public class ReportesService {
         return DashboardResponse.builder()
                 .totalAlquileres(reportesRepository.contarTotalAlquileres())
                 .alquileresActivos(reportesRepository.contarActivos())
-                .alquileresFinalizanManiana(reportesRepository.contarFinalizanPronto(hoy.plusDays(1)))
+                .alquileresFinalizanManiana(reportesRepository.contarFinalizanPronto(hoy.plusDays(1), EstadoAlquiler.EN_CURSO))
                 .alquileresMesActual(reportesRepository.contarAlquileresMes(inicioMes, finMes))
                 .ingresosMes(reportesRepository.ingresosMes(inicioMesDateTime, finMesDateTime))
                 .ingresosPenalizacionesMes(reportesRepository.totalPenalizaciones(inicioMesDateTime, finMesDateTime))
