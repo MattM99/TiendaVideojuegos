@@ -100,13 +100,16 @@ public class AlquilerService {
 
     /// Read
 
-    public Page<AlquilerResponse> listarTodos(LocalDate fechaInicio, LocalDate fechaFin, Pageable paginacion)
-    {
+    public Page<AlquilerResponse> listarTodos(
+            LocalDate fechaInicio,
+            LocalDate fechaFin,
+            Pageable paginacion) {
+
         Page<AlquilerEntity> alquileres;
 
         if (fechaInicio != null && fechaFin != null) {
 
-            alquileres = alquilerRepository.findByFechaInicioBetween(
+            alquileres = alquilerRepository.findByFechaInicioBetweenAndActivoTrue(
                     fechaInicio,
                     fechaFin,
                     paginacion
@@ -114,16 +117,32 @@ public class AlquilerService {
 
         } else {
 
-            alquileres = alquilerRepository.findAll(paginacion);
+            alquileres = alquilerRepository.findByActivoTrue(paginacion);
         }
 
-        return alquileres
+        return alquileres.map(alquilerMapper::toResponse);
+    }
+
+    public Page<AlquilerResponse> obtenerTodos(Pageable paginacion) {
+
+        return alquilerRepository.findAll(paginacion)
                 .map(alquilerMapper::toResponse);
     }
 
-    public AlquilerResponse buscarPorId(int id){
+    public AlquilerResponse buscarPorId(int id) {
+        AlquilerEntity entity = alquilerRepository.findByAlquilerIdAndActivoTrue(id)
+                .orElseThrow(() -> new AlquilerNoEncontradoException(
+                        "Alquiler con id: " + id + " no encontrado."));
+
+        return alquilerMapper.toResponse(entity);
+    }
+
+    public AlquilerResponse buscarPorIdAdministracion(int id) {
+
         AlquilerEntity entity = alquilerRepository.findById(id)
-                .orElseThrow(() -> new AlquilerNoEncontradoException("Alquiler con id: " + id + " no encontrado."));
+                .orElseThrow(() -> new AlquilerNoEncontradoException(
+                        "Alquiler con id: " + id + " no encontrado."));
+
         return alquilerMapper.toResponse(entity);
     }
 
@@ -197,11 +216,29 @@ public class AlquilerService {
 
     /// Delete
 
-    public void eliminar(int id){
-        if (!alquilerRepository.existsById(id)) {
-            throw new AlquilerNoEncontradoException("Alquiler con id: " + id + " no encontrado.");
+    @Transactional
+    public void eliminar(int id) {
+
+        AlquilerEntity alquiler = alquilerRepository.findById(id)
+                .orElseThrow(() -> new AlquilerNoEncontradoException(
+                        "Alquiler con id: " + id + " no encontrado."
+                ));
+
+        if (!alquiler.isActivo()) {
+            throw new BusinessException(
+                    "El alquiler ya se encuentra dado de baja."
+            );
         }
-        alquilerRepository.deleteById(id);
+
+        if (alquiler.getEstadoAlquiler() == EstadoAlquiler.EN_CURSO) {
+            throw new BusinessException(
+                    "No se puede dar de baja un alquiler que está EN_CURSO."
+            );
+        }
+
+        alquiler.setActivo(false);
+
+        alquilerRepository.save(alquiler);
     }
 
     /// -------------- Regla de negocio -------------- ///

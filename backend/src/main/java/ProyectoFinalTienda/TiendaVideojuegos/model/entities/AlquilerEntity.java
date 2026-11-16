@@ -90,6 +90,11 @@ public class AlquilerEntity {
     @Enumerated(EnumType.STRING) // EN_CURSO, FINALIZADO
     private EstadoAlquiler estadoAlquiler;
 
+    // Baja lógica del alquiler
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean activo = true;
+
    @Column(
             name = "monto_diario_alquiler",
             nullable = false

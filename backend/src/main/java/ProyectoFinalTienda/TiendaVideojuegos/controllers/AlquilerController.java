@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
@@ -92,11 +93,48 @@ public class AlquilerController {
         );
     }
 
+    @Operation(
+            summary = "Listar todos los alquileres para administración",
+            description = "Devuelve alquileres activos e inactivos"
+    )
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/administracion/listar")
+    public ResponseEntity<Page<AlquilerResponse>> listarTodosAdministracion(
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamano,
+            @RequestParam(defaultValue = "alquilerId") String ordenarPor,
+            @RequestParam(defaultValue = "asc") String direccion
+    ) {
+        Sort sort = direccion.equalsIgnoreCase("desc")
+                ? Sort.by(ordenarPor).descending()
+                : Sort.by(ordenarPor).ascending();
+
+        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+
+        return ResponseEntity.ok(
+                alquilerService.obtenerTodos(paginacion)
+        );
+    }
+
     @Operation(summary = "Obtener un alquiler por ID", description = "Devuelve un alquiler específico por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<AlquilerResponse> obtenerPorId(@PathVariable int id) {
         AlquilerResponse response = alquilerService.buscarPorId(id);
         return ResponseEntity.ok(response);
+    }
+
+    @Operation(
+            summary = "Buscar alquiler por ID para administración",
+            description = "Permite consultar alquileres activos e inactivos"
+    )
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @GetMapping("/administracion/{id}")
+    public ResponseEntity<AlquilerResponse> buscarPorIdAdministracion(
+            @PathVariable int id
+    ) {
+        return ResponseEntity.ok(
+                alquilerService.buscarPorIdAdministracion(id)
+        );
     }
 
     @Operation(summary = "Obtener alquileres por usuario", description = "Devuelve una lista de alquileres asociados a un usuario específico")

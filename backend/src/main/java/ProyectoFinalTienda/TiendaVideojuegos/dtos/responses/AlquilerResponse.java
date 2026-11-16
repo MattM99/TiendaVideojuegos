@@ -26,6 +26,8 @@ public class AlquilerResponse {
 
     private EstadoAlquiler estadoAlquiler;
 
+    private boolean activo;
+
     private List<DetalleAlquilerResponse> carrito;
 
     private List<PenalizacionResponse> penalizaciones;

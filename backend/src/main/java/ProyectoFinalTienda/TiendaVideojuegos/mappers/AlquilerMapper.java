@@ -44,6 +44,7 @@ public class AlquilerMapper {
                 .fechaDevolucion(entity.getFechaDevolucion())
 
                 .estadoAlquiler(entity.getEstadoAlquiler())
+                .activo(entity.isActivo())
 
                 .montoDiarioAlquiler(entity.getMontoDiarioAlquiler())
 
