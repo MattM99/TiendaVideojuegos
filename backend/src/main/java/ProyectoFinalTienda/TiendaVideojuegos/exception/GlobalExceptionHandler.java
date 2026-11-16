@@ -30,54 +30,73 @@ public class GlobalExceptionHandler {
 
     // Errores de validación con @Valid
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> manejarValidaciones(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> manejarValidaciones(MethodArgumentNotValidException ex) {
+
         String errores = ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .collect(Collectors.joining("; "));
-        return new ResponseEntity<>(errores, HttpStatus.BAD_REQUEST);
+
+        return buildResponse(HttpStatus.BAD_REQUEST, errores);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<List<String>> manejarConstraintViolation(ConstraintViolationException ex) {
+    public ResponseEntity<ErrorResponse> manejarConstraintViolation(ConstraintViolationException ex) {
 
         List<String> errores = ex.getConstraintViolations()
                 .stream()
                 .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
                 .toList();
 
-        return ResponseEntity.badRequest().body(errores);
+        return buildResponse(HttpStatus.BAD_REQUEST, errores);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> manejarJsonInvalido(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ErrorResponse> manejarJsonInvalido(HttpMessageNotReadableException ex) {
 
-        return ResponseEntity.badRequest()
-                .body("Error en el formato de los datos enviados. Por favor, verifique fechas y tipos.");
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                "Error en el formato de los datos enviados. Por favor, verifique fechas y tipos."
+        );
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> manejarIllegalArgument(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> manejarIllegalArgument(IllegalArgumentException ex) {
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
     }
 
     @ExceptionHandler(EstadoInvalidoException.class)
-    public ResponseEntity<String> handleEstadoInvalido(EstadoInvalidoException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleEstadoInvalido(EstadoInvalidoException ex) {
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
     }
 
     @ExceptionHandler(RolInvalidoException.class)
-    public ResponseEntity<String> manejarRolInvalido(RolInvalidoException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> manejarRolInvalido(RolInvalidoException ex) {
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
     }
 
     @ExceptionHandler(StockNoValidoException.class)
-    public ResponseEntity<String> manejarStockNoValido(StockNoValidoException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> manejarStockNoValido(StockNoValidoException ex) {
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<String> manejarBusinessException(BusinessException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> manejarBusinessException(BusinessException ex) {
+        return buildResponse(
+                HttpStatus.BAD_REQUEST,
+                ex.getMessage()
+        );
     }
 
     // ===============================
@@ -86,8 +105,11 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<String> manejarNotFound(NotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> manejarNotFound(NotFoundException ex) {
+        return buildResponse(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage()
+        );
     }
 
     @ExceptionHandler({
@@ -104,8 +126,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String> manejarElementoNoEncontrado(NoSuchElementException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> manejarElementoNoEncontrado(NoSuchElementException ex) {
+        return buildResponse(
+                HttpStatus.NOT_FOUND,
+                ex.getMessage()
+        );
     }
 
 
@@ -115,9 +140,12 @@ public class GlobalExceptionHandler {
 
     //  Cuando se intenta insertar un dato que viola una restricción
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> manejarViolacionIntegridad(DataIntegrityViolationException ex) {
-        String mensaje = "Violación de integridad de datos: probablemente un campo único ya existe.";
-        return new ResponseEntity<>(mensaje, HttpStatus.CONFLICT); // 409 Conflict
+    public ResponseEntity<ErrorResponse> manejarViolacionIntegridad(DataIntegrityViolationException ex) {
+
+        return buildResponse(
+                HttpStatus.CONFLICT,
+                "Violación de integridad de datos: probablemente un campo único ya existe."
+        );
     }
 
     // ===============================
@@ -125,8 +153,11 @@ public class GlobalExceptionHandler {
     // ===============================
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<String> manejarAccesoDenegado(AccessDeniedException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> manejarAccesoDenegado(AccessDeniedException ex) {
+        return buildResponse(
+                HttpStatus.FORBIDDEN,
+                "No tenés permisos para realizar esta operación."
+        );
     }
 
 
@@ -137,9 +168,12 @@ public class GlobalExceptionHandler {
 
     //  Manejador general para cualquier excepción no controlada
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> manejarExcepcionGeneral(Exception ex) {
-        String mensaje = "Error interno del servidor: " + ex.getMessage();
-        return new ResponseEntity<>(mensaje, HttpStatus.INTERNAL_SERVER_ERROR); // 500
+    public ResponseEntity<ErrorResponse> manejarExcepcionGeneral(Exception ex) {
+
+        return buildResponse(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Ocurrió un error interno en el servidor."
+        );
     }
 
     // ===============================
