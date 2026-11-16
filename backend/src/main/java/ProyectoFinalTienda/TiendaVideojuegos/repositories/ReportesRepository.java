@@ -48,10 +48,13 @@ public interface ReportesRepository extends JpaRepository<AlquilerEntity, Intege
     @Query("""
     SELECT COUNT(a)
     FROM AlquilerEntity a
-    WHERE a.fechaInicio BETWEEN :inicioMes AND :finMes
+    WHERE a.fechaInicio >= :inicioMes
+      AND a.fechaInicio < :finMes
 """)
-    Long contarAlquileresMes( @Param("inicioMes") LocalDate inicioMes,
-                              @Param("finMes") LocalDate finMes);
+    Long contarAlquileresMes(
+            @Param("inicioMes") LocalDate inicioMes,
+            @Param("finMes") LocalDate finMes
+    );
 
     @Query("""
     SELECT COALESCE(SUM(p.montoFinal), 0)

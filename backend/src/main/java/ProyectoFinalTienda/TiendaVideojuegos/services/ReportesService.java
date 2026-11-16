@@ -22,7 +22,7 @@ public class ReportesService {
     public DashboardResponse obtenerDashboard() {
         LocalDate hoy  = LocalDate.now();
         LocalDate inicioMes = hoy.withDayOfMonth(1);
-        LocalDate finMes = hoy.withDayOfMonth(hoy.lengthOfMonth());
+        LocalDate finMes = inicioMes.plusMonths(1);
         LocalDateTime inicioMesDateTime = inicioMes.atStartOfDay();
         LocalDateTime finMesDateTime = inicioMes.plusMonths(1).atStartOfDay();
 
