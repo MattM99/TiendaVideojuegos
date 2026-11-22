@@ -6,13 +6,13 @@ import ProyectoFinalTienda.TiendaVideojuegos.auth.CustomAuthenticationEntryPoint
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -36,14 +36,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))                .csrf(AbstractHttpConfigurer::disable) // Deshabilita CSRF para simplificar la configuración (no lo vamos a usar ahora)
-                .authorizeHttpRequests(authRequest -> authRequest
-                        .requestMatchers(
-                                "/api/auth/login",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll() // Se permite acceso al login (es de acceso público)
-                        .anyRequest().authenticated() // El resto de las peticiones requieren autenticación
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/login", "/v3/api-docs/**",
+                                "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/cuenta/yo").authenticated()
+                        .requestMatchers("/api/cuenta/mi-cuenta/**").authenticated()
+                        .requestMatchers("/api/cuenta/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers("/api/reportes/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMINISTRADOR")
+                        .anyRequest().authenticated()
                 )
         .sessionManagement(sessionManager ->
                 sessionManager

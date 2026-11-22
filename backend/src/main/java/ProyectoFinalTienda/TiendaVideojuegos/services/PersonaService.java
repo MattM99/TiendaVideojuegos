@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PersonaPatchRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.PersonaResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.exception.BusinessException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.PersonaNoEncontradaException;
 import ProyectoFinalTienda.TiendaVideojuegos.exception.UsuarioNoEncontradoException;
 import ProyectoFinalTienda.TiendaVideojuegos.mappers.PersonaMapper;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -147,9 +149,20 @@ public class PersonaService {
     }
 
 
+    @Transactional
     public void eliminarPorDni(String dni) {
-        personaRepository.deleteByDni(dni)
+        PersonaEntity persona = personaRepository.findByDni(dni)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con DNI: " + dni));
+
+        CuentaEntity cuenta = persona.getCuenta();
+        if (cuenta != null) {
+            if (cuenta.getRol() == Roles.FOUNDER) {
+                throw new AccessDeniedException("No se puede eliminar a la persona de la cuenta FOUNDER.");
+            }
+            throw new BusinessException("La persona tiene una cuenta asociada. Dala de baja en lugar de eliminarla.");
+        }
+
+        personaRepository.delete(persona);
     }
 
 }

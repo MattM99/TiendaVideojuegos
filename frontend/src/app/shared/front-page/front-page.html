@@ -11,7 +11,10 @@
     </p>
   </section>
 
+
   <section class="dashboard-cards">
+
+     @if (esAdmin()) {
     <div class="card" routerLink="/cuenta/listar">
       <div class="card-icon">
         <img src="assets/icons/employee.svg" alt="Empleados" class="icon">
@@ -22,7 +25,7 @@
         <p>Gestión de cuentas en el sistema.</p>
       </div>
     </div>
-
+    }
 
     <div class="card" routerLink="/personas">
       <div class="card-icon">
@@ -54,6 +57,7 @@
       </div>
     </div>
 
+    @if (esAdmin()) {
     <div class="card" routerLink="/inventario">
       <div class="card-icon">
         <img src="assets/icons/inventario.svg" alt="Inventario" class="icon">
@@ -63,6 +67,7 @@
         <p>Gestión de stock de videojuegos por plataforma y disponibilidad en local.</p>
       </div>
     </div>
+    }
 
     <div class="card" routerLink="/alquileres">
       <div class="card-icon">
@@ -74,6 +79,7 @@
       </div>
     </div>
 
+    @if (esAdmin()) {
     <div class="card" routerLink="/reportes">
       <div class="card-icon">
         <img src="assets/icons/reportes.svg" alt="Reportes" class="icon">
@@ -83,9 +89,10 @@
         <p>Informes y estadísticas del sistema.</p>
       </div>
     </div>
+    }
 
     @if(botonSecreto) {
- <a class="card secreto" routerLink="/secreto">
+    <a class="card secreto" routerLink="/secreto">
 
       <div class="card-icon">
         <img src="assets/icons/secreto.svg" class="icon">
@@ -97,8 +104,6 @@
       </div>
 
     </a>
-}
+    }
   </section>
 </div>
-
-
