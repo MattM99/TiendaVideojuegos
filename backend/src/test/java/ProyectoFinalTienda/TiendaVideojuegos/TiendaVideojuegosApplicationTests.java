@@ -1,6 +1,5 @@
 package ProyectoFinalTienda.TiendaVideojuegos;
 
-import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.services.VideojuegoService;
 import jakarta.transaction.Transactional;
@@ -8,10 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.junit.jupiter.api.Disabled;
 
-
-import java.util.List;
-
+@Disabled("Requiere una base MySQL en ejecución")
 @SpringBootTest
 class TiendaVideojuegosApplicationTests {
 

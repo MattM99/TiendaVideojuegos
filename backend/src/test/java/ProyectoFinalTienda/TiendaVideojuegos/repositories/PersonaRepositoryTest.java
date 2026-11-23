@@ -5,9 +5,10 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 
+@Disabled("Requiere una base MySQL en ejecución")
 
 @SpringBootTest
 class PersonaRepositoryTest {
