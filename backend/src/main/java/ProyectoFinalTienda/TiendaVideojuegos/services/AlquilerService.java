@@ -215,6 +215,12 @@ public class AlquilerService {
                         "Alquiler con id: " + alquilerId + " no encontrado."
                 ));
 
+        if (!alquiler.isActivo()) {
+            throw new BusinessException(
+                    "No se puede cerrar un alquiler dado de baja."
+            );
+        }
+
         if (alquiler.getEstadoAlquiler() != EstadoAlquiler.EN_CURSO) {
             throw new BusinessException(
                     "Solo se pueden cerrar alquileres en curso."
