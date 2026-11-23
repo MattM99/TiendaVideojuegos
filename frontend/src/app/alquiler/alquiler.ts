@@ -4,6 +4,7 @@ import { AlquilerModel } from './alquiler.model';
 import { CrearAlquilerRequest } from './alquiler-request.model';
 import { CerrarAlquilerRequest } from '../models/cerrar-alquiler-request.model';
 import { Observable } from 'rxjs/internal/Observable';
+import { environment } from '../../environments/environment';
 
 export interface PageResponse<T> {
   content: T[];
@@ -18,7 +19,7 @@ export interface PageResponse<T> {
 })
 export class Alquiler {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/api/alquileres';
+  private apiUrl = `${environment.apiUrl}/api/alquileres`;
 
   alquileres = signal<AlquilerModel[]>([]);
   cargando = signal(false);
@@ -32,7 +33,7 @@ export class Alquiler {
   cargarAlquileres(page: number = 0, size: number = 5, busqueda: string = '', tipoBusqueda: string = 'persona') {
     this.cargando.set(true);
 
-    let url = `${this.baseUrl}/listar?pagina=${page}&tamano=${size}&ordenarPor=fechaInicio&direccion=desc`;
+    let url = `${this.apiUrl}/listar?pagina=${page}&tamano=${size}&ordenarPor=fechaInicio&direccion=desc`;
 
     if (busqueda && busqueda.trim() !== '') {
       url += `&tipo=${tipoBusqueda}&valor=${busqueda}`;
@@ -48,7 +49,7 @@ export class Alquiler {
   direction: string
 ) {
   return this.http.get<PageResponse<AlquilerModel>>(
-    `${this.baseUrl}/listar`,
+    `${this.apiUrl}/listar`,
     {
       params: {
         pagina: page,
@@ -61,19 +62,19 @@ export class Alquiler {
 }
 
   obtenerAlquiler(id: string | number) {
-    return this.http.get<AlquilerModel>(`${this.baseUrl}/${id}`);
+    return this.http.get<AlquilerModel>(`${this.apiUrl}/${id}`);
   }
 
   crearAlquiler(request: CrearAlquilerRequest) {
-    return this.http.post<AlquilerModel>(this.baseUrl, request);
+    return this.http.post<AlquilerModel>(this.apiUrl, request);
   }
 
   actualizarAlquiler(id: string | number, alquiler: AlquilerModel) {
-    return this.http.put<AlquilerModel>(`${this.baseUrl}/${id}`, alquiler);
+    return this.http.put<AlquilerModel>(`${this.apiUrl}/${id}`, alquiler);
   }
 
   eliminarAlquiler(id: string | number) {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   cerrarAlquiler(
@@ -81,7 +82,7 @@ export class Alquiler {
     request: CerrarAlquilerRequest
   ): Observable<AlquilerModel> {
     return this.http.post<AlquilerModel>(
-      `${this.baseUrl}/${alquilerId}/finalizar`,
+      `${this.apiUrl}/${alquilerId}/finalizar`,
       request
     );
   }

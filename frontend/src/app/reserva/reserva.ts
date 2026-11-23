@@ -2,6 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ReservaModel, ReservaRequest } from './reserva.model';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -9,14 +11,14 @@ import { ReservaModel, ReservaRequest } from './reserva.model';
 export class ReservaService {
   private http = inject(HttpClient);
 
-  private baseUrl = 'http://localhost:8080/api/inventario';
+  private apiUrl = `${environment.apiUrl}/api/inventario`;
 
   crearReserva(
     inventarioId: number,
     request: ReservaRequest
   ): Observable<ReservaModel> {
     return this.http.post<ReservaModel>(
-      `${this.baseUrl}/${inventarioId}/reservas`,
+      `${this.apiUrl}/${inventarioId}/reservas`,
       request
     );
   }
@@ -25,7 +27,7 @@ export class ReservaService {
     inventarioId: number
   ): Observable<ReservaModel[]> {
     return this.http.get<ReservaModel[]>(
-      `${this.baseUrl}/${inventarioId}/reservas/listar`
+      `${this.apiUrl}/${inventarioId}/reservas/listar`
     );
   }
 }

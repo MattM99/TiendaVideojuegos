@@ -2,13 +2,15 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { PersonaModel } from '../persona/persona.model';
 import { PageResponse } from '../models/page-response.model';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class Persona {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/api/personas';
+  private apiUrl = `${environment.apiUrl}/api/personas`;
 
 
   personas = signal<PersonaModel[]>([]);
@@ -20,7 +22,7 @@ export class Persona {
   this.cargando.set(true);
 
   return this.http.get<PageResponse<PersonaModel>>(
-    `${this.baseUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+    `${this.apiUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
   );
 }
 
@@ -32,17 +34,17 @@ export class Persona {
 ) {
 
   return this.http.get<PageResponse<PersonaModel>>(
-    `${this.baseUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+    `${this.apiUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
   );
 }
 
   obtenerPersona(dni: string) {
-    return this.http.get<PersonaModel>(`${this.baseUrl}/dni/${dni}`);
+    return this.http.get<PersonaModel>(`${this.apiUrl}/dni/${dni}`);
   }
 
   crearPersona(persona: PersonaModel) {
 
-    return this.http.post<PersonaModel>(`${this.baseUrl}/crear`, persona);
+    return this.http.post<PersonaModel>(`${this.apiUrl}/crear`, persona);
   }
 
 actualizarPersona(
@@ -54,10 +56,10 @@ actualizarPersona(
     email?: string | null;
   }
 ){
-    return this.http.patch<PersonaModel>(`${this.baseUrl}/dni/${dni}`, persona);
+    return this.http.patch<PersonaModel>(`${this.apiUrl}/dni/${dni}`, persona);
   }
 
   eliminarPersona(dni: string) {
-    return this.http.delete<void>(`${this.baseUrl}/dni/${dni}`);
+    return this.http.delete<void>(`${this.apiUrl}/dni/${dni}`);
   }
 }

@@ -4,6 +4,8 @@ import { InventarioItemModel } from './inventario-item.model';
 import { Observable, switchMap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { VideojuegoService } from '../videojuego/videojuego.service';
+import { environment } from '../../environments/environment';
+
 
 export interface PageResponse<T> {
   content: T[];
@@ -18,12 +20,12 @@ export interface PageResponse<T> {
 })
 export class InventarioItemService {
   private http = inject(HttpClient);
-  private baseUrl = 'http://localhost:8080/api/inventario';
+  private apiUrl = `${environment.apiUrl}/api/inventario`;
   private videojuegoService = inject(VideojuegoService);
 
   getAll(): Observable<InventarioItemModel[]> {
     return this.http
-      .get<{ content: InventarioItemModel[] }>(`${this.baseUrl}/listar`)
+      .get<{ content: InventarioItemModel[] }>(`${this.apiUrl}/listar`)
       .pipe(map(response => response.content));
   }
 
@@ -34,7 +36,7 @@ export class InventarioItemService {
     direccion: string
   ): Observable<PageResponse<InventarioItemModel>> {
     return this.http.get<PageResponse<InventarioItemModel>>(
-      `${this.baseUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+      `${this.apiUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
     );
   }
 
@@ -46,7 +48,7 @@ export class InventarioItemService {
     direccion: string
   ): Observable<PageResponse<InventarioItemModel>> {
     return this.http.get<PageResponse<InventarioItemModel>>(
-      `${this.baseUrl}/videojuego/${videojuegoId}?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+      `${this.apiUrl}/videojuego/${videojuegoId}?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
     );
   }
 
@@ -58,7 +60,7 @@ export class InventarioItemService {
     direccion: string
   ): Observable<PageResponse<InventarioItemModel>> {
     return this.http.get<PageResponse<InventarioItemModel>>(
-      `${this.baseUrl}/plataforma/${plataforma}?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+      `${this.apiUrl}/plataforma/${plataforma}?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
     );
   }
 
@@ -70,7 +72,7 @@ export class InventarioItemService {
     direccion: string
   ): Observable<PageResponse<InventarioItemModel>> {
     return this.http.get<PageResponse<InventarioItemModel>>(
-      `${this.baseUrl}/precio/menor-a?valor=${valor}&pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+      `${this.apiUrl}/precio/menor-a?valor=${valor}&pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
     );
   }
 
@@ -83,7 +85,7 @@ export class InventarioItemService {
     direccion: string
   ): Observable<PageResponse<InventarioItemModel>> {
     return this.http.get<PageResponse<InventarioItemModel>>(
-      `${this.baseUrl}/plataformaPrecio/menor-a`,
+      `${this.apiUrl}/plataformaPrecio/menor-a`,
       {
         params: {
           plataforma: plataforma,
@@ -98,7 +100,7 @@ export class InventarioItemService {
   }
 
   getById(id: string | number): Observable<InventarioItemModel> {
-    return this.http.get<InventarioItemModel>(`${this.baseUrl}/${id}`);
+    return this.http.get<InventarioItemModel>(`${this.apiUrl}/${id}`);
   }
 
   getTituloJuego(videojuegoId: number): Observable<string> {
@@ -108,37 +110,37 @@ export class InventarioItemService {
   }
 
   create(item: InventarioItemModel): Observable<InventarioItemModel> {
-    return this.http.post<InventarioItemModel>(`${this.baseUrl}/crear`, item);
+    return this.http.post<InventarioItemModel>(`${this.apiUrl}/crear`, item);
   }
 
   update(id: string | number, item: InventarioItemModel): Observable<InventarioItemModel> {
-    return this.http.put<InventarioItemModel>(`${this.baseUrl}/${id}`, item);
+    return this.http.put<InventarioItemModel>(`${this.apiUrl}/${id}`, item);
   }
 
   patch(id: string | number, item: Partial<InventarioItemModel>): Observable<InventarioItemModel> {
-    return this.http.patch<InventarioItemModel>(`${this.baseUrl}/${id}`, item);
+    return this.http.patch<InventarioItemModel>(`${this.apiUrl}/${id}`, item);
   }
 
   delete(id: string | number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/eliminar/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/eliminar/${id}`);
   }
 
   agregarStock(id: string | number, cantidad: number): Observable<InventarioItemModel> {
     return this.http.patch<InventarioItemModel>(
-      `${this.baseUrl}/${id}/agregar-stock?cantidad=${cantidad}`,
+      `${this.apiUrl}/${id}/agregar-stock?cantidad=${cantidad}`,
       {}
     );
   }
 
   darDeBaja(id: string | number): Observable<InventarioItemModel> {
-    return this.http.patch<InventarioItemModel>(`${this.baseUrl}/${id}/baja`, {});
+    return this.http.patch<InventarioItemModel>(`${this.apiUrl}/${id}/baja`, {});
   }
 
   getStockTotal(id: string | number): Observable<number> {
-    return this.http.get<number>(`${this.baseUrl}/${id}/stock-total`);
+    return this.http.get<number>(`${this.apiUrl}/${id}/stock-total`);
   }
 
   getStockDisponible(id: string | number): Observable<number> {
-    return this.http.get<number>(`${this.baseUrl}/${id}/stock-disponible`);
+    return this.http.get<number>(`${this.apiUrl}/${id}/stock-disponible`);
   }
 }

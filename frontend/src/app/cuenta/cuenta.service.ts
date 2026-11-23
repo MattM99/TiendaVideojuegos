@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { CuentaModel } from './cuenta.model';
 import { PageResponse } from '../models/page-response.model';
 import { RegisterRequest } from '../auth/register-request';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
@@ -11,7 +12,7 @@ import { RegisterRequest } from '../auth/register-request';
 })
 export class CuentaService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/cuenta';
+  private apiUrl = `${environment.apiUrl}/api/cuenta`;
 
 
   getAll(
@@ -30,7 +31,7 @@ export class CuentaService {
 
   getByNickname(nickname: string): Observable<CuentaModel> {
     return this.http.get<CuentaModel>(
-      `http://localhost:8080/api/cuenta/${nickname}`
+      `${this.apiUrl}/${nickname}`
     );
   }
 
@@ -96,4 +97,3 @@ export class CuentaService {
     return this.http.delete<void>(`${this.apiUrl}/${nickname}`);
   }
 }
- 

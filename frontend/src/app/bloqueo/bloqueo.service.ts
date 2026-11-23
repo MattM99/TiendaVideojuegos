@@ -4,6 +4,8 @@ import { BloqueoCreateRequest } from "./bloqueo-create-request";
 import { BloqueoModel } from "./bloqueo.model";
 import { PageResponse } from '../models/page-response.model';
 import { PersonaModel } from "../persona/persona.model";
+import { environment } from "../../environments/environment";
+
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +14,7 @@ export class BloqueoService {
 
     private http = inject(HttpClient);
 
-    private apiUrl = 'http://localhost:8080/api/blacklist';
+    private apiUrl = `${environment.apiUrl}/api/blacklist`;
 
     obtenerVigentes(
         pagina: number,

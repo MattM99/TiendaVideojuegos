@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { VideojuegoModel } from './videojuego.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
 
 export interface PageResponse<T> {
   content: T[];
@@ -17,7 +19,7 @@ export interface PageResponse<T> {
 })
 export class VideojuegoService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:8080/api/videojuegos';
+  private apiUrl = `${environment.apiUrl}/api/videojuegos`;
 
   // Para componentes que solo necesitan la lista simple
   getAll(): Observable<VideojuegoModel[]> {

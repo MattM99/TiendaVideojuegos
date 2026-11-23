@@ -59,13 +59,6 @@ export const routes: Routes = [
   },
 
   {
-    path: 'reservas',
-    canActivate: [AuthGuard, RoleGuard],
-    data: { roles: ['FOUNDER', 'ADMINISTRADOR', 'EMPLEADO'] },
-    children: RESERVA_ROUTES,
-  },
-
-  {
     path: 'alquileres',
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: ['FOUNDER', 'ADMINISTRADOR', 'EMPLEADO'] },
@@ -87,8 +80,6 @@ export const routes: Routes = [
   },
 
   { path: 'secreto', component: Secreto, canActivate: [secretoGuard] },
-
-
 
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: '**', redirectTo: '/404' },
