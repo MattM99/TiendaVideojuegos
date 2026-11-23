@@ -11,6 +11,7 @@ import { InventarioItemModel } from '../../inventario-item/inventario-item.model
 import { fechaValida, noFechaFutura, rangoFechasValidas } from '../../shared/validators/date.validator/date.validator';
 import { CrearAlquilerRequest } from '../alquiler-request.model';
 import { finalize } from 'rxjs';
+import { obtenerMensajeError } from '../../shared/error/error-response';
 
 @Component({
   selector: 'app-alquiler-form',
@@ -35,6 +36,7 @@ export class AlquilerForm implements OnInit {
   esEdicion = signal(false);
   guardando = signal(false);
   alquilerOriginal = signal<AlquilerModel | null>(null);
+  errorMessage = signal('');
   hoy = new Date().toISOString().split('T')[0];
 
   titulo = 'Nuevo alquiler';
@@ -53,6 +55,10 @@ export class AlquilerForm implements OnInit {
 
 
   ngOnInit(): void {
+    this.form.valueChanges.subscribe(() => {
+      this.errorMessage.set('');
+    });
+
     this.form.get('personaDni')?.valueChanges.subscribe(() => {
       this.personaValida.set(null);
     });
@@ -76,9 +82,15 @@ export class AlquilerForm implements OnInit {
   }
 
   private cargarDatosCreacion(): void {
+    this.errorMessage.set('');
+
     this.inventarioService.getAll().subscribe({
       next: (data) => this.inventario.set(data),
-      error: (err) => console.error('Error cargando inventario', err)
+      error: err => {
+        this.errorMessage.set(
+          obtenerMensajeError(err, 'No se pudo cargar el inventario.')
+        );
+      }
     });
 
     this.personaService.getAll(0, 100, 'apellido', 'asc').subscribe();
@@ -93,6 +105,7 @@ export class AlquilerForm implements OnInit {
     this.form.get('fechaInicio')?.disable({ emitEvent: false });
     this.detalles.disable({ emitEvent: false });
     this.personaValida.set(true);
+    this.errorMessage.set('');
 
     this.form.get('fechaFin')?.addValidators([
       this.fechaFinFutura,
@@ -134,7 +147,12 @@ export class AlquilerForm implements OnInit {
       },
       error: (err) => {
         console.error('Error cargando alquiler', err);
-        alert('No se pudo obtener el alquiler para editar.');
+        alert(
+          obtenerMensajeError(
+            err,
+            'No se pudo obtener el alquiler para editar.'
+          )
+        );
         this.router.navigate(['/alquileres']);
       }
     });
@@ -211,6 +229,7 @@ export class AlquilerForm implements OnInit {
     this.personaEncontrada.set(null);
     this.form.get('personaDni')?.setErrors(null);
     this.personaValida.set(null);
+    this.errorMessage.set('');
 
     this.personaService.obtenerPersona(dni).subscribe({
       next: (persona) => {
@@ -218,17 +237,22 @@ export class AlquilerForm implements OnInit {
         this.personaValida.set(true);
         this.form.get('personaDni')?.setErrors(null);
       },
-      error: () => {
+      error: err => {
         this.personaValida.set(false);
         this.form.get('personaDni')?.setErrors({
           notFound: true
         });
+        this.errorMessage.set(
+          obtenerMensajeError(err, 'No se pudo validar la persona.')
+        );
 
       }
     });
   }
 
   onSubmit(): void {
+
+    this.errorMessage.set('');
 
     console.log('FORM VALID', this.form.valid);
     console.log('FORM INVALID', this.form.invalid);
@@ -273,7 +297,11 @@ export class AlquilerForm implements OnInit {
 
     this.alquilerService.crearAlquiler(request).subscribe({
       next: () => this.router.navigate(['/alquileres']),
-      error: (err) => console.error(err)
+      error: err => {
+        this.errorMessage.set(
+          obtenerMensajeError(err, 'No se pudo crear el alquiler.')
+        );
+      }
     });
   }
 
@@ -284,6 +312,7 @@ export class AlquilerForm implements OnInit {
 
     if (!this.alquilerId || !fechaFin) return;
 
+    this.errorMessage.set('');
     this.guardando.set(true);
 
     this.alquilerService.actualizarAlquiler(
@@ -295,7 +324,12 @@ export class AlquilerForm implements OnInit {
       next: () => this.router.navigate(['/alquileres']),
       error: (err) => {
         console.error('Error actualizando alquiler', err);
-        alert('No se pudo actualizar la fecha de finalización del alquiler.');
+        this.errorMessage.set(
+          obtenerMensajeError(
+            err,
+            'No se pudo actualizar la fecha de finalización del alquiler.'
+          )
+        );
       }
     });
   }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardResponse } from '../dashboard.model';
 import { ReportesService } from '../reportes.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { obtenerMensajeError } from '../../shared/error/error-response';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,7 +13,9 @@ import { ChangeDetectorRef } from '@angular/core';
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
-   dashboard: DashboardResponse | null = null;
+  dashboard: DashboardResponse | null = null;
+  cargando = false;
+  errorMessage = '';
 
   private reportesService = inject(ReportesService);
   private cdr = inject(ChangeDetectorRef);
@@ -22,24 +25,26 @@ export class Dashboard implements OnInit {
   }
 
   cargarDashboard(): void {
-      console.log('1 - llamando service');
+    this.cargando = true;
+    this.errorMessage = '';
 
     this.reportesService.obtenerDashboard()
       .subscribe({
         next: (data) => {
-                    console.log('2 - respuesta recibida:', data);
-
-                  this.dashboard = data;
-        console.log('3 - asignado dashboard:', this.dashboard);
+          this.dashboard = data;
+          this.cargando = false;
           this.cdr.detectChanges();
-
         },
         error: (err) => {
           console.error('Error al cargar dashboard', err);
-        },
-         complete: () => {
-        console.log('4 - complete');
-      }
+          this.dashboard = null;
+          this.cargando = false;
+          this.errorMessage = obtenerMensajeError(
+            err,
+            'No se pudo cargar el dashboard de reportes.'
+          );
+          this.cdr.detectChanges();
+        }
       });
   }
 

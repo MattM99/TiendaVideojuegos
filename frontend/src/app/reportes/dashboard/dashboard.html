@@ -1,4 +1,10 @@
-@if (dashboard){
+@if (errorMessage) {
+
+<div class="error-message" role="alert">
+  {{ errorMessage }}
+</div>
+
+} @else if (dashboard) {
 <div class="dashboard-container">
 
   <h1 class="dashboard-title">
@@ -179,7 +185,7 @@
 
 </div>
 
-} @else {
+} @else if (cargando) {
 
 <div class="loading">
   Cargando dashboard...

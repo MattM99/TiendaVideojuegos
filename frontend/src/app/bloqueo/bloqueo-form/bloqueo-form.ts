@@ -8,6 +8,7 @@ import { CommonModule } from "@angular/common";
 import { PersonaModel } from "../../persona/persona.model";
 import { map } from "rxjs/operators";
 import { fechaValida, noFechaFutura, noFechaPasada, rangoFechasValidas } from "../../shared/validators/date.validator/date.validator";
+import { obtenerMensajeError } from "../../shared/error/error-response";
 
 @Component({
   selector: 'app-bloqueo-form',
@@ -87,6 +88,7 @@ export class BloqueoFormComponent{
 
         this.personaValida.set(null);
         this.personaEncontrada.set(null);
+        this.mensajePersona.set(null);
 
         this.bloqueoService.validarPersona(dni).subscribe({
 
@@ -104,7 +106,7 @@ export class BloqueoFormComponent{
                 this.personaValida.set(false);
 
                 this.mensajePersona.set(
-                    err.error?.message ?? 'No se encontró la persona.'
+                    obtenerMensajeError(err, 'No se encontró la persona.')
                 );
 
             }
@@ -130,6 +132,8 @@ export class BloqueoFormComponent{
             return;
         }
 
+        this.errorMessage = '';
+
         this.bloqueoService.crear(request).subscribe({
             next: () => this.router.navigate(['/bloqueos']),
             error: err => {this.errorMessage = this.mapError(err);}
@@ -137,8 +141,11 @@ export class BloqueoFormComponent{
     }
 
     private mapError(err: any): string {
-        if (err.status === 400) { return err.error?.message || 'Solicitud inválida.';}
-        return err.error?.message || 'Error inesperado.';
+        const mensajeGenerico = err.status === 400
+            ? 'Solicitud inválida.'
+            : 'Error inesperado.';
+
+        return obtenerMensajeError(err, mensajeGenerico);
     }
 
 }

@@ -2,6 +2,12 @@
 
   <h2 class="title">{{ titulo }}</h2>
 
+  @if (errorMessage()) {
+  <div class="error-message" role="alert">
+    {{ errorMessage() }}
+  </div>
+  }
+
   <!-- ================= PERSONA ================= -->
   @if (esEdicion()) {
   <div class="form-group">

@@ -1,5 +1,11 @@
 <h2>Alquileres</h2>
 
+@if (errorMessage()) {
+  <div class="error-message" role="alert">
+    {{ errorMessage() }}
+  </div>
+}
+
 <div class="controls">
 
   <input

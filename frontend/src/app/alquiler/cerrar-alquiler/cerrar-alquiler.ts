@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { MetodoPago } from '../../models/metodo-pago.model';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Alquiler } from '../alquiler';
 import { CerrarAlquilerRequest } from '../../models/cerrar-alquiler-request.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { obtenerMensajeError } from '../../shared/error/error-response';
 
 @Component({
   selector: 'app-cerrar-alquiler',
@@ -19,6 +20,7 @@ export class CerrarAlquiler implements OnInit {
   MetodoPago = MetodoPago;
   metodosPago = Object.values(MetodoPago);
   form!: FormGroup;
+  errorMessage = signal('');
 
 
   constructor(
@@ -49,6 +51,10 @@ export class CerrarAlquiler implements OnInit {
       penalizaciones: this.fb.array([])
     });
 
+    this.form.valueChanges.subscribe(() => {
+      this.errorMessage.set('');
+    });
+
     this.alquilerService.obtenerAlquiler(this.alquilerId.toString())
   .subscribe({
 
@@ -69,7 +75,12 @@ export class CerrarAlquiler implements OnInit {
 
         console.error(err);
 
-        alert('No se pudo obtener la información del alquiler.');
+        alert(
+          obtenerMensajeError(
+            err,
+            'No se pudo obtener la información del alquiler.'
+          )
+        );
 
         this.router.navigate(['/alquileres']);
 
@@ -98,6 +109,8 @@ export class CerrarAlquiler implements OnInit {
 
   cerrarAlquiler(): void {
 
+    this.errorMessage.set('');
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -118,7 +131,9 @@ export class CerrarAlquiler implements OnInit {
 
           console.error(err);
 
-          alert('Ocurrió un error al cerrar el alquiler');
+          this.errorMessage.set(
+            obtenerMensajeError(err, 'No se pudo cerrar el alquiler.')
+          );
         }
       });
   }

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Alquiler } from '../alquiler';
 import { AlquilerModel } from '../alquiler.model';
 import { AuthService } from '../../auth/auth-service/auth';
+import { obtenerMensajeError } from '../../shared/error/error-response';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class AlquilerList implements OnInit {
   usuario = computed(() => this.auth.currentUser());
 
   alquileres = signal<AlquilerModel[]>([]);
+  errorMessage = signal('');
 
   page = signal(0);
   size = signal(5);
@@ -56,16 +58,25 @@ export class AlquilerList implements OnInit {
   }
 
    loadAlquileres() {
+    this.errorMessage.set('');
+
     this.alquilerService.getAll(
       this.page(),
       this.size(),
       this.sortBy(),
       this.direction(),
       this.mostrarBajas()
-    ).subscribe(response => {
-      this.alquileres.set(response.content);
-      this.totalPages.set(response.totalPages);
-      this.totalElements.set(response.totalElements);
+    ).subscribe({
+      next: response => {
+        this.alquileres.set(response.content);
+        this.totalPages.set(response.totalPages);
+        this.totalElements.set(response.totalElements);
+      },
+      error: err => {
+        this.errorMessage.set(
+          obtenerMensajeError(err, 'No se pudieron cargar los alquileres.')
+        );
+      }
     });
   }
 
@@ -104,9 +115,15 @@ export class AlquilerList implements OnInit {
 
     if (!confirm('¿Querés dar de baja este alquiler finalizado?')) return;
 
+    this.errorMessage.set('');
+
     this.alquilerService.eliminarAlquiler(alquilerId).subscribe({
       next: () => this.loadAlquileres(),
-      error: (err) => console.error('Error dando de baja el alquiler', err),
+      error: err => {
+        this.errorMessage.set(
+          obtenerMensajeError(err, 'No se pudo dar de baja el alquiler.')
+        );
+      },
     });
   }
 
