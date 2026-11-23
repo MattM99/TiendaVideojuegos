@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { InventarioItemService } from '../inventario-item.service';
 import { InventarioItemModel } from '../inventario-item.model';
@@ -6,6 +6,7 @@ import { forkJoin } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { VideojuegoService } from '../../videojuego/videojuego.service';
 import { VideojuegoModel } from '../../videojuego/videojuego.model';
+import { AuthService } from '../../auth/auth-service/auth';
 
 @Component({
   selector: 'app-inventario-item-list.component',
@@ -18,6 +19,9 @@ export class InventarioItemListComponent implements OnInit {
   private service = inject(InventarioItemService);
   private videojuegoService = inject(VideojuegoService);
   private router = inject(Router);
+  private auth = inject(AuthService);
+
+  usuario = computed(() => this.auth.currentUser());
 
   inventarioItemsWithTitle = signal<{ item: InventarioItemModel; titulo: string }[]>([]);
   videojuegos = signal<VideojuegoModel[]>([]);
@@ -34,6 +38,7 @@ export class InventarioItemListComponent implements OnInit {
   videojuegoIdBusqueda = signal(0);
   plataformaBusqueda = signal('');
   precioBusqueda = signal('');
+  mostrarBajas = signal(false);
   sinResultados = signal(false);
 
   plataformas = [
@@ -63,7 +68,16 @@ export class InventarioItemListComponent implements OnInit {
   loadInventario() {
     let request;
 
-    if (this.tipoBusqueda() === 'videojuego' && this.videojuegoIdBusqueda() > 0) {
+    if (this.mostrarBajas()) {
+      request = this.service.getPage(
+        this.page(),
+        this.size(),
+        this.sortBy(),
+        this.direction(),
+        true
+      );
+
+    } else if (this.tipoBusqueda() === 'videojuego' && this.videojuegoIdBusqueda() > 0) {
       request = this.service.buscarPorVideojuego(
         this.videojuegoIdBusqueda(),
         this.page(),
@@ -234,6 +248,19 @@ export class InventarioItemListComponent implements OnInit {
     ) {
       return;
     }
+
+    this.loadInventario();
+  }
+
+  changeMostrarBajas(event: Event) {
+    const value = (event.target as HTMLInputElement).checked;
+
+    this.mostrarBajas.set(value);
+    this.tipoBusqueda.set('');
+    this.videojuegoIdBusqueda.set(0);
+    this.plataformaBusqueda.set('');
+    this.precioBusqueda.set('');
+    this.page.set(0);
 
     this.loadInventario();
   }

@@ -46,9 +46,9 @@ public class InventarioItemController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Listar todos los inventarios", description = "Devuelve una lista de todos los inventarios")
-    @GetMapping("/listar")
-    public ResponseEntity<Page<InventarioItemResponse>> listarTodos(
+    @Operation(summary = "Listar inventarios activos", description = "Devuelve únicamente inventarios activos")
+    @GetMapping("/listaractivos")
+    public ResponseEntity<Page<InventarioItemResponse>> listarActivos(
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "inventarioItemId") String ordenarPor,
@@ -62,17 +62,17 @@ public class InventarioItemController {
 
 
         return ResponseEntity.ok(
-                inventarioItemService.listarTodos(paginacion)
+                inventarioItemService.listarActivos(paginacion)
         );
     }
 
     @Operation(
-            summary = "Listar todos los inventarios para administración",
+            summary = "Obtener todos los inventarios para administración",
             description = "Devuelve inventarios activos e inactivos"
     )
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @GetMapping("/administracion/listar")
-    public ResponseEntity<Page<InventarioItemResponse>> listarTodosAdministracion(
+    @GetMapping("/administracion/obtenertodos")
+    public ResponseEntity<Page<InventarioItemResponse>> obtenerTodos(
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "inventarioItemId") String ordenarPor,

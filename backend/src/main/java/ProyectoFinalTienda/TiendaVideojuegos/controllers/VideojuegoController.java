@@ -49,9 +49,9 @@ public class VideojuegoController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Listar todos los videojuegos", description = "Devuelve una lista de todos los videojuegos registrados")
-    @GetMapping("/listar")
-    public ResponseEntity<Page<VideojuegoResponse>> listarTodos(
+    @Operation(summary = "Listar videojuegos activos", description = "Devuelve únicamente videojuegos activos")
+    @GetMapping("/listaractivos")
+    public ResponseEntity<Page<VideojuegoResponse>> listarActivos(
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "titulo") String ordenarPor,
@@ -65,7 +65,7 @@ public class VideojuegoController {
 
 
         return ResponseEntity.ok(
-                videojuegoService.listarTodos(paginacion)
+                videojuegoService.listarActivos(paginacion)
         );
     }
 
@@ -74,8 +74,8 @@ public class VideojuegoController {
             description = "Devuelve videojuegos activos e inactivos"
     )
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @GetMapping("/administracion/listar")
-    public ResponseEntity<Page<VideojuegoResponse>> listarTodosAdministracion(
+    @GetMapping("/administracion/obtenertodos")
+    public ResponseEntity<Page<VideojuegoResponse>> obtenerTodos(
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "titulo") String ordenarPor,

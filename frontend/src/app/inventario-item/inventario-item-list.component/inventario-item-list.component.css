@@ -132,6 +132,56 @@ button:hover {
   flex-wrap: wrap;
 }
 
+.filters-bar label.checkbox-filter {
+  width: fit-content;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #9fb0c2;
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.checkbox-filter input[type="checkbox"] {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid #3a4754;
+  background: #18232d;
+  cursor: pointer;
+  position: relative;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.checkbox-filter input[type="checkbox"]:checked {
+  background: #4c84ff;
+  border-color: #4c84ff;
+}
+
+.checkbox-filter input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  width: 3px;
+  height: 6px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.search-type-container select:disabled,
+.search-container input:disabled,
+.search-container select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .search-type-container {
   display: flex;
   justify-content: center;
@@ -260,6 +310,11 @@ li:hover {
 .title span {
   color: #9fb0c2;
   font-size: 0.85rem;
+}
+
+.title span.inactive-label {
+  color: #ef7a7a;
+  font-weight: 600;
 }
 
 /* Zona de botones derecha */

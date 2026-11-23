@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PenalizacionManualRequest;
@@ -100,10 +101,10 @@ public class AlquilerService {
 
     /// Read
 
-    public Page<AlquilerResponse> listarTodos(
+    public Page<AlquilerResponse> listarActivos(
             LocalDate fechaInicio,
             LocalDate fechaFin,
-            Pageable paginacion) {
+            Pageable paginacion){
 
         Page<AlquilerEntity> alquileres;
 
@@ -156,6 +157,52 @@ public class AlquilerService {
     }
 
     /// Update
+
+    @Transactional
+    public AlquilerResponse actualizar(int id, AlquilerUpdateRequest request) {
+        AlquilerEntity alquiler = alquilerRepository.findById(id)
+                .orElseThrow(() -> new AlquilerNoEncontradoException(
+                        "Alquiler con id: " + id + " no encontrado."
+                ));
+
+        if (!alquiler.isActivo()) {
+            throw new BusinessException(
+                    "No se puede actualizar un alquiler dado de baja."
+            );
+        }
+
+        if (alquiler.getEstadoAlquiler() != EstadoAlquiler.EN_CURSO) {
+            throw new BusinessException(
+                    "Solo se pueden actualizar alquileres en curso."
+            );
+        }
+
+        LocalDate nuevaFechaFin = request.getFechaFin();
+
+        if (nuevaFechaFin == null) {
+            throw new BusinessException(
+                    "La fecha de fin es obligatoria."
+            );
+        }
+
+        if (!nuevaFechaFin.isAfter(LocalDate.now())) {
+            throw new BusinessException(
+                    "La fecha de fin debe estar en el futuro."
+            );
+        }
+
+        if (!nuevaFechaFin.isAfter(alquiler.getFechaInicio())) {
+            throw new BusinessException(
+                    "La fecha de fin debe ser posterior a la fecha de inicio."
+            );
+        }
+
+        alquiler.setFechaFin(nuevaFechaFin);
+
+        return alquilerMapper.toResponse(
+                alquilerRepository.save(alquiler)
+        );
+    }
 
     @Transactional
     public AlquilerResponse cerrarAlquiler(

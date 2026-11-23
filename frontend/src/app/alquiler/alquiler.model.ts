@@ -1,5 +1,6 @@
 export interface AlquilerModel {
   alquilerId: number;
+  activo?: boolean;
   personaResponse: PersonaResponse;
   fechaInicio: string;
   fechaFin: string;

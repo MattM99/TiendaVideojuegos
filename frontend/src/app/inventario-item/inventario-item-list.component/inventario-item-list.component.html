@@ -56,8 +56,15 @@
 
 <div class="filters-bar">
 
+  @if (usuario()?.rol === 'FOUNDER' || usuario()?.rol === 'ADMINISTRADOR') {
+  <label class="checkbox-filter">
+    <input type="checkbox" [checked]="mostrarBajas()" (change)="changeMostrarBajas($event)">
+    Mostrar inventarios dados de baja
+  </label>
+  }
+
   <div class="search-type-container">
-    <select [value]="tipoBusqueda()" (change)="changeTipoBusqueda($event)">
+    <select [value]="tipoBusqueda()" [disabled]="mostrarBajas()" (change)="changeTipoBusqueda($event)">
       <option value="">Sin filtro</option>
       <option value="videojuego">Videojuego</option>
       <option value="plataforma">Plataforma</option>
@@ -70,7 +77,8 @@
 
     @if (tipoBusqueda() === 'videojuego') {
 
-    <select [value]="videojuegoIdBusqueda()" (change)="changeVideojuegoBusqueda($event)">
+    <select [value]="videojuegoIdBusqueda()" [disabled]="mostrarBajas()"
+      (change)="changeVideojuegoBusqueda($event)">
       <option value="0">Seleccionar videojuego...</option>
 
       @for (v of videojuegos(); track v.videojuegoId) {
@@ -82,7 +90,8 @@
 
     } @else if (tipoBusqueda() === 'plataforma') {
 
-    <select [value]="plataformaBusqueda()" (change)="changePlataformaBusqueda($event)">
+    <select [value]="plataformaBusqueda()" [disabled]="mostrarBajas()"
+      (change)="changePlataformaBusqueda($event)">
       <option value="">Seleccionar plataforma...</option>
 
       @for (p of plataformas; track p) {
@@ -94,14 +103,15 @@
 
     } @else if (tipoBusqueda() === 'precio') {
 
-    <input type="number" placeholder="Precio menor a..." [value]="precioBusqueda()"
+    <input type="number" placeholder="Precio menor a..." [value]="precioBusqueda()" [disabled]="mostrarBajas()"
       (input)="changePrecioBusqueda($event)" />
 
     } @else if (tipoBusqueda() === 'plataformaPrecio') {
 
     <div class="double-filter">
 
-      <select [value]="plataformaBusqueda()" (change)="changePlataformaBusqueda($event)">
+      <select [value]="plataformaBusqueda()" [disabled]="mostrarBajas()"
+        (change)="changePlataformaBusqueda($event)">
         <option value="">Seleccionar plataforma...</option>
 
         @for (p of plataformas; track p) {
@@ -111,7 +121,7 @@
         }
       </select>
 
-      <input type="number" placeholder="Precio menor a..." [value]="precioBusqueda()"
+      <input type="number" placeholder="Precio menor a..." [value]="precioBusqueda()" [disabled]="mostrarBajas()"
         (input)="changePrecioBusqueda($event)" />
     </div>
     }
@@ -135,6 +145,10 @@
         Stock total: {{ iwt.item.stockTotal }} •
         Stock disponible: {{ iwt.item.stockDisponible }}
       </span>
+
+      @if (iwt.item.activo === false) {
+      <span class="inactive-label">Dado de baja</span>
+      }
     </span>
 
     <span class="actions">
@@ -143,9 +157,10 @@
         Ver
       </button>
 
-      <button [routerLink]="['/inventario/edit', iwt.item.inventarioId]">
-        Editar
-      </button>
+      @if (iwt.item.activo !== false) {
+        <button [routerLink]="['/inventario/edit', iwt.item.inventarioId]">
+          Editar
+        </button>
 
         <span
           class="reserve-tooltip"
@@ -160,14 +175,17 @@
             Reservar
           </button>
         </span>
+      }
 
-        <button (click)="verReservas(iwt.item.inventarioId)">
-          Ver reservas
-        </button>
-
-      <button (click)="delete(iwt.item.inventarioId)">
-        Eliminar
+      <button (click)="verReservas(iwt.item.inventarioId)">
+        Ver reservas
       </button>
+
+      @if (iwt.item.activo !== false) {
+        <button (click)="delete(iwt.item.inventarioId)">
+          Eliminar
+        </button>
+      }
 
     </span>
 

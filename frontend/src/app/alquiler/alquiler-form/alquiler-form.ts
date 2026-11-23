@@ -1,14 +1,16 @@
-import { Component, OnInit, inject, computed, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, Validators, ReactiveFormsModule, FormGroup, FormArray } from '@angular/forms';
-import { Router } from '@angular/router';
+import { AbstractControl, FormBuilder, Validators, ReactiveFormsModule, FormGroup, FormArray, ValidationErrors } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Alquiler } from '../alquiler';
+import { AlquilerModel } from '../alquiler.model';
 import { Persona } from '../../persona/persona';
 import { PersonaModel } from '../../persona/persona.model';
 import { InventarioItemService } from '../../inventario-item/inventario-item.service';
 import { InventarioItemModel } from '../../inventario-item/inventario-item.model';
 import { fechaValida, noFechaFutura, rangoFechasValidas } from '../../shared/validators/date.validator/date.validator';
 import { CrearAlquilerRequest } from '../alquiler-request.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-alquiler-form',
@@ -21,6 +23,7 @@ export class AlquilerForm implements OnInit {
 
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   private alquilerService = inject(Alquiler);
   private personaService = inject(Persona);
@@ -29,11 +32,14 @@ export class AlquilerForm implements OnInit {
   personaValida = signal<boolean | null>(null);
   personaEncontrada = signal<PersonaModel | null>(null);
   inventario = signal<InventarioItemModel[]>([]);
+  esEdicion = signal(false);
+  guardando = signal(false);
+  alquilerOriginal = signal<AlquilerModel | null>(null);
   hoy = new Date().toISOString().split('T')[0];
 
   titulo = 'Nuevo alquiler';
 
-  alquilerId?: string;
+  alquilerId?: number;
 
   form = this.fb.group({
     personaDni: ['', Validators.required],
@@ -51,13 +57,99 @@ export class AlquilerForm implements OnInit {
       this.personaValida.set(null);
     });
 
+    const idParam = this.route.snapshot.paramMap.get('id');
 
+    if (idParam !== null) {
+      const id = Number(idParam);
+
+      if (!Number.isInteger(id) || id <= 0) {
+        alert('El identificador del alquiler no es válido.');
+        this.router.navigate(['/alquileres']);
+        return;
+      }
+
+      this.configurarModoEdicion(id);
+      return;
+    }
+
+    this.cargarDatosCreacion();
+  }
+
+  private cargarDatosCreacion(): void {
     this.inventarioService.getAll().subscribe({
       next: (data) => this.inventario.set(data),
       error: (err) => console.error('Error cargando inventario', err)
     });
 
     this.personaService.getAll(0, 100, 'apellido', 'asc').subscribe();
+  }
+
+  private configurarModoEdicion(id: number): void {
+    this.esEdicion.set(true);
+    this.alquilerId = id;
+    this.titulo = 'Editar alquiler';
+
+    this.form.get('personaDni')?.disable({ emitEvent: false });
+    this.form.get('fechaInicio')?.disable({ emitEvent: false });
+    this.detalles.disable({ emitEvent: false });
+    this.personaValida.set(true);
+
+    this.form.get('fechaFin')?.addValidators([
+      this.fechaFinFutura,
+      (control: AbstractControl): ValidationErrors | null => {
+        const fechaInicio = this.alquilerOriginal()?.fechaInicio;
+
+        if (!control.value || !fechaInicio) return null;
+
+        return control.value > fechaInicio
+          ? null
+          : { fechaFinNoPosterior: true };
+      }
+    ]);
+
+    this.alquilerService.obtenerAlquiler(id).subscribe({
+      next: (alquiler) => {
+        if (alquiler.activo === false) {
+          alert('No se puede editar un alquiler dado de baja.');
+          this.router.navigate(['/alquileres']);
+          return;
+        }
+
+        if (alquiler.estadoAlquiler !== 'EN_CURSO') {
+          alert('No se puede editar un alquiler finalizado.');
+          this.router.navigate(['/alquileres']);
+          return;
+        }
+
+        this.alquilerOriginal.set(alquiler);
+
+        this.form.patchValue({
+          personaDni: String(alquiler.personaResponse.dni),
+          fechaInicio: alquiler.fechaInicio,
+          fechaFin: alquiler.fechaFin
+        });
+
+        this.form.get('fechaFin')?.updateValueAndValidity();
+        this.form.updateValueAndValidity();
+      },
+      error: (err) => {
+        console.error('Error cargando alquiler', err);
+        alert('No se pudo obtener el alquiler para editar.');
+        this.router.navigate(['/alquileres']);
+      }
+    });
+  }
+
+  private fechaFinFutura(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) return null;
+
+    const fechaFin = new Date(`${control.value}T00:00:00`);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    if (Number.isNaN(fechaFin.getTime())) return null;
+
+    return fechaFin > hoy ? null : { fechaFinNoFutura: true };
   }
 
   crearDetalle(): FormGroup {
@@ -162,6 +254,11 @@ export class AlquilerForm implements OnInit {
       return;
     }
 
+    if (this.esEdicion()) {
+      this.guardarEdicion();
+      return;
+    }
+
     const value = this.form.getRawValue();
 
     const request: CrearAlquilerRequest = {
@@ -177,6 +274,29 @@ export class AlquilerForm implements OnInit {
     this.alquilerService.crearAlquiler(request).subscribe({
       next: () => this.router.navigate(['/alquileres']),
       error: (err) => console.error(err)
+    });
+  }
+
+  private guardarEdicion(): void {
+    if (this.guardando()) return;
+
+    const fechaFin = this.form.get('fechaFin')?.value;
+
+    if (!this.alquilerId || !fechaFin) return;
+
+    this.guardando.set(true);
+
+    this.alquilerService.actualizarAlquiler(
+      this.alquilerId,
+      { fechaFin }
+    ).pipe(
+      finalize(() => this.guardando.set(false))
+    ).subscribe({
+      next: () => this.router.navigate(['/alquileres']),
+      error: (err) => {
+        console.error('Error actualizando alquiler', err);
+        alert('No se pudo actualizar la fecha de finalización del alquiler.');
+      }
     });
   }
 

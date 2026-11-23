@@ -23,7 +23,7 @@ export class InventarioItemService {
 
   getAll(): Observable<InventarioItemModel[]> {
     return this.http
-      .get<{ content: InventarioItemModel[] }>(`${this.baseUrl}/listar`)
+      .get<{ content: InventarioItemModel[] }>(`${this.baseUrl}/listaractivos`)
       .pipe(map(response => response.content));
   }
 
@@ -31,10 +31,15 @@ export class InventarioItemService {
     pagina: number,
     tamano: number,
     ordenarPor: string,
-    direccion: string
+    direccion: string,
+    incluirInactivos = false
   ): Observable<PageResponse<InventarioItemModel>> {
+    const endpoint = incluirInactivos
+      ? 'administracion/obtenertodos'
+      : 'listaractivos';
+
     return this.http.get<PageResponse<InventarioItemModel>>(
-      `${this.baseUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+      `${this.baseUrl}/${endpoint}?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
     );
   }
 

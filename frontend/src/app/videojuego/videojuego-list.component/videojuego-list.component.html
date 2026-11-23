@@ -54,8 +54,15 @@
 
 <div class="filters-bar">
 
+  @if (usuario()?.rol === 'FOUNDER' || usuario()?.rol === 'ADMINISTRADOR') {
+  <label class="checkbox-filter">
+    <input type="checkbox" [checked]="mostrarBajas()" (change)="changeMostrarBajas($event)">
+    Mostrar videojuegos dados de baja
+  </label>
+  }
+
   <div class="search-type-container">
-    <select [value]="tipoBusqueda()" (change)="changeTipoBusqueda($event)">
+    <select [value]="tipoBusqueda()" [disabled]="mostrarBajas()" (change)="changeTipoBusqueda($event)">
       <option value="titulo">Título</option>
       <option value="desarrollador">Desarrollador</option>
       <option value="genero">Género</option>
@@ -66,7 +73,7 @@
 
     @if (tipoBusqueda() === 'genero') {
 
-    <select [value]="busqueda()" (change)="changeBusqueda($event)">
+    <select [value]="busqueda()" [disabled]="mostrarBajas()" (change)="changeBusqueda($event)">
       <option value="">Buscar por género...</option>
 
       @for (g of generos; track g) {
@@ -76,7 +83,8 @@
 
     } @else {
 
-    <input type="text" placeholder="Buscar videojuego..." [value]="busqueda()" (input)="changeBusqueda($event)" />
+    <input type="text" placeholder="Buscar videojuego..." [value]="busqueda()" [disabled]="mostrarBajas()"
+      (input)="changeBusqueda($event)" />
 
     }
 
@@ -100,6 +108,10 @@
       <span>
         {{ v.genero }} • {{ v.desarrollador }} • {{ v.lanzamiento }}
       </span>
+
+      @if (v.activo === false) {
+      <span class="inactive-label">Dado de baja</span>
+      }
     </span>
 
     <span class="actions">
@@ -107,13 +119,15 @@
         Ver
       </button>
 
-      <button [routerLink]="['/videojuegos/edit', v.videojuegoId]">
-        Editar
-      </button>
+      @if (v.activo !== false) {
+        <button [routerLink]="['/videojuegos/edit', v.videojuegoId]">
+          Editar
+        </button>
 
-      <button (click)="delete(v.videojuegoId)">
-        Eliminar
-      </button>
+        <button (click)="delete(v.videojuegoId)">
+          Eliminar
+        </button>
+      }
     </span>
   </li>
   }

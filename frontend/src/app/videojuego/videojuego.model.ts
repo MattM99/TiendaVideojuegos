@@ -6,4 +6,5 @@ export interface VideojuegoModel {
   lanzamiento: number;
   multijugador: boolean | 'Sí' | 'No';
   desarrollador: string;
+  activo?: boolean;
 }

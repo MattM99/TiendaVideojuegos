@@ -22,7 +22,7 @@ export class VideojuegoService {
   // Para componentes que solo necesitan la lista simple
   getAll(): Observable<VideojuegoModel[]> {
     return this.http
-      .get<{ content: VideojuegoModel[] }>(`${this.apiUrl}/listar`)
+      .get<{ content: VideojuegoModel[] }>(`${this.apiUrl}/listaractivos`)
       .pipe(map(response => response.content));
   }
 
@@ -31,10 +31,15 @@ export class VideojuegoService {
     pagina: number,
     tamano: number,
     ordenarPor: string,
-    direccion: string
+    direccion: string,
+    incluirInactivos = false
   ): Observable<PageResponse<VideojuegoModel>> {
+    const endpoint = incluirInactivos
+      ? 'administracion/obtenertodos'
+      : 'listaractivos';
+
     return this.http.get<PageResponse<VideojuegoModel>>(
-      `${this.apiUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+      `${this.apiUrl}/${endpoint}?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
     );
   }
 

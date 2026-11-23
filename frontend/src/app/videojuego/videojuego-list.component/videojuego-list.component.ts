@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { VideojuegoService } from '../videojuego.service';
 import { VideojuegoModel } from '../videojuego.model';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../auth/auth-service/auth';
 
 @Component({
   selector: 'app-videojuego-list.component',
@@ -13,6 +14,9 @@ import { RouterModule } from '@angular/router';
 })
 export class VideojuegoListComponent implements OnInit {
   private service = inject(VideojuegoService);
+  private auth = inject(AuthService);
+
+  usuario = computed(() => this.auth.currentUser());
 
   videojuegos = signal<VideojuegoModel[]>([]);
 
@@ -26,6 +30,7 @@ export class VideojuegoListComponent implements OnInit {
 
   busqueda = signal('');
   tipoBusqueda = signal('titulo');
+  mostrarBajas = signal(false);
 
   sinResultados = signal(false);
 
@@ -54,7 +59,15 @@ export class VideojuegoListComponent implements OnInit {
 
     let request;
 
-    if (texto !== '') {
+    if (this.mostrarBajas()) {
+      request = this.service.getPage(
+        this.page(),
+        this.size(),
+        this.sortBy(),
+        this.direction(),
+        true
+      );
+    } else if (texto !== '') {
       if (this.tipoBusqueda() === 'titulo') {
         request = this.service.buscarPorTitulo(
           texto,
@@ -171,6 +184,16 @@ export class VideojuegoListComponent implements OnInit {
     const value = (event.target as HTMLInputElement).value;
 
     this.busqueda.set(value);
+    this.page.set(0);
+
+    this.loadVideojuegos();
+  }
+
+  changeMostrarBajas(event: Event) {
+    const value = (event.target as HTMLInputElement).checked;
+
+    this.mostrarBajas.set(value);
+    this.busqueda.set('');
     this.page.set(0);
 
     this.loadVideojuegos();

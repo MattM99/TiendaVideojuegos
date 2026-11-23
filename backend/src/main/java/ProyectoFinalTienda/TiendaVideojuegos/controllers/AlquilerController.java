@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ValidarDisponibilidadResponse;
@@ -48,6 +49,20 @@ public class AlquilerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(
+            summary = "Actualizar fecha de finalización de un alquiler",
+            description = "Permite modificar únicamente fechaFin de un alquiler activo y EN_CURSO"
+    )
+    @PatchMapping("/{id}")
+    public ResponseEntity<AlquilerResponse> actualizar(
+            @PathVariable int id,
+            @Valid @RequestBody AlquilerUpdateRequest request
+    ) {
+        return ResponseEntity.ok(
+                alquilerService.actualizar(id, request)
+        );
+    }
+
     @PostMapping("/{alquilerId}/finalizar")
     public ResponseEntity<AlquilerResponse> cerrarAlquiler(
             @PathVariable Integer alquilerId,
@@ -68,8 +83,8 @@ public class AlquilerController {
     }
 
     @Operation(summary = "Obtener todos los alquileres", description = "Devuelve una lista de todos los alquileres registrados")
-    @GetMapping("/listar")
-    public ResponseEntity<Page<AlquilerResponse>> listarTodos(
+    @GetMapping("/listaractivos")
+    public ResponseEntity<Page<AlquilerResponse>> listarActivos(
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate fechaInicio,
@@ -89,7 +104,7 @@ public class AlquilerController {
 
 
         return ResponseEntity.ok(
-                alquilerService.listarTodos(fechaInicio, fechaFin, paginacion)
+                alquilerService.listarActivos(fechaInicio, fechaFin, paginacion)
         );
     }
 
@@ -98,8 +113,8 @@ public class AlquilerController {
             description = "Devuelve alquileres activos e inactivos"
     )
     @PreAuthorize("hasRole('ADMINISTRADOR')")
-    @GetMapping("/administracion/listar")
-    public ResponseEntity<Page<AlquilerResponse>> listarTodosAdministracion(
+    @GetMapping("/administracion/obtenertodos")
+    public ResponseEntity<Page<AlquilerResponse>> obtenerTodos(
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "alquilerId") String ordenarPor,

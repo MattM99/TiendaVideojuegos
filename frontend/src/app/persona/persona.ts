@@ -20,7 +20,7 @@ export class Persona {
   this.cargando.set(true);
 
   return this.http.get<PageResponse<PersonaModel>>(
-    `${this.baseUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+    `${this.baseUrl}/administracion/obtenertodos?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
   );
 }
 
@@ -32,7 +32,7 @@ export class Persona {
 ) {
 
   return this.http.get<PageResponse<PersonaModel>>(
-    `${this.baseUrl}/listar?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
+    `${this.baseUrl}/administracion/obtenertodos?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
   );
 }
 

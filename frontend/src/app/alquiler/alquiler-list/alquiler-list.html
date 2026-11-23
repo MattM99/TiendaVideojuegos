@@ -6,6 +6,7 @@
     type="text"
     placeholder="Buscar una persona..."
     [value]="busqueda()"
+    [disabled]="mostrarBajas()"
     (input)="busqueda.set($any($event.target).value)"
   />
 
@@ -17,6 +18,17 @@
   />
   Mostrar alquileres finalizados
 </label>
+
+  @if (usuario()?.rol === 'FOUNDER' || usuario()?.rol === 'ADMINISTRADOR') {
+  <label>
+    <input
+      type="checkbox"
+      [checked]="mostrarBajas()"
+      (change)="changeMostrarBajas($event)"
+    />
+    Mostrar alquileres dados de baja
+  </label>
+  }
 
   <select (change)="changeSize($event)">
     <option [selected]="size() === 5" value="5">5</option>
@@ -61,12 +73,25 @@
           <td>{{ a.fechaInicio }}</td>
           <td>{{ a.fechaFin }}</td>
           <td>{{ a.fechaDevolucion || '-' }}</td>
-          <td>{{ a.estadoAlquiler }}</td>
+          <td>
+            {{ a.estadoAlquiler }}
+            @if (a.activo === false) {
+              <span class="inactive-label">Dado de baja</span>
+            }
+          </td>
           <td>{{ a.montoDiarioAlquiler }}</td>
 
           <td>
-            <button (click)="editar(a.alquilerId)">Editar</button>
-            <button (click)="cerrar(a.alquilerId)">Cerrar</button>
+            @if (a.activo !== false && a.estadoAlquiler === 'EN_CURSO') {
+              <button (click)="editar(a.alquilerId)">Editar</button>
+              <button (click)="cerrar(a.alquilerId)">Cerrar</button>
+            } @else if (
+              a.activo !== false &&
+              a.estadoAlquiler === 'FINALIZADO' &&
+              (usuario()?.rol === 'FOUNDER' || usuario()?.rol === 'ADMINISTRADOR')
+            ) {
+              <button (click)="darDeBaja(a.alquilerId)">Dar de baja</button>
+            }
           </td>
         </tr>
       }

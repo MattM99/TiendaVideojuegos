@@ -10,3 +10,7 @@ export interface CrearDetalleAlquilerRequest {
   cantidad: number;
 }
 
+export interface AlquilerUpdateRequest {
+  fechaFin: string;
+}
+

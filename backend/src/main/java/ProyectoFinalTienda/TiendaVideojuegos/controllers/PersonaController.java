@@ -19,8 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/api/personas")
@@ -38,9 +36,9 @@ public class PersonaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nueva);
     }
 
-    @Operation(summary = "Listar personas", description = "Lista a todas las personas registradas")
-    @GetMapping("/listar")
-    public ResponseEntity<Page<PersonaResponse>> listarTodos(
+    @Operation(summary = "Obtener todas las personas", description = "Devuelve personas activas e inactivas")
+    @GetMapping("/administracion/obtenertodos")
+    public ResponseEntity<Page<PersonaResponse>> obtenerTodos(
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "apellido") String ordenarPor,
@@ -54,7 +52,7 @@ public class PersonaController {
 
 
         return ResponseEntity.ok(
-                personaService.listarTodos(paginacion)
+                personaService.obtenerTodos(paginacion)
         );
     }
 

@@ -7,4 +7,5 @@ export interface InventarioItemModel {
   precioDiario: number;
   stockTotal: number;
   stockDisponible: number;
+  activo?: boolean;
 }

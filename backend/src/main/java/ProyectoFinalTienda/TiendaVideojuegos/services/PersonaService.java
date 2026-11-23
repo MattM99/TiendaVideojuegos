@@ -20,8 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class PersonaService {
 
@@ -52,7 +50,7 @@ public class PersonaService {
         );
     }
 
-    public Page<PersonaResponse> listarTodos(Pageable paginacion)
+    public Page<PersonaResponse> obtenerTodos(Pageable paginacion)
     {
         return personaRepository.findAll(paginacion)
                 .map(personaMapper::convertirEntidadADTO);

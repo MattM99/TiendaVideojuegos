@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Alquiler } from '../alquiler';
 import { AlquilerModel } from '../alquiler.model';
+import { AuthService } from '../../auth/auth-service/auth';
 
 
 @Component({
@@ -15,6 +16,9 @@ import { AlquilerModel } from '../alquiler.model';
 export class AlquilerList implements OnInit {
   private alquilerService = inject(Alquiler);
   private router = inject(Router);
+  private auth = inject(AuthService);
+
+  usuario = computed(() => this.auth.currentUser());
 
   alquileres = signal<AlquilerModel[]>([]);
 
@@ -30,6 +34,7 @@ export class AlquilerList implements OnInit {
   busqueda = signal('');
 
   mostrarFinalizados = signal(false);
+  mostrarBajas = signal(false);
  alquileresFiltrados = computed(() => {
     let lista = this.alquileres();
 
@@ -55,7 +60,8 @@ export class AlquilerList implements OnInit {
       this.page(),
       this.size(),
       this.sortBy(),
-      this.direction()
+      this.direction(),
+      this.mostrarBajas()
     ).subscribe(response => {
       this.alquileres.set(response.content);
       this.totalPages.set(response.totalPages);
@@ -90,13 +96,17 @@ export class AlquilerList implements OnInit {
   }
 
   eliminar(alquilerId: number | undefined) {
+    this.darDeBaja(alquilerId);
+  }
+
+  darDeBaja(alquilerId: number | undefined) {
     if (!alquilerId) return;
 
-    if (!confirm('¿Seguro que querés eliminar este alquiler?')) return;
+    if (!confirm('¿Querés dar de baja este alquiler finalizado?')) return;
 
     this.alquilerService.eliminarAlquiler(alquilerId).subscribe({
-      next: () => this.cargarAlquileres(),
-      error: (err) => console.error('Error eliminando alquiler', err),
+      next: () => this.loadAlquileres(),
+      error: (err) => console.error('Error dando de baja el alquiler', err),
     });
   }
 
@@ -138,6 +148,20 @@ export class AlquilerList implements OnInit {
     this.direction.set(
       (event.target as HTMLSelectElement).value as 'asc' | 'desc'
     );
+    this.page.set(0);
+    this.loadAlquileres();
+  }
+
+  changeMostrarBajas(event: Event) {
+    const value = (event.target as HTMLInputElement).checked;
+
+    this.mostrarBajas.set(value);
+    this.busqueda.set('');
+
+    if (value) {
+      this.mostrarFinalizados.set(true);
+    }
+
     this.page.set(0);
     this.loadAlquileres();
   }

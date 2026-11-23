@@ -45,7 +45,7 @@ public class VideojuegoService {
 
     /// Read
 
-    public Page<VideojuegoResponse> listarTodos(Pageable paginacion)
+    public Page<VideojuegoResponse> listarActivos(Pageable paginacion)
     {
         return videojuegoRepository.findByActivoTrue(paginacion)
                 .map(videojuegoMapper::toResponse);

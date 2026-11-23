@@ -85,7 +85,7 @@ public class InventarioItemService {
                 });
     }
 
-    public Page<InventarioItemResponse> listarTodos(Pageable paginacion) {
+    public Page<InventarioItemResponse> listarActivos(Pageable paginacion) {
         return inventarioItemRepository.findByActivoTrue(paginacion)
                 .map(inventario -> {
 
