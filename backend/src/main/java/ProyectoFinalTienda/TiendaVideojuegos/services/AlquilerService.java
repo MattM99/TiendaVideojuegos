@@ -15,11 +15,13 @@ import ProyectoFinalTienda.TiendaVideojuegos.mappers.DetalleAlquilerMapper;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.*;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoReserva;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.OrigenDetalleAlquiler;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.AlquilerRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -51,16 +55,17 @@ public class AlquilerService {
 
     /// Create
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public AlquilerResponse crearAlquiler(AlquilerCreateOrReplaceRequest request) {
         PersonaEntity persona = obtenerPersonaHabilitada(request.getPersonaDni());
         validarDetalles(request.getDetalles());
 
+        Map<Integer, InventarioItemEntity> inventarios = bloquearInventarios(request.getDetalles());
         AlquilerEntity alquiler = alquilerMapper.toEntity(request, persona);
         alquiler.setEstadoAlquiler(EstadoAlquiler.EN_CURSO);
 
         for (DetalleAlquilerRequest detalle : request.getDetalles()) {
-            construirDetalle(detalle, alquiler, persona);
+            construirDetalle(detalle, alquiler, persona, inventarios.get(detalle.getInventarioItemId()));
         }
 
         alquiler.calcularMontoDiario();
@@ -82,25 +87,52 @@ public class AlquilerService {
         return persona;
     }
 
-    private void construirDetalle(DetalleAlquilerRequest request, AlquilerEntity alquiler, PersonaEntity persona) {
-        InventarioItemEntity inventario = obtenerInventarioHabilitado(request.getInventarioItemId());
-        DisponibilidadItem disponibilidad = evaluarDisponibilidad(persona, inventario, request.getCantidad());
+    private Map<Integer, InventarioItemEntity> bloquearInventarios(List<DetalleAlquilerRequest> detalles) {
+        List<Integer> ids = detalles.stream()
+                .map(DetalleAlquilerRequest::getInventarioItemId)
+                .sorted()
+                .toList();
+        Map<Integer, InventarioItemEntity> inventarios = new HashMap<>();
+        for (int id : ids) {
+            InventarioItemEntity inventario = inventarioItemRepository.buscarPorIdParaActualizar(id)
+                    .orElseThrow(() -> inventarioNoEncontrado(id));
+            inventarios.put(id, inventario);
+        }
+        return inventarios;
+    }
+
+    private void construirDetalle(
+            DetalleAlquilerRequest request, AlquilerEntity alquiler, PersonaEntity persona, InventarioItemEntity inventario) {
+        validarInventarioHabilitado(inventario);
+        ReservaEntity reservaPropia = buscarReservaPropiaNotificada(persona, inventario);
+        DisponibilidadItem disponibilidad = evaluarDisponibilidad(inventario, request.getCantidad(), reservaPropia);
         if (disponibilidad.motivo() != null) {
             throw new BusinessException(disponibilidad.motivo());
         }
 
         inventario.entregarCopias(persona, request.getCantidad());
+        if (reservaPropia != null && reservaPropia.getEstadoReserva() != EstadoReserva.CONCLUIDA) {
+            throw new IllegalStateException("La reserva seleccionada no se consumió al entregar la unidad.");
+        }
 
         DetalleAlquilerEntity detalle = detalleAlquilerMapper.toEntity(request, alquiler, inventario);
+        detalle.registrarOrigenEntrega(reservaPropia == null ? null : reservaPropia.getReservaId());
         detalle.calcularSubtotal();
         alquiler.agregarDetalle(detalle);
     }
 
     private InventarioItemEntity obtenerInventarioHabilitado(int inventarioId) {
         InventarioItemEntity inventario = inventarioItemRepository.findById(inventarioId)
-                .orElseThrow(() -> new InventarioItemNoEncontradoException(
-                        "Inventario con id: " + inventarioId + " no encontrado."));
+                .orElseThrow(() -> inventarioNoEncontrado(inventarioId));
+        validarInventarioHabilitado(inventario);
+        return inventario;
+    }
 
+    private InventarioItemNoEncontradoException inventarioNoEncontrado(int id) {
+        return new InventarioItemNoEncontradoException("Inventario con id: " + id + " no encontrado.");
+    }
+
+    private void validarInventarioHabilitado(InventarioItemEntity inventario) {
         if (!inventario.isActivo()) {
             throw new BusinessException(
                     "El inventario está dado de baja y no se puede alquilar."
@@ -112,8 +144,6 @@ public class AlquilerService {
                     "El videojuego asociado está dado de baja y no se puede alquilar."
             );
         }
-
-        return inventario;
     }
 
     /// Read
@@ -166,7 +196,7 @@ public class AlquilerService {
 
     @Transactional
     public AlquilerResponse actualizar(int id, AlquilerUpdateRequest request) {
-        AlquilerEntity alquiler = alquilerRepository.findById(id)
+        AlquilerEntity alquiler = alquilerRepository.buscarPorIdParaActualizar(id)
                 .orElseThrow(() -> new AlquilerNoEncontradoException(
                         "Alquiler con id: " + id + " no encontrado."
                 ));
@@ -210,13 +240,13 @@ public class AlquilerService {
         );
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public AlquilerResponse cerrarAlquiler(
             Integer alquilerId,
             CerrarAlquilerRequest request
     ) {
 
-        AlquilerEntity alquiler = alquilerRepository.findById(alquilerId)
+        AlquilerEntity alquiler = alquilerRepository.buscarPorIdParaActualizar(alquilerId)
                 .orElseThrow(() -> new AlquilerNoEncontradoException(
                         "Alquiler con id: " + alquilerId + " no encontrado."
                 ));
@@ -260,9 +290,8 @@ public class AlquilerService {
         alquiler.asignarPago(pago);
 
         // actualizar stock de los items alquilados
-        for (DetalleAlquilerEntity detalle : alquiler.getItems()) {
-            InventarioItemEntity inventario = detalle.getInventarioItem();
-            inventarioItemService.devolverVideojuego(inventario, detalle.getCantidad());
+        for (AlquilerRepository.UnidadesParaDevolver detalle : alquilerRepository.buscarUnidadesParaDevolver(alquilerId)) {
+            inventarioItemService.devolverVideojuego(detalle.getInventarioItemId(), detalle.getCantidad());
         }
 
         // finalizar alquiler
@@ -278,7 +307,7 @@ public class AlquilerService {
     @Transactional
     public void eliminar(int id) {
 
-        AlquilerEntity alquiler = alquilerRepository.findById(id)
+        AlquilerEntity alquiler = alquilerRepository.buscarPorIdParaActualizar(id)
                 .orElseThrow(() -> new AlquilerNoEncontradoException(
                         "Alquiler con id: " + id + " no encontrado."
                 ));
@@ -314,7 +343,8 @@ public class AlquilerService {
 
         for (DetalleAlquilerRequest detalle : request.getDetalles()) {
             InventarioItemEntity inventario = obtenerInventarioHabilitado(detalle.getInventarioItemId());
-            DisponibilidadItem item = evaluarDisponibilidad(persona, inventario, detalle.getCantidad());
+            ReservaEntity reservaPropia = buscarReservaPropiaNotificada(persona, inventario);
+            DisponibilidadItem item = evaluarDisponibilidad(inventario, detalle.getCantidad(), reservaPropia);
             disponibilidad.add(item);
 
             if (item.motivo() != null) {
@@ -350,17 +380,19 @@ public class AlquilerService {
         }
     }
 
-    private DisponibilidadItem evaluarDisponibilidad(
-            PersonaEntity persona, InventarioItemEntity inventario, int cantidad) {
-        int inventarioId = inventario.getInventarioItemId();
-        int stockLibre = inventario.getStockDisponible();
-        List<ReservaEntity> reservas = inventario.getListaDeEspera();
-        // Comprobar la vigencia de la misma reserva que selecciona entregarCopias().
-        ReservaEntity reservaPropia = reservas.stream()
+    // Mantener el criterio y el orden de la selección que hace entregarCopias().
+    private ReservaEntity buscarReservaPropiaNotificada(PersonaEntity persona, InventarioItemEntity inventario) {
+        return inventario.getListaDeEspera().stream()
                 .filter(reserva -> reserva.getEstadoReserva() == EstadoReserva.NOTIFICADA)
                 .filter(reserva -> reserva.getPersona().getPersonaId() == persona.getPersonaId())
                 .findFirst()
                 .orElse(null);
+    }
+
+    private DisponibilidadItem evaluarDisponibilidad(
+            InventarioItemEntity inventario, int cantidad, ReservaEntity reservaPropia) {
+        int inventarioId = inventario.getInventarioItemId();
+        int stockLibre = inventario.getStockDisponible();
 
         if (reservaPropia != null) {
             if (reservaPropia.getFechaNotificacion() == null || reservaPropia.estaVencida(LocalDateTime.now())) {
@@ -372,7 +404,8 @@ public class AlquilerService {
             return new DisponibilidadItem(inventarioId, cantidad, stockLibre, 1, true, motivo);
         }
 
-        if (reservas.stream().anyMatch(reserva -> reserva.getEstadoReserva() == EstadoReserva.NOTIFICADA)) {
+        if (inventario.getListaDeEspera().stream()
+                .anyMatch(reserva -> reserva.getEstadoReserva() == EstadoReserva.NOTIFICADA)) {
             return new DisponibilidadItem(inventarioId, cantidad, stockLibre, 0, false,
                     "Este videojuego está reservado para otro cliente.");
         }

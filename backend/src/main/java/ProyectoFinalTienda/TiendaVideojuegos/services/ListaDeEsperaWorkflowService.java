@@ -5,18 +5,19 @@ import ProyectoFinalTienda.TiendaVideojuegos.exception.InventarioItemNoEncontrad
 import ProyectoFinalTienda.TiendaVideojuegos.factories.NotificadorFactory;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.ReservaEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoReserva;
 import ProyectoFinalTienda.TiendaVideojuegos.model.interfaces.Notificador;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.InventarioItemRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,7 +26,6 @@ public class ListaDeEsperaWorkflowService {
     @Autowired
     InventarioItemRepository inventarioItemRepository;
 
-    @Transactional
     @TransactionalEventListener(
             phase = TransactionPhase.BEFORE_COMMIT
     )
@@ -33,10 +33,8 @@ public class ListaDeEsperaWorkflowService {
 
         System.out.println("Evento recibido!");
 
-        InventarioItemEntity item = inventarioItemRepository.findById(event.getInventarioItemId())
-                .orElseThrow(() -> new InventarioItemNoEncontradoException(
-                        "Inventario con id: " + event.getInventarioItemId() + " no encontrado."
-                ));
+        // La transacción que publicó el evento ya bloqueó este inventario.
+        InventarioItemEntity item = bloquearInventario(event.getInventarioItemId());
 
         if (!item.isActivo()) {
             return;
@@ -45,15 +43,16 @@ public class ListaDeEsperaWorkflowService {
         System.out.println(item.getListaDeEspera().size());
 
         boolean procesado;
-
         do {
             procesado = procesarListaDeEspera(item);
         } while (procesado && item.getStockDisponible() > 0);
 
     }
 
-    @Transactional
-    public boolean procesarListaDeEspera(InventarioItemEntity item){
+    private boolean procesarListaDeEspera(InventarioItemEntity item) {
+        if (item.getStockDisponible() <= 0) {
+            return false;
+        }
 
         //busca la primera reserva pendiente
         Optional<ReservaEntity> siguiente = item.obtenerSiguienteReservaPendiente();
@@ -84,21 +83,24 @@ public class ListaDeEsperaWorkflowService {
 
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     //@Scheduled(fixedRate = 3600000) // Cada 1 HORA revisa si hay notificaciones expiradas.
     @Scheduled(fixedRate = 60000) // 1 minuto
     public void revisarReservasExpiradas() {
-        for (InventarioItemEntity inventarioItem : inventarioItemRepository.findAll()) {
+        for (int inventarioId : inventarioItemRepository.buscarIdsConReservasEnEstado(EstadoReserva.NOTIFICADA)) {
+            InventarioItemEntity inventario = bloquearInventario(inventarioId);
 
-            //buscar reservas que ya fueron notificadas pero expiraron
-            List<ReservaEntity> expiradas = inventarioItem.expirarReservasVencidas(LocalDateTime.now());
-
-            //si hay expiradas, notificar al siguiente pendiente
-            if(!expiradas.isEmpty()){
-                procesarListaDeEspera(inventarioItem);
+            if (!inventario.expirarReservasVencidas(LocalDateTime.now()).isEmpty()) {
+                procesarListaDeEspera(inventario);
             }
-
         }
+    }
+
+    private InventarioItemEntity bloquearInventario(int id) {
+        return inventarioItemRepository.buscarPorIdParaActualizar(id)
+                .orElseThrow(() -> new InventarioItemNoEncontradoException(
+                        "Inventario con id: " + id + " no encontrado."
+                ));
     }
 
 }

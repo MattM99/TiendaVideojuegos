@@ -1,5 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.model.entities;
 
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.OrigenDetalleAlquiler;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -7,9 +8,20 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 class AlquilerEntityTest {
+
+    @Test
+    void interpretaUnDetalleSinOrigenRegistradoComoDesconocido() {
+        DetalleAlquilerEntity detalleHistorico = DetalleAlquilerEntity.builder()
+                .cantidad(2)
+                .build();
+
+        assertEquals(OrigenDetalleAlquiler.DESCONOCIDO, detalleHistorico.getOrigenEntrega());
+        assertNull(detalleHistorico.getReservaConsumidaId());
+    }
 
     @Test
     void generarPenalizacionPorRetrasoConDosDiasDeAtraso() {

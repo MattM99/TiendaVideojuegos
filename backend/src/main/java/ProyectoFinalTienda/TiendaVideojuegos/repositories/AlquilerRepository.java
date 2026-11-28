@@ -2,19 +2,40 @@ package ProyectoFinalTienda.TiendaVideojuegos.repositories;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.AlquilerEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 
 @Repository
 public interface AlquilerRepository extends JpaRepository<AlquilerEntity, Integer> {
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT a FROM AlquilerEntity a WHERE a.alquilerId = :id")
+    Optional<AlquilerEntity> buscarPorIdParaActualizar(@Param("id") int id);
+
+    // Proyectar ID y cantidad evita cargar el inventario antes de bloquearlo.
+    @Query("""
+            SELECT d.inventarioItem.inventarioItemId AS inventarioItemId, d.cantidad AS cantidad
+            FROM DetalleAlquilerEntity d
+            WHERE d.alquiler.alquilerId = :id
+            ORDER BY d.inventarioItem.inventarioItemId, d.detalleAlquilerId
+            """)
+    List<UnidadesParaDevolver> buscarUnidadesParaDevolver(@Param("id") int id);
+
+    interface UnidadesParaDevolver {
+        int getInventarioItemId();
+        int getCantidad();
+    }
 
     @Query("""
        SELECT a FROM AlquilerEntity a

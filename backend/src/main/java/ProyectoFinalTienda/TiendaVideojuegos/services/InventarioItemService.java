@@ -25,6 +25,8 @@ import ProyectoFinalTienda.TiendaVideojuegos.repositories.VideojuegoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -175,9 +177,10 @@ public class InventarioItemService {
 
     /// Update
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public InventarioItemResponse actualizarCompleto(int id, InventarioItemCreateOrReplaceRequest nuevosDatos) {
 
-        InventarioItemEntity existente = obtenerInventarioPorId(id);
+        InventarioItemEntity existente = bloquearInventario(id);
 
         if (!existente.isActivo()) {
             throw new BusinessException(
@@ -206,11 +209,10 @@ public class InventarioItemService {
         return mapearResponse(inventarioItemRepository.save(existente));
     }
 
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public InventarioItemResponse actualizarPorCampo(int id, InventarioItemUpdateRequest datosActualizados) {
 
-        InventarioItemEntity existente = inventarioItemRepository.findById(id)
-                .orElseThrow(() -> new InventarioItemNoEncontradoException(
-                        "Inventario con id: " + id + " no encontrado."));
+        InventarioItemEntity existente = bloquearInventario(id);
 
         if (!existente.isActivo()) {
             throw new BusinessException(
@@ -237,10 +239,10 @@ public class InventarioItemService {
         return mapearResponse(inventarioItemRepository.save(existente));
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public InventarioItemResponse agregarStock(int id, int cantidad) {
 
-        InventarioItemEntity existente = obtenerInventarioPorId(id);
+        InventarioItemEntity existente = bloquearInventario(id);
 
         if (!existente.isActivo()) {
             throw new BusinessException(
@@ -281,12 +283,9 @@ public class InventarioItemService {
 //        return mapearResponse(inventarioItemRepository.save(existente));
 //    }
 
-    @Transactional
-    public void devolverVideojuego(
-            InventarioItemEntity inventario,
-            int cantidad
-    ) {
-
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void devolverVideojuego(int inventarioId, int cantidad) {
+        InventarioItemEntity inventario = bloquearInventario(inventarioId);
         inventario.aumentarStockDisponible(cantidad);
 
         eventPublisher.publishEvent(
@@ -297,9 +296,9 @@ public class InventarioItemService {
     }
 
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void eliminar(int id) {
-        InventarioItemEntity inventario = obtenerInventarioPorId(id);
+        InventarioItemEntity inventario = bloquearInventario(id);
 
         if (!inventario.isActivo()) {
             throw new BusinessException(
@@ -313,9 +312,9 @@ public class InventarioItemService {
         inventarioItemRepository.save(inventario);
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public InventarioItemResponse darDeBaja(int id) {
-        InventarioItemEntity existente = obtenerInventarioPorId(id);
+        InventarioItemEntity existente = bloquearInventario(id);
 
         if (!existente.isActivo()) {
             throw new BusinessException(
@@ -332,7 +331,7 @@ public class InventarioItemService {
 
     /// Aggregate root
 
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ReservaResponse crearReserva(
             Integer inventarioId,
             ReservaRequest request
@@ -353,7 +352,7 @@ public class InventarioItemService {
             );
         }
 
-        InventarioItemEntity inventario = obtenerInventarioPorId(inventarioId);
+        InventarioItemEntity inventario = bloquearInventario(inventarioId);
 
         if (!inventario.isActivo()) {
             throw new BusinessException(
@@ -409,6 +408,13 @@ public class InventarioItemService {
     }
 
     /// Helpers privados
+
+    private InventarioItemEntity bloquearInventario(int id) {
+        return inventarioItemRepository.buscarPorIdParaActualizar(id)
+                .orElseThrow(() -> new InventarioItemNoEncontradoException(
+                        "Inventario con id: " + id + " no encontrado."
+                ));
+    }
 
     private InventarioItemEntity obtenerInventarioPorId(int id) {
         return inventarioItemRepository.findById(id)
