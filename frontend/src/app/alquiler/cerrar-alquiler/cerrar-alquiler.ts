@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { MetodoPago } from '../../models/metodo-pago.model';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Alquiler } from '../alquiler';
@@ -21,6 +21,8 @@ export class CerrarAlquiler implements OnInit {
   metodosPago = Object.values(MetodoPago);
   form!: FormGroup;
   errorMessage = signal('');
+  cerrando = signal(false);
+  private readonly destroyRef = inject(DestroyRef);
 
 
   constructor(
@@ -108,6 +110,7 @@ export class CerrarAlquiler implements OnInit {
   }
 
   cerrarAlquiler(): void {
+    if (this.cerrando()) return;
 
     this.errorMessage.set('');
 
@@ -119,16 +122,20 @@ export class CerrarAlquiler implements OnInit {
     const formValue = this.form.value;
     const request: CerrarAlquilerRequest = { ...this.form.value, descuento: formValue.descuento / 100 };
 
+    this.cerrando.set(true);
     this.alquilerService
       .cerrarAlquiler(this.alquilerId, request)
       .subscribe({
 
-        next: response => {
+        next: () => {
+          if (this.destroyRef.destroyed) return;
+
           alert('Alquiler finalizado correctamente');
+          void this.router.navigate(['/alquileres']);
         },
 
         error: err => {
-
+          this.cerrando.set(false);
           console.error(err);
 
           this.errorMessage.set(
