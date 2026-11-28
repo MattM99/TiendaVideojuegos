@@ -132,11 +132,18 @@ button:disabled {
 }
 
 /* Tabla */
-table {
+.tabla-alquileres {
   width: 90%;
   max-width: 1100px;
   margin: auto;
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.35);
+}
 
+table {
+  width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
 
   background:
@@ -146,13 +153,7 @@ table {
       rgba(20,28,36,.92)
     );
 
-  border-radius: 12px;
-  overflow: hidden;
-
   backdrop-filter: blur(8px);
-
-  box-shadow:
-    0 8px 18px rgba(0,0,0,.35);
 }
 
 /* Encabezado */
@@ -173,6 +174,30 @@ tbody td {
   text-align: center;
   padding: 14px;
   border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.videojuegos-celda {
+  vertical-align: middle;
+}
+
+.videojuegos-lista {
+  margin: 0;
+  padding: 0;
+  max-width: 18rem;
+  list-style: none;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.videojuegos-lista li + li {
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 760px) {
+  thead th,
+  tbody td {
+    padding: 10px;
+  }
 }
 
 tbody tr {

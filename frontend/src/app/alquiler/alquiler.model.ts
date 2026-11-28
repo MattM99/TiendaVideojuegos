@@ -22,12 +22,10 @@ export interface PersonaResponse {
 }
 
 export interface DetalleAlquilerResponse {
-  detalleAlquilerId?: number;
+  detalleAlquilerId: number;
   cantidad: number;
   subtotal: number;
-
-  inventarioItemResponse?: InventarioItemResponse;
-  inventarioItem?: InventarioItemResponse;
+  inventario: InventarioItemResponse;
 }
 
 export interface InventarioItemResponse {

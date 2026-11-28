@@ -52,10 +52,12 @@
 </div>
 
 
+<div class="tabla-alquileres" tabindex="0" role="region" aria-label="Listado de alquileres">
   <table>
     <thead>
       <tr>
         <th>Cliente</th>
+        <th>Videojuegos</th>
         <th>Fecha inicio</th>
         <th>Fecha fin</th>
         <th>Fecha devolución</th>
@@ -68,11 +70,11 @@
     <tbody>
        @if (cargando()) {
     <tr>
-      <td colspan="7" class="sin-resultados">Cargando alquileres...</td>
+      <td colspan="8" class="sin-resultados">Cargando alquileres...</td>
     </tr>
   } @else if (alquileres().length === 0) {
     <tr>
-      <td colspan="7" class="sin-resultados">
+      <td colspan="8" class="sin-resultados">
         No se encontraron resultados.
       </td>
     </tr>
@@ -80,6 +82,22 @@
       @for (a of alquileres(); track a.alquilerId) {
         <tr>
           <td>{{ getNombrePersona(a) }}</td>
+          <td class="videojuegos-celda">
+            @if (a.carrito.length > 0) {
+              <ul class="videojuegos-lista" role="list">
+                @for (detalle of a.carrito; track detalle.detalleAlquilerId) {
+                  <li>
+                    {{ detalle.inventario.videojuego?.titulo ?? 'Videojuego sin título' }} — {{ detalle.inventario.plataforma }}
+                    @if (detalle.cantidad != null) {
+                      <span>× {{ detalle.cantidad }}</span>
+                    }
+                  </li>
+                }
+              </ul>
+            } @else {
+              —
+            }
+          </td>
           <td>{{ a.fechaInicio }}</td>
           <td>{{ a.fechaFin }}</td>
           <td>{{ a.fechaDevolucion || '-' }}</td>
@@ -108,6 +126,7 @@
     }
     </tbody>
   </table>
+</div>
 
 @if (!cargando() && totalPages() > 0) {
 <div class="pagination">

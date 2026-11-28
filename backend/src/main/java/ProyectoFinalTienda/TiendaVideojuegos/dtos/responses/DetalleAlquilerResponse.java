@@ -15,6 +15,8 @@ public class DetalleAlquilerResponse {
 
     private InventarioItemResponse inventario;
 
+    private int cantidad;
+
     private BigDecimal subtotal;
 
 }

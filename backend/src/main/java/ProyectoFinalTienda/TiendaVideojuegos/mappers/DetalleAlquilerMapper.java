@@ -38,6 +38,7 @@ public class DetalleAlquilerMapper {
         return DetalleAlquilerResponse.builder()
                 .detalleAlquilerId(entity.getDetalleAlquilerId())
                 .inventario(inventarioItemResponse)
+                .cantidad(entity.getCantidad())
                 .subtotal(entity.getSubtotal())
                 .build();
     }
