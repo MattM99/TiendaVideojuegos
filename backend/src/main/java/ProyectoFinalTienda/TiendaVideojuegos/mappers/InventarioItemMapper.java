@@ -1,7 +1,6 @@
 package ProyectoFinalTienda.TiendaVideojuegos.mappers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemCreateOrReplaceRequest;
-import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioItemResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
@@ -9,7 +8,6 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,14 +47,6 @@ public class InventarioItemMapper {
                     return toResponse(entity, videojuegoResponse);
                 })
                 .collect(Collectors.toList());
-    }
-
-    public void actualizarEntity(InventarioItemEntity entity, InventarioItemUpdateRequest dto) {
-        if (dto.getPrecioDiario() != null &&
-                dto.getPrecioDiario().compareTo(BigDecimal.ZERO) > 0) {
-            entity.setPrecioDiario(dto.getPrecioDiario());
-        }        if (dto.getStockTotal() != null && dto.getStockTotal() >= 0) entity.setStockTotal(dto.getStockTotal());
-        if (dto.getStockDisponible() != null && dto.getStockDisponible() >= 0) entity.setStockDisponible(dto.getStockDisponible());
     }
 }
 

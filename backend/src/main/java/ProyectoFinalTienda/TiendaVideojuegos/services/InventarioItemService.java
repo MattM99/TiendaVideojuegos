@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.services;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemEdicionRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.ReservaRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.VideojuegoResponse;
@@ -15,6 +16,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.PersonaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.ReservaEntity;
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.VideojuegoEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoReserva;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +31,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -178,7 +181,7 @@ public class InventarioItemService {
     /// Update
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public InventarioItemResponse actualizarCompleto(int id, InventarioItemCreateOrReplaceRequest nuevosDatos) {
+    public InventarioItemResponse editarPrecio(int id, InventarioItemEdicionRequest request) {
 
         InventarioItemEntity existente = bloquearInventario(id);
 
@@ -195,16 +198,12 @@ public class InventarioItemService {
         }
 
         validarUpdate(
-                nuevosDatos.getVideojuegoId(),
-                nuevosDatos.getPlataforma(),
+                existente.getVideojuego().getVideojuegoId(),
+                existente.getPlataforma(),
                 id
         );
 
-        validarStock(nuevosDatos.getStockDisponible(), nuevosDatos.getStockTotal());
-
-        existente.setPrecioDiario(nuevosDatos.getPrecioDiario());
-        existente.setStockTotal(nuevosDatos.getStockTotal());
-        existente.setStockDisponible(nuevosDatos.getStockDisponible());
+        existente.setPrecioDiario(request.precioDiario());
 
         return mapearResponse(inventarioItemRepository.save(existente));
     }
@@ -232,11 +231,42 @@ public class InventarioItemService {
                 id
         );
 
-        inventarioItemMapper.actualizarEntity(existente, datosActualizados);
+        int stockDisponibleAnterior = existente.getStockDisponible();
+        ajustarStock(existente, datosActualizados.getStockTotal(), datosActualizados.getStockDisponible());
+        if (datosActualizados.getPrecioDiario() != null &&
+                datosActualizados.getPrecioDiario().compareTo(BigDecimal.ZERO) > 0) {
+            existente.setPrecioDiario(datosActualizados.getPrecioDiario());
+        }
 
-        validarStock(existente.getStockDisponible(), existente.getStockTotal());
+        InventarioItemEntity guardado = inventarioItemRepository.save(existente);
+        if (guardado.getStockDisponible() > stockDisponibleAnterior) {
+            eventPublisher.publishEvent(new StockDisponibleEvent(guardado.getInventarioItemId()));
+        }
+        return mapearResponse(guardado);
+    }
 
-        return mapearResponse(inventarioItemRepository.save(existente));
+    private void ajustarStock(InventarioItemEntity inventario, Integer totalSolicitado, Integer disponibleSolicitado) {
+        int total = totalSolicitado != null && totalSolicitado >= 0 ? totalSolicitado : inventario.getStockTotal();
+        int disponible = disponibleSolicitado != null && disponibleSolicitado >= 0
+                ? disponibleSolicitado : inventario.getStockDisponible();
+        validarStock(disponible, total);
+
+        if (total == inventario.getStockTotal() && disponible == inventario.getStockDisponible()) {
+            return;
+        }
+
+        long alquiladas = inventarioItemRepository.contarUnidadesAlquiladas(
+                inventario.getInventarioItemId(), EstadoAlquiler.EN_CURSO);
+        // La unidad sigue apartada hasta que el proceso de vencimiento cambie el estado.
+        long reservadas = inventario.getListaDeEspera().stream()
+                .filter(reserva -> reserva.getEstadoReserva() == EstadoReserva.NOTIFICADA)
+                .count();
+        if (disponible + alquiladas + reservadas > total) {
+            throw new StockNoValidoException("El ajuste de stock debe respetar las unidades alquiladas o reservadas.");
+        }
+
+        inventario.setStockTotal(total);
+        inventario.setStockDisponible(disponible);
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)

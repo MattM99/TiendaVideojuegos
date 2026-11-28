@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.repositories;
 
 import ProyectoFinalTienda.TiendaVideojuegos.model.entities.InventarioItemEntity;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoReserva;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.Plataformas;
 import jakarta.persistence.LockModeType;
@@ -21,6 +22,14 @@ public interface InventarioItemRepository extends JpaRepository<InventarioItemEn
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT i FROM InventarioItemEntity i WHERE i.inventarioItemId = :id")
     Optional<InventarioItemEntity> buscarPorIdParaActualizar(@Param("id") int id);
+
+    @Query("""
+            SELECT COALESCE(SUM(d.cantidad), 0)
+            FROM DetalleAlquilerEntity d
+            WHERE d.inventarioItem.inventarioItemId = :id
+              AND d.alquiler.estadoAlquiler = :estado
+            """)
+    long contarUnidadesAlquiladas(@Param("id") int id, @Param("estado") EstadoAlquiler estado);
 
     @Query("""
             SELECT DISTINCT i.inventarioItemId

@@ -54,13 +54,14 @@ export class InventarioItemFormComponent {
       v.videojuegoId > 0 &&
       v.plataforma.trim() !== '' &&
       v.precioDiario > 0 &&
-      v.stockTotal >= 0 &&
-      v.stockDisponible >= 0 &&
-      v.stockDisponible <= v.stockTotal &&
       this.precioError() === '' &&
-      this.stockTotalError() === '' &&
-      this.stockDisponibleError() === ''
-
+      (this.isEdit || (
+        v.stockTotal >= 0 &&
+        v.stockDisponible >= 0 &&
+        v.stockDisponible <= v.stockTotal &&
+        this.stockTotalError() === '' &&
+        this.stockDisponibleError() === ''
+      ))
     );
   });
 
@@ -162,7 +163,7 @@ export class InventarioItemFormComponent {
     const data = this.item();
 
     if (this.isEdit) {
-      this.inventarioService.update(this.id, data as any).subscribe({
+      this.inventarioService.update(this.id, data.precioDiario).subscribe({
         next: () => this.router.navigate(['/inventario']),
         error: (err) => {
           console.error(err);

@@ -1,6 +1,7 @@
 package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemCreateOrReplaceRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemEdicionRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.InventarioItemUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.ReservaRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.InventarioItemResponse;
@@ -180,16 +181,17 @@ public class InventarioItemController {
         return ResponseEntity.ok(responses);
     }
 
-    @Operation(summary = "Actualizar inventario completo", description = "Actualiza todos los campos de un inventario por ID")
+    @Operation(summary = "Editar precio de inventario", description = "Actualiza el precio diario sin modificar el stock")
     @PutMapping("/{id}")
-    public ResponseEntity<InventarioItemResponse> actualizarInventarioCompleto(
+    public ResponseEntity<InventarioItemResponse> editarPrecio(
             @PathVariable int id,
-            @Valid @RequestBody InventarioItemCreateOrReplaceRequest request) {
-        InventarioItemResponse response = inventarioItemService.actualizarCompleto(id, request);
+            @Valid @RequestBody InventarioItemEdicionRequest request) {
+        InventarioItemResponse response = inventarioItemService.editarPrecio(id, request);
         return ResponseEntity.ok(response);
     }
 
-    @Operation(summary = "Actualizar inventario por campo", description = "Actualiza un campo específico de un inventario por ID")
+    @Operation(summary = "Actualizar inventario por campo",
+            description = "Actualiza el precio o ajusta explícitamente el stock respetando las unidades comprometidas")
     @PatchMapping("/{id}")
     public ResponseEntity<InventarioItemResponse> actualizarInventarioPorCampo(
             @PathVariable int id,

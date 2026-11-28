@@ -3,7 +3,7 @@
 <div class="form">
   <!-- Seleccionar videojuego -->
   <label>Videojuego</label>
-  <select [ngModel]="item().videojuegoId" (ngModelChange)="updateVideojuego($event)">
+  <select [ngModel]="item().videojuegoId" (ngModelChange)="updateVideojuego($event)" [disabled]="isEdit">
     <option value="">-- Seleccionar --</option>
 
     @for (vg of videojuegos(); track vg.id) {
@@ -12,7 +12,7 @@
   </select>
 
   <label>Plataforma</label>
-  <select [ngModel]="item().plataforma" (ngModelChange)="updatePlataforma($event)">
+  <select [ngModel]="item().plataforma" (ngModelChange)="updatePlataforma($event)" [disabled]="isEdit">
     <option value="">Seleccione una plataforma</option>
 
     @for (p of plataformas; track p) {
@@ -30,14 +30,15 @@
 
   <label>Stock Total</label>
 
-  <input type="number" [ngModel]="item().stockTotal" (ngModelChange)="updateStockTotal($event)" />
+  <input type="number" [ngModel]="item().stockTotal" (ngModelChange)="updateStockTotal($event)" [readOnly]="isEdit" />
  @if (stockTotalError(); as error) {
   <div class="error">{{ error }}</div>
 }
 
 
   <label>Stock Disponible</label>
-  <input type="number" [ngModel]="item().stockDisponible" (ngModelChange)="updateStockDisponible($event)" />
+  <input type="number" [ngModel]="item().stockDisponible" (ngModelChange)="updateStockDisponible($event)"
+    [readOnly]="isEdit" />
  @if (stockDisponibleError(); as error) {
   <div class="error">{{ error }}</div>
 }

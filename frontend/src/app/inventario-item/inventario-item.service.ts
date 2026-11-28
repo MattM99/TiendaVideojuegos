@@ -116,8 +116,8 @@ export class InventarioItemService {
     return this.http.post<InventarioItemModel>(`${this.baseUrl}/crear`, item);
   }
 
-  update(id: string | number, item: InventarioItemModel): Observable<InventarioItemModel> {
-    return this.http.put<InventarioItemModel>(`${this.baseUrl}/${id}`, item);
+  update(id: string | number, precioDiario: number): Observable<InventarioItemModel> {
+    return this.http.put<InventarioItemModel>(`${this.baseUrl}/${id}`, { precioDiario });
   }
 
   patch(id: string | number, item: Partial<InventarioItemModel>): Observable<InventarioItemModel> {
