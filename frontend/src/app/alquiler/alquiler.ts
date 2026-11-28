@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AlquilerModel } from './alquiler.model';
+import { AlquilerModel, ValidarDisponibilidadResponse } from './alquiler.model';
 import { AlquilerUpdateRequest, CrearAlquilerRequest } from './alquiler-request.model';
 import { CerrarAlquilerRequest } from '../models/cerrar-alquiler-request.model';
 import { Observable } from 'rxjs/internal/Observable';
@@ -71,6 +71,10 @@ export class Alquiler {
 
   crearAlquiler(request: CrearAlquilerRequest) {
     return this.http.post<AlquilerModel>(this.baseUrl, request);
+  }
+
+  validarDisponibilidad(request: CrearAlquilerRequest): Observable<ValidarDisponibilidadResponse> {
+    return this.http.post<ValidarDisponibilidadResponse>(`${this.baseUrl}/validar`, request);
   }
 
   actualizarAlquiler(

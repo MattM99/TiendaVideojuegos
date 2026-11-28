@@ -1,5 +1,5 @@
 export interface CrearAlquilerRequest {
-  personaDni: number;
+  personaDni: string;
   fechaInicio: string;
   fechaFin: string;
   detalles: CrearDetalleAlquilerRequest[];

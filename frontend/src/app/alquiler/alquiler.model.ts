@@ -61,3 +61,25 @@ export interface PagoResponse {
   monto?: number;
   fechaPago?: string;
 }
+export interface ValidarDisponibilidadResponse {
+  puedeCrearAlquiler: boolean;
+  faltantes: ItemConStockInsuficiente[];
+  disponibilidad: DisponibilidadItem[];
+}
+
+export interface ItemConStockInsuficiente {
+  inventarioItemId: number;
+  titulo: string;
+  plataforma: string;
+  cantidadSolicitada: number;
+  cantidadDisponible: number;
+}
+
+export interface DisponibilidadItem {
+  inventarioItemId: number;
+  cantidadSolicitada: number;
+  stockLibre: number;
+  cantidadDisponibleParaCliente: number;
+  reservaPropiaVigente: boolean;
+  motivo: string | null;
+}

@@ -138,6 +138,7 @@
     <h3>Juegos</h3>
 
     @for (detalle of detalles.controls; track $index) {
+    @let disponibilidadItem = obtenerDisponibilidad(detalle.controls.inventarioItemId.value);
     <div [formGroupName]="$index" class="detalle-card">
 
       <!-- JUEGO -->
@@ -145,7 +146,7 @@
         <option [ngValue]="null">Seleccione un juego</option>
 
         @for (item of inventario(); track item.inventarioId) {
-        <option [value]="item.inventarioId">
+        <option [ngValue]="item.inventarioId">
           ({{ item.plataforma }}) {{ item.videojuego.titulo }}
         </option>
         }
@@ -163,10 +164,29 @@
         <small class="error">Cantidad mínima: 1</small>
       }
 
-      @if (detalle.get('cantidad')?.touched && detalle.get('cantidad')?.hasError('stockInsuficiente')) {
+      @if (detalle.get('cantidad')?.touched && detalle.get('cantidad')?.hasError('pattern')) {
+        <small class="error">La cantidad debe ser un número entero.</small>
+      }
+
+      @if (disponibilidadItem && disponibilidadItem.reservaPropiaVigente &&
+        disponibilidadItem.cantidadDisponibleParaCliente >= disponibilidadItem.cantidadSolicitada) {
         <div class="stock-error-box">
-          <small class="error">
-            El stock disponible es de: {{ obtenerStockDisponible($index) }}
+          <small class="success">Tenés 1 unidad reservada para este cliente</small>
+        </div>
+      }
+
+      @if (disponibilidadItem?.motivo; as motivo) {
+        <div class="stock-error-box" role="alert">
+          <small class="error">{{ motivo }}</small>
+        </div>
+      }
+
+      @if (detalle.controls.inventarioItemId.value !== null &&
+        !disponibilidadItem?.reservaPropiaVigente &&
+        (detalle.controls.cantidad.value ?? 0) > (disponibilidadItem?.stockLibre ?? obtenerStockDisponible($index))) {
+        <div class="stock-error-box">
+          <small class="hint">
+            Stock libre: {{ disponibilidadItem?.stockLibre ?? obtenerStockDisponible($index) }}
           </small>
 
           <button
@@ -204,9 +224,17 @@
       Cancelar
     </button>
 
+    @if (!esEdicion()) {
+      <button type="button" class="btn-secondary" (click)="verificarDisponibilidad()"
+        [disabled]="!puedeVerificarDisponibilidad()">
+        {{ validandoDisponibilidad() ? 'Verificando disponibilidad...' : 'Verificar disponibilidad' }}
+      </button>
+    }
     <button type="submit" class="btn-primary"
-      [disabled]="form.invalid || (!esEdicion() && personaValida() !== true) || (esEdicion() && guardando())">
-      {{ esEdicion() ? (guardando() ? 'Guardando...' : 'Guardar cambios') : 'Crear alquiler' }}
+      [disabled]="esEdicion() ? (form.invalid || guardando()) : !puedeCrearAlquiler()">
+      {{ esEdicion()
+        ? (guardando() ? 'Guardando...' : 'Guardar cambios')
+        : (creando() ? 'Creando...' : 'Crear alquiler') }}
     </button>
   </div>
 

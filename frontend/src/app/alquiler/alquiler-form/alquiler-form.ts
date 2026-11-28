@@ -1,16 +1,17 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, FormBuilder, Validators, ReactiveFormsModule, FormGroup, FormArray, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormBuilder, Validators, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Alquiler } from '../alquiler';
-import { AlquilerModel } from '../alquiler.model';
+import { AlquilerModel, DisponibilidadItem, ValidarDisponibilidadResponse } from '../alquiler.model';
 import { Persona } from '../../persona/persona';
 import { PersonaModel } from '../../persona/persona.model';
 import { InventarioItemService } from '../../inventario-item/inventario-item.service';
 import { InventarioItemModel } from '../../inventario-item/inventario-item.model';
 import { fechaValida, noFechaFutura, rangoFechasValidas } from '../../shared/validators/date.validator/date.validator';
 import { CrearAlquilerRequest } from '../alquiler-request.model';
-import { finalize } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { obtenerMensajeError } from '../../shared/error/error-response';
 
 @Component({
@@ -25,6 +26,7 @@ export class AlquilerForm implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
   private alquilerService = inject(Alquiler);
   private personaService = inject(Persona);
@@ -37,6 +39,11 @@ export class AlquilerForm implements OnInit {
   guardando = signal(false);
   alquilerOriginal = signal<AlquilerModel | null>(null);
   errorMessage = signal('');
+  disponibilidad = signal<ValidarDisponibilidadResponse | null>(null);
+  validandoDisponibilidad = signal(false);
+  creando = signal(false);
+  private consultaDisponibilidad?: Subscription;
+  private busquedaPersona?: Subscription;
   hoy = new Date().toISOString().split('T')[0];
 
   titulo = 'Nuevo alquiler';
@@ -50,16 +57,19 @@ export class AlquilerForm implements OnInit {
 
     detalles: this.fb.array([
       this.crearDetalle()
-    ]),
+    ], Validators.required),
   }, { validators: rangoFechasValidas });
 
 
   ngOnInit(): void {
     this.form.valueChanges.subscribe(() => {
       this.errorMessage.set('');
+      if (!this.esEdicion()) this.invalidarDisponibilidad();
     });
 
     this.form.get('personaDni')?.valueChanges.subscribe(() => {
+      this.busquedaPersona?.unsubscribe();
+      this.personaEncontrada.set(null);
       this.personaValida.set(null);
     });
 
@@ -170,29 +180,15 @@ export class AlquilerForm implements OnInit {
     return fechaFin > hoy ? null : { fechaFinNoFutura: true };
   }
 
-  crearDetalle(): FormGroup {
-    const group = this.fb.group({
-      inventarioItemId: [null, Validators.required],
-      cantidad: [1, [Validators.required, Validators.min(1)]]
+  crearDetalle() {
+    return this.fb.group({
+      inventarioItemId: this.fb.control<number | null>(null, Validators.required),
+      cantidad: [1, [Validators.required, Validators.min(1), Validators.pattern(/^\d+$/)]]
     });
-
-    group.get('inventarioItemId')?.valueChanges.subscribe(inventarioId => {
-      const item = this.inventario().find(i => i.inventarioId === Number(inventarioId));
-      const stockDisponible = item?.stockDisponible ?? 0;
-
-      const cantidadControl = group.get('cantidad');
-
-      cantidadControl?.setValidators([Validators.required, Validators.min(1),
-      (ctrl) => ctrl.value > stockDisponible ? { stockInsuficiente: true } : null
-      ]);
-
-      cantidadControl?.updateValueAndValidity();
-    });
-    return group;
   }
 
-  get detalles(): FormArray<FormGroup> {
-    return this.form.get('detalles') as FormArray<FormGroup>;
+  get detalles() {
+    return this.form.controls.detalles;
   }
 
   agregarDetalle(): void {
@@ -225,13 +221,17 @@ export class AlquilerForm implements OnInit {
     const dni = this.form.get('personaDni')?.value;
 
     if (!dni || dni.length < 7) return;
+    this.busquedaPersona?.unsubscribe();
+    this.invalidarDisponibilidad();
 
     this.personaEncontrada.set(null);
     this.form.get('personaDni')?.setErrors(null);
     this.personaValida.set(null);
     this.errorMessage.set('');
 
-    this.personaService.obtenerPersona(dni).subscribe({
+    this.busquedaPersona = this.personaService.obtenerPersona(dni).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (persona) => {
         this.personaEncontrada.set(persona);
         this.personaValida.set(true);
@@ -283,26 +283,78 @@ export class AlquilerForm implements OnInit {
       return;
     }
 
-    const value = this.form.getRawValue();
+    if (!this.puedeCrearAlquiler()) return;
 
-    const request: CrearAlquilerRequest = {
-      personaDni: Number(value.personaDni),
-      fechaInicio: value.fechaInicio!,
-      fechaFin: value.fechaFin!,
-      detalles: value.detalles!.map((d: any) => ({
-        inventarioItemId: Number(d.inventarioItemId),
-        cantidad: Number(d.cantidad)
-      }))
-    };
-
-    this.alquilerService.crearAlquiler(request).subscribe({
+    this.creando.set(true);
+    this.alquilerService.crearAlquiler(this.obtenerSolicitudCreacion()).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.creando.set(false))
+    ).subscribe({
       next: () => this.router.navigate(['/alquileres']),
       error: err => {
+        this.invalidarDisponibilidad();
         this.errorMessage.set(
           obtenerMensajeError(err, 'No se pudo crear el alquiler.')
         );
       }
     });
+  }
+
+  puedeVerificarDisponibilidad(): boolean {
+    return !this.esEdicion() && this.form.valid && this.personaValida() === true
+      && !this.validandoDisponibilidad() && !this.creando();
+  }
+
+  verificarDisponibilidad(): void {
+    if (!this.puedeVerificarDisponibilidad()) return;
+
+    this.invalidarDisponibilidad();
+    this.errorMessage.set('');
+    this.validandoDisponibilidad.set(true);
+
+    this.consultaDisponibilidad = this.alquilerService.validarDisponibilidad(this.obtenerSolicitudCreacion()).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.validandoDisponibilidad.set(false))
+    ).subscribe({
+      next: respuesta => this.disponibilidad.set(respuesta),
+      error: err => this.errorMessage.set(
+        obtenerMensajeError(err, 'No se pudo verificar la disponibilidad.')
+      )
+    });
+  }
+
+  puedeCrearAlquiler(): boolean {
+    const resultado = this.disponibilidad();
+    return this.puedeVerificarDisponibilidad() && resultado?.puedeCrearAlquiler === true
+      && resultado.faltantes.length === 0
+      && this.detalles.controls.every(detalle => {
+        const { inventarioItemId, cantidad } = detalle.getRawValue();
+        const item = this.obtenerDisponibilidad(inventarioItemId);
+        return item !== undefined && item.motivo === null && item.cantidadSolicitada === cantidad
+          && item.cantidadDisponibleParaCliente >= item.cantidadSolicitada;
+      });
+  }
+
+  obtenerDisponibilidad(inventarioId: number | null): DisponibilidadItem | undefined {
+    return this.disponibilidad()?.disponibilidad.find(item => item.inventarioItemId === inventarioId);
+  }
+
+  private invalidarDisponibilidad(): void {
+    this.consultaDisponibilidad?.unsubscribe();
+    this.disponibilidad.set(null);
+  }
+
+  private obtenerSolicitudCreacion(): CrearAlquilerRequest {
+    const value = this.form.getRawValue();
+    return {
+      personaDni: value.personaDni!,
+      fechaInicio: value.fechaInicio!,
+      fechaFin: value.fechaFin!,
+      detalles: value.detalles.map(detalle => ({
+        inventarioItemId: detalle.inventarioItemId!,
+        cantidad: detalle.cantidad!
+      }))
+    };
   }
 
   private guardarEdicion(): void {
