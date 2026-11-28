@@ -23,6 +23,13 @@ public interface AlquilerRepository extends JpaRepository<AlquilerEntity, Intege
     @Query("SELECT a FROM AlquilerEntity a WHERE a.alquilerId = :id")
     Optional<AlquilerEntity> buscarPorIdParaActualizar(@Param("id") int id);
 
+    @Query("""
+            SELECT d.inventarioItem.inventarioItemId
+            FROM DetalleAlquilerEntity d
+            WHERE d.alquiler.alquilerId = :alquilerId AND d.detalleAlquilerId = :detalleId
+            """)
+    Optional<Integer> buscarInventarioDelDetalle(@Param("alquilerId") int alquilerId, @Param("detalleId") int detalleId);
+
     // Proyectar ID y cantidad evita cargar el inventario antes de bloquearlo.
     @Query("""
             SELECT d.inventarioItem.inventarioItemId AS inventarioItemId, d.cantidad AS cantidad

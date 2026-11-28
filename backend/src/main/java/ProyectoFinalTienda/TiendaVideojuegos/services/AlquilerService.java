@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.services;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCorreccionRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.PenalizacionManualRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
@@ -60,7 +61,10 @@ public class AlquilerService {
         PersonaEntity persona = obtenerPersonaHabilitada(request.getPersonaDni());
         validarDetalles(request.getDetalles());
 
-        Map<Integer, InventarioItemEntity> inventarios = bloquearInventarios(request.getDetalles());
+        List<Integer> inventarioIds = request.getDetalles().stream()
+                .map(DetalleAlquilerRequest::getInventarioItemId)
+                .toList();
+        Map<Integer, InventarioItemEntity> inventarios = bloquearInventarios(inventarioIds);
         AlquilerEntity alquiler = alquilerMapper.toEntity(request, persona);
         alquiler.setEstadoAlquiler(EstadoAlquiler.EN_CURSO);
 
@@ -87,11 +91,8 @@ public class AlquilerService {
         return persona;
     }
 
-    private Map<Integer, InventarioItemEntity> bloquearInventarios(List<DetalleAlquilerRequest> detalles) {
-        List<Integer> ids = detalles.stream()
-                .map(DetalleAlquilerRequest::getInventarioItemId)
-                .sorted()
-                .toList();
+    private Map<Integer, InventarioItemEntity> bloquearInventarios(List<Integer> inventarioIds) {
+        List<Integer> ids = inventarioIds.stream().distinct().sorted().toList();
         Map<Integer, InventarioItemEntity> inventarios = new HashMap<>();
         for (int id : ids) {
             InventarioItemEntity inventario = inventarioItemRepository.buscarPorIdParaActualizar(id)
@@ -238,6 +239,86 @@ public class AlquilerService {
         return alquilerMapper.toResponse(
                 alquilerRepository.save(alquiler)
         );
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public AlquilerResponse corregirDetalle(int id, int detalleId, DetalleAlquilerCorreccionRequest request) {
+        if (request.getInventarioItemId() == null || request.getInventarioItemId() <= 0) {
+            throw new BusinessException("El ID del inventario debe ser mayor a 0.");
+        }
+        if (request.getCantidad() == null || request.getCantidad() <= 0) {
+            throw new BusinessException("La cantidad debe ser mayor a 0.");
+        }
+
+        AlquilerEntity alquiler = alquilerRepository.buscarPorIdParaActualizar(id)
+                .orElseThrow(() -> new AlquilerNoEncontradoException(
+                        "Alquiler con id: " + id + " no encontrado."));
+        if (!alquiler.isActivo() || alquiler.getEstadoAlquiler() != EstadoAlquiler.EN_CURSO) {
+            throw new BusinessException("Solo se pueden corregir detalles de alquileres activos y en curso.");
+        }
+
+        // Consultar el ID sin cargar la entidad de inventario antes de bloquearla.
+        int inventarioOrigenId = alquilerRepository.buscarInventarioDelDetalle(id, detalleId)
+                .orElseThrow(() -> detalleNoEncontrado(id, detalleId));
+        int inventarioDestinoId = request.getInventarioItemId();
+        Map<Integer, InventarioItemEntity> inventarios =
+                bloquearInventarios(List.of(inventarioOrigenId, inventarioDestinoId));
+        InventarioItemEntity destino = inventarios.get(inventarioDestinoId);
+
+        DetalleAlquilerEntity detalle = validarDetallesParaCorreccion(alquiler, detalleId, inventarioDestinoId);
+        validarInventarioHabilitado(destino);
+
+        int cantidadActual = detalle.getCantidad();
+        int cantidadNueva = request.getCantidad();
+        boolean mismoInventario = inventarioOrigenId == inventarioDestinoId;
+        if (mismoInventario && cantidadActual == cantidadNueva) {
+            return alquilerMapper.toResponse(alquiler);
+        }
+
+        int unidadesADescontar = mismoInventario ? cantidadNueva - cantidadActual : cantidadNueva;
+        int unidadesADevolver = mismoInventario ? cantidadActual - cantidadNueva : cantidadActual;
+        if (unidadesADescontar > 0) {
+            destino.disminuirStockDisponible(unidadesADescontar);
+        }
+        if (unidadesADevolver > 0) {
+            inventarioItemService.devolverVideojuego(inventarioOrigenId, unidadesADevolver);
+        }
+
+        detalle.setInventarioItem(destino);
+        detalle.setCantidad(cantidadNueva);
+        detalle.calcularSubtotal();
+        alquiler.calcularMontoDiario();
+        return alquilerMapper.toResponse(alquilerRepository.save(alquiler));
+    }
+
+    private DetalleAlquilerEntity validarDetallesParaCorreccion(
+            AlquilerEntity alquiler, int detalleId, int inventarioDestinoId) {
+        Set<Integer> inventarios = new HashSet<>();
+        DetalleAlquilerEntity seleccionado = null;
+        for (DetalleAlquilerEntity detalle : alquiler.getItems()) {
+            if (detalle.getOrigenEntrega() != OrigenDetalleAlquiler.STOCK_LIBRE) {
+                throw new BusinessException("Todos los detalles del alquiler deben provenir de stock libre.");
+            }
+
+            int inventarioId = detalle.getInventarioItem().getInventarioItemId();
+            if (detalle.getDetalleAlquilerId() == detalleId) {
+                seleccionado = detalle;
+                inventarioId = inventarioDestinoId;
+            }
+            if (!inventarios.add(inventarioId)) {
+                throw new BusinessException("El inventario con id " + inventarioId
+                        + " aparece más de una vez en el alquiler.");
+            }
+        }
+        if (seleccionado == null) {
+            throw detalleNoEncontrado(alquiler.getAlquilerId(), detalleId);
+        }
+        return seleccionado;
+    }
+
+    private DetalleAlquilerNoEncontradoException detalleNoEncontrado(int alquilerId, int detalleId) {
+        return new DetalleAlquilerNoEncontradoException(
+                "El detalle con id: " + detalleId + " no pertenece al alquiler con id: " + alquilerId + ".");
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)

@@ -3,6 +3,7 @@ package ProyectoFinalTienda.TiendaVideojuegos.controllers;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerCreateOrReplaceRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerUpdateRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest;
+import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.DetalleAlquilerCorreccionRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ValidarDisponibilidadResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
@@ -62,6 +63,19 @@ public class AlquilerController {
         return ResponseEntity.ok(
                 alquilerService.actualizar(id, request)
         );
+    }
+
+    @Operation(
+            summary = "Corregir un detalle de alquiler",
+            description = "Cambia el inventario o la cantidad de un alquiler activo y EN_CURSO con detalles de stock libre"
+    )
+    @PatchMapping("/{id}/detalles/{detalleId}")
+    public ResponseEntity<AlquilerResponse> corregirDetalle(
+            @PathVariable int id,
+            @PathVariable int detalleId,
+            @Valid @RequestBody DetalleAlquilerCorreccionRequest request
+    ) {
+        return ResponseEntity.ok(alquilerService.corregirDetalle(id, detalleId, request));
     }
 
     @PostMapping("/{alquilerId}/finalizar")

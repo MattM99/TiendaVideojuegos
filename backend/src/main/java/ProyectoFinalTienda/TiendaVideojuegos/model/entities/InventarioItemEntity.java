@@ -128,7 +128,7 @@ public class InventarioItemEntity {
         disminuirStockDisponible(cantidad);
     }
 
-    private void disminuirStockDisponible(int cantidad) {
+    public void disminuirStockDisponible(int cantidad) {
         if (cantidad < 0) {
             throw new IllegalArgumentException("La cantidad a disminuir no puede ser negativa");
         }
