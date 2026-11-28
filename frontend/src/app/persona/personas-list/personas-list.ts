@@ -1,9 +1,10 @@
 import { PersonaModel } from './../persona.model';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../auth/auth-service/auth';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { finalize, of, Subscription, switchMap, timer } from 'rxjs';
+import { obtenerMensajeError } from '../../shared/error/error-response';
 import { Persona } from '../persona';
 
 @Component({
@@ -14,7 +15,6 @@ import { Persona } from '../persona';
   styleUrls: ['./personas-list.css'],
 })
 export class PersonaListComponent implements OnInit {
-  usuario = computed(() => this.auth.currentUser());
   page = signal(0);
   size = signal(5);
   totalPages = signal(0);
@@ -24,45 +24,53 @@ export class PersonaListComponent implements OnInit {
   busqueda = signal('');
 
   private service = inject(Persona);
+  private destroyRef = inject(DestroyRef);
+  private cargaListado?: Subscription;
   personas = signal<PersonaModel[]>([]);
+  cargando = signal(false);
+  errorMessage = signal('');
 
-  personasFiltradas = computed(() => {
-
-    let lista = this.personas();
-
-  // ocultar founder
-  lista = lista.filter(
-    persona => persona.dni !== '0000000'
-  );
-
-    const textoBusqueda = this.busqueda().toLowerCase().trim();
-
-    return lista.filter(persona =>
-      persona.dni.toLowerCase().includes(textoBusqueda) ||
-      persona.nombre.toLowerCase().includes(textoBusqueda) ||
-      persona.apellido.toLowerCase().includes(textoBusqueda) ||
-      (persona.email && persona.email.toLowerCase().includes(textoBusqueda)) ||
-      (persona.telefono && persona.telefono.toLowerCase().includes(textoBusqueda))
-    );
-
-  });
-
-  constructor(private http: HttpClient, private auth: AuthService, private router: Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     this.loadPersonas();
   }
 
-  loadPersonas() {
-    this.service.cargarPersonas(
-      this.page(),
-      this.size(),
-      this.sortBy(),
-      this.direction()
-    ).subscribe((response) => {
-      this.personas.set(response.content);
-      this.totalPages.set(response.totalPages);
-      this.totalElements.set(response.totalElements);
+  private loadPersonas(espera = 0): void {
+    this.cargaListado?.unsubscribe();
+    this.cargando.set(true);
+    this.errorMessage.set('');
+
+    const inicio = espera > 0 ? timer(espera) : of(0);
+    this.cargaListado = inicio.pipe(
+      switchMap(() => this.service.cargarPersonas(
+        this.page(),
+        this.size(),
+        this.sortBy(),
+        this.direction(),
+        this.busqueda()
+      )),
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.cargando.set(false))
+    ).subscribe({
+      next: response => {
+        if (response.totalPages > 0 && response.number >= response.totalPages) {
+          this.page.set(response.totalPages - 1);
+          this.loadPersonas();
+          return;
+        }
+
+        this.page.set(response.totalPages === 0 ? 0 : response.number);
+        this.personas.set(response.content);
+        this.totalPages.set(response.totalPages);
+        this.totalElements.set(response.totalElements);
+      },
+      error: err => {
+        this.personas.set([]);
+        this.totalPages.set(0);
+        this.totalElements.set(0);
+        this.errorMessage.set(obtenerMensajeError(err, 'No se pudieron cargar las personas.'));
+      }
     });
   }
 
@@ -87,41 +95,27 @@ export class PersonaListComponent implements OnInit {
   }
 
   changeSize(event: Event) {
-
-    const value = Number(
-      (event.target as HTMLSelectElement).value
-    );
-
-    this.size.set(value);
-
-    this.page.set(0);
-
-    this.loadPersonas();
+    this.size.set(Number((event.target as HTMLSelectElement).value));
+    this.reiniciarListado();
   }
 
   changeSort(event: Event) {
-
-    const value = (
-      event.target as HTMLSelectElement
-    ).value;
-
-    this.sortBy.set(value);
-
-    this.page.set(0);
-
-    this.loadPersonas();
+    this.sortBy.set((event.target as HTMLSelectElement).value);
+    this.reiniciarListado();
   }
 
   changeDirection(event: Event) {
+    this.direction.set((event.target as HTMLSelectElement).value);
+    this.reiniciarListado();
+  }
 
-    const value = (
-      event.target as HTMLSelectElement
-    ).value;
+  changeBusqueda(event: Event): void {
+    this.busqueda.set((event.target as HTMLInputElement).value);
+    this.reiniciarListado(250);
+  }
 
-    this.direction.set(value);
-
+  private reiniciarListado(espera = 0): void {
     this.page.set(0);
-
-    this.loadPersonas();
+    this.loadPersonas(espera);
   }
 }

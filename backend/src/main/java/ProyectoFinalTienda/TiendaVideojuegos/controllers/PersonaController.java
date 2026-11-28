@@ -36,13 +36,16 @@ public class PersonaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nueva);
     }
 
-    @Operation(summary = "Obtener todas las personas", description = "Devuelve personas activas e inactivas")
+    @Operation(summary = "Obtener todas las personas",
+            description = "Devuelve personas activas e inactivas con búsqueda y exclusión del FOUNDER opcionales")
     @GetMapping("/administracion/obtenertodos")
     public ResponseEntity<Page<PersonaResponse>> obtenerTodos(
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "apellido") String ordenarPor,
-            @RequestParam(defaultValue = "asc") String direccion
+            @RequestParam(defaultValue = "asc") String direccion,
+            @RequestParam(defaultValue = "false") boolean excluirFounder,
+            @RequestParam(required = false) String busqueda
     ) {
         Sort sort = direccion.equalsIgnoreCase("desc")
                 ? Sort.by(ordenarPor).descending()
@@ -52,7 +55,7 @@ public class PersonaController {
 
 
         return ResponseEntity.ok(
-                personaService.obtenerTodos(paginacion)
+                personaService.obtenerTodos(paginacion, excluirFounder, busqueda)
         );
     }
 

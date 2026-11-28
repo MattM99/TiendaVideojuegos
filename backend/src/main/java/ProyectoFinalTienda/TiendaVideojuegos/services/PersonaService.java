@@ -14,7 +14,9 @@ import ProyectoFinalTienda.TiendaVideojuegos.repositories.CuentaRepository;
 import ProyectoFinalTienda.TiendaVideojuegos.repositories.PersonaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PersonaService {
+
+    private static final String DNI_FOUNDER = "0000000";
 
     @Autowired
     private PersonaRepository personaRepository;
@@ -53,6 +57,21 @@ public class PersonaService {
     public Page<PersonaResponse> obtenerTodos(Pageable paginacion)
     {
         return personaRepository.findAll(paginacion)
+                .map(personaMapper::convertirEntidadADTO);
+    }
+
+    public Page<PersonaResponse> obtenerTodos(Pageable paginacion, boolean excluirFounder, String busqueda) {
+        String termino = busqueda == null || busqueda.isBlank() ? null : busqueda.strip();
+        if (!excluirFounder && termino == null) {
+            return obtenerTodos(paginacion);
+        }
+
+        Sort orden = paginacion.getSort();
+        if (orden.getOrderFor("personaId") == null) {
+            orden = orden.and(Sort.by("personaId"));
+        }
+        Pageable pagina = PageRequest.of(paginacion.getPageNumber(), paginacion.getPageSize(), orden);
+        return personaRepository.buscarListado(excluirFounder ? DNI_FOUNDER : null, termino, pagina)
                 .map(personaMapper::convertirEntidadADTO);
     }
 

@@ -12,17 +12,19 @@ export class Persona {
 
 
   personas = signal<PersonaModel[]>([]);
-  cargando = signal(false);
-
-  cargarPersonas(pagina: number, tamano: number, ordenarPor: string, direccion: string
-) {
-
-  this.cargando.set(true);
-
-  return this.http.get<PageResponse<PersonaModel>>(
-    `${this.baseUrl}/administracion/obtenertodos?pagina=${pagina}&tamano=${tamano}&ordenarPor=${ordenarPor}&direccion=${direccion}`
-  );
-}
+  cargarPersonas(pagina: number, tamano: number, ordenarPor: string, direccion: string, busqueda = '') {
+    const termino = busqueda.trim();
+    return this.http.get<PageResponse<PersonaModel>>(
+      `${this.baseUrl}/administracion/obtenertodos`,
+      {
+        params: {
+          pagina, tamano, ordenarPor, direccion,
+          excluirFounder: true,
+          ...(termino ? { busqueda: termino } : {})
+        }
+      }
+    );
+  }
 
   getAll(
   pagina: number,

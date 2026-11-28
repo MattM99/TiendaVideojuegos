@@ -17,9 +17,9 @@
 <div class="filters">
 
   <input type="text" placeholder="Buscar persona..." [value]="busqueda()"
-    (input)="busqueda.set($any($event.target).value)" />
+    (input)="changeBusqueda($event)" />
 
-  <select (change)="changeSort($event)">
+  <select [value]="sortBy()" (change)="changeSort($event)">
 
     <option value="apellido">
       Apellido
@@ -35,7 +35,7 @@
 
   </select>
 
-  <select (change)="changeDirection($event)">
+  <select [value]="direction()" (change)="changeDirection($event)">
 
     <option value="asc">
       Ascendente
@@ -47,7 +47,7 @@
 
   </select>
 
-  <select (change)="changeSize($event)">
+  <select [value]="size().toString()" (change)="changeSize($event)">
 
     <option value="5">5</option>
 
@@ -59,10 +59,12 @@
 
 </div>
 
-@if (personasFiltradas().length === 0) {
-
-<p>No hay personas registradas.</p>
-
+@if (cargando()) {
+  <p role="status">Cargando personas...</p>
+} @else if (errorMessage()) {
+  <p role="alert">{{ errorMessage() }}</p>
+} @else if (personas().length === 0) {
+  <p>No se encontraron personas.</p>
 }
 
 @else {
@@ -89,7 +91,7 @@
 
   <tbody>
 
-    @for (p of personasFiltradas(); track p.dni) {
+    @for (p of personas(); track p.dni) {
 
     <tr>
 
@@ -135,7 +137,7 @@
   <span>
 
     Página {{ page() + 1 }}
-    de {{ totalPages() }}
+    de {{ totalPages() }} · Total: {{ totalElements() }}
 
   </span>
 
