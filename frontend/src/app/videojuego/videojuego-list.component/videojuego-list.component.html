@@ -54,7 +54,7 @@
 
 <div class="filters-bar">
 
-  @if (usuario()?.rol === 'FOUNDER' || usuario()?.rol === 'ADMINISTRADOR') {
+  @if (puedeAdministrar()) {
   <label class="checkbox-filter">
     <input type="checkbox" [checked]="mostrarBajas()" (change)="changeMostrarBajas($event)">
     Mostrar videojuegos dados de baja
@@ -124,8 +124,12 @@
           Editar
         </button>
 
-        <button (click)="delete(v.videojuegoId)">
+        <button class="delete-btn" (click)="delete(v.videojuegoId)">
           Eliminar
+        </button>
+      } @else if (puedeAdministrar()) {
+        <button (click)="darDeAlta(v)" [disabled]="reactivando()">
+          Dar de alta
         </button>
       }
     </span>

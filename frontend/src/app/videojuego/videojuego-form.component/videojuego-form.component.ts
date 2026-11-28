@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { VideojuegoService } from '../videojuego.service';
 import { FormsModule } from '@angular/forms';
 import { VideojuegoModel } from '../videojuego.model';
+import { obtenerMensajeError } from '../../shared/error/error-response';
 
 @Component({
   selector: 'app-videojuego-form',
@@ -162,7 +163,7 @@ export class VideojuegoFormComponent {
       next: () => this.router.navigate(['/videojuegos']),
       error: (err) => {
         console.error(err);
-        alert('Error al crear videojuego');
+        alert(obtenerMensajeError(err, 'Error al crear videojuego'));
       }
     });
   }

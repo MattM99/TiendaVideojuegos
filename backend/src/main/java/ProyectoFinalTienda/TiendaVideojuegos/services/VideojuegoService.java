@@ -168,6 +168,21 @@ public class VideojuegoService {
         return videojuegoMapper.toResponse(videojuegoRepository.save(videojuegoExistente));
     }
 
+    @Transactional
+    public VideojuegoResponse darDeAlta(int id) {
+        VideojuegoEntity videojuego = videojuegoRepository.buscarPorIdParaActualizar(id)
+                .orElseThrow(() -> new VideojuegoNoEncontradoException(
+                        "Videojuego con id: " + id + " no encontrado."
+                ));
+
+        if (videojuego.isActivo()) {
+            throw new BusinessException("El videojuego ya se encuentra activo.");
+        }
+
+        videojuego.setActivo(true);
+        return videojuegoMapper.toResponse(videojuegoRepository.save(videojuego));
+    }
+
     /// Delete
 
     @Transactional

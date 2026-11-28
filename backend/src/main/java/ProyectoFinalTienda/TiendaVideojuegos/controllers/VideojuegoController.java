@@ -49,6 +49,13 @@ public class VideojuegoController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Dar de alta un videojuego", description = "Reactiva un videojuego dado de baja")
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PatchMapping("/{id}/alta")
+    public ResponseEntity<VideojuegoResponse> darDeAlta(@PathVariable int id) {
+        return ResponseEntity.ok(videojuegoService.darDeAlta(id));
+    }
+
     @Operation(summary = "Listar videojuegos activos", description = "Devuelve únicamente videojuegos activos")
     @GetMapping("/listaractivos")
     public ResponseEntity<Page<VideojuegoResponse>> listarActivos(

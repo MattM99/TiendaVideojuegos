@@ -333,11 +333,11 @@ li button:hover {
 }
 
 /* Botón eliminar */
-.actions button:last-child {
+.actions .delete-btn {
   border-color: rgba(180, 60, 60, 0.5);
 }
 
-.actions button:last-child:hover {
+.actions .delete-btn:hover {
   background: #9e2f2f;
   border-color: #9e2f2f;
   color: white;

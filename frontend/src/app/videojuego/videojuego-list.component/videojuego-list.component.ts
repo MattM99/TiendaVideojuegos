@@ -3,7 +3,9 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { VideojuegoService } from '../videojuego.service';
 import { VideojuegoModel } from '../videojuego.model';
 import { RouterModule } from '@angular/router';
+import { finalize } from 'rxjs';
 import { AuthService } from '../../auth/auth-service/auth';
+import { obtenerMensajeError } from '../../shared/error/error-response';
 
 @Component({
   selector: 'app-videojuego-list.component',
@@ -17,6 +19,11 @@ export class VideojuegoListComponent implements OnInit {
   private auth = inject(AuthService);
 
   usuario = computed(() => this.auth.currentUser());
+  puedeAdministrar = computed(() => {
+    const rol = this.usuario()?.rol;
+    return rol === 'FOUNDER' || rol === 'ADMINISTRADOR';
+  });
+  reactivando = signal(false);
 
   videojuegos = signal<VideojuegoModel[]>([]);
 
@@ -197,6 +204,32 @@ export class VideojuegoListComponent implements OnInit {
     this.page.set(0);
 
     this.loadVideojuegos();
+  }
+
+  darDeAlta(videojuego: VideojuegoModel) {
+    const id = videojuego.videojuegoId;
+    if (!id || videojuego.activo !== false || !this.puedeAdministrar() || this.reactivando()) return;
+
+    if (!confirm(`¿Querés dar de alta «${videojuego.titulo}»?`)) return;
+
+    this.reactivando.set(true);
+    this.service.darDeAlta(id).pipe(
+      finalize(() => this.reactivando.set(false))
+    ).subscribe({
+      next: ({ status, body }) => {
+        if (status !== 200 || !body) {
+          alert('No se pudo confirmar el alta del videojuego.');
+          return;
+        }
+
+        this.videojuegos.update(videojuegos =>
+          videojuegos.map(v => v.videojuegoId === id ? body : v)
+        );
+        this.loadVideojuegos();
+        alert('El videojuego se dio de alta correctamente.');
+      },
+      error: err => alert(obtenerMensajeError(err, 'Error al dar de alta el videojuego.'))
+    });
   }
 
   delete(id?: number) {

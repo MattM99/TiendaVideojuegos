@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { VideojuegoModel } from './videojuego.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -93,6 +93,12 @@ export class VideojuegoService {
 
   update(id: string | number, v: VideojuegoModel): Observable<VideojuegoModel> {
     return this.http.put<VideojuegoModel>(`${this.apiUrl}/${id}`, v);
+  }
+
+  darDeAlta(id: number): Observable<HttpResponse<VideojuegoModel>> {
+    return this.http.patch<VideojuegoModel>(`${this.apiUrl}/${id}/alta`, null, {
+      observe: 'response'
+    });
   }
 
   delete(id: string | number): Observable<void> {
