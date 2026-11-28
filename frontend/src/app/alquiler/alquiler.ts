@@ -46,7 +46,9 @@ export class Alquiler {
     size: number,
     sortBy: string,
     direction: string,
-    incluirInactivos = false
+    incluirInactivos = false,
+    estado?: 'EN_CURSO' | 'FINALIZADO',
+    persona = ''
   ) {
     const endpoint = incluirInactivos
       ? 'administracion/obtenertodos'
@@ -59,7 +61,9 @@ export class Alquiler {
           pagina: page,
           tamano: size,
           ordenarPor: sortBy,
-          direccion: direction
+          direccion: direction,
+          ...(estado ? { estado } : {}),
+          ...(!incluirInactivos && persona.trim() ? { persona: persona.trim() } : {})
         }
       }
     );

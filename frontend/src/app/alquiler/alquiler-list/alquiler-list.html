@@ -13,14 +13,14 @@
     placeholder="Buscar una persona..."
     [value]="busqueda()"
     [disabled]="mostrarBajas()"
-    (input)="busqueda.set($any($event.target).value)"
+    (input)="changeBusqueda($event)"
   />
 
   <label>
   <input
     type="checkbox"
     [checked]="mostrarFinalizados()"
-    (change)="mostrarFinalizados.set($any($event.target).checked)"
+    (change)="changeMostrarFinalizados($event)"
   />
   Mostrar alquileres finalizados
 </label>
@@ -66,14 +66,18 @@
     </thead>
 
     <tbody>
-       @if (alquileresFiltrados().length === 0) {
+       @if (cargando()) {
+    <tr>
+      <td colspan="7" class="sin-resultados">Cargando alquileres...</td>
+    </tr>
+  } @else if (alquileres().length === 0) {
     <tr>
       <td colspan="7" class="sin-resultados">
         No se encontraron resultados.
       </td>
     </tr>
   } @else {
-      @for (a of alquileresFiltrados(); track a.alquilerId) {
+      @for (a of alquileres(); track a.alquilerId) {
         <tr>
           <td>{{ getNombrePersona(a) }}</td>
           <td>{{ a.fechaInicio }}</td>
@@ -105,6 +109,7 @@
     </tbody>
   </table>
 
+@if (!cargando() && totalPages() > 0) {
 <div class="pagination">
 
   <button (click)="previousPage()" [disabled]="page() === 0">
@@ -112,7 +117,7 @@
   </button>
 
   <span>
-    Página {{ page() + 1 }} de {{ totalPages() }}
+    Página {{ page() + 1 }} de {{ totalPages() }} · Total: {{ totalElements() }}
   </span>
 
   <button (click)="nextPage()" [disabled]="page() >= totalPages() - 1">
@@ -120,3 +125,4 @@
   </button>
 
 </div>
+}

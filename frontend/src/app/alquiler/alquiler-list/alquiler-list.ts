@@ -1,6 +1,8 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { finalize, of, Subscription, switchMap, timer } from 'rxjs';
 import { Alquiler } from '../alquiler';
 import { AlquilerModel } from '../alquiler.model';
 import { AuthService } from '../../auth/auth-service/auth';
@@ -18,10 +20,13 @@ export class AlquilerList implements OnInit {
   private alquilerService = inject(Alquiler);
   private router = inject(Router);
   private auth = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
+  private cargaListado?: Subscription;
 
   usuario = computed(() => this.auth.currentUser());
 
   alquileres = signal<AlquilerModel[]>([]);
+  cargando = signal(false);
   errorMessage = signal('');
 
   page = signal(0);
@@ -37,57 +42,51 @@ export class AlquilerList implements OnInit {
 
   mostrarFinalizados = signal(false);
   mostrarBajas = signal(false);
- alquileresFiltrados = computed(() => {
-    let lista = this.alquileres();
 
-    if (!this.mostrarFinalizados()) {
-      lista = lista.filter(a => a.estadoAlquiler !== 'FINALIZADO');
-    }
-
-    const texto = this.busqueda().toLowerCase().trim();
-
-    return lista.filter(a =>
-      a.personaResponse?.nombre?.toLowerCase().includes(texto) ||
-      a.personaResponse?.apellido?.toLowerCase().includes(texto) ||
-      a.estadoAlquiler?.toLowerCase().includes(texto)
-    );
-  });
-
-    ngOnInit(): void {
+  ngOnInit(): void {
     this.loadAlquileres();
   }
 
-   loadAlquileres() {
+  private loadAlquileres(espera = 0): void {
+    this.cargaListado?.unsubscribe();
     this.errorMessage.set('');
+    this.cargando.set(true);
 
-    this.alquilerService.getAll(
-      this.page(),
-      this.size(),
-      this.sortBy(),
-      this.direction(),
-      this.mostrarBajas()
+    const inicio = espera > 0 ? timer(espera) : of(0);
+    this.cargaListado = inicio.pipe(
+      switchMap(() => this.alquilerService.getAll(
+        this.page(),
+        this.size(),
+        this.sortBy(),
+        this.direction(),
+        this.mostrarBajas(),
+        this.mostrarFinalizados() ? undefined : 'EN_CURSO',
+        this.busqueda()
+      )),
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.cargando.set(false))
     ).subscribe({
       next: response => {
+        if (response.totalPages > 0 && this.page() >= response.totalPages) {
+          this.page.set(response.totalPages - 1);
+          this.loadAlquileres();
+          return;
+        }
+
+        if (response.totalPages === 0) this.page.set(0);
         this.alquileres.set(response.content);
         this.totalPages.set(response.totalPages);
         this.totalElements.set(response.totalElements);
       },
       error: err => {
+        this.alquileres.set([]);
+        this.totalPages.set(0);
+        this.totalElements.set(0);
         this.errorMessage.set(
           obtenerMensajeError(err, 'No se pudieron cargar los alquileres.')
         );
       }
     });
-  }
-
-
-
-  cargarAlquileres() {
-    this.alquilerService.cargarAlquileres(
-      this.page(),
-      this.size(),
-      this.busqueda(),
-    );
   }
 
   nuevo() {
@@ -135,7 +134,7 @@ export class AlquilerList implements OnInit {
     return `${persona.nombre} ${persona.apellido}`;
   }
 
-      nextPage() {
+  nextPage() {
     if (this.page() < this.totalPages() - 1) {
       this.page.update(p => p + 1);
       this.loadAlquileres();
@@ -151,36 +150,41 @@ export class AlquilerList implements OnInit {
 
   changeSize(event: Event) {
     this.size.set(Number((event.target as HTMLSelectElement).value));
-    this.page.set(0);
-    this.loadAlquileres();
+    this.reiniciarListado();
   }
 
   changeSort(event: Event) {
     this.sortBy.set((event.target as HTMLSelectElement).value);
-    this.page.set(0);
-    this.loadAlquileres();
+    this.reiniciarListado();
   }
 
   changeDirection(event: Event) {
     this.direction.set(
       (event.target as HTMLSelectElement).value as 'asc' | 'desc'
     );
-    this.page.set(0);
-    this.loadAlquileres();
+    this.reiniciarListado();
+  }
+
+  changeBusqueda(event: Event) {
+    if (this.mostrarBajas()) return;
+    this.busqueda.set((event.target as HTMLInputElement).value);
+    this.reiniciarListado(250);
+  }
+
+  changeMostrarFinalizados(event: Event) {
+    this.mostrarFinalizados.set((event.target as HTMLInputElement).checked);
+    this.reiniciarListado();
   }
 
   changeMostrarBajas(event: Event) {
-    const value = (event.target as HTMLInputElement).checked;
-
-    this.mostrarBajas.set(value);
+    this.mostrarBajas.set((event.target as HTMLInputElement).checked);
     this.busqueda.set('');
+    this.reiniciarListado();
+  }
 
-    if (value) {
-      this.mostrarFinalizados.set(true);
-    }
-
+  private reiniciarListado(espera = 0): void {
     this.page.set(0);
-    this.loadAlquileres();
+    this.loadAlquileres(espera);
   }
 
 }

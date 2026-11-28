@@ -118,32 +118,21 @@ public class AlquilerService {
 
     /// Read
 
+    @Transactional(readOnly = true)
     public Page<AlquilerResponse> listarActivos(
             LocalDate fechaInicio,
             LocalDate fechaFin,
-            Pageable paginacion){
-
-        Page<AlquilerEntity> alquileres;
-
-        if (fechaInicio != null && fechaFin != null) {
-
-            alquileres = alquilerRepository.findByFechaInicioBetweenAndActivoTrue(
-                    fechaInicio,
-                    fechaFin,
-                    paginacion
-            );
-
-        } else {
-
-            alquileres = alquilerRepository.findByActivoTrue(paginacion);
-        }
-
-        return alquileres.map(alquilerMapper::toResponse);
+            EstadoAlquiler estado,
+            String persona,
+            Pageable paginacion) {
+        String busqueda = persona == null || persona.isBlank() ? null : persona.strip();
+        return alquilerRepository.buscarListado(false, estado, fechaInicio, fechaFin, busqueda, paginacion)
+                .map(alquilerMapper::toResponse);
     }
 
-    public Page<AlquilerResponse> obtenerTodos(Pageable paginacion) {
-
-        return alquilerRepository.findAll(paginacion)
+    @Transactional(readOnly = true)
+    public Page<AlquilerResponse> obtenerTodos(EstadoAlquiler estado, Pageable paginacion) {
+        return alquilerRepository.buscarListado(true, estado, null, null, null, paginacion)
                 .map(alquilerMapper::toResponse);
     }
 

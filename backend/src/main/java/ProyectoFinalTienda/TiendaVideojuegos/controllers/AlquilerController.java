@@ -5,6 +5,7 @@ import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.AlquilerUpdateRequest
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.requests.CerrarAlquilerRequest;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.AlquilerResponse;
 import ProyectoFinalTienda.TiendaVideojuegos.dtos.responses.ValidarDisponibilidadResponse;
+import ProyectoFinalTienda.TiendaVideojuegos.model.enums.EstadoAlquiler;
 import ProyectoFinalTienda.TiendaVideojuegos.services.AlquilerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -82,7 +83,8 @@ public class AlquilerController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Obtener todos los alquileres", description = "Devuelve una lista de todos los alquileres registrados")
+    @Operation(summary = "Listar alquileres activos",
+            description = "Permite filtrar por estado, rango de fecha de inicio, nombre o apellido del cliente")
     @GetMapping("/listaractivos")
     public ResponseEntity<Page<AlquilerResponse>> listarActivos(
             @RequestParam(required = false)
@@ -91,44 +93,46 @@ public class AlquilerController {
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate fechaFin,
+            @RequestParam(required = false) EstadoAlquiler estado,
+            @RequestParam(required = false) String persona,
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "fechaInicio") String ordenarPor,
             @RequestParam(defaultValue = "asc") String direccion
     ) {
-        Sort sort = direccion.equalsIgnoreCase("desc")
-                ? Sort.by(ordenarPor).descending()
-                : Sort.by(ordenarPor).ascending();
-
-        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
-
+        Pageable paginacion = paginarListado(pagina, tamano, ordenarPor, direccion);
 
         return ResponseEntity.ok(
-                alquilerService.listarActivos(fechaInicio, fechaFin, paginacion)
+                alquilerService.listarActivos(fechaInicio, fechaFin, estado, persona, paginacion)
         );
     }
 
     @Operation(
             summary = "Listar todos los alquileres para administración",
-            description = "Devuelve alquileres activos e inactivos"
+            description = "Devuelve alquileres activos e inactivos con filtro opcional por estado"
     )
     @PreAuthorize("hasRole('ADMINISTRADOR')")
     @GetMapping("/administracion/obtenertodos")
     public ResponseEntity<Page<AlquilerResponse>> obtenerTodos(
+            @RequestParam(required = false) EstadoAlquiler estado,
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamano,
             @RequestParam(defaultValue = "alquilerId") String ordenarPor,
             @RequestParam(defaultValue = "asc") String direccion
     ) {
-        Sort sort = direccion.equalsIgnoreCase("desc")
-                ? Sort.by(ordenarPor).descending()
-                : Sort.by(ordenarPor).ascending();
-
-        Pageable paginacion = PageRequest.of(pagina, tamano, sort);
+        Pageable paginacion = paginarListado(pagina, tamano, ordenarPor, direccion);
 
         return ResponseEntity.ok(
-                alquilerService.obtenerTodos(paginacion)
+                alquilerService.obtenerTodos(estado, paginacion)
         );
+    }
+
+    private Pageable paginarListado(int pagina, int tamano, String ordenarPor, String direccion) {
+        Sort.Direction sentido = direccion.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = ordenarPor.equals("alquilerId")
+                ? Sort.by(sentido, ordenarPor)
+                : Sort.by(sentido, ordenarPor, "alquilerId");
+        return PageRequest.of(pagina, tamano, sort);
     }
 
     @Operation(summary = "Obtener un alquiler por ID", description = "Devuelve un alquiler específico por su ID")
