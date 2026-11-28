@@ -1,3 +1,62 @@
+@if (esEdicion()) {
+<section class="alquiler-form alquiler-edicion" aria-labelledby="titulo-edicion">
+  <h2 id="titulo-edicion" class="title">{{ titulo }}</h2>
+
+  @if (alquilerOriginal(); as alquiler) {
+    <div class="form-group">
+      <span>Cliente</span>
+      <div class="persona-info">
+        <strong>
+          {{ alquiler.personaResponse.nombre }} {{ alquiler.personaResponse.apellido }} — DNI: {{ alquiler.personaResponse.dni }}
+        </strong>
+      </div>
+    </div>
+
+    <form class="seccion-edicion" aria-labelledby="titulo-edicion-fecha" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <h3 id="titulo-edicion-fecha">Fecha de finalización</h3>
+      <span class="hint">Fecha de inicio: {{ alquiler.fechaInicio }}</span>
+      <div class="form-group">
+        <label for="fecha-fin-edicion">Fecha fin</label>
+        <input id="fecha-fin-edicion" type="date" formControlName="fechaFin" [readOnly]="guardando()"
+          [class.invalid]="form.controls.fechaFin.invalid && form.controls.fechaFin.touched" />
+
+        @if (form.controls.fechaFin.touched) {
+          @if (form.controls.fechaFin.hasError('required')) {
+            <small class="error">Fecha fin obligatoria</small>
+          }
+          @if (form.controls.fechaFin.hasError('fechaFinNoFutura')) {
+            <small class="error">La fecha de fin debe estar en el futuro</small>
+          }
+          @if (form.controls.fechaFin.hasError('fechaFinNoPosterior')) {
+            <small class="error">La fecha de fin debe ser posterior a la fecha de inicio</small>
+          }
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <div class="error-message" role="alert">{{ errorMessage() }}</div>
+      }
+
+      <div class="actions">
+        <button type="submit" class="btn-primary" [disabled]="form.invalid || guardando() || guardandoVideojuegos()">
+          {{ guardando() ? 'Guardando...' : 'Guardar fecha' }}
+        </button>
+      </div>
+    </form>
+
+    <app-corregir-videojuegos
+      [alquiler]="alquiler"
+      [bloqueado]="guardando()"
+      (guardado)="actualizarVideojuegos($event)"
+    />
+  } @else {
+    <p class="hint" role="status">Cargando alquiler...</p>
+  }
+
+  <button type="button" class="btn-secondary volver-edicion" (click)="cancelar()"
+    [disabled]="guardando() || guardandoVideojuegos()">Volver al listado</button>
+</section>
+} @else {
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="alquiler-form">
 
   <h2 class="title">{{ titulo }}</h2>
@@ -9,21 +68,6 @@
   }
 
   <!-- ================= PERSONA ================= -->
-  @if (esEdicion()) {
-  <div class="form-group">
-    <label>Cliente</label>
-
-    @if (alquilerOriginal(); as alquiler) {
-    <div class="persona-info">
-      <strong>
-        {{ alquiler.personaResponse.nombre }} {{ alquiler.personaResponse.apellido }} — DNI: {{ alquiler.personaResponse.dni }}
-      </strong>
-    </div>
-    } @else {
-    <span class="hint">Cargando información del cliente...</span>
-    }
-  </div>
-  } @else {
   <div class="form-group">
     <label>DNI de la persona</label>
 
@@ -56,17 +100,10 @@
     <small class="hint">Presione buscar para validar</small>
     }
   </div>
-  }
 
   <hr />
 
   <!-- ================= FECHAS ================= -->
-  @if (esEdicion()) {
-  <div class="form-group">
-    <label>Fecha inicio</label>
-    <span>{{ alquilerOriginal()?.fechaInicio || 'Cargando...' }}</span>
-  </div>
-  } @else {
   <div class="form-group">
     <label>Fecha inicio</label>
     <input type="date" formControlName="fechaInicio" [max]="hoy"
@@ -82,7 +119,6 @@
     </small>
     }
   </div>
-  }
 
   <div class="form-group">
     <label>Fecha fin</label>
@@ -93,16 +129,9 @@
     <small class="error">Fecha fin obligatoria</small>
     }
 
-    @if (esEdicion() && form.get('fechaFin')?.touched && form.get('fechaFin')?.hasError('fechaFinNoFutura')) {
-    <small class="error">La fecha de fin debe estar en el futuro</small>
-    }
-
-    @if (esEdicion() && form.get('fechaFin')?.touched && form.get('fechaFin')?.hasError('fechaFinNoPosterior')) {
-    <small class="error">La fecha de fin debe ser posterior a la fecha de inicio</small>
-    }
   </div>
 
-  @if (!esEdicion() && form.errors?.['rangoInvalido']) {
+  @if (form.errors?.['rangoInvalido']) {
   <small class="error">
     La fecha de inicio no puede ser mayor a la fecha de fin
   </small>
@@ -111,28 +140,6 @@
   <hr />
 
   <!-- ================= DETALLES ================= -->
-  @if (esEdicion()) {
-  <div class="detalles">
-    <h3>Juegos</h3>
-
-    @if (alquilerOriginal(); as alquiler) {
-      @for (detalle of alquiler.carrito; track $index) {
-      <div class="detalle-card">
-        <strong>
-          {{ $any(detalle).inventario?.videojuego?.titulo || 'Videojuego sin información' }}
-        </strong>
-        <span>
-          Plataforma: {{ $any(detalle).inventario?.plataforma || 'Sin información' }}
-        </span>
-      </div>
-      } @empty {
-      <span class="hint">El alquiler no tiene videojuegos asociados.</span>
-      }
-    } @else {
-    <span class="hint">Cargando videojuegos...</span>
-    }
-  </div>
-  } @else {
   <div formArrayName="detalles" class="detalles">
 
     <h3>Juegos</h3>
@@ -212,7 +219,6 @@
     </button>
 
   </div>
-  }
 
   <hr />
 
@@ -224,18 +230,14 @@
       Cancelar
     </button>
 
-    @if (!esEdicion()) {
-      <button type="button" class="btn-secondary" (click)="verificarDisponibilidad()"
-        [disabled]="!puedeVerificarDisponibilidad()">
-        {{ validandoDisponibilidad() ? 'Verificando disponibilidad...' : 'Verificar disponibilidad' }}
-      </button>
-    }
-    <button type="submit" class="btn-primary"
-      [disabled]="esEdicion() ? (form.invalid || guardando()) : !puedeCrearAlquiler()">
-      {{ esEdicion()
-        ? (guardando() ? 'Guardando...' : 'Guardar cambios')
-        : (creando() ? 'Creando...' : 'Crear alquiler') }}
+    <button type="button" class="btn-secondary" (click)="verificarDisponibilidad()"
+      [disabled]="!puedeVerificarDisponibilidad()">
+      {{ validandoDisponibilidad() ? 'Verificando disponibilidad...' : 'Verificar disponibilidad' }}
+    </button>
+    <button type="submit" class="btn-primary" [disabled]="!puedeCrearAlquiler()">
+      {{ creando() ? 'Creando...' : 'Crear alquiler' }}
     </button>
   </div>
 
 </form>
+}

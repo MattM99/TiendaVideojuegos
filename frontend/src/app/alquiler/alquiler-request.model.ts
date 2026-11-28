@@ -14,3 +14,8 @@ export interface AlquilerUpdateRequest {
   fechaFin: string;
 }
 
+export interface DetalleAlquilerCorreccionRequest {
+  inventarioItemId: number;
+  cantidad: number;
+}
+

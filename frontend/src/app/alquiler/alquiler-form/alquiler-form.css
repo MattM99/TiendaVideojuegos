@@ -14,6 +14,49 @@
   gap: 18px;
 }
 
+.alquiler-edicion {
+  box-sizing: border-box;
+  width: min(720px, calc(100% - 24px));
+  max-width: none;
+  padding: clamp(14px, 3vw, 25px);
+  color: #e0e6ed;
+}
+
+.seccion-edicion {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: clamp(12px, 3vw, 18px);
+  background: rgba(20, 28, 36, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+
+.seccion-edicion h3 {
+  margin: 0;
+}
+
+.seccion-edicion input,
+.seccion-edicion select {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.seccion-edicion .actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.volver-edicion {
+  align-self: flex-start;
+}
+
+.volver-edicion:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
 /* ================= TITLE ================= */
 .title {
   text-align: center;

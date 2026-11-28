@@ -1,0 +1,73 @@
+<section class="seccion-edicion" aria-labelledby="titulo-correccion">
+  <h3 id="titulo-correccion">Videojuegos alquilados</h3>
+
+  @if (detalleActual()) {
+    <form [formGroup]="formulario" (ngSubmit)="guardar()" [attr.aria-busy]="guardando()">
+      <fieldset class="campos-correccion" [disabled]="guardando() || bloqueado()">
+        <div class="form-group">
+          <label for="detalle-correccion">Detalle del alquiler</label>
+          <select id="detalle-correccion" formControlName="detalleId">
+            @for (detalle of alquiler().carrito; track detalle.detalleAlquilerId) {
+              <option [ngValue]="detalle.detalleAlquilerId">
+                {{ tituloVideojuego(detalle) }} — {{ detalle.inventario.plataforma }} × {{ detalle.cantidad }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="destino-correccion">Inventario de destino</label>
+          <select id="destino-correccion" formControlName="destino" [compareWith]="mismoInventario">
+            @if (!formulario.controls.destino.value) {
+              <option [ngValue]="null">Seleccioná un inventario</option>
+            }
+            @for (opcion of opcionesDestino(); track opcion.id) {
+              <option [ngValue]="opcion">{{ opcion.titulo }} — {{ opcion.plataforma }}</option>
+            }
+          </select>
+
+          @if (cargandoCatalogo()) {
+            <span class="hint" role="status">Cargando catálogo...</span>
+          }
+          @if (errorCatalogo()) {
+            <p class="error-message" role="alert">{{ errorCatalogo() }}</p>
+          }
+          @if (totalPaginasCatalogo() > 1) {
+            <div class="paginacion-catalogo" aria-label="Paginación del catálogo">
+              <button type="button" [disabled]="cargandoCatalogo() || paginaCatalogo() === 0"
+                (click)="cargarCatalogo(paginaCatalogo() - 1)">Anterior</button>
+              <span class="hint">Catálogo · Página {{ paginaCatalogo() + 1 }} de {{ totalPaginasCatalogo() }}</span>
+              <button type="button" [disabled]="cargandoCatalogo() || paginaCatalogo() + 1 >= totalPaginasCatalogo()"
+                (click)="cargarCatalogo(paginaCatalogo() + 1)">Siguiente</button>
+            </div>
+          } @else if (errorCatalogo()) {
+            <button type="button" (click)="cargarCatalogo(paginaCatalogo())">Reintentar carga del catálogo</button>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="cantidad-correccion">Cantidad</label>
+          <input id="cantidad-correccion" type="number" min="1" step="1" formControlName="cantidad"
+            [class.invalid]="formulario.controls.cantidad.invalid && formulario.controls.cantidad.touched"
+            aria-describedby="ayuda-cantidad-correccion" />
+          <span id="ayuda-cantidad-correccion" class="hint">Ingresá un número entero mayor o igual a 1.</span>
+        </div>
+      </fieldset>
+
+      @if (errorGuardado()) {
+        <p class="error-message" role="alert">{{ errorGuardado() }}</p>
+      }
+      @if (correccionGuardada()) {
+        <p class="success" role="status">Se guardó la corrección del videojuego.</p>
+      }
+
+      <div class="actions">
+        <button type="submit" class="btn-primary" [disabled]="formulario.invalid || guardando() || bloqueado()">
+          {{ guardando() ? 'Guardando...' : 'Guardar corrección' }}
+        </button>
+      </div>
+    </form>
+  } @else {
+    <p class="hint">Este alquiler no tiene detalles para corregir.</p>
+  }
+</section>

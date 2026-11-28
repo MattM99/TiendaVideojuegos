@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, OnInit, inject, signal, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, Validators, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -13,11 +13,12 @@ import { fechaValida, noFechaFutura, rangoFechasValidas } from '../../shared/val
 import { CrearAlquilerRequest } from '../alquiler-request.model';
 import { finalize, Subscription } from 'rxjs';
 import { obtenerMensajeError } from '../../shared/error/error-response';
+import { CorregirVideojuegos } from '../alquiler-list/corregir-videojuegos';
 
 @Component({
   selector: 'app-alquiler-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CorregirVideojuegos],
   templateUrl: './alquiler-form.html',
   styleUrl: './alquiler-form.css',
 })
@@ -37,6 +38,8 @@ export class AlquilerForm implements OnInit {
   inventario = signal<InventarioItemModel[]>([]);
   esEdicion = signal(false);
   guardando = signal(false);
+  private correccionVideojuegos = viewChild(CorregirVideojuegos);
+  readonly guardandoVideojuegos = computed(() => this.correccionVideojuegos()?.guardando() ?? false);
   alquilerOriginal = signal<AlquilerModel | null>(null);
   errorMessage = signal('');
   disponibilidad = signal<ValidarDisponibilidadResponse | null>(null);
@@ -358,7 +361,7 @@ export class AlquilerForm implements OnInit {
   }
 
   private guardarEdicion(): void {
-    if (this.guardando()) return;
+    if (this.guardando() || this.guardandoVideojuegos()) return;
 
     const fechaFin = this.form.get('fechaFin')?.value;
 
@@ -386,6 +389,9 @@ export class AlquilerForm implements OnInit {
     });
   }
 
+  actualizarVideojuegos(alquiler: AlquilerModel): void {
+    this.alquilerOriginal.set(alquiler);
+  }
 
   cancelar(): void {
     this.router.navigate(['/alquileres']);

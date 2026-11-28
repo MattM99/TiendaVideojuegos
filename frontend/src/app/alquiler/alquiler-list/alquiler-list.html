@@ -88,8 +88,8 @@
                 @for (detalle of a.carrito; track detalle.detalleAlquilerId) {
                   <li>
                     {{ detalle.inventario.videojuego?.titulo ?? 'Videojuego sin título' }} — {{ detalle.inventario.plataforma }}
-                    @if (detalle.cantidad != null) {
-                      <span>× {{ detalle.cantidad }}</span>
+                    @if (detalle.cantidad > 1) {
+                      <span>&ngsp;({{ detalle.cantidad }} unidades)</span>
                     }
                   </li>
                 }
@@ -98,9 +98,9 @@
               —
             }
           </td>
-          <td>{{ a.fechaInicio }}</td>
-          <td>{{ a.fechaFin }}</td>
-          <td>{{ a.fechaDevolucion || '-' }}</td>
+          <td class="fecha-alquiler">{{ a.fechaInicio }}</td>
+          <td class="fecha-alquiler">{{ a.fechaFin }}</td>
+          <td class="fecha-alquiler">{{ a.fechaDevolucion || '-' }}</td>
           <td>
             {{ a.estadoAlquiler }}
             @if (a.activo === false) {
@@ -111,8 +111,10 @@
 
           <td>
             @if (a.activo !== false && a.estadoAlquiler === 'EN_CURSO') {
-              <button (click)="editar(a.alquilerId)">Editar</button>
-              <button (click)="cerrar(a.alquilerId)">Cerrar</button>
+              <div class="acciones-alquiler">
+                <button (click)="editar(a.alquilerId)">Editar</button>
+                <button (click)="cerrar(a.alquilerId)">Cerrar</button>
+              </div>
             } @else if (
               a.activo !== false &&
               a.estadoAlquiler === 'FINALIZADO' &&

@@ -1,7 +1,11 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { AlquilerModel, ValidarDisponibilidadResponse } from './alquiler.model';
-import { AlquilerUpdateRequest, CrearAlquilerRequest } from './alquiler-request.model';
+import {
+  AlquilerUpdateRequest,
+  CrearAlquilerRequest,
+  DetalleAlquilerCorreccionRequest,
+} from './alquiler-request.model';
 import { CerrarAlquilerRequest } from '../models/cerrar-alquiler-request.model';
 import { Observable } from 'rxjs/internal/Observable';
 
@@ -86,6 +90,18 @@ export class Alquiler {
     request: AlquilerUpdateRequest
   ): Observable<AlquilerModel> {
     return this.http.patch<AlquilerModel>(`${this.baseUrl}/${id}`, request);
+  }
+
+  corregirDetalle(
+    alquilerId: number,
+    detalleId: number,
+    request: DetalleAlquilerCorreccionRequest
+  ): Observable<HttpResponse<AlquilerModel>> {
+    return this.http.patch<AlquilerModel>(
+      `${this.baseUrl}/${alquilerId}/detalles/${detalleId}`,
+      request,
+      { observe: 'response' }
+    );
   }
 
   eliminarAlquiler(id: string | number) {
